@@ -1,0 +1,8 @@
+.result-box{
+
+}
+
+.result-box:hover{
+    background-color: rgba(67, 67, 80, 0.144);
+    cursor: pointer;
+}

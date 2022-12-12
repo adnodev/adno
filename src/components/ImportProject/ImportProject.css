@@ -1,0 +1,59 @@
+.adno-upload-file{
+  width: 100%;
+  background-color: #5cbdb9;
+  border-radius: 5px;
+  padding : 10px 10px;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  color: white;
+}
+
+#selectFiles_1{
+  display: none;
+}
+
+.import_project{
+  margin-left: 15px;
+  width: 250px;
+}
+
+.importing_project{
+  margin-left: 15px;
+  width: 350px;
+  display: flex;
+  align-items: center;
+}
+
+.importing_project #label-upload{
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.import-btns{
+    display: flex;
+    justify-content: center;
+}
+
+.import-btns > div > button {
+  margin: 5px;
+}
+
+.import-reset{
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  background-color: #dc3545;
+  margin: 0px 5px;
+}
+
+.import-confirm{
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  background-color: #00ADEA;
+  margin: 0px 5px;
+}

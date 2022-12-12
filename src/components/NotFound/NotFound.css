@@ -1,0 +1,12 @@
+.not-found{
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 1000000000;
+    background-color: bisque;
+    top: 0;
+}

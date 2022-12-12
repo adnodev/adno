@@ -1,0 +1,48 @@
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 1s;
+}
+
+.sidebar-opened{
+  height: 100%;
+  width: 350px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  transition: 1s;
+}
+
+.sidebar-opened-w-modal{
+  height: 100%;
+  width: 350px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  transition: 1s;
+}
+  
+
+  .sidebar .closebtn {
+    text-decoration: none;
+    display: block;
+    transition: 0.3s;
+    position: absolute;
+    top: 0;
+    right: 25px;
+  }
+
+  .sidebar .closebtn {
+    color: #f1f1f1;
+  }
+  
+

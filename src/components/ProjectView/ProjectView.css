@@ -1,0 +1,123 @@
+.card-img-adno{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buttons-group-proj-view{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+    margin: auto;
+}
+
+.img-proj-view{
+    max-height: 250px;
+    max-width: 350px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.project-view-card{
+    margin: 15px 0;
+    border: 2px solid #4d6f94;
+}
+
+.project-view-card .card-body{
+    gap: 0;
+}
+
+.project-view-card:hover{
+    border: 2px solid #007bff;
+}
+
+.label-nb-annos{
+    background-color: #0d6efd!important;
+    color: #fff;
+    display: inline-block;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: center;
+    border-radius: 50%;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.project-card-img{
+    width: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.project-card-img:hover{
+    cursor: pointer;
+}
+
+.project_vw_btns{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 100px;
+    margin-top: 20px;
+}
+
+.project_vw_btns > div > button {
+    margin: 0 10px;
+}
+
+.project_vw_btns > div > a {
+    margin: 0 10px;
+}
+
+@media (max-width: 1440px) {
+    .buttons-group-proj-view{
+        width: 90%;
+        margin: auto;
+    }
+
+    .project-card-img {
+        width: 400px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .project_vw_btns{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 20px;
+        margin-right: 0px;
+    }
+
+}
+
+@media (max-width: 1040px){
+    .card-side {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .project-card-img {
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    .img-proj-view{
+        max-height: 200px;
+        max-width: 350px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        margin-top: 15px;
+    }
+
+    .project_vw_btns{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 20px;
+        margin-right: 0px;
+    }
+}

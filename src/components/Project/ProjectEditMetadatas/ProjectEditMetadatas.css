@@ -1,0 +1,8 @@
+.metadata-editor-btns {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    display: flex;
+}

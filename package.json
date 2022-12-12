@@ -1,0 +1,48 @@
+{
+  "name": "adno-react",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "yarn install && parcel public/index.html",
+    "build-all": "yarn build-full && yarn build-light",
+    "build-full": "ADNO_MODE=FULL parcel build public/index.html --dist-dir adno-full",
+    "build-light": "ADNO_MODE=LIGHT parcel build public/index.html --dist-dir adno-light"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@editorjs/code": "^2.7.0",
+    "@editorjs/editorjs": "^2.26.1",
+    "@editorjs/header": "^2.6.1",
+    "@editorjs/link": "^2.3.1",
+    "@editorjs/paragraph": "^2.8.0",
+    "@editorjs/quote": "^2.4.0",
+    "@fortawesome/fontawesome-svg-core": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.1.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "autoprefixer": "^10.4.13",
+    "daisyui": "^2.42.1",
+    "editorjs-paragraph-with-alignment": "^3.0.0",
+    "history": "^5.3.0",
+    "popper.js": "^1.15.0",
+    "postcss": "^8.4.19",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-html-parser": "^2.0.2",
+    "react-router": "5.2.0",
+    "react-router-dom": "5.2.0",
+    "react-speech-kit": "^3.0.1",
+    "react-tag-input-component": "^2.0.2",
+    "sweetalert2": "^11.4.29",
+    "tailwindcss": "^3.2.4",
+    "wikidata-sdk": "^8.1.0"
+  },
+  "devDependencies": {
+    "buffer": "^5.5.0",
+    "events": "^3.3.0",
+    "parcel": "^2.7.0",
+    "path-browserify": "^1.0.0",
+    "process": "^0.11.10"
+  }
+}

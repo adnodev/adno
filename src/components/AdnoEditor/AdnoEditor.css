@@ -1,0 +1,128 @@
+.edit-form{
+    width: 70vw;
+    margin: 30px auto auto auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.preview-btn{
+    padding: 8px 18px 8px 18px;
+}
+
+.newsletter{
+    background: #eff1f4;
+    border: none;
+    border-radius: 3px;
+    box-shadow: none;
+    outline: none;
+    color: inherit;
+    text-indent: 9px;
+    height: 45px;
+    margin-right: 10px;
+    min-width: 250px;
+}
+
+.subbutton{
+    padding: 16px 32px;
+    border: none;
+    background: none;
+    box-shadow: none;
+    text-shadow: none;
+    opacity: 0.9;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    line-height: 1;
+    background-color: #055ada !important;
+    color: #fff;
+    outline: none !important;
+    cursor: pointer;
+}
+
+.dl-button{
+    padding: 16px 32px;
+    border: none;
+    background: none;
+    box-shadow: none;
+    text-shadow: none;
+    opacity: 0.9;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 0.4px;
+    line-height: 1;
+    background-color: #19495c !important;
+    color: #fff;
+    outline: none !important;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    text-decoration: none;
+}
+
+.left-bar{
+    width: 20vw;
+    background-color: #1D1A1D;
+    height: 100vh;
+    padding: 25px;
+    position: absolute;
+}
+
+.right-bar{
+    width: 80vw;
+    height: calc(95vh - 125px);
+    margin-left: 20vw;
+    position: absolute;
+}
+
+.left-bar label{
+    color: white;
+    font-size: larger;
+    font-weight: bold;
+}
+
+.autosave-text{
+    color: white;
+}
+
+.back-home-editor{
+    margin: 2% 0 0 8%;
+}
+
+#openseadragon1{
+    height: 880px;
+}
+
+#toolbar-container{
+    position: absolute;
+    z-index: 99999999999;
+    background: white;
+    right: 0px;
+    width: 300px;
+}
+
+.toolbar-with-metadatas{
+    z-index: 1 !important;
+}
+
+@media (min-width: 1060px) and (max-width: 1440px) {
+    #openseadragon1 {
+        height: calc(100vh - 6rem);
+    }
+}
+
+@media (max-width: 1060px) {
+    #openseadragon1 {
+        height: 650px;
+    }
+
+    .left-bar{
+        width: 25vw !important;
+    }
+
+    .right-bar{
+        width: 75vw !important;
+        margin-left: 25vw !important;
+    }
+}

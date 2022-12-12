@@ -1,0 +1,41 @@
+.list_annotations{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: auto;
+}
+
+.anno-card{
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 5px;
+    margin: 10px auto;
+    width: 90%;
+}
+
+.adno-nb-annos{
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.adno-card-title{
+    flex-wrap: wrap !important;
+    display: block !important;
+    overflow-wrap: anywhere;
+}
+
+.anno-cards{
+    display: flex;
+    justify-content: left;
+    gap: 15px;
+    width: 100%;
+}
+
+.label-text{
+    color: white;
+}
+
+#autosaving-txt{
+    color: white;
+}

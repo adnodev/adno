@@ -1,0 +1,27 @@
+.form-new-project{
+    width: 70vw;
+    margin: 10vh auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.mb-3 {
+    width: 100%;
+}
+
+.new_project_btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.new_project_input{
+    margin-bottom: 30px;
+}
+
+.new_project_span{
+    width: 175px;
+}

@@ -1,0 +1,78 @@
+.adno-rich-editor{
+    height: 100%;
+    width: 100%;
+}
+
+#editorJS{
+    margin-top: 20px;
+    max-height: 40vh;
+    overflow: auto;
+}
+
+.rich-card-editor{
+    width: 90vw;
+    height: 70vh;
+    background-color: #fff;
+    border-radius: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.rich-card-editor .card-body{
+    width: 100%;
+}
+
+.rich-card-editor-btns{
+    width: 20%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    margin: auto;
+}
+
+
+.ce-block__content{
+    width: 90%;
+    max-width: 90%;
+}
+
+.ce-toolbar__content {
+    max-width: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+
+.ce-toolbar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 6px;
+    -webkit-transition: opacity .1s ease;
+    transition: opacity .1s ease;
+    will-change: opacity,top;
+    display: block;
+}
+
+.ce-toolbar__settings-btn{
+    display: block;
+}
+
+.ce-toolbar__actions {
+    padding-right: 5px;
+    display: flex;
+    left: 0;
+    opacity: 1 !important
+}
+
+@media (max-width: 1440px){
+    .rich-card-editor{
+        height: 80vh;
+    }
+
+    .rich-card-editor-btns{
+        width: 30%;
+    }
+}
