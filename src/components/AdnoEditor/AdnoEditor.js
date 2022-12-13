@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import utils
-import { checkIfProjectExists, createDate, generateUUID, insertInLS } from "../../../Utils/utils";
+import { checkIfProjectExists, createDate, generateUUID, insertInLS } from "../../Utils/utils";
 
 // Import CSS
 import "./AdnoEditor.css";
@@ -10,28 +10,6 @@ import "./AdnoEditor.css";
 class AdnoEditor extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            mobileMode: false,
-            selected_project: JSON.parse(localStorage.getItem(this.props.match.params.id)),
-            annotations: JSON.parse(localStorage.getItem(`${this.props.match.params.id}_annotations`))
-        }
-    }
-
-    createViewer(tileSources) {
-        return OpenSeadragon({
-            id: 'openseadragon1',
-            tileSources: tileSources,
-            prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
-        });
-    }
-
-    functionToLoadAnnotorious(viewer) {
-        return OpenSeadragon.Annotorious(viewer, {
-            locale: 'auto',
-            drawOnSingleClick: true,
-            allowEmpty: true,
-            disableEditor: true
-        });
     }
 
     componentDidMount() {
@@ -57,36 +35,32 @@ class AdnoEditor extends Component {
                 }
             }
 
-            let adnoViewer = this.createViewer(tileSources)
 
-            let anno = this.functionToLoadAnnotorious(adnoViewer)
+            this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
+                id: 'openseadragon1',
+                tileSources: tileSources,
+                prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
+            }), {
+                locale: 'auto',
+                drawOnSingleClick: true,
+                allowEmpty: true,
+                disableEditor: true
+            });
 
             // Find annotations from the localStorage in JSON format
             var annos = localStorage.getItem(`${selected_project.id}_annotations`)
 
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(annos)));
-            anno.loadAnnotations(dataURI)
+            this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+            Annotorious.SelectorPack(this.AdnoAnnotorious);
+            Annotorious.BetterPolygon(this.AdnoAnnotorious);
+            Annotorious.Toolbar(this.AdnoAnnotorious, document.getElementById('toolbar-container'));
 
 
-            Annotorious.SelectorPack(anno);
-            Annotorious.BetterPolygon(anno);
-            Annotorious.Toolbar(anno, document.getElementById('toolbar-container'));
-
-            //Manage creation of new annotation
-            anno.on('createSelection', (annotation) => {
-                var annotations = JSON.parse(localStorage.getItem(`${selected_project.id}_annotations`))
-
-                // reorganize properties 
-                const newAnnotation = {
-                    "@context": "http://www.w3.org/ns/anno.jsonld",
-                    "id": generateUUID(),
-                    "type": annotation.type,
-                    "body": [],
-                    "target": annotation.target,
-                    "modified": createDate(),
-                    "created": createDate(),
-                }
+            this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
+                var annotations = this.props.annotations
 
                 if (!annotations) {
                     annotations = [
@@ -105,25 +79,49 @@ class AdnoEditor extends Component {
 
                 this.props.updateAnnos(annotations)
 
-                //this.props.closeNav()
                 this.props.openRichEditor(newAnnotation)
 
-                anno.saveSelected();
+            });
 
-
+            this.AdnoAnnotorious.on('createSelection', (annotation) => {
+                this.AdnoAnnotorious.saveSelected()
             })
 
-            anno.on('selectAnnotation', (annotation) => {
-                //this.props.closeNav()
+
+            this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
                 this.props.openRichEditor(annotation)
             })
+
+            this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
+                const selected = this.AdnoAnnotorious.getSelected();
+                selected.target = newTarget
+
+                var annotations = this.props.annotations
+                var newAnnos = annotations.map(anno => {
+                    if (anno.id === selected.id) {
+                        anno = selected
+                    }
+                    return anno;
+                })
+
+                insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
+                // this.props.updateAnnos(newAnnos)
+            });
+
         }
     }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.annotations !== prevProps.annotations) {
+            this.AdnoAnnotorious.setAnnotations(this.props.annotations);
+        }
+    }
+
 
     render() {
         return (
             <div>
-                <div id="toolbar-container" className={this.props.showMetadatas && "toolbar-with-metadatas"}></div>
+                <div id="toolbar-container"></div>
                 <div id="openseadragon1"></div>
             </div>
         )

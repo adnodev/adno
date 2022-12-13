@@ -4,9 +4,8 @@ import {
 } from "react-router-dom";
 
 // Import utils
-import history from "../Utils/history";
-import { insertInLS } from "../Utils/utils";
-import AdnoRichText from "./components/AdnoRichText/AdnoRichText";
+import history from "./Utils/history";
+import { insertInLS } from "./Utils/utils";
 import AdnoUrls from "./components/AdnoUrls/AdnoUrls";
 
 // Import React components
@@ -36,16 +35,40 @@ export default class App extends Component {
         }
     }
 
+    loadMatomo = () => {
+        if (process.env.MATOMO_SITE_ID && process.env.MATOMO_URL) {
+
+            var scriptTag = document.createElement("script")
+            scriptTag.innerHTML = 
+            `
+            var _paq = window._paq = window._paq || [];
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function () {
+                var u = '${process.env.MATOMO_URL}'
+                _paq.push(['setTrackerUrl', u + 'matomo.php'])
+                _paq.push(['setSiteId', '${process.env.MATOMO_SITE_ID}'])
+                var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+                g.async = true; 
+                g.src = u + 'matomo.js';
+                s.parentNode.insertBefore(g, s)
+            })()
+            `
+            document.body.appendChild(scriptTag)
+        }
+    }
+
     render() {
         return (
             <HashRouter history={history}>
                 <Switch>
+                    {this.loadMatomo()}
                     <Route exact path="/new">
                         <NewProject />
                     </Route>
 
                     <Route exact path="/project/:id/edit">
-                        <Project editMode={true}/>
+                        <Project editMode={true} />
                     </Route>
 
                     <Route exact path="/project/:id/view">

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // Import utils
-import { insertInLS, isValidUrl } from "../../../Utils/utils";
+import { insertInLS, isValidUrl } from "../../Utils/utils";
 
 // Import components
 import ImportProject from "../ImportProject/ImportProject";
@@ -94,7 +94,7 @@ class HomeWithProjects extends Component {
         return (
             <div id="container_with_projects" className="adno_container">
 
-                <h1>ADNO BETA</h1>
+                <h1>{process.env.ADNO_TITLE ? process.env.ADNO_TITLE  : "ADNO BETA" }</h1>
 
                 <form id="myForm">
                     <div className="input-group mb-3 add_url">

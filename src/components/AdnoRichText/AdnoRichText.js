@@ -2,12 +2,13 @@ import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
 import LinkTool from '@editorjs/link';
 import Quote from '@editorjs/quote';
+import CodeTool from '@editorjs/code';
 import { faCheckCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Paragraph from "editorjs-paragraph-with-alignment";
 import { Component } from "react";
 import { TagsInput } from 'react-tag-input-component';
-import { insertInLS } from '../../../Utils/utils';
+import { insertInLS } from '../../Utils/utils';
 import "./AdnoRichText.css";
 import RichEditorImage from "./RichEditorImage/RichEditorImage";
 import WikiSearch from "./Wikidata/WikiSearch";
@@ -43,7 +44,8 @@ class AdnoRichText extends Component {
           defaultLevel: 1
         }
       },
-      quote: Quote
+      quote: Quote,
+      code: CodeTool
     }
   });
 
@@ -71,10 +73,20 @@ class AdnoRichText extends Component {
               txt += `<img src="${block.data.url}"</img>`;
             }
             break;
+          case "quote":
+            if (block.data) {
+              txt += `<q>${block.data.text}</q>`;
+            }
+            break;
           case "wikidata":
             if (block.data) {
               txt += `<img src="${block.data.imgUrl}"</img>`;
               txt += `<a href="${block.data.wiki_link}" target="_blank">${block.data.title}(${block.data.description})</a>`;
+            }
+            break;
+          case "code":
+            if (block.data && block.data.code) {
+              txt += `<code>${block.data.code}</code>`;
             }
             break;
           default:
@@ -110,7 +122,6 @@ class AdnoRichText extends Component {
 
       let newBody = [current_anno, current_anno_with_blocks, ...allTags]
 
-      // annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = [current_anno, current_anno_with_blocks]
       annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = newBody
 
       insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos))
@@ -130,9 +141,9 @@ class AdnoRichText extends Component {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
-          <div class="card-body over-hidden">
-            <div class="card-text">
-              <div id="editorJS" class="p-3"></div>
+          <div className="card-body over-hidden">
+            <div className="card-text">
+              <div id="editorJS" className="p-3"></div>
             </div>
           </div>
 

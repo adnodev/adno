@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import utils
-import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID } from "../../../Utils/utils";
+import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID } from "../../Utils/utils";
 
 // Import popup alerts
 import Swal from "sweetalert2";
@@ -25,7 +25,7 @@ class NewProject extends Component {
         }
     }
 
-    isManifest =  async (url) => {
+    isManifest = async (url) => {
         return new Promise((resolve, reject) => {
             fetch(url)
                 .then(res => {
@@ -73,6 +73,8 @@ class NewProject extends Component {
 
             var manifest_url = localStorage.getItem("adno_image_url")
 
+
+
             let isUrlManifest = "";
 
             // if the url is not an image file (.jpg, .jpeg or .png) it should be a manifest
@@ -113,7 +115,7 @@ class NewProject extends Component {
                     }
 
                     localStorage.removeItem("adno_image_url")
-                    this.props.history.push("/project/" + projectID)
+                    this.props.history.push("/project/" + projectID + "/edit")
                 } else {
                     fetch(manifest_url)
                         .then(rep => {
@@ -181,7 +183,7 @@ class NewProject extends Component {
                                         }
 
                                         localStorage.removeItem("adno_image_url")
-                                        this.props.history.push("/project/" + projectID)
+                                        this.props.history.push("/project/" + projectID + "/edit")
 
                                     } else {
                                         Swal.fire({
@@ -230,29 +232,36 @@ class NewProject extends Component {
 
     render() {
         return (
-            <form className="form-new-project" >
+            <>
+                <form className="form-new-project" >
 
-                <label className="input-group new_project_input">
-                    <span className="new_project_span">Titre</span>
-                    <input id="project_name" className="input input-bordered w-full" type="text" placeholder="Donnez un titre à votre projet" />
-                </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">Titre</span>
+                        <input id="project_name" className="input input-bordered w-full" type="text" placeholder="Donnez un titre à votre projet" />
+                    </label>
 
-                <label className="input-group new_project_input">
-                    <span className="new_project_span">Description</span>
-                    <input id="project_desc" className="input input-bordered w-full" type="text" placeholder="Description de votre projet" />
-                </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">Description</span>
+                        <input id="project_desc" className="input input-bordered w-full" type="text" placeholder="Description de votre projet" />
+                    </label>
 
-                <label className="input-group new_project_input">
-                    <span className="new_project_span">URL du Manifest</span>
-                    <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
-                </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">URL du Manifest</span>
+                        <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
+                    </label>
 
 
-                <div className="new_project_btns">
-                    <button id="annuler_creation" type="submit" className="btn btn-error" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>Annuler</button>
-                    <button id="valider_creation" type="submit" className="btn btn-success" onClick={(e) => this.createProj(e)}>Créer mon projet</button>
+                    <div className="new_project_btns">
+                        <button id="annuler_creation" type="submit" className="btn btn-error" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>Annuler</button>
+                        <button id="valider_creation" type="submit" className="btn btn-success" onClick={(e) => this.createProj(e)}>Créer mon projet</button>
+                    </div>
+                </form>
+
+                <div id="imgs_manifest">
+
                 </div>
-            </form>
+
+            </>
         )
     }
 }

@@ -96,7 +96,7 @@
 
 #toolbar-container{
     position: absolute;
-    z-index: 99999999999;
+    z-index: 1;
     background: white;
     right: 0px;
     width: 300px;

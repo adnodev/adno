@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import Swal from "sweetalert2";
 
 // Import utils
-import { checkIfProjectExists } from "../../../Utils/utils";
+import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
 import "../../libraries/annona-reworked/js/storyboard";

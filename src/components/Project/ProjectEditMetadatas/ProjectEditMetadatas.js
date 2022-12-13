@@ -1,8 +1,8 @@
-import { faCancel, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import Swal from "sweetalert2";
-import { createDate, insertInLS } from "../../../../Utils/utils";
+import {insertInLS} from "../../../Utils/utils";
 import "./ProjectEditMetadatas.css"
 
 class ProjectEditMetadatas extends Component {

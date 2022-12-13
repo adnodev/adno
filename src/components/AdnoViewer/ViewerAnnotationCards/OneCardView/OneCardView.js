@@ -1,7 +1,7 @@
 import { Component } from "react";
 
 // Import Utils
-import { buildTagsList } from "../../../../../Utils/utils";
+import { buildTagsList } from "../../../../Utils/utils";
 import ReactHtmlParser from 'react-html-parser';
 import OneCardFullView from "./OneCardFullView";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

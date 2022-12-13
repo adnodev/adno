@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFile, faFilePen, faHome } from "@fortawesome/free-solid-svg-icons";
 
 // Import utils
-import { checkIfProjectExists, createExportProjectJsonFile } from "../../../Utils/utils";
+import { checkIfProjectExists, createExportProjectJsonFile } from "../../Utils/utils";
 
 // Import libraries
 import "../../libraries/annona-reworked/js/storyboard";
@@ -28,7 +28,7 @@ class Project extends Component {
         super(props);
         this.state = {
             annotations: JSON.parse(localStorage.getItem(`${this.props.match.params.id}_annotations`)) || [],
-            selectedProject: JSON.parse(localStorage.getItem(this.props.match.params.id)),
+            selectedProject: JSON.parse(localStorage.getItem(this.props.match.params.id)) || {},
             editingMode: false,
             sidebarOpened: true,
             updateAnnotation: false,
@@ -38,7 +38,6 @@ class Project extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.editMode);
         if (!checkIfProjectExists(this.props.match.params.id)) {
             this.props.history.push("/")
         }
@@ -90,7 +89,7 @@ class Project extends Component {
 
                     <Link to={"/"} className="btn btn-ghost normal-case"> <FontAwesomeIcon icon={faHome} /> </Link>
                     {
-                        this.state.selectedProject.id &&
+                        this.state.selectedProject && this.state.selectedProject.id &&
                         <a id={"download_btn_" + this.state.selectedProject.id} href={createExportProjectJsonFile(this.state.selectedProject.id)} download={this.state.selectedProject.title + ".json"} className="btn btn-md"> <FontAwesomeIcon icon={faDownload} /> </a>
                     }
 
@@ -130,12 +129,12 @@ class Project extends Component {
                         <div className={this.state.sidebarOpened ? "right-card-opened" : "right-card-closed"}>
                             <div className="card">
                                 {
-                                    !this.state.updateAnnotation
-                                        && this.props.editMode ?
-                                        <AdnoEditor showMetadatas={this.state.showProjectMetadatas} updateAnnos={(annos) => this.setState({ annotations: annos })} openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })} closeNav={() => {
-                                            this.setState({ sidebarOpened: false })
-                                        }} />
-                                        : !this.state.updateAnnotation  && !this.props.editMode &&
+                                    this.props.editMode ?
+                                        <AdnoEditor
+                                            annotations={this.state.annotations}
+                                            updateAnnos={(annos) => this.setState({ annotations: annos })}
+                                            openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })} />
+                                        :
                                         <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />
                                 }
                             </div>

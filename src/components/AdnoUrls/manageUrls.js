@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import { buildJsonProjectWithManifest, generateUUID, get_url_extension, insertInLS, isJsonString } from "../../../Utils/utils"
+import { buildJsonProjectWithManifest, generateUUID, get_url_extension, insertInLS } from "../../Utils/utils";
 
 export async function manageUrls(props, url) {
 

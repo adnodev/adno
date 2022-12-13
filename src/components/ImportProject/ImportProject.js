@@ -9,7 +9,7 @@ import { faCancel, faCheck, faCheckCircle, faUpload } from "@fortawesome/free-so
 import Swal from "sweetalert2";
 
 // Import utils
-import { importProjectJsonFile } from "../../../Utils/utils";
+import { importProjectJsonFile } from "../../Utils/utils";
 
 // Import CSS
 import "./ImportProject.css";

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 // Import utils
-import { insertInLS, createExportProjectJsonFile, duplicateProject } from "../../../Utils/utils";
+import { insertInLS, createExportProjectJsonFile, duplicateProject } from "../../Utils/utils";
 
 // Import CSS
 import "./ProjectView.css";
@@ -125,7 +125,7 @@ class ProjectView extends Component {
 
         return (
             <div className="card card-side bg-base-100 shadow-xl project-view-card" style={{ "width": "80%" }}>
-                <div className="project-card-img" onClick={() => this.props.history.push("/project/" + this.props.project.id)}>
+                <div className="project-card-img" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
                     <img src={this.state.imgSource} onError={({ currentTarget }) => {
                         currentTarget.onerror = null; // prevents looping
                         currentTarget.src = "https://www.pngkey.com/png/detail/212-2124171_404-error-404-pagina-no-encontrada.png"
