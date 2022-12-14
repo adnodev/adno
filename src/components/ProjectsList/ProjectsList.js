@@ -11,7 +11,7 @@ export default class ProjectsList extends Component {
             <div id="projects_list">
                 {
                     this.props.projects.map(project => {
-                        return (<ProjectView key={project.id} project={project} />)
+                        return (<ProjectView key={project.id} project={project} updateProjectsList={(projects) => this.props.updateProjects(projects)} />)
                     })
                 }
             </div>

@@ -23,9 +23,29 @@ class NewProject extends Component {
         if (!localStorage.getItem("adno_image_url")) {
             this.props.history.push("/")
         }
+
+        // var manifest_url = localStorage.getItem("adno_image_url")
+        // fetch(manifest_url)
+        // .then(rep => rep.json())
+        // .then(manifestIIIF => {
+        //     if(manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases){
+        //         console.log(manifestIIIF.sequences[0].canvases.length, "annotations trouvées");
+        //         console.log(manifestIIIF.sequences[0].canvases);
+
+
+        //         manifestIIIF.sequences[0].canvases.forEach(canva => {
+        //             let img_child = document.createElement("img")
+        //             img_child.src= canva.thumbnail["@id"]
+
+        //             document.getElementById("imgs_manifest").appendChild(img_child)
+        //         });
+        //     }
+        // })
+
+
     }
 
-    isManifest =  async (url) => {
+    isManifest = async (url) => {
         return new Promise((resolve, reject) => {
             fetch(url)
                 .then(res => {
@@ -73,7 +93,7 @@ class NewProject extends Component {
 
             var manifest_url = localStorage.getItem("adno_image_url")
 
-           
+
 
             let isUrlManifest = "";
 
@@ -115,7 +135,13 @@ class NewProject extends Component {
                     }
 
                     localStorage.removeItem("adno_image_url")
-                    this.props.history.push("/project/" + projectID + "/edit")
+
+                    if (process.env.ADNO_MODE === "FULL") {
+                        this.props.history.push("/project/" + projectID + "/edit")
+                    } else {
+                        this.props.history.push("/project/" + projectID + "/view")
+                    }
+
                 } else {
                     fetch(manifest_url)
                         .then(rep => {
@@ -183,8 +209,11 @@ class NewProject extends Component {
                                         }
 
                                         localStorage.removeItem("adno_image_url")
-                                        this.props.history.push("/project/" + projectID + "/edit")
-
+                                        if (process.env.ADNO_MODE === "FULL") {
+                                            this.props.history.push("/project/" + projectID + "/edit")
+                                        } else {
+                                            this.props.history.push("/project/" + projectID + "/view")
+                                        }
                                     } else {
                                         Swal.fire({
                                             title: "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
@@ -233,33 +262,33 @@ class NewProject extends Component {
     render() {
         return (
             <>
-            <form className="form-new-project" >
+                <form className="form-new-project" >
 
-                <label className="input-group new_project_input">
-                    <span className="new_project_span">Titre</span>
-                    <input id="project_name" className="input input-bordered w-full" type="text" placeholder="Donnez un titre à votre projet" />
-                </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">Titre</span>
+                        <input id="project_name" className="input input-bordered w-full" type="text" placeholder="Donnez un titre à votre projet" />
+                    </label>
 
-                <label className="input-group new_project_input">
-                    <span className="new_project_span">Description</span>
-                    <input id="project_desc" className="input input-bordered w-full" type="text" placeholder="Description de votre projet" />
-                </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">Description</span>
+                        <input id="project_desc" className="input input-bordered w-full" type="text" placeholder="Description de votre projet" />
+                    </label>
 
-                <label className="input-group new_project_input">
-                    <span className="new_project_span">URL du Manifest</span>
-                    <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
-                </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">URL du Manifest</span>
+                        <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
+                    </label>
 
 
-                <div className="new_project_btns">
-                    <button id="annuler_creation" type="submit" className="btn btn-error" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>Annuler</button>
-                    <button id="valider_creation" type="submit" className="btn btn-success" onClick={(e) => this.createProj(e)}>Créer mon projet</button>
+                    <div className="new_project_btns">
+                        <button id="annuler_creation" type="submit" className="btn btn-error" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>Annuler</button>
+                        <button id="valider_creation" type="submit" className="btn btn-success" onClick={(e) => this.createProj(e)}>Créer mon projet</button>
+                    </div>
+                </form>
+
+                <div id="imgs_manifest">
+
                 </div>
-            </form>
-
-            <div id="imgs_manifest">
-
-            </div>
 
             </>
         )

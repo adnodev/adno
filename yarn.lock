@@ -48,9 +48,9 @@
     "@codexteam/icons" "^0.0.5"
 
 "@editorjs/editorjs@^2.26.1":
-  version "2.26.2"
-  resolved "https://registry.yarnpkg.com/@editorjs/editorjs/-/editorjs-2.26.2.tgz#21e51d4c41f1943d580a34b82a78494a019b4d51"
-  integrity sha512-7oKPWG/Oc6RF0AN1VccuBZMoQ4g/YoAfJvmo2RGjmmMpPT3sPC8a6X4XYetfYbjHfSyJ5E3pARRn9DzJQ6SHcg==
+  version "2.26.3"
+  resolved "https://registry.yarnpkg.com/@editorjs/editorjs/-/editorjs-2.26.3.tgz#91b1a44003a5635aa29919ff1439d797e68a60e2"
+  integrity sha512-ztR+fwXagfAnlc86A3p8K0bI/XQTvnGjmKY0P+c18aUB4OW3BjkX6OAPb4PH/Ym8G16fBKtJG//sITck6CD1lA==
   dependencies:
     "@codexteam/icons" "^0.0.4"
     codex-notifier "^1.1.2"
@@ -1680,9 +1680,9 @@ node-gyp-build@^4.3.0:
   integrity sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==
 
 node-releases@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.6.tgz#8a7088c63a55e493845683ebf3c828d8c51c5503"
-  integrity sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.7.tgz#593edbc7c22860ee4d32d3933cfebdfab0c0e0e5"
+  integrity sha512-EJ3rzxL9pTWPjk5arA0s0dgXpnyiAbJDE6wHT62g7VsgrgQgmmZ+Ru++M1BFofncWja+Pnn3rEr3fieRySAdKQ==
 
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"

@@ -39,8 +39,8 @@ export default class App extends Component {
         if (process.env.MATOMO_SITE_ID && process.env.MATOMO_URL) {
 
             var scriptTag = document.createElement("script")
-            scriptTag.innerHTML = 
-            `
+            scriptTag.innerHTML =
+                `
             var _paq = window._paq = window._paq || [];
             _paq.push(['trackPageView']);
             _paq.push(['enableLinkTracking']);
@@ -67,9 +67,13 @@ export default class App extends Component {
                         <NewProject />
                     </Route>
 
-                    <Route exact path="/project/:id/edit">
-                        <Project editMode={true} />
-                    </Route>
+                    {
+                        process.env.ADNO_MODE === "FULL" &&
+                        <Route exact path="/project/:id/edit">
+                            <Project editMode={true} />
+                        </Route>
+                    }
+
 
                     <Route exact path="/project/:id/view">
                         <Project editMode={false} />

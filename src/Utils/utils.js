@@ -212,7 +212,7 @@ export const createExportProjectJsonFile = (projectID) => {
 
 export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
   event.preventDefault()
-  
+
   let fr = new FileReader();
 
   fr.readAsText(loadedProject)
@@ -258,18 +258,18 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
 
       window.location.reload()
 
-    } 
+    }
     else {
-        Swal.fire({
-          title: 'Impossible de lire ce type de fichier !',
-          showCancelButton: false,
-          showConfirmButton: true,
-          confirmButtonText: 'OK',
-          icon: 'error',
-        }).then((result) => {
-          if (result.isConfirmed) {
-              cancelImport()
-          }
+      Swal.fire({
+        title: 'Impossible de lire ce type de fichier !',
+        showCancelButton: false,
+        showConfirmButton: true,
+        confirmButtonText: 'OK',
+        icon: 'error',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          cancelImport()
+        }
       })
     }
 
@@ -305,4 +305,28 @@ export function duplicateProject(projectID) {
 
 export function createDate() {
   return new Date().toISOString().slice(0, 10);
+}
+
+export function deleteProject(idProject) {
+  // First, remove all the annotations linked to the selected projet
+  localStorage.removeItem(idProject + "_annotations")
+
+  // Then , delete the projet 
+  localStorage.removeItem(idProject)
+
+  // Finaly, remove the project id from the adno projects list
+  let projects = JSON.parse(localStorage.getItem("adno_projects"))
+
+  let newProjectsList = projects.filter(id_p => id_p !== idProject)
+
+  insertInLS("adno_projects", JSON.stringify(newProjectsList))
+}
+
+export function getAllProjectsFromLS() {
+  var projects = []
+  var allProjectsID = JSON.parse(localStorage.getItem("adno_projects"))
+  allProjectsID && allProjectsID.length > 0 && allProjectsID.map(projectID => {
+    projects.push(JSON.parse(localStorage.getItem(projectID)))
+  })
+  return projects;
 }

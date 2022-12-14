@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // Import utils
-import { insertInLS, isValidUrl } from "../../Utils/utils";
+import { getAllProjectsFromLS, insertInLS, isValidUrl } from "../../Utils/utils";
 
 // Import components
 import ImportProject from "../ImportProject/ImportProject";
@@ -29,12 +29,8 @@ class HomeWithProjects extends Component {
 
     componentDidMount() {
         // Get projects from localStorage
-        var projects = []
-        var allProjectsID = JSON.parse(localStorage.getItem("adno_projects"))
-        allProjectsID && allProjectsID.length > 0 && allProjectsID.map(projectID => {
-            projects.push(JSON.parse(localStorage.getItem(projectID)))
-        })
-
+        var projects = getAllProjectsFromLS()
+        
         this.setState({ projects })
     }
 
@@ -115,7 +111,7 @@ class HomeWithProjects extends Component {
                     this.state.projects && this.state.projects.length > 0 ?
                         <>
                             <h2>Vos Projets</h2>
-                            <ProjectsList projects={this.state.projects} />
+                            <ProjectsList projects={this.state.projects} updateProjects={(updatedProjects) => this.setState({projects: updatedProjects})}/>
                         </>
                         :
                         <p>Aucun projet disponible pour le moment</p>

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 // Import utils
-import { insertInLS, createExportProjectJsonFile, duplicateProject } from "../../Utils/utils";
+import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllProjectsFromLS } from "../../Utils/utils";
 
 // Import CSS
 import "./ProjectView.css";
@@ -70,59 +70,45 @@ class ProjectView extends Component {
         }
     }
 
+    deleteProj = (projID) => {
+        Swal.fire({
+            title: 'Voulez-vous vraiment supprimer ce projet ?',
+            showCancelButton: true,
+            confirmButtonText: 'Supprimer mon projet',
+            cancelButtonText: 'Annuler',
+            icon: 'warning',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteProject(projID)
+                Swal.fire('La liste des projets a bien été mise à jour !', '', 'success')
+                    .then((result) => {
+                        var projects = getAllProjectsFromLS()
+                        result.isConfirmed && this.props.updateProjectsList(projects)
+                    })
+            }
+        })
+    }
+
+    duplicate = (projID) => {
+        Swal.fire({
+            title: 'Voulez-vous vraiment dupliquer ce projet ?',
+            showCancelButton: true,
+            confirmButtonText: 'Dupliquer mon projet',
+            cancelButtonText: 'Annuler',
+            icon: 'warning',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                duplicateProject(projID)
+                Swal.fire('La liste des projets a bien été mise à jour !', '', 'success')
+                    .then((result) => {
+                        var projects = getAllProjectsFromLS()
+                        result.isConfirmed && this.props.updateProjectsList(projects)
+                    })
+            }
+        })
+    }
+
     render() {
-        function deleteProject(idProject) {
-
-            // First, remove all the annotations linked to the selected projet
-            localStorage.removeItem(idProject + "_annotations")
-
-            // Then , delete the projet 
-            localStorage.removeItem(idProject)
-
-            // Finaly, remove the project id from the adno projects list
-            let projects = JSON.parse(localStorage.getItem("adno_projects"))
-
-            let newProjectsList = projects.filter(id_p => id_p !== idProject)
-
-            insertInLS("adno_projects", JSON.stringify(newProjectsList))
-        }
-
-        function deleteProj(projID) {
-            Swal.fire({
-                title: 'Voulez-vous vraiment supprimer ce projet ?',
-                showCancelButton: true,
-                confirmButtonText: 'Supprimer mon projet',
-                cancelButtonText: 'Annuler',
-                icon: 'warning',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    deleteProject(projID)
-                    Swal.fire('La liste des projets a bien été mise à jour !', '', 'success')
-                        .then((result) => {
-                            result.isConfirmed ? window.location.reload() : ""
-                        })
-                }
-            })
-        }
-
-        function duplicate(projID) {
-            Swal.fire({
-                title: 'Voulez-vous vraiment dupliquer ce projet ?',
-                showCancelButton: true,
-                confirmButtonText: 'Dupliquer mon projet',
-                cancelButtonText: 'Annuler',
-                icon: 'warning',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    duplicateProject(projID)
-                    Swal.fire('La liste des projets a bien été mise à jour !', '', 'success')
-                        .then((result) => {
-                            result.isConfirmed ? window.location.reload() : ""
-                        })
-                }
-            })
-        }
-
         return (
             <div className="card card-side bg-base-100 shadow-xl project-view-card" style={{ "width": "80%" }}>
                 <div className="project-card-img" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
@@ -156,10 +142,10 @@ class ProjectView extends Component {
                         }
 
                         <div className="tooltip" data-tip="Supprimer">
-                            <button type="button" className="btn btn-md btn-outline btn-error" onClick={() => deleteProj(this.props.project.id)}>    <FontAwesomeIcon icon={faTrash} />  </button>
+                            <button type="button" className="btn btn-md btn-outline btn-error" onClick={() => this.deleteProj(this.props.project.id)}>    <FontAwesomeIcon icon={faTrash} />  </button>
                         </div>
                         <div className="tooltip" data-tip="Dupliquer">
-                            <button type="button" className="btn btn-md btn-outline btn-info" onClick={() => duplicate(this.props.project.id)}><FontAwesomeIcon icon={faCopy} /></button>
+                            <button type="button" className="btn btn-md btn-outline btn-info" onClick={() => this.duplicate(this.props.project.id)}><FontAwesomeIcon icon={faCopy} /></button>
                         </div>
 
                         <div className="tooltip" data-tip="Télécharger">
