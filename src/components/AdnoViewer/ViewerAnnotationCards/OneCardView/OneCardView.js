@@ -12,8 +12,13 @@ class OneCardView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fullView: false
+            fullView: false,
+            url: ""
         }
+    }
+
+    componentDidMount() {
+        this.buildExternalLink()
     }
 
     annotationBody = () => {
@@ -33,26 +38,43 @@ class OneCardView extends Component {
         }
     }
 
-    // buildExternalLink = () => {
-    //     if (this.props.annotation.target.selector.type === "FragmentSelector" && this.props.project.manifest_url) {
+    buildExternalLink = () => {
+        if (this.props.annotation.target.selector.type === "FragmentSelector" && this.props.project.manifest_url) {
 
-    //         let coordinates = this.props.annotation.target.selector.value.replace("xywh=pixel:", "")
+            let coordinates = this.props.annotation.target.selector.value.replace("xywh=pixel:", "")
 
-    //         let coord_left = Math.round(coordinates.split(",")[0])
-    //         let coord_top = Math.round(coordinates.split(",")[1])
-    //         let coord_width = Math.round(coordinates.split(",")[2])
-    //         let coord_height = Math.round(coordinates.split(",")[3])
+            let coord_left = Math.round(coordinates.split(",")[0])
+            let coord_top = Math.round(coordinates.split(",")[1])
+            let coord_width = Math.round(coordinates.split(",")[2])
+            let coord_height = Math.round(coordinates.split(",")[3])
 
-    //         let newCoordinates = `${coord_left},${coord_top},${coord_width},${coord_height}`
+            let newCoordinates = `${coord_left},${coord_top},${coord_width},${coord_height}`
 
+            let url_full = `${this.props.annotation.target.source}/${newCoordinates}/full/0/default.jpg`
+            let url_max = `${this.props.annotation.target.source}/${newCoordinates}/max/0/default.jpg`
 
-
-    //         let url_full = `${this.props.annotation.target.source}/${newCoordinates}/full/0/default.jpg`
-    //         let url_max = `${this.props.annotation.target.source}/${newCoordinates}/max/0/default.jpg`
-
-    //         return url_full
-    //     }
-    // }
+            fetch(url_full)
+                .then(res => {
+                    if (res.ok) {
+                        this.setState({ url: url_full })
+                    } else {
+                        fetch(url_max)
+                            .then(res => {
+                                if (res.ok) {
+                                    this.setState({ url: url_max })
+                                }
+                            })
+                    }
+                }).catch(() => {
+                    fetch(url_max)
+                        .then(res => {
+                            if (res.ok) {
+                                this.setState({ url: url_max })
+                            }
+                        })
+                })
+        }
+    }
 
     render() {
         return (
@@ -71,7 +93,7 @@ class OneCardView extends Component {
                     }
 
                     <button type="button" onClick={() => this.props.clickOnTarget()} className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
-                    {/* {this.buildExternalLink() && <a href={this.buildExternalLink()} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>} */}
+                    {this.state.url && <a href={this.state.url} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>}
                 </div>
 
                 {
