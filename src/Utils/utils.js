@@ -133,7 +133,7 @@ export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {
     "last_update": createDate(),
     "manifest_url": manifest,
     "editor": "",
-    "autor": ""
+    "creator": ""
   }
 }
 
@@ -146,7 +146,7 @@ export const buildJsonProjectWithImg = (id, title, desc, img) => {
     "last_update": createDate(),
     "img_url": img,
     "editor": "",
-    "autor": ""
+    "creator": ""
   }
 }
 
@@ -162,7 +162,7 @@ export const buildProjectAdnoFormat = (title, description, manifest) => {
       "modified": createDate(),
       "source": manifest,
       "editor": "",
-      "autor": "",
+      "creator": "",
       "format": "Adno",
       "total": 0,
       "first": {
@@ -191,7 +191,7 @@ export const createExportProjectJsonFile = (projectID) => {
     "type": "AnnotationCollection",
     "title": project.title,
     "description": project.description,
-    "autor": project.autor || "",
+    "creator": project.creator || "",
     "editor": project.editor || "",
     "rights": project.rights || "",
     "date": project.creation_date,
@@ -245,7 +245,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
         "creation_date": imported_project.date,
         "last_update": imported_project.modified,
         "manifest_url": imported_project.source,
-        "autor": imported_project.autor || "",
+        "creator": imported_project.creator || "",
         "editor": imported_project.editor || "",
         "rights": imported_project.rights || ""
       }

@@ -57,7 +57,7 @@ class ProjectEditMetadatas extends Component {
                         <label className="label">
                             <span className="label-text">Auteur</span>
                         </label>
-                        <input type="text" placeholder="Renseignez ici l'auteur" className="input input-bordered w-full max-w-xs" value={this.state.project.autor} onChange={(e) => this.setState({project: {...this.state.project, autor: e.target.value}})}/>
+                        <input type="text" placeholder="Renseignez ici l'auteur" className="input input-bordered w-full max-w-xs" value={this.state.project.creator} onChange={(e) => this.setState({project: {...this.state.project, creator: e.target.value}})}/>
 
                         <label className="label">
                             <span className="label-text">Editeur</span>
