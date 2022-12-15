@@ -12,10 +12,6 @@ class OneCardFullView extends Component {
         super(props);
     }
 
-    componentDidMount(){
-        console.log(this.props.fullAnnotation.body);   
-    }
-
     editor = new EditorJS({
         autofocus: true,
         readOnly: true,

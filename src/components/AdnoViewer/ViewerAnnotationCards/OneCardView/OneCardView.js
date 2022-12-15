@@ -13,25 +13,39 @@ class OneCardView extends Component {
         super(props);
         this.state = {
             fullView: false,
-            url: ""
+            url: "",
+            annoBody: []
         }
     }
 
     componentDidMount() {
         this.buildExternalLink()
+        this.createBody(100)
     }
 
-    annotationBody = () => {
+    createBody = (maxLength) => {
         if (this.props.annotation.body[0] && this.props.annotation.body[0].value) {
             let txt = ReactHtmlParser(this.props.annotation.body[0].value)
 
             let filteredTXT = txt && txt.filter(item => item.type !== "img")
 
-            if (filteredTXT && filteredTXT.length > 1) {
-                return [filteredTXT[0], filteredTXT[1]]
-            } else {
-                return filteredTXT
-            }
+
+            let totalLength = 0
+            let txtToReturn = []
+
+            filteredTXT.forEach(text => {
+                if (totalLength < maxLength && text.props.children[0].length < maxLength) {
+                    txtToReturn.push(text)
+                } else if (totalLength < maxLength && text.props.children[0].length > maxLength) {
+                    text.props.children[0] = text.props.children[0].substring(0, maxLength - totalLength) + "..."
+                    txtToReturn.push(text)
+                }
+
+                totalLength += text.props.children[0].length
+            })
+
+
+            this.setState({ annoBody: txtToReturn })
 
         } else {
             return "Cette annotation ne contient aucun texte"
@@ -81,7 +95,7 @@ class OneCardView extends Component {
             <div className="anno-card-body">
                 <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(this.props.annotation)} </h6>
 
-                <h5 className="card-title adno-card-title">{this.annotationBody()}</h5>
+                <h5 className="card-title adno-card-title">{this.state.annoBody}</h5>
 
 
                 <div className="btn-line-one-card">
