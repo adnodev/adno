@@ -15,7 +15,6 @@
     "@editorjs/code": "^2.8.0",
     "@editorjs/editorjs": "^2.26.1",
     "@editorjs/header": "^2.6.1",
-    "@editorjs/link": "^2.3.1",
     "@editorjs/paragraph": "^2.8.0",
     "@editorjs/quote": "^2.4.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",

@@ -107,11 +107,12 @@
 
 @media (max-width: 1440px) {
     #projects_list{
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow: auto;
-        height: 75vh;
+        height: 55vh;
+    }
+}
+
+@media (max-width: 800px) {
+    #projects_list{
+        height: 50vh;
     }
 }

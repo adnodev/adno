@@ -22,16 +22,16 @@ class AdnoEditor extends Component {
 
             let tileSources;
 
-            if (JSON.parse(localStorage.getItem(this.props.match.params.id)).manifest_url) {
+            if (selected_project.manifest_url) {
 
                 tileSources = [
-                    JSON.parse(localStorage.getItem(this.props.match.params.id)).manifest_url
+                    selected_project.manifest_url
                 ]
 
             } else {
                 tileSources = {
                     type: 'image',
-                    url: JSON.parse(localStorage.getItem(this.props.match.params.id)).img_url
+                    url: selected_project.img_url
                 }
             }
 
@@ -60,15 +60,8 @@ class AdnoEditor extends Component {
 
 
             this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                var annotations = this.props.annotations
-
-                if (!annotations) {
-                    annotations = [
-                        newAnnotation
-                    ]
-                } else {
-                    annotations.push(newAnnotation)
-                }
+                var annotations = this.props.annotations || []
+                annotations.push(newAnnotation)
 
                 // Update the last update date for the selected project
                 selected_project.last_update = createDate()

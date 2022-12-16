@@ -92,12 +92,13 @@ class HomeWithProjects extends Component {
                 <div id="container_with_projects" className="adno_container">
 
                     <h1>{process.env.ADNO_TITLE ? process.env.ADNO_TITLE : "ADNO BETA"}</h1>
+                    <p>Pour commencer à utiliser Adno, veuillez renseigner dans le champs ci-dessous l'URL d'un manifest IIIF, d'une image IIIF ou encore d'une image statique au format JPG ou PNG</p>
 
                     <form id="myForm">
                         <div className="input-group mb-3 add_url">
                             <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL</span>
                             <input type="text" id="adno_image_url_2" className="input input-bordered input-primary w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
-                                placeholder="Renseignez ici l'URL de votre fichier (Manifest, image statique, projet adno...)" />
+                                placeholder="https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json" />
                         </div>
 
                         <div className="tooltip" data-tip="Créer un nouveau projet">

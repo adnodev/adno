@@ -23,7 +23,7 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.7.6":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.7.6":
   version "7.20.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.6.tgz#facf4879bfed9b5326326273a64220f099b0fce3"
   integrity sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==
@@ -69,14 +69,6 @@
   integrity sha512-4fGKGe2ZYblVqR/P/iw5ieG00uXInFgNMftBMqJRYcB2hUPD30kuu7Sn6eJDcLXoKUMOeqi8Z2AlUxYAmvw7zQ==
   dependencies:
     "@codexteam/icons" "^0.0.5"
-
-"@editorjs/link@^2.3.1":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@editorjs/link/-/link-2.5.0.tgz#f2eff28030d858cd4d719cc07c4888c7840106d0"
-  integrity sha512-3Oa1VweBY7Sscjzw8pv1QcWGyP+XdPl6+yu+gXnSETyjz9TQRZUjved0qw2OomYOjMZ3RumrdDJXxoALlZdvuQ==
-  dependencies:
-    "@babel/runtime" "^7.10.2"
-    "@codexteam/icons" "^0.0.4"
 
 "@editorjs/paragraph@^2.8.0":
   version "2.9.0"
@@ -1129,9 +1121,9 @@ csso@^4.2.0:
     css-tree "^1.1.2"
 
 daisyui@^2.42.1:
-  version "2.43.2"
-  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-2.43.2.tgz#8a7e560204b14d15800931b6875cbb08d08ef363"
-  integrity sha512-GLOCqzv5YUtnVhVz6HrcoZUULFk7UL/Eyr2732UG1Q2e5rz77lOzSlGKpZyzi1vrdsPgagn29vxLgx/MvaQiIA==
+  version "2.45.0"
+  resolved "https://registry.yarnpkg.com/daisyui/-/daisyui-2.45.0.tgz#38fce0129b4db9c5063781c588c5be11d29aa791"
+  integrity sha512-hAWs7vQLxsWXCd3KMLAMBrZPO6OdU0gIDfOKGmZlyM0ro/pW3J2eGEaBs90Dy8w8L6wD/w1s8Ujd7zG8TYtD3g==
   dependencies:
     color "^4.2"
     css-selector-tokenizer "^0.8.0"
@@ -1512,9 +1504,9 @@ json-parse-even-better-errors@^2.3.0:
   integrity sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==
 
 json5@^2.2.0, json5@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.1.tgz#655d50ed1e6f95ad1a3caababd2b0efda10b395c"
-  integrity sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.2.tgz#64471c5bdcc564c18f7c1d4df2e2297f2457c5ab"
+  integrity sha512-46Tk9JiOL2z7ytNQWFLpj99RZkVgeHf87yGQKsIkaPz1qSH9UczKH1rO7K3wgRselo0tYMUNfecYpm/p1vC7tQ==
 
 lightningcss-darwin-arm64@1.17.1:
   version "1.17.1"

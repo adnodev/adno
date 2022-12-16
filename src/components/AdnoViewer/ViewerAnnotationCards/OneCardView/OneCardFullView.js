@@ -2,10 +2,10 @@ import { Component } from "react";
 
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
-import LinkTool from '@editorjs/link';
 import Quote from '@editorjs/quote';
 import Paragraph from "editorjs-paragraph-with-alignment";
 import RichEditorImage from "../../../AdnoRichText/RichEditorImage/RichEditorImage";
+import CodeTool from "@editorjs/code";
 
 class OneCardFullView extends Component {
     constructor(props) {
@@ -20,24 +20,24 @@ class OneCardFullView extends Component {
             "blocks": this.props.fullAnnotation.body && this.props.fullAnnotation.body.filter(anno => anno.type === "AdnoRichText")[0] ? this.props.fullAnnotation.body.filter(anno => anno.type === "AdnoRichText")[0].value : []
         },
         tools: {
-          image: RichEditorImage,
-          // wikidata: WikiSearch,
-          paragraph: {
-            class: Paragraph,
-            inlineToolbar: true,
-          },
-          linkTool: LinkTool,
-          header: {
-            class: Header,
-            config: {
-              placeholder: 'Votre titre',
-              levels: [1, 2, 3],
-              defaultLevel: 1
-            }
-          },
-          quote: Quote
+            image: RichEditorImage,
+            // wikidata: WikiSearch,
+            paragraph: {
+                class: Paragraph,
+                inlineToolbar: true,
+            },
+            header: {
+                class: Header,
+                config: {
+                    placeholder: 'Votre titre',
+                    levels: [1, 2, 3],
+                    defaultLevel: 1
+                }
+            },
+            quote: Quote,
+            code: CodeTool
         }
-      });
+    });
 
     render() {
         return (

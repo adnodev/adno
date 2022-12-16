@@ -1,6 +1,5 @@
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
-import LinkTool from '@editorjs/link';
 import Quote from '@editorjs/quote';
 import CodeTool from '@editorjs/code';
 import { faCheckCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -35,8 +34,7 @@ class AdnoRichText extends Component {
         class: Paragraph,
         inlineToolbar: true,
       },
-      // linkTool: LinkTool,
-      header: {
+       header: {
         class: Header,
         config: {
           placeholder: 'Votre titre',
@@ -45,7 +43,7 @@ class AdnoRichText extends Component {
         }
       },
       quote: Quote,
-      // code: CodeTool
+      code: CodeTool
     }
   });
 
