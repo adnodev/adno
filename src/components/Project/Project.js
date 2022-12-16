@@ -22,6 +22,7 @@ import SidebarAnnotations from "../SidebarAnnotations/SidebarAnnotations";
 import AdnoRichText from "../AdnoRichText/AdnoRichText";
 import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
 import ProjectEditMetadatas from "./ProjectEditMetadatas/ProjectEditMetadatas";
+import OneCardFullView from "../AdnoViewer/ViewerAnnotationCards/OneCardView/OneCardFullView";
 
 class Project extends Component {
     constructor(props) {
@@ -63,18 +64,26 @@ class Project extends Component {
                     </div>
                 }
 
+                {
+                    this.state.showFullAnnotationView &&
+                    <div className="text-rich">
+                        <OneCardFullView fullAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
+                    </div>
+
+                }
+
 
                 {
                     this.state.annotations.length > 0 &&
 
                     <SidebarAnnotations
-                        sidebarStatus={this.state.sidebarOpened}
                         closeNav={() => {
                             this.setState({ sidebarOpened: false })
                         }
                         }
                         metadatasModal={this.state.showProjectMetadatas}
                         openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                        openFullAnnotationView={(annotation) => this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })}
                         editingMode={this.props.editMode}
                         annotations={this.state.annotations}
                         updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}

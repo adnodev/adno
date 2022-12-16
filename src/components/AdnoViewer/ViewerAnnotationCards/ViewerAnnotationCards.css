@@ -40,7 +40,6 @@
 }
 
 .btn-show-more{
-    margin-top: 10px;
     gap: 10px;
 }
 
@@ -49,4 +48,5 @@
     justify-content: left;
     align-items: center;
     gap: 10px;
+    margin: 10px 0;
 }

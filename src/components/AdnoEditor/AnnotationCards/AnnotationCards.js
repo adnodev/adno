@@ -76,34 +76,34 @@ class AnnotationCards extends Component {
 
 
         return (
-            <>
+            <div className="list_annotations">
+                {
+                    this.props.annotations.map((annotation, index) => {
+                        return (
+                            <div className="anno-card" key={`anno_${annotation.id}`}>
+                                <div className="anno-card-body">
+                                    <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(annotation)} </h6>
 
-                <div className="list_annotations">
-                    {
-                        this.props.annotations.map((annotation, index) => {
-                            return (
-                                <div className="anno-card" key={`anno_${annotation.id}`}>
-                                    <div className="anno-card-body">
-                                        <h5 className="card-title adno-card-title">{annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Aucun titre"}</h5>
 
-                                        {/* <TTS text={stripHtml(annotation.body[0].value)} /> */}
 
-                                        <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(annotation)} </h6>
+                                    <div className="card-title adno-card-body">
+                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"}
+                                    </div>
 
-                                        <div className="anno-cards">
-                                            <button className="btn btn-sm btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>
-                                            <button className="btn btn-sm btn-success" onClick={() => this.props.openRichEditor(annotation)}> <FontAwesomeIcon icon={faEdit} /></button>
-                                            {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-primary" onClick={() => annoSwitchDown(index)}> <FontAwesomeIcon icon={faDownLong} /> </button> : <></>}
-                                            {index > 0 ? <button className="btn btn-sm btn-primary" onClick={() => annoSwitchUp(index)}> <FontAwesomeIcon icon={faUpLong} /> </button> : <></>}
-                                        </div>
-                                    </div >
+
+
+                                    <div className="btn-line-one-card">
+                                        <button className="btn btn-sm btn-outline btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>
+                                        <button className="btn btn-sm btn-outline btn-success" onClick={() => this.props.openRichEditor(annotation)}> <FontAwesomeIcon icon={faEdit} /></button>
+                                        {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchDown(index)}> <FontAwesomeIcon icon={faDownLong} /> </button> : <></>}
+                                        {index > 0 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchUp(index)}> <FontAwesomeIcon icon={faUpLong} /> </button> : <></>}
+                                    </div>
                                 </div >
-                            )
-                        })
-                    }
-                </div >
-            </>
-
+                            </div >
+                        )
+                    })
+                }
+            </div>
         )
     }
 }

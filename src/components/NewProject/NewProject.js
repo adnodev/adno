@@ -15,6 +15,8 @@ class NewProject extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            manifestImages: [],
+            currentIndex: 0
         }
     }
 
@@ -26,21 +28,45 @@ class NewProject extends Component {
 
         // var manifest_url = localStorage.getItem("adno_image_url")
         // fetch(manifest_url)
-        // .then(rep => rep.json())
-        // .then(manifestIIIF => {
-        //     if(manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases){
-        //         console.log(manifestIIIF.sequences[0].canvases.length, "annotations trouvées");
-        //         console.log(manifestIIIF.sequences[0].canvases);
+        //     .then(rep => rep.json())
+        //     .then(manifestIIIF => {
+        //         if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
+        //             console.log(manifestIIIF.sequences[0].canvases.length, "annotations trouvées");
+        //             console.log(manifestIIIF.sequences[0].canvases);
+
+        //             manifestIIIF.sequences[0].canvases.forEach(canva => {
+
+        //                 if (canva.thumbnail) {
+        //                     console.log("thumbnail found");
+
+        //                     // let img_child = document.createElement("img")
+        //                     // img_child.src = canva.thumbnail["@id"]
+
+        //                     let imgLink = canva.thumbnail["@id"]
+        //                     this.setState({ manifestImages: [...this.state.manifestImages, imgLink] })
+
+        //                     // document.getElementById("imgs_manifest").appendChild(img_child)
+
+        //                 } else if (canva.images) {
+        //                     console.log("images found");
+
+        //                     // let img_child = document.createElement("img")
+        //                     // img_child.src= canva.images[0].resource.service["@id"] + "/full/111,/0/default.jpg"
 
 
-        //         manifestIIIF.sequences[0].canvases.forEach(canva => {
-        //             let img_child = document.createElement("img")
-        //             img_child.src= canva.thumbnail["@id"]
+        //                     let imgLink = canva.images[0].resource.service["@id"] + "/full/111,/0/default.jpg"
+        //                     let manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
+                        
+        //                     this.setState({ manifestImages: [...this.state.manifestImages, imgLink, manifestURL] })
 
-        //             document.getElementById("imgs_manifest").appendChild(img_child)
-        //         });
-        //     }
-        // })
+        //                     // document.getElementById("imgs_manifest").appendChild(img_child)
+
+        //                 } else {
+        //                     console.log("nothing found");
+        //                 }
+        //             });
+        //         }
+        //     })
 
 
     }
@@ -286,9 +312,21 @@ class NewProject extends Component {
                     </div>
                 </form>
 
-                <div id="imgs_manifest">
 
-                </div>
+
+                {/* <div id="imgs_manifest">
+                    {
+                        this.state.manifestImages && this.state.manifestImages.length > 0 && this.state.currentIndex > 0 &&
+                        <button onClick={() => this.setState({ current: this.state.currentIndex - 1 })}>BACK </button>
+                    }
+
+                    {
+                        this.state.manifestImages && this.state.manifestImages.length > 0 &&
+                        <img src={this.state.manifestImages[this.state.currentIndex]}></img>
+                    }
+
+                    <button onClick={() => this.setState({ currentIndex: this.state.currentIndex + 1 })}>NEXT </button>
+                </div> */}
 
             </>
         )

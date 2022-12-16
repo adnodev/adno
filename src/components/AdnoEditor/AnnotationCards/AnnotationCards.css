@@ -19,10 +19,17 @@
     text-align: center;
 }
 
-.adno-card-title{
-    flex-wrap: wrap !important;
-    display: block !important;
-    overflow-wrap: anywhere;
+.adno-card-body{
+      flex-wrap: wrap !important;
+      width: 284px;
+      height: 85px;
+      overflow: hidden;
+      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
 }
 
 .anno-cards{
