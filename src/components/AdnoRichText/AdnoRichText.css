@@ -4,8 +4,7 @@
 }
 
 #editorJS{
-    margin-top: 20px;
-    max-height: 40vh;
+    max-height: 55vh;
     overflow: auto;
 }
 
@@ -65,6 +64,10 @@
     display: flex;
     left: 0;
     opacity: 1 !important
+}
+
+.codex-editor__redactor{
+    padding-bottom: 0 !important;
 }
 
 @media (max-width: 1440px){

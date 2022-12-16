@@ -20,16 +20,16 @@
 }
 
 .adno-card-body{
-      flex-wrap: wrap !important;
-      width: 284px;
-      height: 85px;
-      overflow: hidden;
-      white-space: nowrap;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    height: 70px;
+}
+
+.adno-card-body > p {
+    width: 276px;
+    -webkit-line-clamp: 3;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
 }
 
 .anno-cards{

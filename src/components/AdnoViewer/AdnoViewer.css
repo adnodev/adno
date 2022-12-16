@@ -137,6 +137,15 @@
       align-items: center;
   }
 
+  .card-tags-list{
+    justify-content: flex-start;
+    gap: 10px;
+    margin: 10px 0;
+    display: flex;
+    width: 280px;
+    flex-wrap: wrap;
+  }
+
 @media (min-width: 840px) and (max-width: 1440px) { 
     .adno-viewer-rightbar{
         top: 12vh;

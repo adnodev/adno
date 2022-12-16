@@ -30,7 +30,7 @@ class HomeWithProjects extends Component {
     componentDidMount() {
         // Get projects from localStorage
         var projects = getAllProjectsFromLS()
-        
+
         this.setState({ projects })
     }
 
@@ -88,36 +88,55 @@ class HomeWithProjects extends Component {
         }
 
         return (
-            <div id="container_with_projects" className="adno_container">
+            <div>
+                <div id="container_with_projects" className="adno_container">
 
-                <h1>{process.env.ADNO_TITLE ? process.env.ADNO_TITLE  : "ADNO BETA" }</h1>
+                    <h1>{process.env.ADNO_TITLE ? process.env.ADNO_TITLE : "ADNO BETA"}</h1>
 
-                <form id="myForm">
-                    <div className="input-group mb-3 add_url">
-                        <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL</span>
-                        <input type="text" id="adno_image_url_2" className="input input-bordered input-primary w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
-                            placeholder="Renseignez ici l'URL de votre fichier (Manifest, image statique, projet adno...)" />
-                    </div>
+                    <form id="myForm">
+                        <div className="input-group mb-3 add_url">
+                            <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL</span>
+                            <input type="text" id="adno_image_url_2" className="input input-bordered input-primary w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
+                                placeholder="Renseignez ici l'URL de votre fichier (Manifest, image statique, projet adno...)" />
+                        </div>
 
-                    <div className="tooltip" data-tip="Créer un nouveau projet">
-                        <button id="create_project_2" type="submit" className="btn btn-success" onClick={(e) => newProject(e)}> <FontAwesomeIcon icon={faAdd} /> </button>
-                    </div>
+                        <div className="tooltip" data-tip="Créer un nouveau projet">
+                            <button id="create_project_2" type="submit" className="btn btn-success" onClick={(e) => newProject(e)}> <FontAwesomeIcon icon={faAdd} /> </button>
+                        </div>
 
-                    <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />
-                </form>
+                        <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />
+                    </form>
 
+
+                    {
+                        this.state.projects && this.state.projects.length > 0 ?
+                            <>
+                                <h2>Vos Projets</h2>
+                                <ProjectsList projects={this.state.projects} updateProjects={(updatedProjects) => this.setState({ projects: updatedProjects })} />
+                            </>
+                            :
+                            <p>Aucun projet disponible pour le moment</p>
+                    }
+
+
+
+                </div>
 
                 {
-                    this.state.projects && this.state.projects.length > 0 ?
-                        <>
-                            <h2>Vos Projets</h2>
-                            <ProjectsList projects={this.state.projects} updateProjects={(updatedProjects) => this.setState({projects: updatedProjects})}/>
-                        </>
-                        :
-                        <p>Aucun projet disponible pour le moment</p>
+                    process.env.ADNO_FOOTER === "TRUE" &&
+                    <footer className="footer footer-center p-4 bg-base-300 text-base-content">
+                        <div>
+                            {
+                                process.env.ADNO_FOOTER_TEXT ?
+                                    <p>{process.env.ADNO_FOOTER_TEXT}</p>
+                                    : <p><a href="https://adno.app/">adno.app</a> - Espace Mendès France, Poitiers. Ce projet a été soutenu par le ministère de la Culture français.</p>
+                            }
+                        </div>
+                    </footer>
                 }
 
             </div>
+
         )
     }
 }

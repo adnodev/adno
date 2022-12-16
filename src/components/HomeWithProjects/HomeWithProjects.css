@@ -75,8 +75,8 @@
 }
 
 .adno_container{
-    width: 90vw;
-    height: 100vh;
+    width: 95vw;
+    height: calc(95vh - 52px);
     margin: auto;
 }
 
@@ -113,9 +113,5 @@
         align-items: center;
         overflow: auto;
         height: 75vh;
-    }
-
-    #container_with_projects {
-        margin-top: 0 !important;
     }
 }

@@ -121,7 +121,9 @@ export const get_url_extension = (url) => {
 export const buildTagsList = (annotation) => {
   var tags = annotation.body.filter(anno_body => anno_body.purpose === "tagging")
 
-  return tags && tags.length > 0 ? tags.reduce((previousValue, currentValue) => previousValue + " " + currentValue.value, "[TAGS] ") : "Aucun tag"
+  return tags
+
+  // return tags && tags.length > 0 && tags.reduce((previousValue, currentValue) => previousValue + " " + currentValue.value, "[TAGS] ")
 }
 
 export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {

@@ -35,7 +35,7 @@ class AdnoRichText extends Component {
         class: Paragraph,
         inlineToolbar: true,
       },
-      linkTool: LinkTool,
+      // linkTool: LinkTool,
       header: {
         class: Header,
         config: {
@@ -45,7 +45,7 @@ class AdnoRichText extends Component {
         }
       },
       quote: Quote,
-      code: CodeTool
+      // code: CodeTool
     }
   });
 

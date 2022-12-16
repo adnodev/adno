@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // JS Utils 
-import { buildTagsList, insertInLS } from "../../../Utils/utils";
+import { buildTagsList, generateUUID, insertInLS } from "../../../Utils/utils";
 
 //Imports CSS
 import "./AnnotationCards.css";
@@ -74,7 +74,6 @@ class AnnotationCards extends Component {
             })
         }
 
-
         return (
             <div className="list_annotations">
                 {
@@ -82,15 +81,23 @@ class AnnotationCards extends Component {
                         return (
                             <div className="anno-card" key={`anno_${annotation.id}`}>
                                 <div className="anno-card-body">
-                                    <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(annotation)} </h6>
 
-
-
-                                    <div className="card-title adno-card-body">
-                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"}
+                                    <div className="card-tags-list">
+                                        {
+                                            buildTagsList(annotation).map(tag => {
+                                                return (
+                                                    <div key={generateUUID()} className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
+                                                        {tag.value}
+                                                    </div>
+                                                )
+                                            })
+                                        }
                                     </div>
 
 
+                                    <div className="adno-card-body">
+                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value)[0] : "Annotation vide"}
+                                    </div>
 
                                     <div className="btn-line-one-card">
                                         <button className="btn btn-sm btn-outline btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>

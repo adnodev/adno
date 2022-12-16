@@ -1,7 +1,7 @@
 import { Component } from "react";
 
 // Import Utils
-import { buildTagsList } from "../../../../Utils/utils";
+import { buildTagsList, generateUUID } from "../../../../Utils/utils";
 import ReactHtmlParser from 'react-html-parser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare, faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +12,7 @@ class OneCardView extends Component {
         this.state = {
             fullView: false,
             url: "",
-            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)
+            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)[0]
         }
     }
 
@@ -62,20 +62,28 @@ class OneCardView extends Component {
     render() {
         return (
             <div className="anno-card-body">
-                <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(this.props.annotation)} </h6>
+                {/* <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(this.props.annotation)} </h6> */}
 
-                <div className="card-title adno-card-body">
+                <div className="card-tags-list">
+                    {
+                        buildTagsList(this.props.annotation).map(tag => {
+                            return (
+                                <div key={generateUUID()} className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
+                                    {tag.value}
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+
+                <div className="adno-card-body">
                     {this.state.annoBody || "Annotation vide"}
                 </div>
 
 
                 <div className="btn-line-one-card">
 
-                    {
-                        this.props.annotation.body.filter(anno => anno.type === "AdnoRichText")[0] &&
-                        this.props.annotation.body.filter(anno => anno.type === "AdnoRichText")[0].value.length > 2 &&
-                        <button type="button" className="btn btn-outline btn-info btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> Voir <FontAwesomeIcon icon={faPlusCircle} /></button>
-                    }
+                    <button type="button" className="btn btn-outline btn-info btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> Voir <FontAwesomeIcon icon={faPlusCircle} /></button>
 
                     <button type="button" onClick={() => this.props.clickOnTarget()} className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
                     {/* {this.state.url && <a href={this.state.url} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>} */}
