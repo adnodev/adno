@@ -129,7 +129,7 @@ class HomeWithProjects extends Component {
                             {
                                 process.env.ADNO_FOOTER_TEXT ?
                                     <p>{process.env.ADNO_FOOTER_TEXT}</p>
-                                    : <p><a href="https://adno.app/">adno.app</a> - Espace Mendès France, Poitiers. Ce projet a été soutenu par le ministère de la Culture français.</p>
+                                    : <p><a href="https://adno.app/" target="_blank">adno.app</a> - <a href="https://emf.fr/" target="_blank">Espace Mendès France</a>, Poitiers. Ce projet a été soutenu par le ministère de la Culture français.</p>
                             }
                         </div>
                     </footer>
