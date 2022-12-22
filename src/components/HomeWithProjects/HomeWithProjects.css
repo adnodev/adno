@@ -105,6 +105,13 @@
     margin-bottom: 0 !important;
 }
 
+.adno_title{
+    flex-direction: row;
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
 @media (max-width: 1440px) {
     #projects_list{
         height: 55vh;

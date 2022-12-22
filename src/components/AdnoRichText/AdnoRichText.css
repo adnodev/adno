@@ -6,6 +6,7 @@
 #editorJS{
     max-height: 55vh;
     overflow: auto;
+    height: 50vh;
 }
 
 .rich-card-editor{

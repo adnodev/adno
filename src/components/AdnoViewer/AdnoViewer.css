@@ -25,11 +25,7 @@
 .adno-viewer-rightbar-without-annos{
     width: calc(100% - 350px);
     position: absolute;
-}
-
-.adno-viewer-rightbar-without-annos-sbclosed{
-    width: 100%;
-    position: absolute;
+    margin-left: 350px;
 }
 
 #image_iiif{

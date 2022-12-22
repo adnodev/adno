@@ -30,7 +30,7 @@ class OneCardFullView extends Component {
                 class: Header,
                 config: {
                     placeholder: 'Votre titre',
-                    levels: [1, 2, 3],
+                    levels: [1, 2],
                     defaultLevel: 1
                 }
             },
@@ -52,7 +52,7 @@ class OneCardFullView extends Component {
                             </div>
                             <div class="card-body over-hidden">
                                 <div class="card-text">
-                                    <div id="editorJS" class="p-3"></div>
+                                    <div id="editorJS" className="p-3"></div>
                                 </div>
                             </div>
 

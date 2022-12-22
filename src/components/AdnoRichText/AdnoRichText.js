@@ -34,7 +34,7 @@ class AdnoRichText extends Component {
         class: Paragraph,
         inlineToolbar: true,
       },
-       header: {
+      header: {
         class: Header,
         config: {
           placeholder: 'Votre titre',

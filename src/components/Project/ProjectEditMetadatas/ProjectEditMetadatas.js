@@ -14,7 +14,9 @@ class ProjectEditMetadatas extends Component {
         }
     }
 
-    updateProjectMetadatas = () => {
+    updateProjectMetadatas = (e) => {
+        e.preventDefault()
+
         this.props.updateProject(this.state.project)
         insertInLS(this.state.project.id, JSON.stringify(this.state.project))
         this.props.closeProjectMetadatas()
@@ -30,11 +32,11 @@ class ProjectEditMetadatas extends Component {
     render() {
         return (
             <div className="project-metadatas-backdrop">
-                <form className="project-metadatas-container" onSubmit={(e) => {e.preventDefault(), this.updateProjectMetadatas(e)}}>
+                <form className="project-metadatas-container" onSubmit={(e) => {this.updateProjectMetadatas(e)}}>
 
 
                     <div className="card-actions justify-end">
-                        <button className="btn btn-square btn-sm" onClick={() => this.props.closeProjectMetadatas()}>
+                        <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeProjectMetadatas()}>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>

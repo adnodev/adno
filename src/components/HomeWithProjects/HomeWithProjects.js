@@ -91,7 +91,18 @@ class HomeWithProjects extends Component {
             <div>
                 <div id="container_with_projects" className="adno_container">
 
-                    <h1>{process.env.ADNO_TITLE ? process.env.ADNO_TITLE : "ADNO BETA"}</h1>
+
+
+                    {
+                        process.env.ADNO_TITLE ?
+                            <h1>{process.env.ADNO_TITLE}</h1>
+                            :
+
+                            <div className="adno_title">
+                                <h1>ADNO</h1>
+                                <div class="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
+                            </div>
+                    }
                     <p>Pour commencer à utiliser Adno, veuillez renseigner dans le champs ci-dessous l'URL d'un manifest IIIF, d'une image IIIF ou encore d'une image statique au format JPG ou PNG</p>
 
                     <form id="myForm">

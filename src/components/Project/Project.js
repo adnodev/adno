@@ -46,7 +46,7 @@ class Project extends Component {
 
     render() {
         return (
-            <div className={this.state.annotations.length > 0 ? "adno-project-view-sb-opened" : "adno-project-view"}>
+            <div>
 
                 {
                     this.state.showProjectMetadatas && this.props.editMode ?
