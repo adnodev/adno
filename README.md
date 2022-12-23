@@ -2,7 +2,7 @@
 
 Adno is a web application for viewing, editing and sharing narratives and pathways on static images and IIIF images.
 
-ADNO has 2 available versions : a Full version including the Editor and Viewer and the Light one including only the Viewer.
+ADNO has 2 available versions : a [Full version](https://github.com/adnodev/w.adno.app) including the Editor and Viewer and the [Light](https://github.com/adnodev/r.adno.app) one including only the Viewer.
 
 ## How to start with ADNO ?
 
@@ -14,7 +14,7 @@ Unzip the ADNO package to your web server and start it.
 
 ## Host ADNO with Github Pages
 
-Download the latest release of Adno with the version of your choice ( full-version or light-version) from  https://github.com/adnodev/adno/releases
+Download the latest release of Adno with the version of your choice ( full-version or light-version) from (https://github.com/adnodev/adno/releases)
 
 Unzip the archive to your folder and push it to your Github repository.
 
@@ -66,3 +66,4 @@ ADNO_FOOTER=TRUE
 ADNO_FOOTER_TEXT=YOUR FOOTER TEXT HERE
 
 ```
+
