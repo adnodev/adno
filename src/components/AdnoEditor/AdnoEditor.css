@@ -106,15 +106,9 @@
     z-index: 1 !important;
 }
 
-@media (min-width: 1060px) and (max-width: 1440px) {
-    #openseadragon1 {
-        height: calc(100vh - 6rem);
-    }
-}
-
 @media (max-width: 1060px) {
     #openseadragon1 {
-        height: 650px;
+        height: 880px;
     }
 
     .left-bar{
