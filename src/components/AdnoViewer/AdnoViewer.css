@@ -142,6 +142,29 @@
     flex-wrap: wrap;
   }
 
+  #header_toolbar > .toolbarButton:not(:last-child) {
+    margin-right: 0 !important;
+}
+
+
+#header_toolbar > .toolbarButton {
+  margin-bottom: 0 !important;
+}
+
+  .toolbarButton{
+    width: 100%;
+    background-color: #f0f0f0;
+    padding: 6px;
+    border: none;
+    font-size: 1.5rem;
+    position: relative;
+  }
+
+  .toolbarButton:hover{
+    background-color: #989898a8;
+    color: white;
+  }
+
 @media (min-width: 840px) and (max-width: 1440px) { 
     .adno-viewer-rightbar{
         top: 12vh;

@@ -113,7 +113,7 @@ class HomeWithProjects extends Component {
                         </div>
 
                         <div className="tooltip" data-tip="Créer un nouveau projet">
-                            <button id="create_project_2" type="submit" className="btn btn-success" onClick={(e) => newProject(e)}> <FontAwesomeIcon icon={faAdd} /> </button>
+                            <button className="create_project_2 btn btn-success" type="submit" onClick={(e) => newProject(e)}> <FontAwesomeIcon icon={faAdd} /> Créer mon projet </button>
                         </div>
 
                         <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />

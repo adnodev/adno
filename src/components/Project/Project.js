@@ -23,6 +23,7 @@ import AdnoRichText from "../AdnoRichText/AdnoRichText";
 import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
 import ProjectEditMetadatas from "./ProjectEditMetadatas/ProjectEditMetadatas";
 import OneCardFullView from "../AdnoViewer/ViewerAnnotationCards/OneCardView/OneCardFullView";
+import Navbar from "./Navbar/Navbar";
 
 class Project extends Component {
     constructor(props) {
@@ -46,7 +47,9 @@ class Project extends Component {
 
     render() {
         return (
-            <div>
+            <div className="project">
+
+                <Navbar selectedProject={this.state.selectedProject} showProjectMetadatas={() => this.setState({ showProjectMetadatas: true })} editMode={this.props.editMode} />
 
                 {
                     this.state.showProjectMetadatas && this.props.editMode ?
@@ -94,43 +97,7 @@ class Project extends Component {
 
 
 
-                <div className="navbar bg-neutral text-neutral-content">
-
-                    <Link to={"/"} className="btn btn-ghost normal-case"> <FontAwesomeIcon icon={faHome} /> </Link>
-                    {
-                        this.state.selectedProject && this.state.selectedProject.id &&
-                        <a id={"download_btn_" + this.state.selectedProject.id} href={createExportProjectJsonFile(this.state.selectedProject.id)} download={this.state.selectedProject.title + ".json"} className="btn btn-md"> <FontAwesomeIcon icon={faDownload} /> </a>
-                    }
-
-                    <button onClick={() => this.setState({ showProjectMetadatas: true })} className="btn btn-md"><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} /></button>
-
-
-                    <p>{this.state.selectedProject.title} {this.state.selectedProject.autor && `(${this.state.selectedProject.autor})`} </p>
-
-                    {
-                        process.env.ADNO_MODE === "FULL" &&
-                        <div className="dl_toggle">
-
-
-                            <label className="cursor-pointer label label-toggle">
-                                <label>Mode édition</label>
-                                <input type="checkbox" className="toggle toggle-lg toggle-success" value={this.props.editMode}
-                                    onChange={() => {
-                                        if (this.props.editMode) {
-                                            this.props.history.push(`/project/${this.props.match.params.id}/view`)
-                                        } else {
-                                            this.props.history.push(`/project/${this.props.match.params.id}/edit`)
-                                        }
-                                    }
-                                    }
-                                    checked={this.props.editMode} />
-                            </label>
-
-
-                        </div>
-                    }
-
-                </div>
+               
 
 
                 <div className={this.state.annotations.length > 0 ? "adno-viewer-rightbar-without-annos" : "adno-viewer-rightbar-without-annos-sbclosed"}>

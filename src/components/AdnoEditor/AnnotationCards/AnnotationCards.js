@@ -79,7 +79,7 @@ class AnnotationCards extends Component {
                 {
                     this.props.annotations.map((annotation, index) => {
                         return (
-                            <div className="anno-card" key={`anno_${annotation.id}`}>
+                            <div className="anno-card shadow" key={`anno_${annotation.id}`}>
                                 <div className="anno-card-body">
 
                                     <div className="card-tags-list">

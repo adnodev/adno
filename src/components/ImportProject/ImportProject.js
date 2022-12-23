@@ -53,7 +53,7 @@ class ImportProject extends Component {
 
     render() {
         return (
-            <div className={this.state.isimporting ? "importing_project" : "import_project"}    >
+            <div className={this.state.isimporting ? "importing_project" : "create_project_2"}  >
 
                 <div className="tooltip" data-tip="Importer un projet">
                     <label className="btn btn-md btn-secondar" id="label-upload" htmlFor="selectFiles_1"> <FontAwesomeIcon icon={faUpload} /> {this.state.labelImportValue}</label>

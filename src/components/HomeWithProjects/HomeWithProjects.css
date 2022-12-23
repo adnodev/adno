@@ -96,13 +96,14 @@
     margin-top: 10px;
 }
 
-#create_project_2{
-    width: 150px;
+.create_project_2{
     margin-left: 15px;
+    max-width: 170px;
 }
 
 .add_url{
     margin-bottom: 0 !important;
+    width: 75vw !important;
 }
 
 .adno_title{

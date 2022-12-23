@@ -26,7 +26,6 @@
 .project-metadatas{
     width: 75%;
     height: 85%;
-    padding: 20px;
     overflow: auto;
 }
 
@@ -38,4 +37,14 @@
 .project-metadatas > label > span {
     color: black;
     margin: 10px 0;
+}
+
+.closeBtnMetadatas{
+    width: 80vw;
+}
+
+@media screen and (max-width: 1340px) {
+    .project-metadatas{
+        width: 90%;
+    }
 }

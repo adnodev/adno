@@ -35,7 +35,7 @@ class ViewerAnnotationCards extends Component {
             <div className="adno-viewer-list-annos">
                 {this.props.annotations.map((annotation, index) => {
                     return (
-                        <div key={`viewer_anno_${index}`} className={this.state.currentAnno === index ? "anno-card selectedAnno" : "anno-card"}>
+                        <div key={`viewer_anno_${index}`} className={this.state.currentAnno === index ? "anno-card selectedAnno shadow" : "anno-card shadow"}>
                             <OneCardView  openFullAnnotationView={(annotation) => this.props.openFullAnnotationView(annotation)} project={this.props.selectedProject} annotation={annotation} clickOnTarget={() => this.clickOnTarget(index)} />
                         </div>
                     )

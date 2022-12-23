@@ -4,14 +4,15 @@
 }
 
 #editorJS{
-    max-height: 55vh;
+    max-height: 60vh;
+    height: 60vh;
+    word-break: break-all;
     overflow: auto;
-    height: 50vh;
 }
 
 .rich-card-editor{
     width: 90vw;
-    height: 70vh;
+    height: 85vh;
     background-color: #fff;
     border-radius: 10px;
     flex-direction: column;
@@ -69,6 +70,12 @@
 
 .codex-editor__redactor{
     padding-bottom: 0 !important;
+}
+
+.editor-tags{
+    width: 75vw;
+    margin: auto;
+    max-width: 75vw;
 }
 
 @media (max-width: 1440px){

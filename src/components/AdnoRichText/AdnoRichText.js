@@ -145,11 +145,15 @@ class AdnoRichText extends Component {
             </div>
           </div>
 
-          <TagsInput
-            value={this.state.selectedTags}
-            onChange={(tags) => this.setState({ selectedTags: tags })}
-            placeHolder="Ajouter un tag"
-          />
+          <div className="editor-tags">
+            <TagsInput
+              value={this.state.selectedTags}
+              onChange={(tags) => this.setState({ selectedTags: tags })}
+              placeHolder="Ajouter un tag"
+            />
+          </div>
+
+
 
           <div className="rich-card-editor-btns">
             {!this.state.isDeleting && <button className="btn btn-error" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> Supprimer </button>}
