@@ -1,6 +1,6 @@
 # ADNO
 
-Adno is a web application to visualize, edit and a peer-to-peer sharing for static high quality pictures.
+Adno is a web application for viewing, editing and sharing narratives and pathways on static images and IIIF images.
 
 ADNO has 2 available versions : a Full version including the Editor and Viewer and the Light one including only the Viewer.
 
