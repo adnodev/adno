@@ -16,6 +16,7 @@ import Project from "./components/Project/Project";
 
 // Import css
 import "./index.css"
+import OpenView from "./components/OpenView/OpenView";
 
 require('dotenv').config()
 
@@ -73,7 +74,6 @@ export default class App extends Component {
                             <Project editMode={true} />
                         </Route>
                     }
-
 
                     <Route exact path="/project/:id/view">
                         <Project editMode={false} />

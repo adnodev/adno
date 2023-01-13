@@ -83,9 +83,11 @@ class OneCardView extends Component {
 
                 <div className="btn-line-one-card">
 
-                    { this.state.annoBody && <button type="button" className="btn btn-outline btn-info btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> Voir <FontAwesomeIcon icon={faPlusCircle} /></button>}
+                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-info btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> Voir <FontAwesomeIcon icon={faPlusCircle} /></button>}
 
-                    <button type="button" onClick={() => this.props.clickOnTarget()} className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
+                    <button type="button"
+                        onClick={() => this.props.clickOnTarget(this.props.annotation) }
+                        className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
                     {/* {this.state.url && <a href={this.state.url} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>} */}
                 </div>
             </div >

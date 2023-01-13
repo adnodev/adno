@@ -24,6 +24,7 @@ import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
 import ProjectEditMetadatas from "./ProjectEditMetadatas/ProjectEditMetadatas";
 import OneCardFullView from "../AdnoViewer/ViewerAnnotationCards/OneCardView/OneCardFullView";
 import Navbar from "./Navbar/Navbar";
+import OpenView from "../OpenView/OpenView";
 
 class Project extends Component {
     constructor(props) {
@@ -34,7 +35,6 @@ class Project extends Component {
             editingMode: false,
             sidebarOpened: true,
             updateAnnotation: false,
-            selectedAnnotation: {},
             showProjectMetadatas: false
         }
     }
@@ -92,12 +92,14 @@ class Project extends Component {
                         updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                         selectedProject={this.state.selectedProject}
                         updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
+                        changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
+                        selectedAnno={this.state.selectedAnnotation}
                     />
                 }
 
 
 
-               
+
 
 
                 <div className={this.state.annotations.length > 0 ? "adno-viewer-rightbar-without-annos" : "adno-viewer-rightbar-without-annos-sbclosed"}>
@@ -111,7 +113,13 @@ class Project extends Component {
                                             updateAnnos={(annos) => this.setState({ annotations: annos })}
                                             openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })} />
                                         :
-                                        <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />
+                                        // <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />
+                                        <OpenView
+                                            annos={this.state.annotations}
+                                            selectedAnno={this.state.selectedAnnotation}
+                                            selected_project={this.state.selectedProject}
+                                            changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
+                                        />
                                 }
                             </div>
                         </div>
