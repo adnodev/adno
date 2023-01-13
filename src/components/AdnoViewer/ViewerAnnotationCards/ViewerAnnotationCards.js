@@ -12,7 +12,7 @@ class ViewerAnnotationCards extends Component {
 
     render() {
         return (
-            <div className="adno-viewer-list-annos">
+            <div className="annotations_list">
                 {this.props.annotations.map((annotation, index) => {
                     return (
                         <div id={`anno_card_${annotation.id}`} key={`viewer_anno_${index}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"}>

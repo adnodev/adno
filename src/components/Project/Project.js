@@ -84,7 +84,7 @@ class Project extends Component {
 
                     <div className="sidebar-opened-w-modal">
                         {
-                            this.props.editingMode ?
+                            this.props.editMode ?
                                 <AnnotationCards
                                     updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                     selectedProject={this.state.selectedProject}
@@ -92,12 +92,13 @@ class Project extends Component {
                                     annotations={this.state.annotations}
                                     updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                     selectedAnno={this.state.selectedAnnotation}
+                                    changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                                 />
                                 :
                                 <ViewerAnnotationCards
                                     selectedAnno={this.state.selectedAnnotation}
                                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
-                                    editingMode={this.state.editingMode}
+                                    editingMode={this.props.editMode}
                                     annotations={this.state.annotations}
                                     selectedProject={this.state.selectedProject}
                                     openFullAnnotationView={(annotation) => this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })}

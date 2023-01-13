@@ -8,7 +8,7 @@
     max-height: 200px;
 }
 
-.adno-viewer-list-annos{
+.annotations_list{
     width: 100%;
     flex-direction: column;
     display: flex;

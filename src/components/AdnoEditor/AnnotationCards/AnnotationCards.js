@@ -75,11 +75,11 @@ class AnnotationCards extends Component {
         }
 
         return (
-            <div className="list_annotations">
+            <div className="annotations_list">
                 {
                     this.props.annotations.map((annotation, index) => {
                         return (
-                            <div className="anno-card shadow" key={`anno_${annotation.id}`}>
+                            <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}>
                                 <div className="anno-card-body">
 
                                     <div className="card-tags-list">

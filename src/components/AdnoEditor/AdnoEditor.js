@@ -82,6 +82,7 @@ class AdnoEditor extends Component {
 
 
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
+                document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
             })
 
