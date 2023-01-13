@@ -35,8 +35,12 @@ class Navbar extends Component{
                         <input type="checkbox" className="toggle toggle-lg toggle-success" value={this.props.editMode}
                             onChange={() => {
                                 if (this.props.editMode) {
+                                    // Unselect current annotation when switching page
+                                    this.props.changeSelectedAnno(undefined)
                                     this.props.history.push(`/project/${this.props.match.params.id}/view`)
                                 } else {
+                                    // Unselect current annotation when switching page
+                                    this.props.changeSelectedAnno(undefined)
                                     this.props.history.push(`/project/${this.props.match.params.id}/edit`)
                                 }
                             }
