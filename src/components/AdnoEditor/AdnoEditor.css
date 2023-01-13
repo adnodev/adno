@@ -91,7 +91,7 @@
 }
 
 #openseadragon1{
-    height: 880px;
+    height: calc(100vh - 88px);
 }
 
 #toolbar-container{
@@ -107,10 +107,6 @@
 }
 
 @media (max-width: 1060px) {
-    #openseadragon1 {
-        height: 880px;
-    }
-
     .left-bar{
         width: 25vw !important;
     }
