@@ -19,6 +19,8 @@ class AdnoUrls extends Component {
             }).then((result) => {
                 if (result.isConfirmed) {
                     manageUrls(this.props, manifest_url)
+                }else if (result.isDismissed){
+                    this.props.history.push("/")
                 }
             })
         } else {
