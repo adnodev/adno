@@ -18,7 +18,6 @@ class OpenView extends Component {
             currentID: -1,
             timer: false,
             intervalID: 0,
-            timerDelay: -1,
             fullScreenEnabled: false
         }
     }
@@ -130,17 +129,9 @@ class OpenView extends Component {
 
             clearInterval(this.state.intervalID)
         } else {
-            if (this.state.timerDelay === -1) {
-                let delay = prompt("Saisissez le délai (en secondes) entre deux annotations")
 
-                let newTimerDelay = delay || 2
-
-                let interID = setInterval(this.automateLoading, newTimerDelay * 1000);
-                this.setState({ timer: true, intervalID: interID, timerDelay: newTimerDelay })
-            } else {
-                let interID = setInterval(this.automateLoading, this.state.timerDelay * 1000);
-                this.setState({ timer: true, intervalID: interID })
-            }
+            let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
+            this.setState({ timer: true, intervalID: interID })
         }
     }
 
@@ -207,10 +198,9 @@ class OpenView extends Component {
 
                 <div className={this.state.fullScreenEnabled ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
                     {
-                        this.state.timerDelay !== - 1 &&
-                        <span className="toolbarButton toolbaractive" ><i className="fa fa-clock"></i>{this.state.timerDelay}</span>
+                        this.props.timerDelay !== - 1 &&
+                        <span className="toolbarButton toolbaractive" ><i className="fa fa-clock"></i>{this.props.timerDelay}</span>
                     }
-                    {/* <input type="text" placeholder="Nombre de secondes" value={this.state.timerDelay} onChange={(e) => this.setState({ timerDelay: e.target.value })} /> */}
                     <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><i className={this.state.timer ? "fa fa-pause" : "fa fa-play"}></i></button>
                     <button id="home-button" className="toolbarButton toolbaractive"><i className="fa fa-home"></i></button>
                     <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><i className="fa fa-arrow-left"></i></button>

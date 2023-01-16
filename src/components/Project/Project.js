@@ -23,6 +23,7 @@ import Navbar from "./Navbar/Navbar";
 import OpenView from "../OpenView/OpenView";
 import AnnotationCards from "../AdnoEditor/AnnotationCards/AnnotationCards";
 import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnnotationCards";
+import ProjectSettings from "./ProjectSettings";
 
 class Project extends Component {
     constructor(props) {
@@ -34,7 +35,11 @@ class Project extends Component {
             sidebarOpened: true,
             updateAnnotation: false,
             showProjectMetadatas: false,
-            selectedAnnotation: {}
+            selectedAnnotation: {},
+            showSettings: false,
+            settings: {
+                delay: 2
+            }
         }
     }
 
@@ -48,7 +53,13 @@ class Project extends Component {
         return (
             <div className="project">
 
-                <Navbar selectedProject={this.state.selectedProject} showProjectMetadatas={() => this.setState({ showProjectMetadatas: true })} editMode={this.props.editMode} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
+                <Navbar
+                    selectedProject={this.state.selectedProject}
+                    showProjectMetadatas={() => this.setState({ showProjectMetadatas: true })}
+                    editMode={this.props.editMode}
+                    changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
+                    showEditorSettings={() => this.setState({ showSettings: true })}
+                />
 
                 {
                     this.state.showProjectMetadatas && this.props.editMode ?
@@ -56,6 +67,15 @@ class Project extends Component {
                         :
                         this.state.showProjectMetadatas && !this.props.editMode &&
                         <ProjectMetadatas selectedProject={this.state.selectedProject} closeProjectMetadatas={() => this.setState({ showProjectMetadatas: false })} />
+                }
+
+                {
+                    this.state.showSettings && !this.props.editMode &&
+                    <ProjectSettings
+                        settings={this.state.settings}
+                        updateSettings={(newSettings) => this.setState({ settings: newSettings })}
+                        closeSettings={() => this.setState({ showSettings: false })}
+                    />
                 }
 
 
@@ -120,6 +140,7 @@ class Project extends Component {
                                         :
                                         // <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />
                                         <OpenView
+                                            timerDelay={this.state.settings.delay}
                                             annos={this.state.annotations}
                                             selectedAnno={this.state.selectedAnnotation}
                                             selected_project={this.state.selectedProject}
