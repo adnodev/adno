@@ -11,8 +11,8 @@
 }
 
 .rich-card-editor{
-    width: 90vw;
-    height: 85vh;
+    width: 95vw;
+    height: 90vh;
     background-color: #fff;
     border-radius: 10px;
     flex-direction: column;
@@ -79,10 +79,6 @@
 }
 
 @media (max-width: 1440px){
-    .rich-card-editor{
-        height: 80vh;
-    }
-
     .rich-card-editor-btns{
         width: 30%;
     }

@@ -23,4 +23,5 @@
     color: cadetblue;
     border-radius: 2px;
     padding: 10px;
+    overflow: auto;
 }

@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import utils
-import { checkIfProjectExists, createDate, generateUUID, insertInLS } from "../../Utils/utils";
+import { checkIfProjectExists, createDate, insertInLS } from "../../Utils/utils";
 
 // Import CSS
 import "./AdnoEditor.css";
@@ -13,7 +13,7 @@ class AdnoEditor extends Component {
     }
 
     componentDidMount() {
-        // First of all, verify if the UUID match to an real project in the localStorage
+        // First of all, verify if the url ID param matches to an real project in the localStorage
         // If not, then redirect the user to the HomePage
         if (!this.props.match.params.id || !checkIfProjectExists(this.props.match.params.id)) {
             this.props.history.push("/")
@@ -61,7 +61,7 @@ class AdnoEditor extends Component {
 
             // Event triggered by using saveSelected annotorious function
             this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                var annotations = this.props.annotations || []
+                var annotations = [...this.props.annotations] || []
                 annotations.push(newAnnotation)
 
                 // Update the last update date for the selected project
@@ -73,24 +73,17 @@ class AdnoEditor extends Component {
 
                 this.props.updateAnnos(annotations)
 
-
-
-                console.log(newAnnotation.id);
-
-
-                this.AdnoAnnotorious.selectAnnotation(newAnnotation.id)
-
                 this.props.openRichEditor(newAnnotation)
 
-
+                document.getElementById(`anno_edit_card_${newAnnotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
             });
 
-            // Event when drawing a new shape
+            // Event triggered when drawing a new shape
             this.AdnoAnnotorious.on('createSelection', (annotation) => {
                 this.AdnoAnnotorious.saveSelected()
             })
 
-
+            // Event triggered when user click on an annotation
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
                 document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
@@ -110,18 +103,19 @@ class AdnoEditor extends Component {
                 })
 
                 insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
-                // this.props.updateAnnos(newAnnos)
+                this.props.updateAnnos(newAnnos)
             });
-
         }
     }
 
-
     componentDidUpdate(prevProps) {
+        // if(this.props.selectedAnno !== prevProps.selectedAnno){
+        //     this.AdnoAnnotorious.selectAnnotation(this.props.selectedAnno);
+        // }
+
         if (this.props.annotations !== prevProps.annotations) {
             this.AdnoAnnotorious.setAnnotations(this.props.annotations);
-
-            this.AdnoAnnotorious.selectAnnotation(this.props.selectedAnno);
+            // this.AdnoAnnotorious.selectAnnotation(this.props.selectedAnno);
         }
     }
 

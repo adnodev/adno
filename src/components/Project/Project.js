@@ -1,16 +1,12 @@
 import { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
-
-// Import FontAwesome and icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faFile, faFilePen, faHome } from "@fortawesome/free-solid-svg-icons";
+import { withRouter } from "react-router-dom";
 
 // Import utils
-import { checkIfProjectExists, createExportProjectJsonFile } from "../../Utils/utils";
+import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
-import "../../libraries/annona-reworked/js/storyboard";
-import "../../libraries/openseadragon/openseadragon.min.js";
+// import "../../libraries/annona-reworked/js/storyboard";
+import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Imports CSS
 import "./Project.css";
@@ -116,9 +112,11 @@ class Project extends Component {
                                     this.props.editMode ?
                                         <AdnoEditor
                                             annotations={this.state.annotations}
-                                            updateAnnos={(annos) => this.setState({ annotations: annos })}
+                                            updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                             selectedAnno={this.state.selectedAnnotation}
-                                            openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })} />
+                                            openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                                            changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
+                                        />
                                         :
                                         // <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />
                                         <OpenView

@@ -57,8 +57,12 @@ class AdnoRichText extends Component {
 
   saveAnnotationText = () => {
     let txt = "";
+    let raw_txt = "";
     this.editor.save().then(outputData => {
       outputData.blocks.forEach(block => {
+
+        raw_txt += `${block.data.text} `;
+
         switch (block.type) {
           case "header":
             let html_tag = `<h${block.data.level}>`;
@@ -92,10 +96,17 @@ class AdnoRichText extends Component {
 
       })
 
-      let annos = JSON.parse(localStorage.getItem(`${this.props.selectedProjectId}_annotations`))
+      let annos = JSON.parse(localStorage.getItem(`${this.props.selectedProjectId}_annotations`)) || []
 
       let current_anno = {
         "type": "TextualBody",
+        "value": raw_txt,
+        "purpose": "commenting"
+      }
+
+
+      let current_anno_html = {
+        "type": "AdnoHtmlBody",
         "value": txt,
         "purpose": "commenting"
       }
@@ -117,17 +128,22 @@ class AdnoRichText extends Component {
         )
       })
 
-      let newBody = [current_anno, current_anno_with_blocks, ...allTags]
+      let newBody = [current_anno_html, current_anno, current_anno_with_blocks, ...allTags]
 
-      annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = newBody
+      if (annos.filter(anno => anno.id === this.props.selectedAnnotation.id).length > 0) {
+        annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = newBody
+      } else {
+        this.props.selectedAnnotation.body = newBody
+        annos.push(this.props.selectedAnnotation)
+      }
 
       insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos))
       this.props.updateAnnos(annos)
       document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
       this.props.closeRichEditor()
 
     })
-
   }
 
   render() {
@@ -135,7 +151,7 @@ class AdnoRichText extends Component {
       <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
         <div className="card-body">
           <div className="card-actions justify-end">
-            <button className="btn btn-square btn-sm" onClick={() => this.props.closeRichEditor()}>
+            <button className="btn btn-square btn-sm" onClick={() =>  this.props.closeRichEditor()}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>

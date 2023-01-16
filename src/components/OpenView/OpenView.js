@@ -2,12 +2,14 @@ import { Component } from "react";
 import { withRouter } from "react-router-dom";
 import Swal from "sweetalert2";
 import "./OpenView.css";
+import ReactHtmlParser from 'react-html-parser';
+
 // Import utils
 import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
-import "../../libraries/annona-reworked/js/storyboard";
-import "../../libraries/openseadragon/openseadragon.min.js";
+// import "../../libraries/annona-reworked/js/storyboard";
+import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 
 class OpenView extends Component {
     constructor(props) {
@@ -123,9 +125,6 @@ class OpenView extends Component {
 
 
     startTimer = () => {
-
-
-
         if (this.state.timer) {
             this.setState({ timer: false })
 
@@ -134,7 +133,7 @@ class OpenView extends Component {
             if (this.state.timerDelay === -1) {
                 let delay = prompt("Saisissez le délai (en secondes) entre deux annotations")
 
-                let newTimerDelay = delay || 2 
+                let newTimerDelay = delay || 2
 
                 let interID = setInterval(this.automateLoading, newTimerDelay * 1000);
                 this.setState({ timer: true, intervalID: interID, timerDelay: newTimerDelay })
@@ -197,9 +196,11 @@ class OpenView extends Component {
             <div id="adno-osd">
 
                 {
-                    this.state.fullScreenEnabled && this.props.selectedAnno &&
+                    this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
                     <div className="adno-osd-anno-fullscreen">
-                        <p>{this.props.selectedAnno.id}</p>
+                        {this.props.selectedAnno.body && this.props.selectedAnno.body[0] &&
+                            this.props.selectedAnno.body[0].value
+                            ? ReactHtmlParser(this.props.selectedAnno.body[0].value) : "Annotation vide"}
                     </div>
                 }
 
@@ -211,10 +212,10 @@ class OpenView extends Component {
                     }
                     {/* <input type="text" placeholder="Nombre de secondes" value={this.state.timerDelay} onChange={(e) => this.setState({ timerDelay: e.target.value })} /> */}
                     <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><i className={this.state.timer ? "fa fa-pause" : "fa fa-play"}></i></button>
-                    <button id="home-button" className="toolbarButton toolbaractive"><i class="fa fa-home"></i></button>
-                    <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><i class="fa fa-arrow-left"></i></button>
-                    <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><i class="fa fa-arrow-right"></i></button>
-                    <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.enableFullScreen()}><i class="fa fa-expand"></i></button>
+                    <button id="home-button" className="toolbarButton toolbaractive"><i className="fa fa-home"></i></button>
+                    <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><i className="fa fa-arrow-left"></i></button>
+                    <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><i className="fa fa-arrow-right"></i></button>
+                    <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.enableFullScreen()}><i className="fa fa-expand"></i></button>
                 </div>
             </div>
         )
