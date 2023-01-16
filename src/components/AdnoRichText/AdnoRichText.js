@@ -20,7 +20,6 @@ class AdnoRichText extends Component {
       selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || []
     }
   }
-
   editor = new EditorJS({
     autofocus: true,
     holder: "editorJS",
@@ -124,6 +123,7 @@ class AdnoRichText extends Component {
 
       insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos))
       this.props.updateAnnos(annos)
+      document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
       this.props.closeRichEditor()
 
     })

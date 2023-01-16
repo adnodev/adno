@@ -59,6 +59,7 @@ class AdnoEditor extends Component {
             Annotorious.Toolbar(this.AdnoAnnotorious, document.getElementById('toolbar-container'));
 
 
+            // Event triggered by using saveSelected annotorious function
             this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
                 var annotations = this.props.annotations || []
                 annotations.push(newAnnotation)
@@ -72,10 +73,19 @@ class AdnoEditor extends Component {
 
                 this.props.updateAnnos(annotations)
 
+
+
+                console.log(newAnnotation.id);
+
+
+                this.AdnoAnnotorious.selectAnnotation(newAnnotation.id)
+
                 this.props.openRichEditor(newAnnotation)
+
 
             });
 
+            // Event when drawing a new shape
             this.AdnoAnnotorious.on('createSelection', (annotation) => {
                 this.AdnoAnnotorious.saveSelected()
             })
@@ -86,6 +96,7 @@ class AdnoEditor extends Component {
                 this.props.openRichEditor(annotation)
             })
 
+            // Event triggered when resizing an annotation shape
             this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
                 const selected = this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
@@ -105,9 +116,12 @@ class AdnoEditor extends Component {
         }
     }
 
+
     componentDidUpdate(prevProps) {
         if (this.props.annotations !== prevProps.annotations) {
             this.AdnoAnnotorious.setAnnotations(this.props.annotations);
+
+            this.AdnoAnnotorious.selectAnnotation(this.props.selectedAnno);
         }
     }
 

@@ -37,7 +37,8 @@ class Project extends Component {
             editingMode: false,
             sidebarOpened: true,
             updateAnnotation: false,
-            showProjectMetadatas: false
+            showProjectMetadatas: false,
+            selectedAnnotation: {}
         }
     }
 
@@ -65,7 +66,7 @@ class Project extends Component {
                 {
                     this.state.updateAnnotation &&
                     <div className="text-rich">
-                        <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} />
+                        <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
                     </div>
                 }
 
@@ -116,6 +117,7 @@ class Project extends Component {
                                         <AdnoEditor
                                             annotations={this.state.annotations}
                                             updateAnnos={(annos) => this.setState({ annotations: annos })}
+                                            selectedAnno={this.state.selectedAnnotation}
                                             openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })} />
                                         :
                                         // <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />

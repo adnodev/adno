@@ -68,7 +68,9 @@ class AnnotationCards extends Component {
 
                     Swal.fire("L'annotation a bien été supprimée", '', 'success')
                         .then((result) => {
-                            result.isConfirmed && this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
+                            if(result.isConfirmed){
+                                this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
+                            } 
                         })
                 }
             })
