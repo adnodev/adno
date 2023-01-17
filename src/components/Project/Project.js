@@ -143,7 +143,7 @@ class Project extends Component {
                         </div>
                 }
 
-                <div className={this.state.annotations.length > 0 && this.state.settings.sidebarEnabled ? "adno-viewer-rightbar-without-annos" : ""}>
+                <div className={this.state.annotations.length > 0 && this.state.settings.sidebarEnabled ? "adno-viewer-rightbar-with-annos" : ""}>
                     <div className="col">
                         <div className="card">
                             {
