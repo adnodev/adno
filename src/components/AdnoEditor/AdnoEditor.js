@@ -73,7 +73,6 @@ class AdnoEditor extends Component {
 
                 this.props.updateAnnos(annotations)
 
-
                 this.props.openRichEditor(newAnnotation)
             });
 
@@ -108,7 +107,6 @@ class AdnoEditor extends Component {
     }
 
     changeAnno = (annotation) => {
-        console.log("annotation : ", annotation);
         this.AdnoAnnotorious.selectAnnotation(annotation.id)
         this.AdnoAnnotorious.fitBounds(annotation.id)
 
@@ -123,13 +121,15 @@ class AdnoEditor extends Component {
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
             this.changeAnno(this.props.selectedAnno)
         }
-        
+
         if (this.props.annotations !== prevProps.annotations) {
             // First, we update the annotations's list to the Annotorious component 
             this.AdnoAnnotorious.setAnnotations(this.props.annotations);
 
             // Then, we focus on the current selected annotation
-            this.changeAnno(this.props.selectedAnno)
+            if (this.props.selectedAnno) {
+                this.changeAnno(this.props.selectedAnno)
+            }
         }
     }
 

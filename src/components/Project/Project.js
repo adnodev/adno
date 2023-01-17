@@ -33,7 +33,6 @@ class Project extends Component {
             sidebarOpened: true,
             updateAnnotation: false,
             showProjectMetadatas: false,
-            selectedAnnotation: {},
             showSettings: false,
             settings: {
                 delay: 2,
