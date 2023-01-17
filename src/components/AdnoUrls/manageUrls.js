@@ -64,7 +64,7 @@ export async function manageUrls(props, url) {
                                     insertInLS(projectID, JSON.stringify(project))
 
                                     // Insertion de l'ID du projet créé dans le tableau des projets
-                                    projects = JSON.parse(localStorage.getItem("adno_projects"))
+                                    let projects = JSON.parse(localStorage.getItem("adno_projects"))
                                     projects.push(projectID)
                                     insertInLS("adno_projects", JSON.stringify(projects))
 

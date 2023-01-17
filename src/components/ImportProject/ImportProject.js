@@ -61,7 +61,6 @@ class ImportProject extends Component {
 
                 <input accept="application/json" type="file" id="selectFiles_1" onChange={(e) => {
                     this.setState({ isimporting: true, loadedProject: e.target.files[0] })
-                    // this.setState({ labelImportValue: "Fichier selectionné : " + e.target.files[0].name })
                     this.setState({ labelImportValue: "1 Fichier selectionné"})
                 }} />
 
