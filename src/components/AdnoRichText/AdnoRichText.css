@@ -83,3 +83,10 @@
         width: 30%;
     }
 }
+
+@media (max-width: 1000px){
+    .ce-block__content{
+        width: 80%;
+        max-width: 80%;
+    }
+}

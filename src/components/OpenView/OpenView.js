@@ -22,6 +22,9 @@ class OpenView extends Component {
         }
     }
 
+
+
+
     componentDidMount() {
         // First of all, verify if the UUID match to an real project in the localStorage
         // If not, then redirect the user to the HomePage
@@ -29,7 +32,6 @@ class OpenView extends Component {
             this.props.history.push("/")
         } else {
             let tileSources;
-
             if (this.props.selected_project.manifest_url) {
 
                 tileSources = [
@@ -46,12 +48,10 @@ class OpenView extends Component {
             this.openSeadragon = OpenSeadragon({
                 id: 'adno-osd',
                 homeButton: "home-button",
-                // showNavigationControl: false,
-                showNavigator: true,
+                showNavigator: this.props.showNavigator,
                 tileSources: tileSources,
                 prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
             })
-
 
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
                 locale: 'auto',
@@ -62,7 +62,10 @@ class OpenView extends Component {
             });
 
             this.AdnoAnnotorious.on('clickAnnotation', (annotation, element) => {
-                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+                if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
+                    document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                }
 
                 this.AdnoAnnotorious.fitBounds(annotation.id)
 
@@ -71,7 +74,6 @@ class OpenView extends Component {
                 this.setState({ currentID: annotationIndex })
                 this.props.changeSelectedAnno(annotation)
             });
-
 
 
             // Generate dataURI and load annotations into Annotorious
@@ -91,7 +93,6 @@ class OpenView extends Component {
 
 
     automateLoading = () => {
-
         let localCurrentID = this.state.currentID;
 
         if (this.state.currentID === -1) {
@@ -105,8 +106,6 @@ class OpenView extends Component {
         this.setState({ currentID: localCurrentID })
 
         this.changeAnno(this.props.annos[localCurrentID])
-
-
     }
 
     changeAnno = (annotation) => {
@@ -119,7 +118,9 @@ class OpenView extends Component {
 
         this.setState({ currentID: annotationIndex })
 
-        document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
+            document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        }
     }
 
 
@@ -129,6 +130,10 @@ class OpenView extends Component {
 
             clearInterval(this.state.intervalID)
         } else {
+
+            if(this.props.startbyfirstanno){
+                this.setState({currentID: -1})
+            }
 
             let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
             this.setState({ timer: true, intervalID: interID })
@@ -148,7 +153,10 @@ class OpenView extends Component {
 
         this.changeAnno(this.props.annos[localCurrentID])
 
-        document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+        if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
+            document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        }
 
     }
 
@@ -164,7 +172,10 @@ class OpenView extends Component {
         this.setState({ currentID: localCurrentID })
 
         this.changeAnno(this.props.annos[localCurrentID])
-        document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+        if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
+            document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        }
     }
 
     enableFullScreen = () => {
@@ -180,6 +191,16 @@ class OpenView extends Component {
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
             this.changeAnno(this.props.selectedAnno)
         }
+
+        // Check if the user toggled the navigator on/off
+        if (this.props.showNavigator !== prevProps.showNavigator) {
+            if (this.props.showNavigator) {
+                document.getElementById(this.openSeadragon.navigator.id).style.display = 'block';
+            } else {
+                document.getElementById(this.openSeadragon.navigator.id).style.display = 'none';
+            }
+
+        }
     }
 
     render() {
@@ -188,7 +209,7 @@ class OpenView extends Component {
 
                 {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
-                    <div className="adno-osd-anno-fullscreen">
+                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
                         {this.props.selectedAnno.body && this.props.selectedAnno.body[0] &&
                             this.props.selectedAnno.body[0].value
                             ? ReactHtmlParser(this.props.selectedAnno.body[0].value) : "Annotation vide"}
@@ -196,10 +217,10 @@ class OpenView extends Component {
                 }
 
 
-                <div className={this.state.fullScreenEnabled ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
+                <div className={this.state.fullScreenEnabled && this.props.toolsbarOnFs ? "osd-buttons-bar" : this.state.fullScreenEnabled && !this.props.toolsbarOnFs ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
                     {
                         this.props.timerDelay !== - 1 &&
-                        <span className="toolbarButton toolbaractive" ><i className="fa fa-clock"></i>{this.props.timerDelay}</span>
+                        <span className="toolbarButton toolbaractive adno-timer-osd" ><i className="fa fa-clock"></i>{this.props.timerDelay}s</span>
                     }
                     <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><i className={this.state.timer ? "fa fa-pause" : "fa fa-play"}></i></button>
                     <button id="home-button" className="toolbarButton toolbaractive"><i className="fa fa-home"></i></button>

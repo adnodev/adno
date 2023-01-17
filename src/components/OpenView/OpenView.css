@@ -25,3 +25,22 @@
     padding: 10px;
     overflow: auto;
 }
+
+.adno-osd-anno-fullscreen-tb-opened{
+    position: absolute;
+    z-index: 10000;
+    top: 8%;
+    left: 2%;
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    color: cadetblue;
+    border-radius: 2px;
+    padding: 10px;
+    overflow: auto;
+}
+
+
+.adno-timer-osd{
+    text-align: center;
+}

@@ -3,7 +3,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from "react-router";
 
 // Import FontAwesome for all icons
-import { faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Import popup alerts
@@ -68,9 +68,9 @@ class AnnotationCards extends Component {
 
                     Swal.fire("L'annotation a bien été supprimée", '', 'success')
                         .then((result) => {
-                            if(result.isConfirmed){
+                            if (result.isConfirmed) {
                                 this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
-                            } 
+                            }
                         })
                 }
             })
@@ -104,6 +104,9 @@ class AnnotationCards extends Component {
                                     <div className="btn-line-one-card">
                                         <button className="btn btn-sm btn-outline btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>
                                         <button className="btn btn-sm btn-outline btn-success" onClick={() => this.props.openRichEditor(annotation)}> <FontAwesomeIcon icon={faEdit} /></button>
+                                        <button type="button"
+                                            onClick={() => this.props.changeSelectedAnno(annotation)}
+                                            className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
                                         {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchDown(index)}> <FontAwesomeIcon icon={faDownLong} /> </button> : <></>}
                                         {index > 0 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchUp(index)}> <FontAwesomeIcon icon={faUpLong} /> </button> : <></>}
                                     </div>

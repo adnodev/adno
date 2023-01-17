@@ -2,12 +2,13 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import Swal from "sweetalert2";
+import "./ProjectSettings.css"
 
 class ProjectSettings extends Component {
     constructor(props){
         super(props);
         this.state = {
-            settings: this.props.settings
+            settings: {...this.props.settings},
         }
     }
 
@@ -44,6 +45,28 @@ class ProjectSettings extends Component {
                             <span className="label-text">Délai entre 2 annotations (en secondes)</span>
                         </label>
                         <input type="number" placeholder="2" className="input input-bordered w-full max-w-xs" value={this.state.settings.delay} onChange={(e) => this.setState({settings: {...this.state.settings, delay: e.target.value}})} />
+
+                        <label className="label">
+                            <span className="label-text">Navigateur d'ensemble</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-success toggle-navigator" checked={this.state.settings.showNavigator} onChange={() => this.setState({settings: {...this.state.settings, showNavigator: !this.state.settings.showNavigator}})}/>
+
+
+                        <label className="label">
+                            <span className="label-text">Afficher barre outils en mode plein écran</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.toolsbarOnFs} onChange={() => this.setState({settings: {...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs}})}/>
+
+                        <label className="label">
+                            <span className="label-text">Afficher la sibedar des annotations</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.sidebarEnabled} onChange={() => this.setState({settings: {...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled}})}/>
+
+
+                        <label className="label">
+                            <span className="label-text">Toujours commencer la lecture automatique à la première annotation</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.startbyfirstanno} onChange={() => this.setState({settings: {...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno}})}/>
 
 
                         <div className="metadata-editor-btns">

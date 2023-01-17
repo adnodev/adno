@@ -73,9 +73,8 @@ class AdnoEditor extends Component {
 
                 this.props.updateAnnos(annotations)
 
-                this.props.openRichEditor(newAnnotation)
 
-                document.getElementById(`anno_edit_card_${newAnnotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                this.props.openRichEditor(newAnnotation)
             });
 
             // Event triggered when drawing a new shape
@@ -108,14 +107,29 @@ class AdnoEditor extends Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
-        // if(this.props.selectedAnno !== prevProps.selectedAnno){
-        //     this.AdnoAnnotorious.selectAnnotation(this.props.selectedAnno);
-        // }
+    changeAnno = (annotation) => {
+        console.log("annotation : ", annotation);
+        this.AdnoAnnotorious.selectAnnotation(annotation.id)
+        this.AdnoAnnotorious.fitBounds(annotation.id)
 
+        if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
+            document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        }
+
+    }
+
+    componentDidUpdate(prevProps) {
+        // If the user clicks the target button on the annotation card it'll trigger this method     
+        if (prevProps.selectedAnno !== this.props.selectedAnno) {
+            this.changeAnno(this.props.selectedAnno)
+        }
+        
         if (this.props.annotations !== prevProps.annotations) {
+            // First, we update the annotations's list to the Annotorious component 
             this.AdnoAnnotorious.setAnnotations(this.props.annotations);
-            // this.AdnoAnnotorious.selectAnnotation(this.props.selectedAnno);
+
+            // Then, we focus on the current selected annotation
+            this.changeAnno(this.props.selectedAnno)
         }
     }
 
