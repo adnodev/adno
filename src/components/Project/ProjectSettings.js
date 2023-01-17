@@ -1,7 +1,13 @@
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
+
+// Import FontAwesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
+
+// Import SweetAlert
 import Swal from "sweetalert2";
+
+// Import CSS 
 import "./ProjectSettings.css"
 
 class ProjectSettings extends Component {

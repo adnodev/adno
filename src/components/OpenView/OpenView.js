@@ -1,15 +1,15 @@
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
-import Swal from "sweetalert2";
-import "./OpenView.css";
 import ReactHtmlParser from 'react-html-parser';
 
 // Import utils
 import { checkIfProjectExists } from "../../Utils/utils";
 
-// Import libraries
-// import "../../libraries/annona-reworked/js/storyboard";
+// Import OpenSeaDragon and Annotorious
 import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
+
+// Import CSS
+import "./OpenView.css";
 
 class OpenView extends Component {
     constructor(props) {
@@ -21,9 +21,6 @@ class OpenView extends Component {
             fullScreenEnabled: false
         }
     }
-
-
-
 
     componentDidMount() {
         // First of all, verify if the UUID match to an real project in the localStorage
@@ -90,7 +87,6 @@ class OpenView extends Component {
         });
 
     }
-
 
     automateLoading = () => {
         let localCurrentID = this.state.currentID;

@@ -5,7 +5,6 @@ import { withRouter } from "react-router-dom";
 import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
-// import "../../libraries/annona-reworked/js/storyboard";
 import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Imports CSS
@@ -13,7 +12,6 @@ import "./Project.css";
 import "./Sidebar.css";
 
 // Import Components
-import AdnoViewer from "../AdnoViewer/AdnoViewer";
 import AdnoEditor from "../AdnoEditor/AdnoEditor";
 import AdnoRichText from "../AdnoRichText/AdnoRichText";
 import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
@@ -158,7 +156,6 @@ class Project extends Component {
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
                                     />
                                     :
-                                    // <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />
                                     <OpenView
                                         startbyfirstanno={this.state.settings.startbyfirstanno}
                                         showNavigator={this.state.settings.showNavigator}
