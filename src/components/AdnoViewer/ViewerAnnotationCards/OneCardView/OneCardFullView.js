@@ -4,7 +4,6 @@ import { Component } from "react";
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
 import Quote from '@editorjs/quote';
-import CodeTool from '@editorjs/code';
 import List from '@editorjs/list';
 import Paragraph from "editorjs-paragraph-with-alignment";
 import RichEditorImage from "../../../AdnoRichText/RichEditorImage/RichEditorImage";
@@ -43,8 +42,7 @@ class OneCardFullView extends Component {
                     defaultStyle: 'unordered'
                 }
             },
-            quote: Quote,
-            code: CodeTool
+            quote: Quote
         }
     });
 

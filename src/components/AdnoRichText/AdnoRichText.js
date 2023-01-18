@@ -2,7 +2,6 @@
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
 import Quote from '@editorjs/quote';
-import CodeTool from '@editorjs/code';
 import List from '@editorjs/list';
 import Paragraph from "editorjs-paragraph-with-alignment";
 
@@ -53,8 +52,8 @@ class AdnoRichText extends Component {
         config: {
           defaultStyle: 'unordered'
         }
-      }, quote: Quote,
-      code: CodeTool
+      },
+      quote: Quote,
     }
   });
 
@@ -95,11 +94,6 @@ class AdnoRichText extends Component {
             if (block.data) {
               txt += `<img src="${block.data.imgUrl}"</img>`;
               txt += `<a href="${block.data.wiki_link}" target="_blank">${block.data.title}(${block.data.description})</a>`;
-            }
-            break;
-          case "code":
-            if (block.data && block.data.code) {
-              txt += `<code>${block.data.code}</code>`;
             }
             break;
           case "list":
