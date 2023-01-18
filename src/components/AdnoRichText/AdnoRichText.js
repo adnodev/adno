@@ -1,3 +1,5 @@
+import { Component } from "react";
+
 // Import EditorJS components
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
@@ -5,9 +7,10 @@ import Quote from '@editorjs/quote';
 import List from '@editorjs/list';
 import Paragraph from "editorjs-paragraph-with-alignment";
 
+// Import FontAwesome
 import { faCheckCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Component } from "react";
+
 import { TagsInput } from 'react-tag-input-component';
 import { insertInLS } from '../../Utils/utils';
 

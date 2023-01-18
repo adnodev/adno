@@ -6,9 +6,10 @@ class RichEditorImage {
     };
   }
 
-  constructor({ data }) {
+  constructor({ data, readOnly }) {
     this.data = data;
     this.wrapper = undefined;
+    this.readOnly = readOnly;
   }
 
   render() {
@@ -16,7 +17,11 @@ class RichEditorImage {
     const input = document.createElement('input');
 
     input.classList.add('cdx-input', 'image-tool__caption');
-    this.wrapper.appendChild(input);
+
+
+    if (!this.data.url) {
+      this.wrapper.appendChild(input);
+    }
 
     input.placeholder = 'Paste an image URL...';
     input.value = this.data && this.data.url ? this.data.url : '';
@@ -26,6 +31,31 @@ class RichEditorImage {
     input.addEventListener('paste', (event) => {
       this.createImage(event.clipboardData.getData('text'));
     });
+
+
+    if (this.readOnly) {
+      const caption_text = document.createElement('p');
+      caption_text.innerText = this.data && this.data.caption ? this.data.caption : "Aucune légende n'a été renseignée";
+
+      this.wrapper.appendChild(caption_text);
+
+    } else {
+      const caption_input = document.createElement('input');
+
+      caption_input.classList.add('cdx-input', 'image-tool__caption');
+      caption_input.placeholder = 'Add a caption to the image';
+      caption_input.value = this.data && this.data.caption ? this.data.caption : '';
+      caption_input.id = "caption_input"
+
+      this.wrapper.appendChild(caption_input);
+
+
+      caption_input.addEventListener('input', (event) => {
+        this.data.caption = event.target.value;
+      });
+    }
+
+
 
     return this.wrapper;
   }
@@ -47,8 +77,11 @@ class RichEditorImage {
 
   save(blockContent) {
     const img = blockContent.querySelector('img');
+    const caption = blockContent.querySelector('#caption_input');
+
     return {
-      url: img && img.src || ""
+      url: img && img.src || "",
+      caption: caption && caption.value || "",
     }
   }
 
