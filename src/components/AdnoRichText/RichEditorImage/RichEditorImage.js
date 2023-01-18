@@ -1,3 +1,5 @@
+import { generateUUID } from "../../../Utils/utils";
+
 class RichEditorImage {
   static get toolbox() {
     return {
@@ -10,73 +12,89 @@ class RichEditorImage {
     this.data = data;
     this.wrapper = undefined;
     this.readOnly = readOnly;
+    this.imgID = generateUUID()
   }
 
   render() {
     this.wrapper = document.createElement('div');
+
+    if (this.readOnly) {
+      // Load the image
+      this.data && this.data.url && this.createImage(this.data.url);
+
+    } else {
+      // Input to insert the URL
+      this.buildUrlInput()
+
+      // Load the image
+      this.data && this.data.url && this.createImage(this.data.url);
+    }
+
+    return this.wrapper;
+  }
+
+  buildUrlInput() {
     const input = document.createElement('input');
 
     input.classList.add('cdx-input', 'image-tool__caption');
 
-
-    if (!this.data.url) {
-      this.wrapper.appendChild(input);
-    }
-
     input.placeholder = 'Paste an image URL...';
     input.value = this.data && this.data.url ? this.data.url : '';
-
-    this.data && this.data.url && this.createImage(this.data.url);
 
     input.addEventListener('paste', (event) => {
       this.createImage(event.clipboardData.getData('text'));
     });
 
+    this.wrapper.appendChild(input);
+  }
 
-    if (this.readOnly) {
-      const caption_text = document.createElement('p');
-      caption_text.innerText = this.data && this.data.caption ? this.data.caption : "Aucune légende n'a été renseignée";
+  buildCaptionText() {
+    const caption_text = document.createElement('p');
+    caption_text.innerText = this.data && this.data.caption ? this.data.caption : "Aucune légende n'a été renseignée";
 
-      this.wrapper.appendChild(caption_text);
+    this.wrapper.appendChild(caption_text);
+  }
 
-    } else {
-      const caption_input = document.createElement('input');
+  buildCaptionInput() {
+    const caption_input = document.createElement('input');
 
-      caption_input.classList.add('cdx-input', 'image-tool__caption');
-      caption_input.placeholder = 'Add a caption to the image';
-      caption_input.value = this.data && this.data.caption ? this.data.caption : '';
-      caption_input.id = "caption_input"
+    caption_input.classList.add('cdx-input', 'image-tool__caption');
+    caption_input.placeholder = 'Add a caption to the image';
+    caption_input.value = this.data && this.data.caption ? this.data.caption : '';
+    caption_input.id = "caption_input"
 
-      this.wrapper.appendChild(caption_input);
+    this.wrapper.appendChild(caption_input);
 
-
-      caption_input.addEventListener('input', (event) => {
-        this.data.caption = event.target.value;
-      });
-    }
-
-
-
-    return this.wrapper;
+    caption_input.addEventListener('input', (event) => {
+      this.data.caption = event.target.value;
+    });
   }
 
   createImage(url) {
-    const image = document.createElement('img');
+    if (document.getElementById(`adno_edjs_img_${this.imgID}`)) {
+      const image = document.getElementById(`adno_edjs_img_${this.imgID}`)
 
-    image.src = url;
+      image.src = url;
+    } else {
+      const image = document.createElement('img');
+      image.id = `adno_edjs_img_${this.imgID}`
 
-    // We clean the latest img
-    for (let index = 0; index < this.wrapper.children.length; index++) {
-      if (this.wrapper.children[index].tagName.toUpperCase() === "IMG") {
-        this.wrapper.children[index].remove()
+      image.src = url;
+
+      console.log("ici");
+
+      this.wrapper.appendChild(image);
+
+      if(this.readOnly){
+        this.buildCaptionText()
+      }else{
+        this.buildCaptionInput()
       }
     }
-
-    this.wrapper.appendChild(image);
   }
 
   save(blockContent) {
-    const img = blockContent.querySelector('img');
+    const img = document.getElementById(`adno_edjs_img_${this.imgID}`)
     const caption = blockContent.querySelector('#caption_input');
 
     return {
