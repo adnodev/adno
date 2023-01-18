@@ -80,9 +80,7 @@ class RichEditorImage {
       image.id = `adno_edjs_img_${this.imgID}`
 
       image.src = url;
-
-      console.log("ici");
-
+      
       this.wrapper.appendChild(image);
 
       if(this.readOnly){
