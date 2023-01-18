@@ -1,11 +1,13 @@
 import { Component } from "react";
 
+// Import EditorJS components
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
 import Quote from '@editorjs/quote';
+import CodeTool from '@editorjs/code';
+import List from '@editorjs/list';
 import Paragraph from "editorjs-paragraph-with-alignment";
 import RichEditorImage from "../../../AdnoRichText/RichEditorImage/RichEditorImage";
-import CodeTool from "@editorjs/code";
 
 class OneCardFullView extends Component {
     constructor(props) {
@@ -32,6 +34,13 @@ class OneCardFullView extends Component {
                     placeholder: 'Votre titre',
                     levels: [1, 2],
                     defaultLevel: 1
+                }
+            },
+            list: {
+                class: List,
+                inlineToolbar: true,
+                config: {
+                    defaultStyle: 'unordered'
                 }
             },
             quote: Quote,

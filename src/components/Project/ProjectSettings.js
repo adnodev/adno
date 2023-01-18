@@ -64,7 +64,7 @@ class ProjectSettings extends Component {
                         <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.toolsbarOnFs} onChange={() => this.setState({settings: {...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs}})}/>
 
                         <label className="label">
-                            <span className="label-text">Afficher la sibedar des annotations</span>
+                            <span className="label-text">Afficher la barre de navigation pour les annotations</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.sidebarEnabled} onChange={() => this.setState({settings: {...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled}})}/>
 

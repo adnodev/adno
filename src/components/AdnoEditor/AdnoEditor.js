@@ -89,10 +89,11 @@ class AdnoEditor extends Component {
 
             // Event triggered when resizing an annotation shape
             this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
+                // console.log("selecting ..", this.AdnoAnnotorious.getSelected().target.selector.value);
                 const selected = this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
 
-                var annotations = this.props.annotations
+                var annotations = [...this.props.annotations]
                 var newAnnos = annotations.map(anno => {
                     if (anno.id === selected.id) {
                         anno = selected

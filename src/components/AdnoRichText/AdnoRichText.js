@@ -1,16 +1,22 @@
+// Import EditorJS components
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
 import Quote from '@editorjs/quote';
 import CodeTool from '@editorjs/code';
+import List from '@editorjs/list';
+import Paragraph from "editorjs-paragraph-with-alignment";
+
 import { faCheckCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Paragraph from "editorjs-paragraph-with-alignment";
 import { Component } from "react";
 import { TagsInput } from 'react-tag-input-component';
 import { insertInLS } from '../../Utils/utils';
-import "./AdnoRichText.css";
+
 import RichEditorImage from "./RichEditorImage/RichEditorImage";
 import WikiSearch from "./Wikidata/WikiSearch";
+
+// Import CSS
+import "./AdnoRichText.css";
 
 class AdnoRichText extends Component {
   constructor(props) {
@@ -41,7 +47,13 @@ class AdnoRichText extends Component {
           defaultLevel: 1
         }
       },
-      quote: Quote,
+      list: {
+        class: List,
+        inlineToolbar: true,
+        config: {
+          defaultStyle: 'unordered'
+        }
+      }, quote: Quote,
       code: CodeTool
     }
   });
@@ -88,6 +100,13 @@ class AdnoRichText extends Component {
           case "code":
             if (block.data && block.data.code) {
               txt += `<code>${block.data.code}</code>`;
+            }
+            break;
+          case "list":
+            if (block.data && block.data.items) {
+              block.data.items.forEach(list_item => {
+                txt += `<p>${list_item}</p>`;
+              })
             }
             break;
           default:
@@ -151,7 +170,7 @@ class AdnoRichText extends Component {
       <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
         <div className="card-body">
           <div className="card-actions justify-end">
-            <button className="btn btn-square btn-sm" onClick={() =>  this.props.closeRichEditor()}>
+            <button className="btn btn-square btn-sm" onClick={() => this.props.closeRichEditor()}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>

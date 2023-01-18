@@ -91,6 +91,8 @@ class OpenView extends Component {
     automateLoading = () => {
         let localCurrentID = this.state.currentID;
 
+
+
         if (this.state.currentID === -1) {
             localCurrentID = 0
         } else if (this.state.currentID === this.props.annos.length - 1) {
@@ -121,16 +123,22 @@ class OpenView extends Component {
 
 
     startTimer = () => {
+        // Check if the timer is already started, clear the auto scroll between annotations
         if (this.state.timer) {
             this.setState({ timer: false })
 
             clearInterval(this.state.intervalID)
         } else {
 
-            if(this.props.startbyfirstanno){
-                this.setState({currentID: -1})
-            }
+            if (this.props.startbyfirstanno) {
+                this.setState({ currentID: -1 })
 
+                this.changeAnno(this.props.annos[0])
+            }else{
+                this.automateLoading()
+
+            }
+            // Call the function to go to the next annotation every "timerDelay" seconds
             let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
             this.setState({ timer: true, intervalID: interID })
         }
