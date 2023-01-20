@@ -10,19 +10,8 @@ class AdnoUrls extends Component {
         let manifest_url = url.get("url")
 
         if (manifest_url) {
-            Swal.fire({
-                title: "Voulez-vous charger ce fichier ?",
-                showCancelButton: true,
-                confirmButtonText: 'Oui, charger ce fichier',
-                cancelButtonText: 'Annuler',
-                icon: 'warning',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    manageUrls(this.props, manifest_url)
-                }else if (result.isDismissed){
-                    this.props.history.push("/")
-                }
-            })
+
+            manageUrls(this.props, manifest_url)
         } else {
             Swal.fire({
                 title: "Aucune URL n'a été fournie",
