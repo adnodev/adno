@@ -14,14 +14,14 @@ class Navbar extends Component {
         return (
             <div className="navbar bg-neutral text-neutral-content">
 
-                <Link to={"/"} className="btn btn-ghost normal-case"> <FontAwesomeIcon icon={faHome} /> </Link>
+                <Link to={"/"} className="btn btn-ghost normal-case"> <FontAwesomeIcon icon={faHome} size="lg"/> </Link>
 
                 {
                     this.props.selectedProject && this.props.selectedProject.id &&
-                    <a id={"download_btn_" + this.props.selectedProject.id} href={createExportProjectJsonFile(this.props.selectedProject.id)} download={this.props.selectedProject.title + ".json"} className="btn btn-md"> <FontAwesomeIcon icon={faDownload} /> </a>
+                    <a id={"download_btn_" + this.props.selectedProject.id} href={createExportProjectJsonFile(this.props.selectedProject.id)} download={this.props.selectedProject.title + ".json"} className="btn btn-md"> <FontAwesomeIcon icon={faDownload} size="lg"/> </a>
                 }
 
-                <button onClick={() => this.props.showProjectMetadatas()} className="btn btn-md"><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} /></button>
+                <button onClick={() => this.props.showProjectMetadatas()} className="btn btn-md"><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="lg"/></button>
 
 
                 <p>{this.props.selectedProject.title} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`} </p>
@@ -32,7 +32,7 @@ class Navbar extends Component {
 
                         {
                             !this.props.editMode &&
-                            <button onClick={() => this.props.showEditorSettings()} className="btn btn-md"><FontAwesomeIcon icon={faGear} /></button>
+                            <button onClick={() => this.props.showEditorSettings()} className="btn btn-md"><FontAwesomeIcon icon={faGear} size="lg"/></button>
                         }
 
 
