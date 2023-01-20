@@ -196,11 +196,14 @@ class OpenView extends Component {
         }
     }
 
-    enableFullScreen = () => {
+    toggleFullScreen = () => {
         // turn on full screen
         if (!this.state.fullScreenEnabled) {
             document.getElementById("adno-osd").requestFullscreen();
             this.setState({ fullScreenEnabled: true })
+        } else {
+            document.exitFullscreen();
+            this.setState({ fullScreenEnabled: false })
         }
     }
 
@@ -247,7 +250,7 @@ class OpenView extends Component {
                     <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg"/></button>
                     <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg"/></button>
                     <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees  + 90 )}><FontAwesomeIcon icon={faRotateRight} size="lg"/></button>
-                    <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.enableFullScreen()}><FontAwesomeIcon icon={faExpand} size="lg"/></button>
+                    <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}><FontAwesomeIcon icon={faExpand} size="lg"/></button>
                 </div>
             </div>
         )

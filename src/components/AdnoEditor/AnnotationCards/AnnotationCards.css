@@ -20,6 +20,7 @@
     -webkit-box-orient: vertical;
     display: -webkit-box;
     overflow: hidden;
+    white-space: pre-wrap;
 }
 
 .anno-cards{

@@ -37,7 +37,7 @@
     "react-speech-kit": "^3.0.1",
     "react-tag-input-component": "^2.0.2",
     "sweetalert2": "^11.4.29",
-    "tailwindcss": "^3.2.4",
+    "tailwindcss": "3.2.4",
     "wikidata-sdk": "^8.1.0"
   },
   "devDependencies": {
