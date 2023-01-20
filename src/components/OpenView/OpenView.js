@@ -11,6 +11,10 @@ import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 // Import CSS
 import "./OpenView.css";
 
+// Import FontAwesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlassMinus } from "@fortawesome/free-solid-svg-icons";
+
 class OpenView extends Component {
     constructor(props) {
         super(props);
@@ -18,7 +22,8 @@ class OpenView extends Component {
             currentID: -1,
             timer: false,
             intervalID: 0,
-            fullScreenEnabled: false
+            fullScreenEnabled: false,
+            isAnnotationsVisible: true
         }
     }
 
@@ -214,6 +219,11 @@ class OpenView extends Component {
         }
     }
 
+    toggleAnnotationsLayer = () => {
+        this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
+        this.setState({isAnnotationsVisible: !this.state.isAnnotationsVisible})
+    }
+
     render() {
         return (
             <div id="adno-osd">
@@ -229,12 +239,9 @@ class OpenView extends Component {
 
 
                 <div className={this.state.fullScreenEnabled && this.props.toolsbarOnFs ? "osd-buttons-bar" : this.state.fullScreenEnabled && !this.props.toolsbarOnFs ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
-                    {
-                        this.props.timerDelay !== - 1 &&
-                        <span className="toolbarButton toolbaractive adno-timer-osd" ><i className="fa fa-clock"></i>{this.props.timerDelay}s</span>
-                    }
                     <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><i className={this.state.timer ? "fa fa-pause" : "fa fa-play"}></i></button>
-                    <button id="home-button" className="toolbarButton toolbaractive"><i className="fa fa-home"></i></button>
+                    <button id="home-button" className="toolbarButton toolbaractive"><FontAwesomeIcon icon={faMagnifyingGlassMinus} /></button>
+                    <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><i className={this.state.isAnnotationsVisible ? "fa fa-eye-slash" : "fa fa-eye"}></i></button>
                     <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><i className="fa fa-arrow-left"></i></button>
                     <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><i className="fa fa-arrow-right"></i></button>
                     <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.enableFullScreen()}><i className="fa fa-expand"></i></button>
