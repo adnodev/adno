@@ -2,6 +2,11 @@ import { Component } from "react";
 import { withRouter } from "react-router-dom";
 import ReactHtmlParser from 'react-html-parser';
 
+// Import FontAwesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight } from "@fortawesome/free-solid-svg-icons";
+
+
 // Import utils
 import { checkIfProjectExists } from "../../Utils/utils";
 
@@ -11,9 +16,6 @@ import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 // Import CSS
 import "./OpenView.css";
 
-// Import FontAwesome
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlassMinus } from "@fortawesome/free-solid-svg-icons";
 
 class OpenView extends Component {
     constructor(props) {
@@ -239,12 +241,13 @@ class OpenView extends Component {
 
 
                 <div className={this.state.fullScreenEnabled && this.props.toolsbarOnFs ? "osd-buttons-bar" : this.state.fullScreenEnabled && !this.props.toolsbarOnFs ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
-                    <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><i className={this.state.timer ? "fa fa-pause" : "fa fa-play"}></i></button>
-                    <button id="home-button" className="toolbarButton toolbaractive"><FontAwesomeIcon icon={faMagnifyingGlassMinus} /></button>
-                    <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><i className={this.state.isAnnotationsVisible ? "fa fa-eye-slash" : "fa fa-eye"}></i></button>
-                    <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><i className="fa fa-arrow-left"></i></button>
-                    <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><i className="fa fa-arrow-right"></i></button>
-                    <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.enableFullScreen()}><i className="fa fa-expand"></i></button>
+                    <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg"/></button>
+                    <button id="home-button" className="toolbarButton toolbaractive"><FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg"/></button>
+                    <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg"/></button>
+                    <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg"/></button>
+                    <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg"/></button>
+                    <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees  + 90 )}><FontAwesomeIcon icon={faRotateRight} size="lg"/></button>
+                    <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.enableFullScreen()}><FontAwesomeIcon icon={faExpand} size="lg"/></button>
                 </div>
             </div>
         )
