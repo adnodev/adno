@@ -16,7 +16,6 @@ import Project from "./components/Project/Project";
 
 // Import css
 import "./index.css"
-import OpenView from "./components/OpenView/OpenView";
 
 require('dotenv').config()
 

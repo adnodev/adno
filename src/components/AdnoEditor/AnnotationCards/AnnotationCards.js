@@ -98,7 +98,7 @@ class AnnotationCards extends Component {
 
 
                                     <div className="adno-card-body">
-                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value)[0] : "Annotation vide"}
+                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"}
                                     </div>
 
                                     <div className="btn-line-one-card">

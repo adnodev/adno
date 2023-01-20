@@ -76,6 +76,11 @@ class AdnoRichText extends Component {
       outputData.blocks.forEach(block => {
 
         raw_txt += `${block.data.text} `;
+        if (block.data.text) {
+          raw_txt += `${block.data.text} `;
+        } else if (block.data.caption) {
+          raw_txt += `${block.data.caption} `;
+        }
 
         switch (block.type) {
           case "header":

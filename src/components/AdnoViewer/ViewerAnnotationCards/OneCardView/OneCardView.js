@@ -12,8 +12,7 @@ class OneCardView extends Component {
         this.state = {
             fullView: false,
             url: "",
-            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)[0]
-        }
+            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)        }
     }
 
     // componentDidMount() {

@@ -14,9 +14,6 @@
 
 .adno-card-body{
     height: 70px;
-}
-
-.adno-card-body > p {
     width: 276px;
     -webkit-line-clamp: 3;
     text-overflow: ellipsis;
