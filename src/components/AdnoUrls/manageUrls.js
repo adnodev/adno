@@ -83,7 +83,7 @@ export async function manageUrls(props, url) {
                                 })
                                     .then((result) => {
                                         if (result.isConfirmed) {
-                                            props.history.push("/")
+                                            props.history.push(`/project/${projectID}/edit`)
                                         }
                                     })
                             } else if (result.isDismissed) {
