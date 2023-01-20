@@ -134,7 +134,7 @@ class OpenView extends Component {
                 this.setState({ currentID: -1 })
 
                 this.changeAnno(this.props.annos[0])
-            }else{
+            } else {
                 this.automateLoading()
 
             }
@@ -147,38 +147,45 @@ class OpenView extends Component {
     previousAnno = () => {
         let localCurrentID = this.state.currentID
 
-        if (this.state.currentID === -1 || this.state.currentID === 0) {
-            localCurrentID = this.props.annos.length - 1
-        } else {
-            localCurrentID = this.state.currentID - 1
+        if (this.props.annos.length > 0) {
+
+            if (this.state.currentID === -1 || this.state.currentID === 0) {
+                localCurrentID = this.props.annos.length - 1
+            } else {
+                localCurrentID = this.state.currentID - 1
+            }
+
+            this.setState({ currentID: localCurrentID })
+
+            this.changeAnno(this.props.annos[localCurrentID])
+
+
+            if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
+                document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            }
+        
         }
-
-        this.setState({ currentID: localCurrentID })
-
-        this.changeAnno(this.props.annos[localCurrentID])
-
-
-        if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
-            document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-        }
-
     }
 
     nextAnno = () => {
         let localCurrentID = this.state.currentID
 
-        if (this.state.currentID === -1 || this.state.currentID === this.props.annos.length - 1) {
-            localCurrentID = 0
-        } else {
-            localCurrentID++;
-        }
+        if (this.props.annos.length > 0) {
 
-        this.setState({ currentID: localCurrentID })
+            if (this.state.currentID === -1 || this.state.currentID === this.props.annos.length - 1) {
+                localCurrentID = 0
+            } else {
+                localCurrentID++;
+            }
 
-        this.changeAnno(this.props.annos[localCurrentID])
+            this.setState({ currentID: localCurrentID })
 
-        if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
-            document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            this.changeAnno(this.props.annos[localCurrentID])
+
+            if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
+                document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            }
+
         }
     }
 

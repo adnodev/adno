@@ -77,7 +77,7 @@ class OneCardView extends Component {
                 </div>
 
                 <div className="adno-card-body">
-                    {this.state.annoBody || "Annotation vide"}
+                    <p>{this.state.annoBody || "Annotation vide"}</p>
                 </div>
 
 
