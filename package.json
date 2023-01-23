@@ -7,7 +7,9 @@
     "build-all": "yarn build-full && yarn build-light",
     "build-full": "ADNO_MODE=FULL parcel build public/index.html --dist-dir adno-full",
     "build-light": "ADNO_MODE=LIGHT parcel build public/index.html --dist-dir adno-light",
-    "clean": "rm -r node_modules && rm -r .parcel-cache && rm -r dist"
+    "clean": "rm -r node_modules && rm -r .parcel-cache && rm -r dist",
+    "build-full-with-stats": "ADNO_MODE=FULL MATOMO_URL=https://stats.emf.fr/ MATOMO_SITE_ID=6 yarn install && parcel build public/index.html --dist-dir adno-full",
+    "build-light-with-stats": "ADNO_MODE=LIGHT MATOMO_URL=https://stats.emf.fr/ MATOMO_SITE_ID=7 yarn install && parcel build public/index.html --dist-dir adno-light"
   },
   "keywords": [],
   "author": "",
