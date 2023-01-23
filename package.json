@@ -6,7 +6,8 @@
     "start": "yarn install && parcel public/index.html",
     "build-all": "yarn build-full && yarn build-light",
     "build-full": "ADNO_MODE=FULL parcel build public/index.html --dist-dir adno-full",
-    "build-light": "ADNO_MODE=LIGHT parcel build public/index.html --dist-dir adno-light"
+    "build-light": "ADNO_MODE=LIGHT parcel build public/index.html --dist-dir adno-light",
+    "clean": "rm -r node_modules && rm -r .parcel-cache"
   },
   "keywords": [],
   "author": "",
