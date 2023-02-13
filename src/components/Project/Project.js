@@ -89,7 +89,7 @@ class Project extends Component {
 
                     <div className="text-rich">
 
-                    <AdnoMdEditor updateAnnos={(annos) => this.setState({ annotations: annos })} closeMdEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
+                    <AdnoMdEditor updateAnnos={(annos) => this.setState({ annotations: annos })} closeMdEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} annoBody={this.state.selectedAnnotation.body} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
                     </div>
                 }
 

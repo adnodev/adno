@@ -119,7 +119,7 @@ export const get_url_extension = (url) => {
 }
 
 export const buildTagsList = (annotation) => {
-  var tags = annotation.body.filter(anno_body => anno_body.purpose === "tagging")
+  var tags = Array.isArray(annotation.body) ? annotation.body.filter(anno_body => anno_body.purpose === "tagging") : []
 
   return tags
 

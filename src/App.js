@@ -16,6 +16,7 @@ import Project from "./components/Project/Project";
 
 // Import css
 import "./index.css"
+import AdnoMdViewer from "./components/AdnoMarkdown/AdnoMdViewer";
 
 require('dotenv').config()
 
@@ -80,6 +81,11 @@ export default class App extends Component {
 
                     <Route exact path="/search">
                         <AdnoUrls />
+                    </Route>
+
+
+                    <Route exact path="/vieweeer">
+                        <AdnoMdViewer />
                     </Route>
 
                     <Route exact path="/">
