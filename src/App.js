@@ -83,11 +83,6 @@ export default class App extends Component {
                         <AdnoUrls />
                     </Route>
 
-
-                    <Route exact path="/vieweeer">
-                        <AdnoMdViewer />
-                    </Route>
-
                     <Route exact path="/">
                         <HomeWithProjects />
                     </Route>
