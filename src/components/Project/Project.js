@@ -22,6 +22,7 @@ import OpenView from "../OpenView/OpenView";
 import AnnotationCards from "../AdnoEditor/AnnotationCards/AnnotationCards";
 import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnnotationCards";
 import ProjectSettings from "./ProjectSettings";
+import AdnoMdEditor from "../AdnoMarkdown/AdnoMdEditor";
 
 class Project extends Component {
     constructor(props) {
@@ -82,8 +83,13 @@ class Project extends Component {
 
                 {
                     this.state.updateAnnotation &&
+                    // <div className="text-rich">
+                    //     <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
+                    // </div>
+
                     <div className="text-rich">
-                        <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
+
+                    <AdnoMdEditor updateAnnos={(annos) => this.setState({ annotations: annos })} closeMdEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
                     </div>
                 }
 

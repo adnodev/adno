@@ -62,18 +62,7 @@
     outline: none !important;
 }
 
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-  
-  .switch input { 
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
+
   
   .slider {
     position: absolute;
@@ -325,19 +314,6 @@
     background-color: #398a39 !important;
     outline: none !important;
 }
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-  
-  .switch input { 
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
   
   .slider {
     position: absolute;
