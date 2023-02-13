@@ -106,10 +106,7 @@ class Project extends Component {
 
 
                 {
-                    this.state.annotations.length > 0 &&
-
-
-                        this.props.editMode ?
+                    this.state.annotations.length > 0 && this.props.editMode ?
                         <div className="sidebar-opened-w-modal">
                             {
                                 <AnnotationCards
@@ -125,7 +122,7 @@ class Project extends Component {
                             }
                         </div>
                         :
-                        !this.props.editMode && this.state.settings.sidebarEnabled &&
+                        this.state.annotations.length > 0  && !this.props.editMode && this.state.settings.sidebarEnabled &&
                         <div className="sidebar-opened-w-modal">
                             {
                                 this.props.editMode ?
