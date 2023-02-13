@@ -3,7 +3,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from "react-router";
 
 // Import FontAwesome for all icons
-import { faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Import popup alerts
@@ -68,18 +68,20 @@ class AnnotationCards extends Component {
 
                     Swal.fire("L'annotation a bien été supprimée", '', 'success')
                         .then((result) => {
-                            result.isConfirmed && this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
+                            if (result.isConfirmed) {
+                                this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
+                            }
                         })
                 }
             })
         }
 
         return (
-            <div className="list_annotations">
+            <div className="annotations_list">
                 {
                     this.props.annotations.map((annotation, index) => {
                         return (
-                            <div className="anno-card shadow" key={`anno_${annotation.id}`}>
+                            <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}>
                                 <div className="anno-card-body">
 
                                     <div className="card-tags-list">
@@ -96,12 +98,15 @@ class AnnotationCards extends Component {
 
 
                                     <div className="adno-card-body">
-                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value)[0] : "Annotation vide"}
+                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"}
                                     </div>
 
                                     <div className="btn-line-one-card">
                                         <button className="btn btn-sm btn-outline btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>
                                         <button className="btn btn-sm btn-outline btn-success" onClick={() => this.props.openRichEditor(annotation)}> <FontAwesomeIcon icon={faEdit} /></button>
+                                        <button type="button"
+                                            onClick={() => this.props.changeSelectedAnno(annotation)}
+                                            className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
                                         {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchDown(index)}> <FontAwesomeIcon icon={faDownLong} /> </button> : <></>}
                                         {index > 0 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchUp(index)}> <FontAwesomeIcon icon={faUpLong} /> </button> : <></>}
                                     </div>

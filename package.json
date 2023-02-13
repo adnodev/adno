@@ -6,17 +6,23 @@
     "start": "yarn install && parcel public/index.html",
     "build-all": "yarn build-full && yarn build-light",
     "build-full": "ADNO_MODE=FULL parcel build public/index.html --dist-dir adno-full",
-    "build-light": "ADNO_MODE=LIGHT parcel build public/index.html --dist-dir adno-light"
+    "build-light": "ADNO_MODE=LIGHT parcel build public/index.html --dist-dir adno-light",
+    "clean": "rm -r node_modules && rm -r .parcel-cache && rm -r dist",
+    "build-full-with-stats": "ADNO_MODE=FULL MATOMO_URL=https://stats.emf.fr/ MATOMO_SITE_ID=6 yarn install && parcel build public/index.html --dist-dir adno-full",
+    "build-light-with-stats": "ADNO_MODE=LIGHT MATOMO_URL=https://stats.emf.fr/ MATOMO_SITE_ID=7 yarn install && parcel build public/index.html --dist-dir adno-light"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@editorjs/code": "^2.8.0",
-    "@editorjs/editorjs": "^2.26.1",
-    "@editorjs/header": "^2.6.1",
-    "@editorjs/paragraph": "^2.8.0",
-    "@editorjs/quote": "^2.4.0",
+    "@editorjs/editorjs": "^2.26.4",
+    "@editorjs/embed": "^2.5.3",
+    "@editorjs/header": "^2.7.0",
+    "@editorjs/link": "^2.5.0",
+    "@editorjs/list": "^1.8.0",
+    "@editorjs/quote": "^2.5.0",
+    "@editorjs/simple-image": "^1.5.1",
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -34,7 +40,7 @@
     "react-speech-kit": "^3.0.1",
     "react-tag-input-component": "^2.0.2",
     "sweetalert2": "^11.4.29",
-    "tailwindcss": "^3.2.4",
+    "tailwindcss": "3.2.4",
     "wikidata-sdk": "^8.1.0"
   },
   "devDependencies": {

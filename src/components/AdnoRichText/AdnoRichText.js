@@ -1,16 +1,24 @@
+import { Component } from "react";
+
+// Import EditorJS components
 import EditorJS from "@editorjs/editorjs";
 import Header from '@editorjs/header';
 import Quote from '@editorjs/quote';
-import CodeTool from '@editorjs/code';
+import List from '@editorjs/list';
+import Paragraph from "editorjs-paragraph-with-alignment";
+
+// Import FontAwesome
 import { faCheckCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Paragraph from "editorjs-paragraph-with-alignment";
-import { Component } from "react";
+
 import { TagsInput } from 'react-tag-input-component';
 import { insertInLS } from '../../Utils/utils';
-import "./AdnoRichText.css";
+
 import RichEditorImage from "./RichEditorImage/RichEditorImage";
 import WikiSearch from "./Wikidata/WikiSearch";
+
+// Import CSS
+import "./AdnoRichText.css";
 
 class AdnoRichText extends Component {
   constructor(props) {
@@ -20,7 +28,6 @@ class AdnoRichText extends Component {
       selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || []
     }
   }
-
   editor = new EditorJS({
     autofocus: true,
     holder: "editorJS",
@@ -42,8 +49,14 @@ class AdnoRichText extends Component {
           defaultLevel: 1
         }
       },
+      list: {
+        class: List,
+        inlineToolbar: true,
+        config: {
+          defaultStyle: 'unordered'
+        }
+      },
       quote: Quote,
-      code: CodeTool
     }
   });
 
@@ -58,8 +71,17 @@ class AdnoRichText extends Component {
 
   saveAnnotationText = () => {
     let txt = "";
+    let raw_txt = "";
     this.editor.save().then(outputData => {
       outputData.blocks.forEach(block => {
+
+        raw_txt += `${block.data.text} `;
+        if (block.data.text) {
+          raw_txt += `${block.data.text} `;
+        } else if (block.data.caption) {
+          raw_txt += `${block.data.caption} `;
+        }
+
         switch (block.type) {
           case "header":
             let html_tag = `<h${block.data.level}>`;
@@ -82,9 +104,11 @@ class AdnoRichText extends Component {
               txt += `<a href="${block.data.wiki_link}" target="_blank">${block.data.title}(${block.data.description})</a>`;
             }
             break;
-          case "code":
-            if (block.data && block.data.code) {
-              txt += `<code>${block.data.code}</code>`;
+          case "list":
+            if (block.data && block.data.items) {
+              block.data.items.forEach(list_item => {
+                txt += `<p>${list_item}</p>`;
+              })
             }
             break;
           default:
@@ -93,10 +117,17 @@ class AdnoRichText extends Component {
 
       })
 
-      let annos = JSON.parse(localStorage.getItem(`${this.props.selectedProjectId}_annotations`))
+      let annos = JSON.parse(localStorage.getItem(`${this.props.selectedProjectId}_annotations`)) || []
 
       let current_anno = {
         "type": "TextualBody",
+        "value": raw_txt,
+        "purpose": "commenting"
+      }
+
+
+      let current_anno_html = {
+        "type": "AdnoHtmlBody",
         "value": txt,
         "purpose": "commenting"
       }
@@ -118,16 +149,22 @@ class AdnoRichText extends Component {
         )
       })
 
-      let newBody = [current_anno, current_anno_with_blocks, ...allTags]
+      let newBody = [current_anno_html, current_anno, current_anno_with_blocks, ...allTags]
 
-      annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = newBody
+      if (annos.filter(anno => anno.id === this.props.selectedAnnotation.id).length > 0) {
+        annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = newBody
+      } else {
+        this.props.selectedAnnotation.body = newBody
+        annos.push(this.props.selectedAnnotation)
+      }
 
       insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos))
       this.props.updateAnnos(annos)
+      document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
       this.props.closeRichEditor()
 
     })
-
   }
 
   render() {

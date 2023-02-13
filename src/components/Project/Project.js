@@ -1,29 +1,27 @@
 import { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
-
-// Import FontAwesome and icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faFile, faFilePen, faHome } from "@fortawesome/free-solid-svg-icons";
+import { withRouter } from "react-router-dom";
 
 // Import utils
-import { checkIfProjectExists, createExportProjectJsonFile } from "../../Utils/utils";
+import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
-import "../../libraries/annona-reworked/js/storyboard";
-import "../../libraries/openseadragon/openseadragon.min.js";
+import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Imports CSS
 import "./Project.css";
+import "./Sidebar.css";
 
 // Import Components
-import AdnoViewer from "../AdnoViewer/AdnoViewer";
 import AdnoEditor from "../AdnoEditor/AdnoEditor";
-import SidebarAnnotations from "../SidebarAnnotations/SidebarAnnotations";
 import AdnoRichText from "../AdnoRichText/AdnoRichText";
 import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
 import ProjectEditMetadatas from "./ProjectEditMetadatas/ProjectEditMetadatas";
 import OneCardFullView from "../AdnoViewer/ViewerAnnotationCards/OneCardView/OneCardFullView";
 import Navbar from "./Navbar/Navbar";
+import OpenView from "../OpenView/OpenView";
+import AnnotationCards from "../AdnoEditor/AnnotationCards/AnnotationCards";
+import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnnotationCards";
+import ProjectSettings from "./ProjectSettings";
 
 class Project extends Component {
     constructor(props) {
@@ -34,8 +32,15 @@ class Project extends Component {
             editingMode: false,
             sidebarOpened: true,
             updateAnnotation: false,
-            selectedAnnotation: {},
-            showProjectMetadatas: false
+            showProjectMetadatas: false,
+            showSettings: false,
+            settings: {
+                delay: 2,
+                showNavigator: true,
+                toolsbarOnFs: true,
+                sidebarEnabled: true,
+                startbyfirstanno: false
+            }
         }
     }
 
@@ -49,7 +54,13 @@ class Project extends Component {
         return (
             <div className="project">
 
-                <Navbar selectedProject={this.state.selectedProject} showProjectMetadatas={() => this.setState({ showProjectMetadatas: true })} editMode={this.props.editMode} />
+                <Navbar
+                    selectedProject={this.state.selectedProject}
+                    showProjectMetadatas={() => this.setState({ showProjectMetadatas: true })}
+                    editMode={this.props.editMode}
+                    changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
+                    showEditorSettings={() => this.setState({ showSettings: true })}
+                />
 
                 {
                     this.state.showProjectMetadatas && this.props.editMode ?
@@ -59,11 +70,20 @@ class Project extends Component {
                         <ProjectMetadatas selectedProject={this.state.selectedProject} closeProjectMetadatas={() => this.setState({ showProjectMetadatas: false })} />
                 }
 
+                {
+                    this.state.showSettings && !this.props.editMode &&
+                    <ProjectSettings
+                        settings={this.state.settings}
+                        updateSettings={(newSettings) => this.setState({ settings: newSettings })}
+                        closeSettings={() => this.setState({ showSettings: false })}
+                    />
+                }
+
 
                 {
                     this.state.updateAnnotation &&
                     <div className="text-rich">
-                        <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} />
+                        <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
                     </div>
                 }
 
@@ -79,41 +99,73 @@ class Project extends Component {
                 {
                     this.state.annotations.length > 0 &&
 
-                    <SidebarAnnotations
-                        closeNav={() => {
-                            this.setState({ sidebarOpened: false })
-                        }
-                        }
-                        metadatasModal={this.state.showProjectMetadatas}
-                        openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
-                        openFullAnnotationView={(annotation) => this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })}
-                        editingMode={this.props.editMode}
-                        annotations={this.state.annotations}
-                        updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
-                        selectedProject={this.state.selectedProject}
-                        updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
-                    />
+
+                        this.props.editMode ?
+                        <div className="sidebar-opened-w-modal">
+                            {
+                                <AnnotationCards
+                                    updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
+                                    selectedProject={this.state.selectedProject}
+                                    openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                                    annotations={this.state.annotations}
+                                    updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
+                                    selectedAnno={this.state.selectedAnnotation}
+                                    changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
+                                />
+
+                            }
+                        </div>
+                        :
+                        !this.props.editMode && this.state.settings.sidebarEnabled &&
+                        <div className="sidebar-opened-w-modal">
+                            {
+                                this.props.editMode ?
+                                    <AnnotationCards
+                                        updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
+                                        selectedProject={this.state.selectedProject}
+                                        openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                                        annotations={this.state.annotations}
+                                        updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
+                                        selectedAnno={this.state.selectedAnnotation}
+                                        changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
+                                    />
+                                    :
+                                    <ViewerAnnotationCards
+                                        selectedAnno={this.state.selectedAnnotation}
+                                        changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
+                                        editingMode={this.props.editMode}
+                                        annotations={this.state.annotations}
+                                        selectedProject={this.state.selectedProject}
+                                        openFullAnnotationView={(annotation) => this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })}
+                                    />
+                            }
+                        </div>
                 }
 
-
-
-               
-
-
-                <div className={this.state.annotations.length > 0 ? "adno-viewer-rightbar-without-annos" : "adno-viewer-rightbar-without-annos-sbclosed"}>
+                <div className={this.state.annotations.length > 0 && this.state.settings.sidebarEnabled ? "adno-viewer-rightbar-with-annos" : ""}>
                     <div className="col">
-                        <div className={this.state.sidebarOpened ? "right-card-opened" : "right-card-closed"}>
-                            <div className="card">
-                                {
-                                    this.props.editMode ?
-                                        <AdnoEditor
-                                            annotations={this.state.annotations}
-                                            updateAnnos={(annos) => this.setState({ annotations: annos })}
-                                            openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })} />
-                                        :
-                                        <AdnoViewer updateAnnos={(annos) => this.setState({ annotations: annos })} />
-                                }
-                            </div>
+                        <div className="card">
+                            {
+                                this.props.editMode ?
+                                    <AdnoEditor
+                                        annotations={this.state.annotations}
+                                        updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
+                                        selectedAnno={this.state.selectedAnnotation}
+                                        openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                                        changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
+                                    />
+                                    :
+                                    <OpenView
+                                        startbyfirstanno={this.state.settings.startbyfirstanno}
+                                        showNavigator={this.state.settings.showNavigator}
+                                        toolsbarOnFs={this.state.settings.toolsbarOnFs}
+                                        timerDelay={this.state.settings.delay}
+                                        annos={this.state.annotations}
+                                        selectedAnno={this.state.selectedAnnotation}
+                                        selected_project={this.state.selectedProject}
+                                        changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
+                                    />
+                            }
                         </div>
                     </div>
                 </div>

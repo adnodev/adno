@@ -6,8 +6,8 @@ import Swal from "sweetalert2";
 import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
-import "../../libraries/annona-reworked/js/storyboard";
-import "../../libraries/openseadragon/openseadragon.min.js";
+// import "../../libraries/annona-reworked/js/storyboard";
+import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Imports CSS
 import "./AdnoViewer.css";

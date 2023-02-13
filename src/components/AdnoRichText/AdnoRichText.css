@@ -11,14 +11,14 @@
 }
 
 .rich-card-editor{
-    width: 90vw;
-    height: 85vh;
-    background-color: #fff;
-    border-radius: 10px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    display: flex;
+    width: 95vw !important;
+    height: 90vh !important;
+    background-color: #fff !important;
+    border-radius: 10px !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex !important;
 }
 
 .rich-card-editor .card-body{
@@ -79,11 +79,14 @@
 }
 
 @media (max-width: 1440px){
-    .rich-card-editor{
-        height: 80vh;
-    }
-
     .rich-card-editor-btns{
         width: 30%;
+    }
+}
+
+@media (max-width: 1000px){
+    .ce-block__content{
+        width: 80%;
+        max-width: 80%;
     }
 }

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // Import utils
-import { getAllProjectsFromLS, insertInLS, isValidUrl } from "../../Utils/utils";
+import { buildJsonProjectWithManifest, generateUUID, getAllProjectsFromLS, insertInLS, isValidUrl } from "../../Utils/utils";
 
 // Import components
 import ImportProject from "../ImportProject/ImportProject";
@@ -47,16 +47,74 @@ class HomeWithProjects extends Component {
                 if (isValidUrl(this.state.adno_image_url)) {
 
                     fetch(this.state.adno_image_url)
-                        .then(rep => {
-                            if (rep.status === 200 || rep.status === 302) {
+                        .then(res => {
+                            if (res.ok) {
+                                return res.text()
+                            } else {
+                                throw new Error(`Error ${res.status}`)
+                            }
+                        })
+                        .then((data) => {
+
+                            // First, we check if the file looks like an ADNO project
+                            // If an adno project is found then, import it directly
+                            let manifest = JSON.parse(data)
+
+                            if (manifest.format && manifest.format === "Adno") {
+                                Swal.fire({
+                                    title: "Projet ADNO détecté, voulez-vous l'importer ?",
+                                    showCancelButton: true,
+                                    showConfirmButton: true,
+                                    confirmButtonText: 'OK',
+                                    cancelButtonText: "Annuler",
+                                    icon: 'info'
+                                })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            let projectID = generateUUID();
+
+                                            let project = buildJsonProjectWithManifest(projectID, manifest.label, manifest.subject, manifest.source)
+
+                                            // Création du projet dans le localStorage
+                                            insertInLS(projectID, JSON.stringify(project))
+
+                                            // Insertion de l'ID du projet créé dans le tableau des projets
+                                            let projects = JSON.parse(localStorage.getItem("adno_projects"))
+                                            projects.push(projectID)
+
+                                            // Add the current project's id to the projects's list.
+                                            insertInLS("adno_projects", JSON.stringify(projects))
+
+                                            // Insert in LS an array for the annotations linked to this project
+                                            insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
+
+                                            Swal.fire({
+                                                title: "Projet importé avec succès",
+                                                showCancelButton: false,
+                                                showConfirmButton: true,
+                                                confirmButtonText: 'OK',
+                                                icon: 'success'
+                                            })
+                                                .then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        this.props.history.push(`/project/${projectID}/edit`)
+                                                    }
+                                                })
+
+
+                                        }
+                                    })
+
+
+                            } else {
+                                // If the URL doesn't look like to an adno project just import it from the New Project Page
                                 insertInLS("adno_image_url", this.state.adno_image_url)
 
                                 this.props.history.push("/new");
-                            } else {
-                                throw new Error(rep.status)
                             }
                         })
                         .catch(error => {
+                            console.error("erreur détectée : ", error)
                             Swal.fire({
                                 title: `Erreur - Manifest ou image introuvable`,
                                 showCancelButton: true,
@@ -65,6 +123,13 @@ class HomeWithProjects extends Component {
                                 icon: 'warning',
                             })
                         })
+
+
+
+
+
+
+
                 } else {
                     Swal.fire({
                         title: "L'URL renseignée n'est pas valide !",
@@ -100,7 +165,7 @@ class HomeWithProjects extends Component {
 
                             <div className="adno_title">
                                 <h1>ADNO</h1>
-                                <div class="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
+                                <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
                             </div>
                     }
                     <p>Pour commencer à utiliser Adno, veuillez renseigner dans le champs ci-dessous l'URL d'un manifest IIIF, d'une image IIIF ou encore d'une image statique au format JPG ou PNG</p>

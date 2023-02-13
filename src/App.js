@@ -74,7 +74,6 @@ export default class App extends Component {
                         </Route>
                     }
 
-
                     <Route exact path="/project/:id/view">
                         <Project editMode={false} />
                     </Route>

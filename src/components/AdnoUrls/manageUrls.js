@@ -41,84 +41,84 @@ export async function manageUrls(props, url) {
                 }
             })
             .then((data) => {
-                    let manifest = JSON.parse(data)
+                let manifest = JSON.parse(data)
 
-                    if (manifest.format && manifest.format === "Adno") {
+                if (manifest.format && manifest.format === "Adno") {
+                    insertInLS("adno_image_url", url)
+
+                    Swal.fire({
+                        title: "Projet ADNO détecté, voulez-vous l'importer ?",
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        confirmButtonText: 'OK',
+                        cancelButtonText: "Annuler",
+                        icon: 'info'
+                    })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                let projectID = generateUUID();
+
+                                let project = buildJsonProjectWithManifest(projectID, manifest.label, manifest.subject, manifest.source)
+
+                                // Création du projet dans le localStorage
+                                insertInLS(projectID, JSON.stringify(project))
+
+                                // Insertion de l'ID du projet créé dans le tableau des projets
+                                let projects = JSON.parse(localStorage.getItem("adno_projects"))
+                                projects.push(projectID)
+                                insertInLS("adno_projects", JSON.stringify(projects))
+
+
+                                insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
+
+                                // remove current url
+                                localStorage.removeItem("adno_image_url")
+
+                                Swal.fire({
+                                    title: "Projet importé avec succès",
+                                    showCancelButton: false,
+                                    showConfirmButton: true,
+                                    confirmButtonText: 'OK',
+                                    icon: 'success'
+                                })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            props.history.push(`/project/${projectID}/edit`)
+                                        }
+                                    })
+                            } else if (result.isDismissed) {
+                                props.history.push("/")
+                            }
+                        })
+
+
+                } else {
+                    // format non ADNO
+
+                    if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
                         insertInLS("adno_image_url", url)
+                        props.history.push("/new")
 
+                    } else {
                         Swal.fire({
-                            title: "Projet ADNO détecté, voulez-vous l'importer ?",
-                            showCancelButton: true,
+                            title: "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
+                            showCancelButton: false,
                             showConfirmButton: true,
                             confirmButtonText: 'OK',
-                            cancelButtonText: "Annuler",
-                            icon: 'info'
+                            icon: 'error'
                         })
                             .then((result) => {
                                 if (result.isConfirmed) {
-                                    let projectID = generateUUID();
-
-                                    let project = buildJsonProjectWithManifest(projectID, manifest.label, manifest.subject, manifest.source)
-
-                                    // Création du projet dans le localStorage
-                                    insertInLS(projectID, JSON.stringify(project))
-
-                                    // Insertion de l'ID du projet créé dans le tableau des projets
-                                    projects = JSON.parse(localStorage.getItem("adno_projects"))
-                                    projects.push(projectID)
-                                    insertInLS("adno_projects", JSON.stringify(projects))
-
-
-                                    insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
-
-                                    // remove current url
-                                    localStorage.removeItem("adno_image_url")
-
-                                    Swal.fire({
-                                        title: "Projet importé avec succès",
-                                        showCancelButton: false,
-                                        showConfirmButton: true,
-                                        confirmButtonText: 'OK',
-                                        icon: 'success'
-                                    })
-                                        .then((result) => {
-                                            if (result.isConfirmed) {
-                                                props.history.push("/")
-                                            }
-                                        })
-
-
+                                    props.history.push("/")
                                 }
                             })
-
-
-                    } else {
-                        // format non ADNO
-
-                        if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
-                            insertInLS("adno_image_url", url)
-                            props.history.push("/new")
-
-                        } else {
-                            Swal.fire({
-                                title: "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
-                                showCancelButton: false,
-                                showConfirmButton: true,
-                                confirmButtonText: 'OK',
-                                icon: 'error'
-                            })
-                                .then((result) => {
-                                    if (result.isConfirmed) {
-                                        props.history.push("/")
-                                    }
-                                })
-                        }
-
                     }
+
+                }
             })
             .catch(err => {
                 Swal.fire({
-                    title: "Impossible de traiter l'url fournie : Format du fichier invalide",
+                    title: `Impossible de traiter l'url fournie : ${url}` ,
                     showCancelButton: false,
                     showConfirmButton: true,
                     confirmButtonText: 'OK',

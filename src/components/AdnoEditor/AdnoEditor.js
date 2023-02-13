@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import utils
-import { checkIfProjectExists, createDate, generateUUID, insertInLS } from "../../Utils/utils";
+import { checkIfProjectExists, createDate, insertInLS } from "../../Utils/utils";
 
 // Import CSS
 import "./AdnoEditor.css";
@@ -13,7 +13,7 @@ class AdnoEditor extends Component {
     }
 
     componentDidMount() {
-        // First of all, verify if the UUID match to an real project in the localStorage
+        // First of all, verify if the url ID param matches to an real project in the localStorage
         // If not, then redirect the user to the HomePage
         if (!this.props.match.params.id || !checkIfProjectExists(this.props.match.params.id)) {
             this.props.history.push("/")
@@ -59,8 +59,9 @@ class AdnoEditor extends Component {
             Annotorious.Toolbar(this.AdnoAnnotorious, document.getElementById('toolbar-container'));
 
 
+            // Event triggered by using saveSelected annotorious function
             this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                var annotations = this.props.annotations || []
+                var annotations = [...this.props.annotations] || []
                 annotations.push(newAnnotation)
 
                 // Update the last update date for the selected project
@@ -73,23 +74,26 @@ class AdnoEditor extends Component {
                 this.props.updateAnnos(annotations)
 
                 this.props.openRichEditor(newAnnotation)
-
             });
 
+            // Event triggered when drawing a new shape
             this.AdnoAnnotorious.on('createSelection', (annotation) => {
                 this.AdnoAnnotorious.saveSelected()
             })
 
-
+            // Event triggered when user click on an annotation
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
+                document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
             })
 
+            // Event triggered when resizing an annotation shape
             this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
+                // console.log("selecting ..", this.AdnoAnnotorious.getSelected().target.selector.value);
                 const selected = this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
 
-                var annotations = this.props.annotations
+                var annotations = [...this.props.annotations]
                 var newAnnos = annotations.map(anno => {
                     if (anno.id === selected.id) {
                         anno = selected
@@ -98,15 +102,35 @@ class AdnoEditor extends Component {
                 })
 
                 insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
-                // this.props.updateAnnos(newAnnos)
+                this.props.updateAnnos(newAnnos)
             });
-
         }
     }
 
+    changeAnno = (annotation) => {
+        this.AdnoAnnotorious.selectAnnotation(annotation.id)
+        this.AdnoAnnotorious.fitBounds(annotation.id)
+
+        if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
+            document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        }
+
+    }
+
     componentDidUpdate(prevProps) {
+        // If the user clicks the target button on the annotation card it'll trigger this method     
+        if (prevProps.selectedAnno !== this.props.selectedAnno) {
+            this.changeAnno(this.props.selectedAnno)
+        }
+
         if (this.props.annotations !== prevProps.annotations) {
+            // First, we update the annotations's list to the Annotorious component 
             this.AdnoAnnotorious.setAnnotations(this.props.annotations);
+
+            // Then, we focus on the current selected annotation
+            if (this.props.selectedAnno) {
+                this.changeAnno(this.props.selectedAnno)
+            }
         }
     }
 

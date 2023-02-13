@@ -4,7 +4,7 @@ import { Component } from "react";
 import { buildTagsList, generateUUID } from "../../../../Utils/utils";
 import ReactHtmlParser from 'react-html-parser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUpRightFromSquare, faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 class OneCardView extends Component {
     constructor(props) {
@@ -12,8 +12,7 @@ class OneCardView extends Component {
         this.state = {
             fullView: false,
             url: "",
-            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)[0]
-        }
+            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)        }
     }
 
     // componentDidMount() {
@@ -77,15 +76,20 @@ class OneCardView extends Component {
                 </div>
 
                 <div className="adno-card-body">
-                    {this.state.annoBody || "Annotation vide"}
+                   {this.state.annoBody || "Annotation vide"}
                 </div>
 
 
                 <div className="btn-line-one-card">
 
-                    { this.state.annoBody && <button type="button" className="btn btn-outline btn-info btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> Voir <FontAwesomeIcon icon={faPlusCircle} /></button>}
+                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-info btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> Voir <FontAwesomeIcon icon={faPlusCircle} /></button>}
 
-                    <button type="button" onClick={() => this.props.clickOnTarget()} className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
+                    <button type="button"
+                        onClick={() => this.props.clickOnTarget(this.props.annotation)}
+                        className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} />
+                    </button>
+                    
+                    {/* Afficher la redirection vers la zone de l'annotation */}
                     {/* {this.state.url && <a href={this.state.url} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>} */}
                 </div>
             </div >
