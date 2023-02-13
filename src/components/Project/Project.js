@@ -23,6 +23,7 @@ import AnnotationCards from "../AdnoEditor/AnnotationCards/AnnotationCards";
 import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnnotationCards";
 import ProjectSettings from "./ProjectSettings";
 import AdnoMdEditor from "../AdnoMarkdown/AdnoMdEditor";
+import AdnoMdViewer from "../AdnoMarkdown/AdnoMdViewer";
 
 class Project extends Component {
     constructor(props) {
@@ -88,17 +89,19 @@ class Project extends Component {
                     // </div>
 
                     <div className="text-rich">
-
-                    <AdnoMdEditor updateAnnos={(annos) => this.setState({ annotations: annos })} closeMdEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} annoBody={this.state.selectedAnnotation.body} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
+                        <AdnoMdEditor updateAnnos={(annos) => this.setState({ annotations: annos })} closeMdEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} annoBody={this.state.selectedAnnotation.body} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
                     </div>
                 }
 
                 {
+                    // Display annotation's markdown
                     this.state.showFullAnnotationView &&
+                    // <div className="text-rich">
+                    //     <OneCardFullView fullAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
+                    // </div>
                     <div className="text-rich">
-                        <OneCardFullView fullAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
+                        <AdnoMdViewer selectedAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
                     </div>
-
                 }
 
 

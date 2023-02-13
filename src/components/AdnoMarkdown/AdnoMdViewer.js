@@ -11,30 +11,34 @@ class AdnoMdViewer extends Component {
         }
     }
 
-    markdown = `
-    👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-* Follows [CommonMark](https://commonmark.org)
-* Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-* Renders actual React elements instead of using dangerouslySetInnerHTML
-* Lets you define your own components (to render MyHeading instead of h1)
-* Has a lot of plugins
-
-## Table of contents
-Here is an example of a plugin in action
-[An Internal Link](/guides/content/editing-an-existing-page)
-
-This section is replaced by an actual table of contents.
-`
+    getAnnoBody = () => {
+        if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
+            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0].value : ""
+        } else {
+            return ""
+        }
+    }
 
     render() {
         return (
-            <div className="markdown-body">
-                <ReactMarkdown children={this.markdown} />
+            <div className="anno-full-view">
+                <div className="text-rich">
+                    <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
+                        <div className="card-body">
+                            <div className="card-actions justify-end">
+                                <button className="btn btn-square btn-sm" onClick={() => this.props.closeFullView()}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </div>
+                            <div className="card-body over-hidden">
+                                <div className="markdown-body">
+                                    <ReactMarkdown children={this.getAnnoBody()} />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }

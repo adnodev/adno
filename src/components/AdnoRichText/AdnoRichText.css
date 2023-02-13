@@ -23,6 +23,7 @@
 
 .rich-card-editor .card-body{
     width: 100%;
+    overflow: auto;
 }
 
 .rich-card-editor-btns{
