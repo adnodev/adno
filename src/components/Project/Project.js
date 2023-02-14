@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router-dom";
 
 // Import utils
-import { checkIfProjectExists } from "../../Utils/utils";
+import { checkIfProjectExists, getProjectSettings } from "../../Utils/utils";
 
 // Import libraries
 import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
@@ -34,13 +34,7 @@ class Project extends Component {
             updateAnnotation: false,
             showProjectMetadatas: false,
             showSettings: false,
-            settings: {
-                delay: 2,
-                showNavigator: true,
-                toolsbarOnFs: true,
-                sidebarEnabled: true,
-                startbyfirstanno: false
-            }
+            settings: getProjectSettings(this.props.match.params.id)
         }
     }
 
@@ -48,6 +42,18 @@ class Project extends Component {
         if (!checkIfProjectExists(this.props.match.params.id)) {
             this.props.history.push("/")
         }
+        console.log(getProjectSettings(this.props.match.params.id))
+    }
+
+    updateSettings = (newSettings) => {
+        // Update the state
+        this.setState({ settings: newSettings })
+
+        let project = {...this.state.selectedProject}
+        project.settings = {...newSettings}
+
+        // Update the localStorage item
+        localStorage.setItem(this.state.selectedProject.id, JSON.stringify(project))
     }
 
     render() {
@@ -55,6 +61,7 @@ class Project extends Component {
             <div className="project">
 
                 <Navbar
+                    settings={this.state.settings}
                     selectedProject={this.state.selectedProject}
                     showProjectMetadatas={() => this.setState({ showProjectMetadatas: true })}
                     editMode={this.props.editMode}
@@ -74,7 +81,7 @@ class Project extends Component {
                     this.state.showSettings && !this.props.editMode &&
                     <ProjectSettings
                         settings={this.state.settings}
-                        updateSettings={(newSettings) => this.setState({ settings: newSettings })}
+                        updateSettings={(newSettings) => this.updateSettings(newSettings)}
                         closeSettings={() => this.setState({ showSettings: false })}
                     />
                 }
