@@ -10,7 +10,7 @@ import { TagsInput } from 'react-tag-input-component';
 // Import Markdown editor
 
 // import removeMarkdown from "markdown-to-text";
-import { insertInLS } from '../../Utils/utils';
+import { generateUUID, insertInLS } from '../../Utils/utils';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -86,6 +86,25 @@ class AdnoMdEditor extends Component {
     }
 
     render() {
+
+
+        // const openStreetMapPlugin = () => {
+        //     const toHTMLRenderers = {
+        //       openstreetmap(node) {
+        //           console.log(node.firstChild.literal);
+        //           return {
+        //             type: 'text',
+        //             content: node.firstChild.literal,
+        //             classNames: [`adnomap-${generateUUID}`]
+        //           };
+        //       },
+        //     }
+    
+        //     return { toHTMLRenderers }
+        //   }
+
+
+
         return (
             <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
                 <div className="card-body">
@@ -106,6 +125,7 @@ class AdnoMdEditor extends Component {
                         previewStyle="tab"
                         initialEditType="markdown"
                         placeholder="Ajoutez votre texte ici"
+                        // plugins= {[openStreetMapPlugin]}
                         toolbarItems={[
                             [
                                 'heading',
