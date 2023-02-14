@@ -12,7 +12,8 @@ class OneCardView extends Component {
         this.state = {
             fullView: false,
             url: "",
-            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)        }
+            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)
+        }
     }
 
     // componentDidMount() {
@@ -22,14 +23,14 @@ class OneCardView extends Component {
     getAnnotationHTMLBody = () => {
         let annotation = this.props.annotation
 
-        console.log(annotation);
-
-        if(annotation && annotation.body){
-            if(Array.isArray(annotation.body) && annotation.body.filter(annoBody => annoBody.type === "HTMLBody").length === 1){
+        if (annotation && annotation.body) {
+            if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
+            } else {
+                return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
             }
-        }else{
-            return '<span class="no-content">Ø aucun contenu</span>'
+        } else {
+            return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
         }
     }
 
@@ -90,8 +91,8 @@ class OneCardView extends Component {
                 </div>
 
                 <div className="adno-card-body">
-                   {/* {this.state.annoBody || "Annotation vide"} */}
-                   {this.getAnnotationHTMLBody()}
+                    {/* {this.state.annoBody || "Annotation vide"} */}
+                    {this.getAnnotationHTMLBody()}
                 </div>
 
 
@@ -103,7 +104,7 @@ class OneCardView extends Component {
                         onClick={() => this.props.clickOnTarget(this.props.annotation)}
                         className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} />
                     </button>
-                    
+
                     {/* Afficher la redirection vers la zone de l'annotation */}
                     {/* {this.state.url && <a href={this.state.url} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>} */}
                 </div>

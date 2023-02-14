@@ -21,12 +21,14 @@ class AnnotationCards extends Component {
     }
 
     getAnnotationHTMLBody = (annotation) => {
-        if(annotation && annotation.body){
-            if(Array.isArray(annotation.body) && annotation.body.filter(annoBody => annoBody.type === "HTMLBody").length === 1){
+        if (annotation && annotation.body) {
+            if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
+            } else {
+                return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
             }
-        }else{
-            return '<span class="no-content">Ø aucun contenu</span>'
+        } else {
+            return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
         }
     }
 
