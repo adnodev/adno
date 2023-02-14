@@ -8,13 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TagsInput } from 'react-tag-input-component';
 
 // Import Markdown editor
-import { Editor, Viewer } from '@toast-ui/react-editor';
 
 // import removeMarkdown from "markdown-to-text";
 import { insertInLS } from '../../Utils/utils';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
+import { Editor } from '@toast-ui/react-editor';
 
 class AdnoMdEditor extends Component {
     constructor(props) {
@@ -59,11 +59,11 @@ class AdnoMdEditor extends Component {
     }
 
     getAnnoBody = () => {
-       if(Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0){
-           return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0].value : ""
-       }else{
-           return ""
-       }
+        if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
+            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0].value : ""
+        } else {
+            return ""
+        }
     }
 
     render() {
@@ -83,6 +83,12 @@ class AdnoMdEditor extends Component {
                         height="600px"
                         initialEditType="markdown"
                         ref={this.editorRef}
+                        usageStatistics={false}
+                        previewStyle="tab"
+                        initialEditType="markdown"
+                        toolbarItems={[
+                            ['heading', 'italic', 'bold', 'ul', 'link', 'image']
+                        ]}
                     />
 
                     <div className="editor-tags">
