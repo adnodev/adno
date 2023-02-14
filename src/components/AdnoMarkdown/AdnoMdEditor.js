@@ -52,13 +52,13 @@ class AdnoMdEditor extends Component {
 
         let tags = this.state.selectedTags.map(tag => {
             return (
-              {
-                "type": "TextualBody",
-                "value": tag,
-                "purpose": "tagging"
-              }
+                {
+                    "type": "TextualBody",
+                    "value": tag,
+                    "purpose": "tagging"
+                }
             )
-          })
+        })
 
         let newBody = [newTextBody, HTMLBody, ...tags]
 
@@ -105,9 +105,35 @@ class AdnoMdEditor extends Component {
                         usageStatistics={false}
                         previewStyle="tab"
                         initialEditType="markdown"
+                        placeholder="Ajoutez votre texte ici"
                         toolbarItems={[
-                            ['heading', 'italic', 'bold', 'ul', 'link', 'image']
+                            [
+                                'heading',
+                                'italic',
+                                'bold',
+                                'ul',
+                                'link',
+                                'image',
+                                // {
+                                //     name: 'Map',
+                                //     tooltip: 'openstreetmap',
+                                //     command: 'bold',
+                                //     text: '@',
+                                //     className: 'toastui-editor-toolbar-icons',
+                                //     style: { backgroundImage: 'none', color: 'black' }
+                                // },
+                                // {
+                                //     name: 'Wikidata',
+                                //     tooltip: 'wikidata',
+                                //     command: 'bold',
+                                //     text: '@',
+                                //     className: 'toastui-editor-toolbar-icons',
+                                //     style: { backgroundImage: 'none', color: 'black' }
+                                // }
+                            ]
                         ]}
+
+
                     />
 
                     <div className="editor-tags">
