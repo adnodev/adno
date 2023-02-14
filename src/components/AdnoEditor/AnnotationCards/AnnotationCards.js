@@ -20,6 +20,16 @@ class AnnotationCards extends Component {
         super(props);
     }
 
+    getAnnotationHTMLBody = (annotation) => {
+        if(annotation && annotation.body){
+            if(Array.isArray(annotation.body) && annotation.body.filter(annoBody => annoBody.type === "HTMLBody").length === 1){
+                return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
+            }
+        }else{
+            return '<span class="no-content">Ø aucun contenu</span>'
+        }
+    }
+
     render() {
         // Function to move an annotation up one place
         const annoSwitchUp = (index) => {
@@ -98,7 +108,8 @@ class AnnotationCards extends Component {
 
 
                                     <div className="adno-card-body">
-                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"}
+                                        {this.getAnnotationHTMLBody(annotation)}
+                                        {/* {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"} */}
                                     </div>
 
                                     <div className="btn-line-one-card">

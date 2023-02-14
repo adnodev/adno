@@ -34,6 +34,7 @@ class AdnoMdEditor extends Component {
     saveMD = () => {
         let annos = this.props.annotations
         let md = this.editorRef.current.getInstance().getMarkdown();
+        let html = this.editorRef.current.getInstance().getHTML();
 
         let newTextBody = {
             "type": "TextualBody",
@@ -41,7 +42,13 @@ class AdnoMdEditor extends Component {
             "purpose": "commenting"
         }
 
-        let newBody = [newTextBody]
+        let HTMLBody = {
+            "type": "HTMLBody",
+            "value": html,
+            "purpose": "commenting"
+        }
+
+        let newBody = [newTextBody, HTMLBody]
 
         if (annos.filter(anno => anno.id === this.props.selectedAnnotation.id).length > 0) {
             annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = newBody

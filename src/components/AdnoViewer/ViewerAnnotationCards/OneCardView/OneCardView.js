@@ -19,6 +19,20 @@ class OneCardView extends Component {
     //     this.buildExternalLink()
     // }
 
+    getAnnotationHTMLBody = () => {
+        let annotation = this.props.annotation
+
+        console.log(annotation);
+
+        if(annotation && annotation.body){
+            if(Array.isArray(annotation.body) && annotation.body.filter(annoBody => annoBody.type === "HTMLBody").length === 1){
+                return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
+            }
+        }else{
+            return '<span class="no-content">Ø aucun contenu</span>'
+        }
+    }
+
     buildExternalLink = () => {
         if (this.props.annotation.target.selector.type === "FragmentSelector" && this.props.project.manifest_url) {
 
@@ -76,7 +90,8 @@ class OneCardView extends Component {
                 </div>
 
                 <div className="adno-card-body">
-                   {this.state.annoBody || "Annotation vide"}
+                   {/* {this.state.annoBody || "Annotation vide"} */}
+                   {this.getAnnotationHTMLBody()}
                 </div>
 
 
