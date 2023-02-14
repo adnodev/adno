@@ -243,30 +243,27 @@ class NewProject extends Component {
 
     render() {
         return (
-            <>
-                <form className="form-new-project" >
-
-                    <label className="input-group new_project_input">
-                        <span className="new_project_span">Titre</span>
-                        <input id="project_name" className="input input-bordered w-full" type="text" placeholder="Donnez un titre à votre projet" />
-                    </label>
-
-                    <label className="input-group new_project_input">
-                        <span className="new_project_span">Description</span>
-                        <input id="project_desc" className="input input-bordered w-full" type="text" placeholder="Description de votre projet" />
-                    </label>
-
-                    <label className="input-group new_project_input">
-                        <span className="new_project_span">URL du Manifest</span>
-                        <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
-                    </label>
-
-
-                    <div className="new_project_btns">
-                        <button id="annuler_creation" type="submit" className="btn btn-error" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>Annuler</button>
-                        <button id="valider_creation" type="submit" className="btn btn-success" onClick={(e) => this.createProj(e)}>Créer mon projet</button>
-                    </div>
-                </form>
+            <>  <div className="new-project">
+                    <h1 className="new-project-title">Ajoutez des renseignements<br></br> à votre projet</h1>
+                    <form className="form-new-project" >
+                        <label className="input-group new_project_input">
+                            <span className="new_project_span">Titre</span>
+                            <input id="project_name" className="input input-bordered w-full" type="text" placeholder="Donnez un titre à votre projet" />
+                        </label>
+                        <label className="input-group new_project_input">
+                            <span className="new_project_span">Description</span>
+                            <input id="project_desc" className="input input-bordered w-full" type="text" placeholder="Description de votre projet" />
+                        </label>
+                        <label className="input-group new_project_input">
+                            <span className="new_project_span">URL du Manifest</span>
+                            <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
+                        </label>
+                        <div className="new_project_btns">
+                            <button id="valider_creation" type="submit" className="btn" onClick={(e) => this.createProj(e)}>Créer mon projet</button>
+                            <button id="annuler_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>Retour</button>
+                        </div>
+                    </form>
+                </div>
             </>
         )
     }

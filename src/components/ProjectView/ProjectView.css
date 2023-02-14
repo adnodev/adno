@@ -1,3 +1,10 @@
+#projects_list .card {
+    width: calc(50% - 30px);
+    margin: 0 15px;
+    margin-bottom: 30px;
+    padding: 15px;
+}
+
 .card-img-adno{
     display: flex;
     justify-content: center;
@@ -13,14 +20,13 @@
 }
 
 .img-proj-view{
-    max-height: 250px;
-    max-width: 350px;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    width: 100%;
+    height: auto;
 }
 .project-view-card{
-    margin: 15px 0;
-    border: 2px solid #4d6f94;
+    margin-bottom: 30px;
+    /* border: 2px solid #4d6f94; */
+    transition: all 0.3s linear;
 }
 
 .project-view-card .card-body{
@@ -28,7 +34,10 @@
 }
 
 .project-view-card:hover{
-    border: 2px solid #007bff;
+    /* border: 2px solid #007bff; */
+    transform: scale(1.03);
+    cursor: pointer;
+    box-shadow: 0 0 20px #ccc;
 }
 
 .label-nb-annos{
@@ -44,43 +53,58 @@
 }
 
 .project-card-img{
-    width: 350px;
+    flex-shrink: 0;
+    width: 30%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .project-card-img:hover{
     cursor: pointer;
 }
 
+.project-card-body {
+    width: 70%;
+    flex-shrink: 0;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.project-card-body .card-title {
+    color: var(--adno-main-color);
+    font-size: 1.2rem;
+    line-height: 1.4rem;
+}
+
+.project-card-body .card-text {
+    line-height: 1.2rem;
+}
+
+.project-card-body .card-date {
+    color: var(--adno-main-color);
+    margin-bottom: 5px;
+}
+
 .project_vw_btns{
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-right: 100px;
     margin-top: 20px;
 }
 
 .project_vw_btns > div > button {
-    margin: 0 10px;
+    margin-right: 10px;
 }
 
 .project_vw_btns > div > a {
-    margin: 0 10px;
+    margin-right: 10px;
 }
 
 @media (max-width: 1440px) {
     .buttons-group-proj-view{
         width: 90%;
         margin: auto;
-    }
-
-    .project-card-img {
-        width: 400px;
-        justify-content: center;
-        align-items: center;
-        display: flex;
     }
 
     .project_vw_btns{
@@ -97,20 +121,6 @@
     .card-side {
         flex-direction: column;
         align-items: stretch;
-    }
-    .project-card-img {
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-    }
-
-    .img-proj-view{
-        max-height: 200px;
-        max-width: 350px;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        margin-top: 15px;
     }
 
     .project_vw_btns{

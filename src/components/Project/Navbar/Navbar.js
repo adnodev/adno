@@ -12,19 +12,21 @@ class Navbar extends Component {
 
     render() {
         return (
-            <div className="navbar bg-neutral text-neutral-content">
-
-                <Link to={"/"} className="btn btn-ghost normal-case"> <FontAwesomeIcon icon={faHome} size="lg"/> </Link>
+            <div className="navbar text-neutral-content">
+                <Link to={"/"} className="project-navbar-link project-page-title" title="Retourner à l'accueil"> 
+                    <h1>ADNO</h1>
+                </Link>
+                <Link to={"/"} className="project-navbar-link" title="Retourner à l'accueil"> <FontAwesomeIcon icon={faHome} size="lg"/> </Link>
 
                 {
                     this.props.selectedProject && this.props.selectedProject.id &&
-                    <a id={"download_btn_" + this.props.selectedProject.id} href={createExportProjectJsonFile(this.props.selectedProject.id)} download={this.props.selectedProject.title + ".json"} className="btn btn-md"> <FontAwesomeIcon icon={faDownload} size="lg"/> </a>
+                    <a id={"download_btn_" + this.props.selectedProject.id} href={createExportProjectJsonFile(this.props.selectedProject.id)} download={this.props.selectedProject.title + ".json"} className="project-navbar-link" title="Télécharger le projet"> <FontAwesomeIcon icon={faDownload} size="lg"/> </a>
                 }
 
-                <button onClick={() => this.props.showProjectMetadatas()} className="btn btn-md"><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="lg"/></button>
+                <button onClick={() => this.props.showProjectMetadatas()} className="project-navbar-link" title="Modifier le projet"><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="lg"/></button>
 
 
-                <p>{this.props.selectedProject.title} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`} </p>
+                <p>Nom du projet :&nbsp;<strong>{this.props.selectedProject.title} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`}</strong></p>
 
                 {
                     process.env.ADNO_MODE === "FULL" &&

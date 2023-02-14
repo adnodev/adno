@@ -1,3 +1,20 @@
+.project .navbar {
+	background: var(--adno-main-color);
+}
+
+.project .navbar .project-navbar-link {
+	margin-right: 30px;
+}
+
+.project .navbar h1 {
+	font-weight: 300;
+}
+
+.project .navbar .project-navbar-link svg {
+	width: 30px;
+	height: auto;
+}
+
 .adno-project-view {
     transition: all 1s ease 0s;
 }
