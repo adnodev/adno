@@ -984,3 +984,44 @@
     vertical-align: middle;
   }
   
+
+
+
+
+
+
+  .adno-rich-editor{
+    height: 100%;
+    width: 100%;
+}
+
+#editorJS{
+    max-height: 60vh;
+    height: 60vh;
+    word-break: break-all;
+    overflow: auto;
+}
+
+.rich-card-editor{
+    width: 95vw !important;
+    height: 90vh !important;
+    background-color: #fff !important;
+    border-radius: 10px !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    display: flex !important;
+}
+
+.rich-card-editor .card-body{
+    width: 100%;
+}
+
+.rich-card-editor-btns{
+    width: 20%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    margin: auto;
+}
