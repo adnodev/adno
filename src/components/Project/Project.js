@@ -42,7 +42,6 @@ class Project extends Component {
         if (!checkIfProjectExists(this.props.match.params.id)) {
             this.props.history.push("/")
         }
-        console.log(getProjectSettings(this.props.match.params.id))
     }
 
     updateSettings = (newSettings) => {
