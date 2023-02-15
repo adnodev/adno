@@ -16,7 +16,6 @@ import Project from "./components/Project/Project";
 
 // Import css
 import "./index.css"
-import AdnoMdViewer from "./components/AdnoMarkdown/AdnoMdViewer";
 
 require('dotenv').config()
 

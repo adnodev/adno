@@ -13,10 +13,8 @@ import "./Sidebar.css";
 
 // Import Components
 import AdnoEditor from "../AdnoEditor/AdnoEditor";
-import AdnoRichText from "../AdnoRichText/AdnoRichText";
 import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
 import ProjectEditMetadatas from "./ProjectEditMetadatas/ProjectEditMetadatas";
-import OneCardFullView from "../AdnoViewer/ViewerAnnotationCards/OneCardView/OneCardFullView";
 import Navbar from "./Navbar/Navbar";
 import OpenView from "../OpenView/OpenView";
 import AnnotationCards from "../AdnoEditor/AnnotationCards/AnnotationCards";
@@ -84,10 +82,6 @@ class Project extends Component {
 
                 {
                     this.state.updateAnnotation &&
-                    // <div className="text-rich">
-                    //     <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
-                    // </div>
-
                     <div className="text-rich">
                         <AdnoMdEditor updateAnnos={(annos) => this.setState({ annotations: annos })} closeMdEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} annoBody={this.state.selectedAnnotation.body} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
                     </div>
@@ -96,9 +90,6 @@ class Project extends Component {
                 {
                     // Display annotation's markdown
                     this.state.showFullAnnotationView &&
-                    // <div className="text-rich">
-                    //     <OneCardFullView fullAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
-                    // </div>
                     <div className="text-rich">
                         <AdnoMdViewer selectedAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
                     </div>
