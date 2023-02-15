@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // Import utils
-import { buildJsonProjectWithManifest, generateUUID, getAllProjectsFromLS, insertInLS, isValidUrl } from "../../Utils/utils";
+import { buildJsonProjectWithManifest, generateUUID, getAllProjectsFromLS, get_url_extension, insertInLS, isValidUrl } from "../../Utils/utils";
 
 // Import components
 import ImportProject from "../ImportProject/ImportProject";
@@ -34,14 +34,38 @@ class HomeWithProjects extends Component {
         this.setState({ projects })
     }
 
-    render() {
-        // Create function which is called when clicking on the submit button
-        const newProject = (e) => {
-            e.preventDefault()
+    createNewProject = (e) => {
+        e.preventDefault()
 
-            // Also, we check if the url is not empty, not undefined and not null
-            if (this.state.adno_image_url) {
+        // First, we have to check if the url is not empty, not undefined and not null
+        if (this.state.adno_image_url) {
 
+            // First use case (Image) : check if the url contains an image
+            if (get_url_extension(this.state.adno_image_url) === "png" || get_url_extension(this.state.adno_image_url) === "jpg" || get_url_extension(this.state.adno_image_url) === "jpeg") {
+                fetch(this.state.adno_image_url)
+                    .then(res => {
+                        if (res.status == 200 || res.status == 201) {
+                            insertInLS("adno_image_url", this.state.adno_image_url)
+                            this.props.history.push("/new")
+                        } else {
+                            throw new Error("Impossible d'accéder à ce fichier")
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire({
+                            title: `Erreur détectée : ${err.message}`,
+                            showCancelButton: false,
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK',
+                            icon: 'error'
+                        })
+                            .then((result) => {
+                                if (result.isConfirmed) {
+                                    this.props.history.push("/")
+                                }
+                            })
+                    })
+            } else {
                 // Then, we check if the given URL is valid
                 // Finally, we check if the URL is reachable
                 if (isValidUrl(this.state.adno_image_url)) {
@@ -55,7 +79,6 @@ class HomeWithProjects extends Component {
                             }
                         })
                         .then((data) => {
-
                             // First, we check if the file looks like an ADNO project
                             // If an adno project is found then, import it directly
                             let manifest = JSON.parse(data)
@@ -105,7 +128,6 @@ class HomeWithProjects extends Component {
                                         }
                                     })
 
-
                             } else {
                                 // If the URL doesn't look like to an adno project just import it from the New Project Page
                                 insertInLS("adno_image_url", this.state.adno_image_url)
@@ -123,13 +145,6 @@ class HomeWithProjects extends Component {
                                 icon: 'warning',
                             })
                         })
-
-
-
-
-
-
-
                 } else {
                     Swal.fire({
                         title: "L'URL renseignée n'est pas valide !",
@@ -139,19 +154,23 @@ class HomeWithProjects extends Component {
                         icon: 'warning',
                     })
                 }
-
-            } else {
-                // Display a warning popup if the URL is not filled
-                Swal.fire({
-                    title: 'Veuillez renseigner une URL valide',
-                    showCancelButton: true,
-                    showConfirmButton: false,
-                    cancelButtonText: 'OK',
-                    icon: 'warning',
-                })
             }
-        }
 
+        } else {
+            // Display a warning popup if the URL is not filled
+            Swal.fire({
+                title: 'Veuillez renseigner une URL valide',
+                showCancelButton: true,
+                showConfirmButton: false,
+                cancelButtonText: 'OK',
+                icon: 'warning',
+            })
+        }
+    }
+
+
+    render() {
+        // Create function which is called when clicking on the submit button
         return (
             <div class="home">
                 <div id="container_with_projects" className="adno_container">
@@ -169,11 +188,11 @@ class HomeWithProjects extends Component {
                         <div className="input-group mb-3 add_url">
                             <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL</span>
                             <input type="text" id="adno_image_url_2" className="input input-bordered w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
-                                placeholder="https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json" />
+                                placeholder="https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json" />
                         </div>
                         <div className="home-btn-container">
                             <div className="tooltip" data-tip="Créer un nouveau projet">
-                                <button className="create_project_2 btn" type="submit" onClick={(e) => newProject(e)}> <FontAwesomeIcon icon={faAdd} /> Créer mon projet </button>
+                                <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)}> <FontAwesomeIcon icon={faAdd} /> Créer mon projet </button>
                             </div> 
                         </div>
                     </form>

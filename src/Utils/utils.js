@@ -41,7 +41,8 @@ export function generateExamplePainting(title, description, manifest_url) {
     "description": description,
     "creation_date": createDate(),
     "last_update": createDate(),
-    "manifest_url": manifest_url
+    "manifest_url": manifest_url,
+    "settings": defaultProjectSettings()
   }
 
   // Create and store the new project in the localStorage
@@ -135,7 +136,8 @@ export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {
     "last_update": createDate(),
     "manifest_url": manifest,
     "editor": "",
-    "creator": ""
+    "creator": "",
+    "settings": defaultProjectSettings()
   }
 }
 
@@ -148,7 +150,8 @@ export const buildJsonProjectWithImg = (id, title, desc, img) => {
     "last_update": createDate(),
     "img_url": img,
     "editor": "",
-    "creator": ""
+    "creator": "",
+    "settings": defaultProjectSettings()
   }
 }
 
@@ -172,7 +175,8 @@ export const buildProjectAdnoFormat = (title, description, manifest) => {
         "type": "AnnotationPage",
         "startIndex": 0,
         "items": []
-      }
+      },
+      "settings": defaultProjectSettings()
     }
   )
 }
@@ -206,7 +210,8 @@ export const createExportProjectJsonFile = (projectID) => {
       "type": "AnnotationPage",
       "startIndex": 0,
       "items": annotations && annotations.length > 0 ? annotations : [],
-    }
+    },
+    "adno_settings": getProjectSettings(project.id) || defaultProjectSettings()
   }
   return URL.createObjectURL(new Blob([JSON.stringify(finalProject)], { type: "text/plain" }));
 }
@@ -246,10 +251,19 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
         "description": imported_project.description,
         "creation_date": imported_project.date,
         "last_update": imported_project.modified,
-        "manifest_url": imported_project.source,
+        // "manifest_url": imported_project.source,
         "creator": imported_project.creator || "",
         "editor": imported_project.editor || "",
-        "rights": imported_project.rights || ""
+        "rights": imported_project.rights || "",
+        "settings": imported_project.adno_settings || defaultProjectSettings()
+      }
+
+      let importedURL = imported_project.source
+
+      if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg") {
+        proj.img_url = imported_project.source
+      }else{
+        proj.manifest_url = imported_project.source
       }
 
       let annos = imported_project.total !== 0 ? imported_project.first.items : []
@@ -282,7 +296,6 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
 export function checkProjectAttributes(imported_project) {
   return imported_project.hasOwnProperty('id') && imported_project.hasOwnProperty('title') && imported_project.hasOwnProperty('description') && imported_project.hasOwnProperty('creation_date') && imported_project.hasOwnProperty('last_update') && imported_project.hasOwnProperty('manifest_url')
 }
-
 
 export function duplicateProject(projectID) {
   const project = JSON.parse(localStorage.getItem(projectID))
@@ -331,4 +344,21 @@ export function getAllProjectsFromLS() {
     projects.push(JSON.parse(localStorage.getItem(projectID)))
   })
   return projects;
+}
+
+// Set default settings for any ADNO project
+export function defaultProjectSettings() {
+  return {
+    delay: 2,
+    showNavigator: true,
+    toolsbarOnFs: true,
+    sidebarEnabled: true,
+    startbyfirstanno: false
+  }
+}
+
+// Get all the settings linked to a project
+// By default settings is an empty object
+export function getProjectSettings(projectID) {
+  return localStorage.getItem(projectID) && JSON.parse(localStorage.getItem(projectID)).settings ? JSON.parse(localStorage.getItem(projectID)).settings : defaultProjectSettings()
 }
