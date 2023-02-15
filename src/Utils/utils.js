@@ -251,11 +251,19 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
         "description": imported_project.description,
         "creation_date": imported_project.date,
         "last_update": imported_project.modified,
-        "manifest_url": imported_project.source,
+        // "manifest_url": imported_project.source,
         "creator": imported_project.creator || "",
         "editor": imported_project.editor || "",
         "rights": imported_project.rights || "",
         "settings": imported_project.adno_settings || defaultProjectSettings()
+      }
+
+      let importedURL = imported_project.source
+
+      if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg") {
+        proj.img_url = imported_project.source
+      }else{
+        proj.manifest_url = imported_project.source
       }
 
       let annos = imported_project.total !== 0 ? imported_project.first.items : []
