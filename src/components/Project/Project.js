@@ -165,6 +165,8 @@ class Project extends Component {
                                         startbyfirstanno={this.state.settings.startbyfirstanno}
                                         showNavigator={this.state.settings.showNavigator}
                                         toolsbarOnFs={this.state.settings.toolsbarOnFs}
+                                        showToolbar={this.state.settings.displayToolbar}
+                                        rotation={this.state.settings.rotation}
                                         timerDelay={this.state.settings.delay}
                                         annos={this.state.annotations}
                                         selectedAnno={this.state.selectedAnnotation}

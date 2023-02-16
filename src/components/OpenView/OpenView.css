@@ -44,3 +44,11 @@
 .adno-timer-osd{
     text-align: center;
 }
+
+.toolbar-on{
+    display: block;
+}
+
+.toolbar-off{
+    display: none;
+}

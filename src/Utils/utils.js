@@ -349,11 +349,13 @@ export function getAllProjectsFromLS() {
 // Set default settings for any ADNO project
 export function defaultProjectSettings() {
   return {
-    delay: 2,
+    delay: 5,
     showNavigator: true,
     toolsbarOnFs: true,
     sidebarEnabled: true,
-    startbyfirstanno: false
+    startbyfirstanno: false,
+    rotation: false,
+    displayToolbar: true
   }
 }
 
