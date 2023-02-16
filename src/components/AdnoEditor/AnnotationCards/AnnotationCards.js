@@ -3,14 +3,14 @@ import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from "react-router";
 
 // Import FontAwesome for all icons
-import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong, faWrench } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Import popup alerts
 import Swal from "sweetalert2";
 
 // JS Utils 
-import { buildTagsList, generateUUID, insertInLS } from "../../../Utils/utils";
+import { buildTagsList, generateUUID, insertInLS, migrateAnnotations } from "../../../Utils/utils";
 
 //Imports CSS
 import "./AnnotationCards.css";
@@ -18,6 +18,18 @@ import "./AnnotationCards.css";
 class AnnotationCards extends Component {
     constructor(props) {
         super(props);
+    }
+
+    getAnnotationHTMLBody = (annotation) => {
+        if (annotation && annotation.body) {
+            if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
+                return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
+            } else {
+                return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
+            }
+        } else {
+            return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
+        }
     }
 
     render() {
@@ -98,7 +110,8 @@ class AnnotationCards extends Component {
 
 
                                     <div className="adno-card-body">
-                                        {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"}
+                                        {this.getAnnotationHTMLBody(annotation)}
+                                        {/* {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"} */}
                                     </div>
 
                                     <div className="btn-line-one-card">

@@ -31,3 +31,14 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: revert;
     margin: unset;
 }
+
+ol, ul, menu {
+    margin: 0; 
+    padding: 0;
+    list-style: circle;
+}
+
+.toastui-editor-toolbar-icons {
+    background: url(../img/md-icons.png)  0 0 / 466px 146px no-repeat;
+    background-position-y: 3px;
+}

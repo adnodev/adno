@@ -23,6 +23,15 @@
     white-space: pre-wrap;
 }
 
+.adno-card-selected-body{
+    width: 276px;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: pre-wrap;
+}
+
 .anno-cards{
     display: flex;
     justify-content: left;

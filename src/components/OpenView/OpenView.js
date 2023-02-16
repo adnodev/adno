@@ -229,17 +229,28 @@ class OpenView extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
+    getAnnotationHTMLBody = (annotation) => {
+        if (annotation && annotation.body) {
+            if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
+                return (
+                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
+
+                        { ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
+                    </div>
+                )
+            }
+        }
+    }
+
+
+
     render() {
         return (
             <div id="adno-osd">
 
                 {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
-                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
-                        {this.props.selectedAnno.body && this.props.selectedAnno.body[0] &&
-                            this.props.selectedAnno.body[0].value
-                            ? ReactHtmlParser(this.props.selectedAnno.body[0].value) : "Annotation vide"}
-                    </div>
+                    this.getAnnotationHTMLBody(this.props.selectedAnno)
                 }
 
 
