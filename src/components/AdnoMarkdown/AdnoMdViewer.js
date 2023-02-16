@@ -13,7 +13,7 @@ class AdnoMdViewer extends Component {
 
     getAnnoBody = () => {
         if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
-            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0].value : ""
+            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
         } else {
             return ""
         }

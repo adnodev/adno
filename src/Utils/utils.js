@@ -260,6 +260,9 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
       insertInLS(proj.id + "_annotations", JSON.stringify(annos))
       insertInLS(proj.id, JSON.stringify(proj))
 
+      // If the project uses an old version migrate the annotations
+      migrateAnnotations(proj.id)
+
       window.location.reload()
 
     }
@@ -336,6 +339,7 @@ export function getAllProjectsFromLS() {
 }
 
 export function migrateAnnotations(projectID) {
+
   const edjsParser = edjsHTML();
   const turndownService = new TurndownService()
 
@@ -379,16 +383,16 @@ export function migrateAnnotations(projectID) {
               "purpose": "commenting"
             })
 
-          console.log(newBody);
+          // Update the localstorage
+
+          annotations.filter(annotation => annotation.id === anno.id)[0].body = newBody
+
+          insertInLS(`${projectID}_annotations`, JSON.stringify(annotations))
+
         }
 
 
       }
-
-      // return {
-      //   ...anno, 
-      //   body: newBody
-      // }
 
     })
 
