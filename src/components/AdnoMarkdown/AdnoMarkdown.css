@@ -1015,6 +1015,8 @@
 
 .rich-card-editor .card-body{
     width: 100%;
+    max-height: 85vh;
+    overflow: auto;
 }
 
 .rich-card-editor-btns{

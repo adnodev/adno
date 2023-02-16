@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // JS Utils 
-import { buildTagsList, generateUUID, insertInLS } from "../../../Utils/utils";
+import { buildTagsList, generateUUID, insertInLS, migrateAnnotations } from "../../../Utils/utils";
 
 //Imports CSS
 import "./AnnotationCards.css";
@@ -113,6 +113,8 @@ class AnnotationCards extends Component {
                                         {this.getAnnotationHTMLBody(annotation)}
                                         {/* {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"} */}
                                     </div>
+
+                                    <button onClick={() => migrateAnnotations(this.props.match.params.id)}>MIGRATE</button>
 
                                     <div className="btn-line-one-card">
                                         <button className="btn btn-sm btn-outline btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>

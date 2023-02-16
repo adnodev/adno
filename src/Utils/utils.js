@@ -1,4 +1,6 @@
 import Swal from "sweetalert2";
+import edjsHTML from "editorjs-html";
+import TurndownService from "turndown"
 
 // Function to insert something in the localStorage.
 // Will return an alert if the localStorage is full
@@ -333,3 +335,69 @@ export function getAllProjectsFromLS() {
   return projects;
 }
 
+export function migrateAnnotations(projectID) {
+  const edjsParser = edjsHTML();
+  const turndownService = new TurndownService()
+
+  try {
+    const annotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
+
+    annotations.forEach(anno => {
+
+      let newBody = anno.body.filter(anno_body => anno_body.type !== "AdnoHtmlBody" && anno_body.type !== "AdnoRichText" && !(anno_body.type === "TextualBody" && anno_body.purpose === "commenting"))
+
+      if (anno.body.length > 0) {
+
+        if (anno.body.find(anno_body => anno_body.type === "AdnoRichText")) {
+
+
+          let annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value
+
+          let htmlBody = []
+          let allMarkdown = ""
+
+          annoRichText.forEach(block => {
+            var blockHTML = edjsParser.parseBlock(block);
+
+            htmlBody.push(blockHTML)
+
+            var markdown = turndownService.turndown(blockHTML)
+            allMarkdown += markdown
+            allMarkdown += "\n"
+          })
+
+
+          newBody.push(
+            {
+              "type": "TextualBody",
+              "value": allMarkdown,
+              "purpose": "commenting"
+            },
+            {
+              "type": "HTMLBody",
+              "value": htmlBody,
+              "purpose": "commenting"
+            })
+
+          console.log(newBody);
+        }
+
+
+      }
+
+      // return {
+      //   ...anno, 
+      //   body: newBody
+      // }
+
+    })
+
+
+
+
+  } catch (error) {
+    console.error("Erreur détectée ", error);
+  }
+
+
+}
