@@ -364,6 +364,7 @@ export function defaultProjectSettings() {
   }
 }
 
+
 // Get all the settings linked to a project
 // By default settings is an empty object
 export function getProjectSettings(projectID) {

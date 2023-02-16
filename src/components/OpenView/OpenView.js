@@ -114,40 +114,46 @@ class OpenView extends Component {
     }
 
     changeAnno = (annotation) => {
-        this.props.changeSelectedAnno(annotation)
+        if (annotation && annotation.id) {
+            this.props.changeSelectedAnno(annotation)
 
-        this.AdnoAnnotorious.selectAnnotation(annotation.id)
-        this.AdnoAnnotorious.fitBounds(annotation.id)
+            this.AdnoAnnotorious.selectAnnotation(annotation.id)
+            this.AdnoAnnotorious.fitBounds(annotation.id)
 
-        let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
+            let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
 
-        this.setState({ currentID: annotationIndex })
+            this.setState({ currentID: annotationIndex })
 
-        if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-            document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
+                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            }
         }
     }
 
 
     startTimer = () => {
-        // Check if the timer is already started, clear the auto scroll between annotations
-        if (this.state.timer) {
-            this.setState({ timer: false })
+        // Do not start the timer if there is no content to display
+        if (this.props.annos.length > 0) {
 
-            clearInterval(this.state.intervalID)
-        } else {
+            // Check if the timer is already started, clear the auto scroll between annotations
+            if (this.state.timer) {
+                this.setState({ timer: false })
 
-            if (this.props.startbyfirstanno) {
-                this.setState({ currentID: -1 })
-
-                this.changeAnno(this.props.annos[0])
+                clearInterval(this.state.intervalID)
             } else {
-                this.automateLoading()
 
+                if (this.props.startbyfirstanno) {
+                    this.setState({ currentID: -1 })
+
+                    this.changeAnno(this.props.annos[0])
+                } else {
+                    this.automateLoading()
+
+                }
+                // Call the function to go to the next annotation every "timerDelay" seconds
+                let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
+                this.setState({ timer: true, intervalID: interID })
             }
-            // Call the function to go to the next annotation every "timerDelay" seconds
-            let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
-            this.setState({ timer: true, intervalID: interID })
         }
     }
 
@@ -256,11 +262,25 @@ class OpenView extends Component {
 
                 <div className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"}>
                     <div className={this.state.fullScreenEnabled && this.props.toolsbarOnFs ? "osd-buttons-bar" : this.state.fullScreenEnabled && !this.props.toolsbarOnFs ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
-                        <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" /></button>
+
+                        {
+                            this.props.annos.length > 0 &&
+                            <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" /></button>
+                        }
+
                         <button id="home-button" className="toolbarButton toolbaractive"><FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" /></button>
-                        <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button>
-                        <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg" /></button>
-                        <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg" /></button>
+
+                        {
+                            this.props.annos.length > 0 &&
+                            <>
+                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button>
+
+                                <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg" /></button>
+                                <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg" /></button>
+
+                            </>
+                        }
+
                         {
                             this.props.rotation &&
                             <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}><FontAwesomeIcon icon={faRotateRight} size="lg" /></button>
