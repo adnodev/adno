@@ -767,7 +767,7 @@
   dependencies:
     tslib "^2.4.0"
 
-"@toast-ui/editor@^3.2.0":
+"@toast-ui/editor@^3.2.0", "@toast-ui/editor@^3.2.1":
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/@toast-ui/editor/-/editor-3.2.1.tgz#dcd0b7471299842b2962aab5d757723a61959f2a"
   integrity sha512-05nKfqK2n/6Mq8WpO1E7OnOjlhiFfxr1G2i/DpG/pFjKlY3E7uOtSAyuz7rybKWHgUzXRzRGv7MqDL6lXfqnWg==

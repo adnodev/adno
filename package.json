@@ -18,6 +18,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@toast-ui/editor": "^3.2.1",
     "@toast-ui/react-editor": "3.2.1",
     "autoprefixer": "^10.4.13",
     "daisyui": "^2.42.1",

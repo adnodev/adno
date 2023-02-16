@@ -85,23 +85,31 @@ class AdnoMdEditor extends Component {
         }
     }
 
+
     render() {
 
+        // $$openstreetmap 46.6696162,0.3549242$$
 
         // const openStreetMapPlugin = () => {
         //     const toHTMLRenderers = {
-        //       openstreetmap(node) {
-        //           console.log(node.firstChild.literal);
-        //           return {
-        //             type: 'text',
-        //             content: node.firstChild.literal,
-        //             classNames: [`adnomap-${generateUUID}`]
-        //           };
-        //       },
+        //         openstreetmap(node) {
+        //             console.log(node.firstChild.literal);
+        //             // return {
+        //             //     type: 'text',
+        //             //     content: node.firstChild.literal,
+        //             //     classNames: [`adnomap-${generateUUID}`]
+        //             // };
+
+        //             return [
+        //                 { type: 'openTag', outerNewLine: true},
+        //                 { type: 'html', content: node.firstChild.literal },
+        //                 { type: 'closeTag', outerNewLine: true },
+        //             ]
+        //         },
         //     }
-    
+
         //     return { toHTMLRenderers }
-        //   }
+        // }
 
 
 
@@ -125,36 +133,42 @@ class AdnoMdEditor extends Component {
                         previewStyle="tab"
                         initialEditType="markdown"
                         placeholder="Ajoutez votre texte ici"
+                        hideModeSwitch={true}
                         // plugins= {[openStreetMapPlugin]}
+
                         toolbarItems={[
-                            [
-                                'heading',
-                                'italic',
-                                'bold',
-                                'ul',
-                                'link',
-                                'image',
-                                // {
-                                //     name: 'Map',
-                                //     tooltip: 'openstreetmap',
-                                //     command: 'bold',
-                                //     text: '@',
-                                //     className: 'toastui-editor-toolbar-icons',
-                                //     style: { backgroundImage: 'none', color: 'black' }
-                                // },
-                                // {
-                                //     name: 'Wikidata',
-                                //     tooltip: 'wikidata',
-                                //     command: 'bold',
-                                //     text: '@',
-                                //     className: 'toastui-editor-toolbar-icons',
-                                //     style: { backgroundImage: 'none', color: 'black' }
-                                // }
-                            ]
-                        ]}
+                        [
+                            'heading',
+                            'italic',
+                            'bold',
+                            'ul',
+                            'link',
+                            'image',
+                            // {
+                            //     name: 'Map',
+                            //     tooltip: 'openstreetmap',
+                            //     command: 'bold',
+                            //     text: '@',
+                            //     className: 'toastui-editor-toolbar-icons',
+                            //     style: { backgroundImage: 'none', color: 'black' }
+                            // },
+                            // {
+                            //     name: 'Wikidata',
+                            //     tooltip: 'wikidata',
+                            //     command: 'bold',
+                            //     text: '@',
+                            //     className: 'toastui-editor-toolbar-icons',
+                            //     style: { backgroundImage: 'none', color: 'black' }
+                            // }
+                        ]
+                    ]}
 
 
                     />
+
+                    <div id="editor">
+
+                    </div>
 
                     <div className="editor-tags">
                         <TagsInput
