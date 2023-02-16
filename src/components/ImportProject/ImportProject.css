@@ -25,10 +25,8 @@
   align-items: center;
 }
 
-.importing_project #label-upload{
-  width: 200px;
-  display: flex;
-  flex-direction: column;
+.importing_project #label-upload svg{
+  margin-right: 5px;
 }
 
 .import-btns{
