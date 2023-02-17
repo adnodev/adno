@@ -42,3 +42,8 @@ ol, ul, menu {
     background: url(../img/md-icons.png)  0 0 / 466px 146px no-repeat;
     background-position-y: 3px;
 }
+
+footer{
+    position: fixed;
+    top: calc(100vh - 52px)
+}

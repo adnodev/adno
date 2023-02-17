@@ -275,7 +275,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
       insertInLS(proj.id, JSON.stringify(proj))
 
       // If the project uses an old version migrate the annotations
-      migrateAnnotations(proj.id)
+      //migrateAnnotations(proj.id)
 
       window.location.reload()
 
