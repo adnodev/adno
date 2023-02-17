@@ -17,8 +17,6 @@ import Project from "./components/Project/Project";
 // Import css
 import "./index.css"
 
-require('dotenv').config()
-
 export default class App extends Component {
     constructor(props) {
         super(props);
