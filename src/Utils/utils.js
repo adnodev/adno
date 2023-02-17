@@ -264,7 +264,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
 
       if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg") {
         proj.img_url = imported_project.source
-      }else{
+      } else {
         proj.manifest_url = imported_project.source
       }
 
@@ -370,6 +370,7 @@ export function defaultProjectSettings() {
 export function getProjectSettings(projectID) {
   return localStorage.getItem(projectID) && JSON.parse(localStorage.getItem(projectID)).settings ? JSON.parse(localStorage.getItem(projectID)).settings : defaultProjectSettings()
 }
+
 export function migrateAnnotations(projectID) {
 
   const edjsParser = edjsHTML();
@@ -422,18 +423,53 @@ export function migrateAnnotations(projectID) {
           insertInLS(`${projectID}_annotations`, JSON.stringify(annotations))
 
         }
-
-
       }
 
     })
 
-
-
-
   } catch (error) {
     console.error("Erreur détectée ", error);
   }
+}
 
+
+export function checkOldVersion() {
+  let isOldVersion = false
+
+  var projectsID = JSON.parse(localStorage.getItem("adno_projects"))
+
+  projectsID?.forEach(projectID => {
+    let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
+
+    projectAnnotations?.forEach(annotation => {
+      if (annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
+
+
+
+        // Traitement 
+
+        Swal.fire({
+          title: "Une nouvelle version d'ADNO a été détectée",
+          showCancelButton: true,
+          confirmButtonText: 'Mettre à jour vers la dernière version',
+          cancelButtonText: 'Annuler',
+          icon: 'warning',
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            projectsID.forEach(projectID => {
+              migrateAnnotations(projectID)
+            })
+
+            Swal.fire("Félicitations, votre version d'ADNO est à jour ! ", '', 'success')
+         
+
+          }
+        })
+
+        return
+      }
+    })
+  })
 
 }

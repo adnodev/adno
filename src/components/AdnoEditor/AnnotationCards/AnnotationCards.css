@@ -25,6 +25,7 @@
 
 .adno-card-selected-body{
     width: 276px;
+    min-height: 70px;
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
     display: -webkit-box;
