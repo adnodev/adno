@@ -98,8 +98,6 @@ class OpenView extends Component {
     automateLoading = () => {
         let localCurrentID = this.state.currentID;
 
-
-
         if (this.state.currentID === -1) {
             localCurrentID = 0
         } else if (this.state.currentID === this.props.annos.length - 1) {
@@ -117,8 +115,11 @@ class OpenView extends Component {
         if (annotation && annotation.id) {
             this.props.changeSelectedAnno(annotation)
 
-            this.AdnoAnnotorious.selectAnnotation(annotation.id)
-            this.AdnoAnnotorious.fitBounds(annotation.id)
+
+            if (this.state.isAnnotationsVisible) {
+                this.AdnoAnnotorious.selectAnnotation(annotation.id)
+                this.AdnoAnnotorious.fitBounds(annotation.id)
+            }
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
 
@@ -273,7 +274,7 @@ class OpenView extends Component {
                         {
                             this.props.annos.length > 0 &&
                             <>
-                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button>
+                                {/* <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button> */}
 
                                 <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg" /></button>
                                 <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg" /></button>
