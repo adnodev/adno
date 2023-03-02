@@ -31,16 +31,27 @@
     z-index: 10000;
     top: 8%;
     left: 2%;
-    width: 300px;
-    height: 200px;
+    width: 20vw;
+    height: auto;
     background-color: white;
     color: cadetblue;
     border-radius: 2px;
     padding: 10px;
     overflow: auto;
+    resize: both;
+    min-width: 15vw;
+    max-height: calc(100% - 10vh);
 }
 
 
 .adno-timer-osd{
     text-align: center;
+}
+
+.toolbar-on{
+    display: block;
+}
+
+.toolbar-off{
+    display: none;
 }

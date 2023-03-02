@@ -13,15 +13,15 @@ import "./Sidebar.css";
 
 // Import Components
 import AdnoEditor from "../AdnoEditor/AdnoEditor";
-import AdnoRichText from "../AdnoRichText/AdnoRichText";
 import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
 import ProjectEditMetadatas from "./ProjectEditMetadatas/ProjectEditMetadatas";
-import OneCardFullView from "../AdnoViewer/ViewerAnnotationCards/OneCardView/OneCardFullView";
 import Navbar from "./Navbar/Navbar";
 import OpenView from "../OpenView/OpenView";
 import AnnotationCards from "../AdnoEditor/AnnotationCards/AnnotationCards";
 import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnnotationCards";
 import ProjectSettings from "./ProjectSettings";
+import AdnoMdEditor from "../AdnoMarkdown/AdnoMdEditor";
+import AdnoMdViewer from "../AdnoMarkdown/AdnoMdViewer";
 
 class Project extends Component {
     constructor(props) {
@@ -89,24 +89,21 @@ class Project extends Component {
                 {
                     this.state.updateAnnotation &&
                     <div className="text-rich">
-                        <AdnoRichText updateAnnos={(annos) => this.setState({ annotations: annos })} closeRichEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
+                        <AdnoMdEditor updateAnnos={(annos) => this.setState({ annotations: annos })} closeMdEditor={() => this.setState({ updateAnnotation: false })} selectedAnnotation={this.state.selectedAnnotation} annoBody={this.state.selectedAnnotation.body} selectedProjectId={this.props.match.params.id} annotations={this.state.annotations} changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })} />
                     </div>
                 }
 
                 {
+                    // Display annotation's markdown
                     this.state.showFullAnnotationView &&
                     <div className="text-rich">
-                        <OneCardFullView fullAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
+                        <AdnoMdViewer selectedAnnotation={this.state.selectedAnnotation} closeFullView={() => this.setState({ showFullAnnotationView: false })} />
                     </div>
-
                 }
 
 
                 {
-                    this.state.annotations.length > 0 &&
-
-
-                        this.props.editMode ?
+                    this.state.annotations.length > 0 && this.props.editMode ?
                         <div className="sidebar-opened-w-modal">
                             {
                                 <AnnotationCards
@@ -122,7 +119,7 @@ class Project extends Component {
                             }
                         </div>
                         :
-                        !this.props.editMode && this.state.settings.sidebarEnabled &&
+                        this.state.annotations.length > 0  && !this.props.editMode && this.state.settings.sidebarEnabled &&
                         <div className="sidebar-opened-w-modal">
                             {
                                 this.props.editMode ?
@@ -165,6 +162,8 @@ class Project extends Component {
                                         startbyfirstanno={this.state.settings.startbyfirstanno}
                                         showNavigator={this.state.settings.showNavigator}
                                         toolsbarOnFs={this.state.settings.toolsbarOnFs}
+                                        showToolbar={this.state.settings.displayToolbar}
+                                        rotation={this.state.settings.rotation}
                                         timerDelay={this.state.settings.delay}
                                         annos={this.state.annotations}
                                         selectedAnno={this.state.selectedAnnotation}

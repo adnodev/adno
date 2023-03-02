@@ -74,6 +74,17 @@ class ProjectSettings extends Component {
                         </label>
                         <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.startbyfirstanno} onChange={() => this.setState({settings: {...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno}})}/>
 
+                        <label className="label">
+                            <span className="label-text">Activer la rotation de l'image</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.rotation} onChange={() => this.setState({settings: {...this.state.settings, rotation: !this.state.settings.rotation}})}/>
+
+
+                        <label className="label">
+                            <span className="label-text">Afficher la barre d'outils</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.displayToolbar} onChange={() => this.setState({settings: {...this.state.settings, displayToolbar: !this.state.settings.displayToolbar}})}/>
+
 
                         <div className="metadata-editor-btns">
                              <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} />  Enregistrer </button>

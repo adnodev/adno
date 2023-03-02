@@ -1,4 +1,6 @@
 import Swal from "sweetalert2";
+import edjsHTML from "editorjs-html";
+import TurndownService from "turndown"
 
 // Function to insert something in the localStorage.
 // Will return an alert if the localStorage is full
@@ -120,7 +122,7 @@ export const get_url_extension = (url) => {
 }
 
 export const buildTagsList = (annotation) => {
-  var tags = annotation.body.filter(anno_body => anno_body.purpose === "tagging")
+  var tags = Array.isArray(annotation.body) ? annotation.body.filter(anno_body => anno_body.purpose === "tagging") : []
 
   return tags
 
@@ -262,7 +264,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
 
       if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg") {
         proj.img_url = imported_project.source
-      }else{
+      } else {
         proj.manifest_url = imported_project.source
       }
 
@@ -271,6 +273,9 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport) => {
       insertInLS("adno_projects", JSON.stringify(projects))
       insertInLS(proj.id + "_annotations", JSON.stringify(annos))
       insertInLS(proj.id, JSON.stringify(proj))
+
+      // If the project uses an old version migrate the annotations
+      //migrateAnnotations(proj.id)
 
       window.location.reload()
 
@@ -349,16 +354,122 @@ export function getAllProjectsFromLS() {
 // Set default settings for any ADNO project
 export function defaultProjectSettings() {
   return {
-    delay: 2,
+    delay: 5,
     showNavigator: true,
     toolsbarOnFs: true,
     sidebarEnabled: true,
-    startbyfirstanno: false
+    startbyfirstanno: false,
+    rotation: false,
+    displayToolbar: true
   }
 }
+
 
 // Get all the settings linked to a project
 // By default settings is an empty object
 export function getProjectSettings(projectID) {
   return localStorage.getItem(projectID) && JSON.parse(localStorage.getItem(projectID)).settings ? JSON.parse(localStorage.getItem(projectID)).settings : defaultProjectSettings()
+}
+
+export function migrateAnnotations(projectID) {
+
+  const edjsParser = edjsHTML();
+  const turndownService = new TurndownService()
+
+  try {
+    const annotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
+
+    annotations.forEach(anno => {
+
+      let newBody = anno.body.filter(anno_body => anno_body.type !== "AdnoHtmlBody" && anno_body.type !== "AdnoRichText" && !(anno_body.type === "TextualBody" && anno_body.purpose === "commenting"))
+
+      if (anno.body.length > 0) {
+
+        if (anno.body.find(anno_body => anno_body.type === "AdnoRichText")) {
+
+
+          let annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value
+
+          let htmlBody = []
+          let allMarkdown = ""
+
+          annoRichText.forEach(block => {
+            var blockHTML = edjsParser.parseBlock(block);
+
+            htmlBody.push(blockHTML)
+
+            var markdown = turndownService.turndown(blockHTML)
+            allMarkdown += markdown
+            allMarkdown += "\n"
+          })
+
+
+          newBody.push(
+            {
+              "type": "TextualBody",
+              "value": allMarkdown,
+              "purpose": "commenting"
+            },
+            {
+              "type": "HTMLBody",
+              "value": htmlBody,
+              "purpose": "commenting"
+            })
+
+          // Update the localstorage
+
+          annotations.filter(annotation => annotation.id === anno.id)[0].body = newBody
+
+          insertInLS(`${projectID}_annotations`, JSON.stringify(annotations))
+
+        }
+      }
+
+    })
+
+  } catch (error) {
+    console.error("Erreur détectée ", error);
+  }
+}
+
+
+export function checkOldVersion() {
+  let isOldVersion = false
+
+  var projectsID = JSON.parse(localStorage.getItem("adno_projects"))
+
+  projectsID?.forEach(projectID => {
+    let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
+
+    projectAnnotations?.forEach(annotation => {
+      if (annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
+
+
+
+        // Traitement 
+
+        Swal.fire({
+          title: "Une nouvelle version d'ADNO a été détectée",
+          showCancelButton: true,
+          confirmButtonText: 'Mettre à jour vers la dernière version',
+          cancelButtonText: 'Annuler',
+          icon: 'warning',
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            projectsID.forEach(projectID => {
+              migrateAnnotations(projectID)
+            })
+
+            Swal.fire("Félicitations, votre version d'ADNO est à jour ! ", '', 'success')
+         
+
+          }
+        })
+
+        return
+      }
+    })
+  })
+
 }

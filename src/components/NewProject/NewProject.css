@@ -1,11 +1,26 @@
-.form-new-project{
-    width: 70vw;
-    margin: 10vh auto;
+.new-project {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    min-height: 100vh;
+    max-width: 700px;
+    margin: 0 auto;
 }
+
+.new-project-title {
+    color: var(--adno-main-color);
+    font-weight: 300;
+    font-size: 2.5rem;
+    line-height: 2.8rem;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.form-new-project{
+    width: 100%;
+}
+
 .mb-3 {
     width: 100%;
 }
@@ -13,9 +28,13 @@
 .new_project_btns{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     width: 100%;
+}
+
+.new_project_btns button {
+    margin-left: 15px;
 }
 
 .new_project_input{
