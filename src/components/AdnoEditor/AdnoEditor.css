@@ -1,9 +1,8 @@
 .move-btn{
-    z-index: 1;
-    width: 20px;
+    -index: 1;
     position: absolute;
     right: 0;
-    top: 53px;
+    bottom: 0;
 }
 
 .edit-form{

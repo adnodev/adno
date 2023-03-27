@@ -89,7 +89,7 @@ class AdnoEditor extends Component {
 
             // Event triggered when user click on an annotation
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-                this.setState({ isMovingItem: true })
+          
 
                 document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
@@ -101,6 +101,8 @@ class AdnoEditor extends Component {
 
             // Event triggered when resizing an annotation shape
             this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
+                this.setState({ isMovingItem: true })
+
                 const selected = this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
 
@@ -149,7 +151,7 @@ class AdnoEditor extends Component {
         // If the user clicks the target button on the annotation card it'll trigger this method     
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
             this.changeAnno(this.props.selectedAnno)
-            this.setState({ isMovingItem: true })
+          //  this.setState({ isMovingItem: true })
         }
 
         if (this.props.annotations !== prevProps.annotations) {
@@ -172,7 +174,7 @@ class AdnoEditor extends Component {
 
                 {
                     this.state.isMovingItem &&
-                    <button className="btn btn-sm btn-outline btn-success move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /></button>
+                    <button className="btn btn-lg btn-success move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /> Valider les modifications  </button>
                 }
             </div>
         )
