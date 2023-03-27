@@ -1,3 +1,11 @@
+.move-btn{
+    z-index: 1;
+    width: 20px;
+    position: absolute;
+    right: 0;
+    top: 53px;
+}
+
 .edit-form{
     width: 70vw;
     margin: 30px auto auto auto;

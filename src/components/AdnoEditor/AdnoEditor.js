@@ -1,5 +1,8 @@
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
+import Swal from "sweetalert2";
 
 // Import utils
 import { checkIfProjectExists, createDate, insertInLS } from "../../Utils/utils";
@@ -10,6 +13,9 @@ import "./AdnoEditor.css";
 class AdnoEditor extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isMovingItem: false
+        }
     }
 
     componentDidMount() {
@@ -83,26 +89,22 @@ class AdnoEditor extends Component {
 
             // Event triggered when user click on an annotation
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
+                this.setState({isMovingItem: true})
+
                 document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
+
+                const selected = this.AdnoAnnotorious.getSelected();
+                this.setState({selected})
             })
+
 
             // Event triggered when resizing an annotation shape
             this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
-                // console.log("selecting ..", this.AdnoAnnotorious.getSelected().target.selector.value);
                 const selected = this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
 
-                var annotations = [...this.props.annotations]
-                var newAnnos = annotations.map(anno => {
-                    if (anno.id === selected.id) {
-                        anno = selected
-                    }
-                    return anno;
-                })
-
-                insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
-                this.props.updateAnnos(newAnnos)
+                this.setState({selected})
             });
         }
     }
@@ -114,7 +116,33 @@ class AdnoEditor extends Component {
         if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
             document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
         }
+    }
 
+    validateMove = () => {
+        const selected_project = JSON.parse(localStorage.getItem(this.props.match.params.id))
+
+        var selected = this.state.selected;
+
+        var annotations = [...this.props.annotations]
+        var newAnnos = annotations.map(anno => {
+            if (anno.id === selected.id) {
+                anno = selected
+            }
+            return anno;
+        })
+
+        insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
+        this.props.updateAnnos(newAnnos)
+
+        this.setState({isMovingItem: false})
+
+        Swal.fire({
+            title: "Annotation déplacée avec succès",
+            showCancelButton: false,
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            icon: 'success'
+        })
     }
 
     componentDidUpdate(prevProps) {
@@ -140,6 +168,11 @@ class AdnoEditor extends Component {
             <div>
                 <div id="toolbar-container"></div>
                 <div id="openseadragon1"></div>
+
+                {
+                    this.state.isMovingItem &&
+                    <button className="btn btn-sm btn-outline btn-success move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /></button>
+                }
             </div>
         )
     }

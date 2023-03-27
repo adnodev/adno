@@ -450,9 +450,9 @@ export function checkOldVersion() {
 
         Swal.fire({
           title: "Une nouvelle version d'ADNO a été détectée",
-          showCancelButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
           confirmButtonText: 'Mettre à jour vers la dernière version',
-          cancelButtonText: 'Annuler',
           icon: 'warning',
         }).then((result) => {
           if (result.isConfirmed) {
