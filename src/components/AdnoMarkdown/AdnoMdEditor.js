@@ -60,6 +60,8 @@ class AdnoMdEditor extends Component {
             )
         })
 
+        console.log(newTextBody);
+
         let newBody = [newTextBody, HTMLBody, ...tags]
 
         if (annos.filter(anno => anno.id === this.props.selectedAnnotation.id).length > 0) {
@@ -137,31 +139,31 @@ class AdnoMdEditor extends Component {
                         // plugins= {[openStreetMapPlugin]}
 
                         toolbarItems={[
-                        [
-                            'heading',
-                            'italic',
-                            'bold',
-                            'ul',
-                            'link',
-                            'image',
-                            // {
-                            //     name: 'Map',
-                            //     tooltip: 'openstreetmap',
-                            //     command: 'bold',
-                            //     text: '@',
-                            //     className: 'toastui-editor-toolbar-icons',
-                            //     style: { backgroundImage: 'none', color: 'black' }
-                            // },
-                            // {
-                            //     name: 'Wikidata',
-                            //     tooltip: 'wikidata',
-                            //     command: 'bold',
-                            //     text: '@',
-                            //     className: 'toastui-editor-toolbar-icons',
-                            //     style: { backgroundImage: 'none', color: 'black' }
-                            // }
-                        ]
-                    ]}
+                            [
+                                'heading',
+                                'italic',
+                                'bold',
+                                'ul',
+                                'link',
+                                'image',
+                                // {
+                                //     name: 'Map',
+                                //     tooltip: 'openstreetmap',
+                                //     command: 'bold',
+                                //     text: '@',
+                                //     className: 'toastui-editor-toolbar-icons',
+                                //     style: { backgroundImage: 'none', color: 'black' }
+                                // },
+                                // {
+                                //     name: 'Wikidata',
+                                //     tooltip: 'wikidata',
+                                //     command: 'bold',
+                                //     text: '@',
+                                //     className: 'toastui-editor-toolbar-icons',
+                                //     style: { backgroundImage: 'none', color: 'black' }
+                                // }
+                            ]
+                        ]}
 
 
                     />

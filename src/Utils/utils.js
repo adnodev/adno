@@ -396,11 +396,15 @@ export function migrateAnnotations(projectID) {
           annoRichText.forEach(block => {
             var blockHTML = edjsParser.parseBlock(block);
 
+
+            console.log(blockHTML);
+
             htmlBody.push(blockHTML)
 
             var markdown = turndownService.turndown(blockHTML)
-            allMarkdown += markdown
-            allMarkdown += "\n"
+
+            // add markdown and a line break
+            allMarkdown += markdown + "\n";
           })
 
 
@@ -462,7 +466,7 @@ export function checkOldVersion() {
             })
 
             Swal.fire("Félicitations, votre version d'ADNO est à jour ! ", '', 'success')
-         
+
 
           }
         })
