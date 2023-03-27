@@ -89,13 +89,13 @@ class AdnoEditor extends Component {
 
             // Event triggered when user click on an annotation
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-                this.setState({isMovingItem: true})
+                this.setState({ isMovingItem: true })
 
                 document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
 
                 const selected = this.AdnoAnnotorious.getSelected();
-                this.setState({selected})
+                this.setState({ selected })
             })
 
 
@@ -104,7 +104,7 @@ class AdnoEditor extends Component {
                 const selected = this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
 
-                this.setState({selected})
+                this.setState({ selected })
             });
         }
     }
@@ -134,7 +134,7 @@ class AdnoEditor extends Component {
         insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
         this.props.updateAnnos(newAnnos)
 
-        this.setState({isMovingItem: false})
+        this.setState({ isMovingItem: false })
 
         Swal.fire({
             title: "Annotation déplacée avec succès",
@@ -149,6 +149,7 @@ class AdnoEditor extends Component {
         // If the user clicks the target button on the annotation card it'll trigger this method     
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
             this.changeAnno(this.props.selectedAnno)
+            this.setState({ isMovingItem: true })
         }
 
         if (this.props.annotations !== prevProps.annotations) {
