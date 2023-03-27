@@ -390,17 +390,18 @@ export function migrateAnnotations(projectID) {
 
           let annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value
 
-          let htmlBody = []
+          let htmlBody = ""
           let allMarkdown = ""
 
           annoRichText.forEach(block => {
             var blockHTML = edjsParser.parseBlock(block);
 
-            htmlBody.push(blockHTML)
+            htmlBody += blockHTML;
 
             var markdown = turndownService.turndown(blockHTML)
-            allMarkdown += markdown
-            allMarkdown += "\n"
+
+            // add markdown and a line break
+            allMarkdown += markdown + "\n";
           })
 
 
@@ -449,10 +450,10 @@ export function checkOldVersion() {
         // Traitement 
 
         Swal.fire({
-          title: "Une nouvelle version d'ADNO a été détectée",
-          showCancelButton: true,
+          title: "Un ou plusieurs projets ont été fait avec une version obsolète d’Adno",
+          showCancelButton: false,
+          showConfirmButton: true,
           confirmButtonText: 'Mettre à jour vers la dernière version',
-          cancelButtonText: 'Annuler',
           icon: 'warning',
         }).then((result) => {
           if (result.isConfirmed) {
@@ -461,8 +462,8 @@ export function checkOldVersion() {
               migrateAnnotations(projectID)
             })
 
-            Swal.fire("Félicitations, votre version d'ADNO est à jour ! ", '', 'success')
-         
+            Swal.fire("Félicitations, vos projets ADNO sont à jour ! ", '', 'success')
+
 
           }
         })

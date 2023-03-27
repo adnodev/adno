@@ -59,7 +59,7 @@ class AdnoMdEditor extends Component {
                 }
             )
         })
-
+        
         let newBody = [newTextBody, HTMLBody, ...tags]
 
         if (annos.filter(anno => anno.id === this.props.selectedAnnotation.id).length > 0) {
@@ -79,7 +79,7 @@ class AdnoMdEditor extends Component {
 
     getAnnoBody = () => {
         if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
-            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody")[0].value : ""
+            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
         } else {
             return ""
         }
@@ -137,31 +137,31 @@ class AdnoMdEditor extends Component {
                         // plugins= {[openStreetMapPlugin]}
 
                         toolbarItems={[
-                        [
-                            'heading',
-                            'italic',
-                            'bold',
-                            'ul',
-                            'link',
-                            'image',
-                            // {
-                            //     name: 'Map',
-                            //     tooltip: 'openstreetmap',
-                            //     command: 'bold',
-                            //     text: '@',
-                            //     className: 'toastui-editor-toolbar-icons',
-                            //     style: { backgroundImage: 'none', color: 'black' }
-                            // },
-                            // {
-                            //     name: 'Wikidata',
-                            //     tooltip: 'wikidata',
-                            //     command: 'bold',
-                            //     text: '@',
-                            //     className: 'toastui-editor-toolbar-icons',
-                            //     style: { backgroundImage: 'none', color: 'black' }
-                            // }
-                        ]
-                    ]}
+                            [
+                                'heading',
+                                'italic',
+                                'bold',
+                                'ul',
+                                'link',
+                                'image',
+                                // {
+                                //     name: 'Map',
+                                //     tooltip: 'openstreetmap',
+                                //     command: 'bold',
+                                //     text: '@',
+                                //     className: 'toastui-editor-toolbar-icons',
+                                //     style: { backgroundImage: 'none', color: 'black' }
+                                // },
+                                // {
+                                //     name: 'Wikidata',
+                                //     tooltip: 'wikidata',
+                                //     command: 'bold',
+                                //     text: '@',
+                                //     className: 'toastui-editor-toolbar-icons',
+                                //     style: { backgroundImage: 'none', color: 'black' }
+                                // }
+                            ]
+                        ]}
 
 
                     />

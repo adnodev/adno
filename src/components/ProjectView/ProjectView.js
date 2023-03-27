@@ -120,7 +120,7 @@ class ProjectView extends Component {
 
                 </div>
                 <div className="project-card-body">
-                    <div classname="project-text">
+                    <div className="project-text">
                         <h2 className="card-title">{this.props.project.title}</h2>
                         <p className="card-text card-date"><small className="text-muted">Créé le {new Date(this.props.project.creation_date).toLocaleDateString()}</small></p>
                         <p className="card-text">{this.props.project.description ? this.props.project.description : "Aucune description disponible pour ce projet"}</p>

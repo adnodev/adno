@@ -1,5 +1,9 @@
 /* TOAST UI REWRITING RULES */
 
+.markdown-body{
+  white-space: pre-wrap;
+}
+
 .toastui-editor-contents img {
   max-width: 30%;
 }

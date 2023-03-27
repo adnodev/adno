@@ -174,7 +174,7 @@ class HomeWithProjects extends Component {
     render() {
         // Create function which is called when clicking on the submit button
         return (
-            <div class="home">
+            <div className="home">
                 <div id="container_with_projects" className="adno_container">
                     {
                         process.env.ADNO_TITLE ?
@@ -202,7 +202,7 @@ class HomeWithProjects extends Component {
                         <p className="adno_description">Ou <strong>importer un projet</strong> directement</p>
                         <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />
                     </div>
-                    <div class="projects_list__container">
+                    <div className="projects_list__container">
                     {
                         this.state.projects && this.state.projects.length > 0 ?
                             <>
