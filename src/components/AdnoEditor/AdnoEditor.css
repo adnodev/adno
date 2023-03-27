@@ -1,5 +1,5 @@
 .move-btn{
-    -index: 1;
+    z-index: 1;
     position: absolute;
     right: 0;
     bottom: 0;

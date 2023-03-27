@@ -151,7 +151,7 @@ class AdnoEditor extends Component {
         // If the user clicks the target button on the annotation card it'll trigger this method     
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
             this.changeAnno(this.props.selectedAnno)
-          //  this.setState({ isMovingItem: true })
+            this.setState({ isMovingItem: false })
         }
 
         if (this.props.annotations !== prevProps.annotations) {
