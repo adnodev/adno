@@ -450,7 +450,7 @@ export function checkOldVersion() {
         // Traitement 
 
         Swal.fire({
-          title: "Une nouvelle version d'ADNO a été détectée",
+          title: "Un ou plusieurs projets ont été fait avec une version obsolète d’Adno",
           showCancelButton: false,
           showConfirmButton: true,
           confirmButtonText: 'Mettre à jour vers la dernière version',
@@ -462,7 +462,7 @@ export function checkOldVersion() {
               migrateAnnotations(projectID)
             })
 
-            Swal.fire("Félicitations, votre version d'ADNO est à jour ! ", '', 'success')
+            Swal.fire("Félicitations, vos projets ADNO sont à jour ! ", '', 'success')
 
 
           }
