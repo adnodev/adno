@@ -59,9 +59,7 @@ class AdnoMdEditor extends Component {
                 }
             )
         })
-
-        console.log(newTextBody);
-
+        
         let newBody = [newTextBody, HTMLBody, ...tags]
 
         if (annos.filter(anno => anno.id === this.props.selectedAnnotation.id).length > 0) {

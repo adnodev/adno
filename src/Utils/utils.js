@@ -390,16 +390,13 @@ export function migrateAnnotations(projectID) {
 
           let annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value
 
-          let htmlBody = []
+          let htmlBody = ""
           let allMarkdown = ""
 
           annoRichText.forEach(block => {
             var blockHTML = edjsParser.parseBlock(block);
 
-
-            console.log(blockHTML);
-
-            htmlBody.push(blockHTML)
+            htmlBody += blockHTML;
 
             var markdown = turndownService.turndown(blockHTML)
 
