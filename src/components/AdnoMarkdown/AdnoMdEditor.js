@@ -180,9 +180,10 @@ class AdnoMdEditor extends Component {
 
 
                     <div className="rich-card-editor-btns">
-                        {!this.state.isDeleting && <button className="btn btn-error" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> Supprimer </button>}
+                        <button className="btn ml-1 mr-1" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> Enregistrer </button>
+                        {!this.state.isDeleting && <button className="btn btn-error ml-1 mr-1" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> Supprimer </button>}
                         {this.state.isDeleting && <button className="btn btn-success" onClick={() => { this.setState({ isDeleting: false }), this.deleteAnnotation(), this.props.closeRichEditor() }}> <FontAwesomeIcon icon={faCheckCircle} /> Confirmer </button>}
-                        <button className="btn" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> Enregistrer </button>
+                        
                     </div>
 
                 </div>

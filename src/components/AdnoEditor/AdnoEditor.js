@@ -174,7 +174,7 @@ class AdnoEditor extends Component {
 
                 {
                     this.state.isMovingItem &&
-                    <button className="btn btn-lg btn-success move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /> Valider les modifications  </button>
+                    <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /> Valider les modifications  </button>
                 }
             </div>
         )

@@ -41,12 +41,14 @@
 }
 
 #myForm{
+    flex-shrink: 0;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    display: flex;
-    margin: 0 auto;
-    flex-direction: column;
-    margin-bottom: 30px;
+    border-right: 1px solid var(--adno-main-color);
+    padding: 0 50px;
 }
 
 #myForm .input-group { 
@@ -54,10 +56,17 @@
 }
 
 .import_container {
+    flex-shrink: 0;
+    width: 40%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 50px;
+    padding: 0 50px;
+}
+
+.adno_import_description {
+    line-height: 48px;
+    text-align: center;
 }
 
 .with_projects_right{
@@ -149,12 +158,19 @@
     font-weight: 300;
 }
 
+.adno_home_selection {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 50px 0;
+}
+
 .adno_description {
     text-align: center;
     font-size: 1.5rem;
     line-height: 2rem;
     font-weight: 300;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 }
 
 @media (max-width: 1440px) {

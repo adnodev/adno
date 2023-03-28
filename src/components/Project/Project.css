@@ -15,6 +15,16 @@
 	height: auto;
 }
 
+.project .navbar .toggle-success {
+    border: var(--adno-second-color);
+    background: var(--adno-second-color);
+}
+
+.project .navbar .toggle-success:checked {
+    border: var(--adno-main-color);
+    background: var(--adno-main-color);
+}
+
 .adno-project-view {
     transition: all 1s ease 0s;
 }

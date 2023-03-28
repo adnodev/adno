@@ -115,13 +115,13 @@ class AnnotationCards extends Component {
                                     </div>
 
                                     <div className="btn-line-one-card">
-                                        <button className="btn btn-sm btn-outline btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>
-                                        <button className="btn btn-sm btn-outline btn-success" onClick={() => this.props.openRichEditor(annotation)}> <FontAwesomeIcon icon={faEdit} /></button>
+                                        <button className="btn btn-sm" onClick={() => this.props.openRichEditor(annotation)}> <FontAwesomeIcon icon={faEdit} /></button>
                                         <button type="button"
                                             onClick={() => this.props.changeSelectedAnno(annotation)}
-                                            className="btn btn-outline btn-success btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
-                                        {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchDown(index)}> <FontAwesomeIcon icon={faDownLong} /> </button> : <></>}
-                                        {index > 0 ? <button className="btn btn-sm btn-outline btn-primary" onClick={() => annoSwitchUp(index)}> <FontAwesomeIcon icon={faUpLong} /> </button> : <></>}
+                                            className="btn btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
+                                        {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline" onClick={() => annoSwitchDown(index)}> <FontAwesomeIcon icon={faDownLong} /> </button> : <></>}
+                                        {index > 0 ? <button className="btn btn-sm" onClick={() => annoSwitchUp(index)}> <FontAwesomeIcon icon={faUpLong} /> </button> : <></>}
+                                        <button className="btn btn-sm btn-outline btn-error" onClick={() => deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>
                                     </div>
                                 </div >
                             </div >
