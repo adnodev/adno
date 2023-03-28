@@ -55,35 +55,35 @@ class ProjectSettings extends Component {
                         <label className="label">
                             <span className="label-text">Navigateur d'ensemble</span>
                         </label>
-                        <input type="checkbox" className="toggle toggle-success toggle-navigator" checked={this.state.settings.showNavigator} onChange={() => this.setState({settings: {...this.state.settings, showNavigator: !this.state.settings.showNavigator}})}/>
+                        <input type="checkbox" className="toggle toggle-navigator" checked={this.state.settings.showNavigator} onChange={() => this.setState({settings: {...this.state.settings, showNavigator: !this.state.settings.showNavigator}})}/>
 
 
                         <label className="label">
                             <span className="label-text">Afficher barre outils en mode plein écran</span>
                         </label>
-                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.toolsbarOnFs} onChange={() => this.setState({settings: {...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs}})}/>
+                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.toolsbarOnFs} onChange={() => this.setState({settings: {...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs}})}/>
 
                         <label className="label">
                             <span className="label-text">Afficher la barre de navigation pour les annotations</span>
                         </label>
-                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.sidebarEnabled} onChange={() => this.setState({settings: {...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled}})}/>
+                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.sidebarEnabled} onChange={() => this.setState({settings: {...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled}})}/>
 
 
                         <label className="label">
                             <span className="label-text">Toujours commencer la lecture automatique à la première annotation</span>
                         </label>
-                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.startbyfirstanno} onChange={() => this.setState({settings: {...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno}})}/>
+                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.startbyfirstanno} onChange={() => this.setState({settings: {...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno}})}/>
 
                         <label className="label">
                             <span className="label-text">Activer la rotation de l'image</span>
                         </label>
-                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.rotation} onChange={() => this.setState({settings: {...this.state.settings, rotation: !this.state.settings.rotation}})}/>
+                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.rotation} onChange={() => this.setState({settings: {...this.state.settings, rotation: !this.state.settings.rotation}})}/>
 
 
                         <label className="label">
                             <span className="label-text">Afficher la barre d'outils</span>
                         </label>
-                        <input type="checkbox" className="toggle toggle-success toggle-toolsbar" checked={this.state.settings.displayToolbar} onChange={() => this.setState({settings: {...this.state.settings, displayToolbar: !this.state.settings.displayToolbar}})}/>
+                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar} onChange={() => this.setState({settings: {...this.state.settings, displayToolbar: !this.state.settings.displayToolbar}})}/>
 
 
                         <div className="metadata-editor-btns">

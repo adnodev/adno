@@ -185,22 +185,24 @@ class HomeWithProjects extends Component {
                             <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
                         </div>
                     }
-                    <p className="adno_description">Pour commencer à utiliser <strong>Adno</strong>, veuillez renseigner dans le champs ci-dessous l'URL d'un <strong>manifest IIIF</strong>, d'une <strong>image IIIF</strong> ou encore d'une <strong>image statique</strong> au format <strong>JPG</strong> ou <strong>PNG</strong></p>
-                    <form id="myForm">
-                        <div className="input-group mb-3 add_url">
-                            <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL</span>
-                            <input type="text" id="adno_image_url_2" className="input input-bordered w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
-                                placeholder="https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json" />
+                    <p className="adno_description">Pour commencer à utiliser <strong>Adno</strong>,<br></br> veuillez renseigner dans le champs ci-dessous l'URL d'un <strong>manifest IIIF</strong>,<br></br> d'une <strong>image IIIF</strong> ou encore d'une <strong>image statique</strong> au format <strong>JPG</strong> ou <strong>PNG</strong></p>
+                    <div class="adno_home_selection">
+                        <form id="myForm">
+                            <div className="input-group mb-3 add_url">
+                                <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL</span>
+                                <input type="text" id="adno_image_url_2" className="input input-bordered w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
+                                    placeholder="https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json" />
+                            </div>
+                            <div className="home-btn-container">
+                                <div className="tooltip" data-tip="Créer un nouveau projet">
+                                    <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)}> <FontAwesomeIcon icon={faAdd} /> Créer mon projet </button>
+                                </div> 
+                            </div>
+                        </form>
+                        <div className="import_container">
+                            <p className="adno_import_description mb-3"><strong>importer un projet</strong> directement</p>
+                            <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />
                         </div>
-                        <div className="home-btn-container">
-                            <div className="tooltip" data-tip="Créer un nouveau projet">
-                                <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)}> <FontAwesomeIcon icon={faAdd} /> Créer mon projet </button>
-                            </div> 
-                        </div>
-                    </form>
-                    <div className="import_container">
-                        <p className="adno_description">Ou <strong>importer un projet</strong> directement</p>
-                        <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />
                     </div>
                     <div className="projects_list__container">
                     {

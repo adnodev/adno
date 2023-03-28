@@ -2,7 +2,14 @@
     z-index: 1;
     position: absolute;
     right: 0;
-    bottom: 0;
+    bottom: 30px;
+    left: 0;
+    margin: auto;
+    width: 350px;
+    background-color: var(--adno-main-color) !important;
+}
+.move-btn svg{
+    margin-right: 10px;
 }
 
 .edit-form{
