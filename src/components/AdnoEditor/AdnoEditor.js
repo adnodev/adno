@@ -96,6 +96,7 @@ class AdnoEditor extends Component {
 
                 const selected = this.AdnoAnnotorious.getSelected();
                 this.setState({ selected })
+
             })
 
 
@@ -128,7 +129,7 @@ class AdnoEditor extends Component {
         var annotations = [...this.props.annotations]
         var newAnnos = annotations.map(anno => {
             if (anno.id === selected.id) {
-                anno = selected
+                anno.target = selected.target
             }
             return anno;
         })
