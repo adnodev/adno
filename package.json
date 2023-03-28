@@ -4,12 +4,9 @@
   "description": "",
   "scripts": {
     "start": "yarn install && parcel public/index.html",
-    "build-full": "parcel build public/index.html --dist-dir adno-full",
-    "build-light": "parcel build public/index.html --dist-dir adno-light",
+    "build-full": "yarn install && parcel build public/index.html --dist-dir adno-full",
+    "build-light": "yarn install && parcel build public/index.html --dist-dir adno-light",
     "clean": "rm -r node_modules && rm -r .parcel-cache && rm -r dist"
-  },
-  "engines": {
-    "node": "16"
   },
   "keywords": [],
   "author": "",
@@ -40,10 +37,10 @@
     "wikidata-sdk": "8.1.0"
   },
   "devDependencies": {
-    "buffer": "^5.5.0",
-    "events": "^3.3.0",
-    "parcel": "^2.7.0",
-    "path-browserify": "^1.0.0",
-    "process": "^0.11.10"
+    "buffer": "5.5.0",
+    "events": "3.3.0",
+    "parcel": "2.8.2",
+    "path-browserify": "1.0.0",
+    "process": "0.11.10"
   }
 }
