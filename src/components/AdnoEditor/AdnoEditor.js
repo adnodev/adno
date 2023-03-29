@@ -89,13 +89,15 @@ class AdnoEditor extends Component {
 
             // Event triggered when user click on an annotation
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-          
+                console.log("selected anno");
 
                 document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
 
                 const selected = this.AdnoAnnotorious.getSelected();
-                this.setState({ selected })
+                //this.setState({ selected })
+
+                console.log(selected);
 
             })
 
@@ -104,7 +106,7 @@ class AdnoEditor extends Component {
             this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
                 this.setState({ isMovingItem: true })
 
-                const selected = this.AdnoAnnotorious.getSelected();
+                const selected = this.state.selected ? {...this.state.selected} : this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
 
                 this.setState({ selected })
@@ -113,6 +115,9 @@ class AdnoEditor extends Component {
     }
 
     changeAnno = (annotation) => {
+        // If the user edits the annotation from the modal, update the current selected annotation in the state
+        this.setState({selected: annotation})
+
         this.AdnoAnnotorious.selectAnnotation(annotation.id)
         this.AdnoAnnotorious.fitBounds(annotation.id)
 
