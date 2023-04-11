@@ -35,7 +35,14 @@
                 "duplicate": "Duplicate",
                 "download": "Download",
                 "new": "Create my own project",
-                "new_tooltip": "Create a new project"
+                "new_tooltip": "Create a new project",
+                "title": "Title",
+                "description": "Description",
+                "manifest_url": "Manifest URL",
+                "create": "Create my new project",
+                "back": "Back",
+                "add_desc": "Add a little text to describe your project (optional)",
+                "add_title": "Add a title to your project"
             },
             "files": {
                 "one_selected": "1 file selected"
@@ -66,13 +73,20 @@
                 "edit_project": "Edit the project",
                 "show_metadatas": "Show metadatas"
             },
+            "new_project": {
+                "add_infos_1": "Add information",
+                "add_infos_2": "to your project"
+            },
             "errors": {
                 "error_found": "An error have been found",
                 "unable_reading_file": "Unable to read this type of file !",
                 "unable_access_file": "Unable to reach this file ! Please try again or select another file",
-                "manifest_picture_not_found" : "Error - The manifest or the picture you have entered has not been found",
+                "manifest_picture_not_found" : "The manifest or the picture you have entered has not been found",
                 "wrong_url": "The URL you have entered is not valid",
-                "unknown_characters": "Unable to read annotations (Forbidden characters)"
+                "unknown_characters": "Unable to read annotations (Forbidden characters)",
+                "no_title": "Please, add a name to your project",
+                "unable_reading_manifest": "Unable to read this manifest, please try again or choose another one",
+                "no_iiif": "Non-IIIF project detected, please fill in an IIIF project"
             },
             "footer": "Poitiers. This project was supported by the French Ministry of Culture"
         }

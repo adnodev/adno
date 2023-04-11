@@ -35,7 +35,14 @@
                 "duplicate": "Dupliquer",
                 "download": "Télécharger",
                 "new": "Créer mon projet",
-                "new_tooltip": "Créer un nouveau projet"
+                "new_tooltip": "Créer un nouveau projet",
+                "title": "Titre",
+                "description": "Description",
+                "manifest_url": "URL du Manifeste",
+                "create": "Créer mon projet",
+                "back": "Retour",
+                "add_desc": "Description de votre projet (optionnel)",
+                "add_title": "Donnez un titre à votre projet"
             },
             "files": {
                 "one_selected": "1 Fichier selectionné"
@@ -55,7 +62,6 @@
                 "confirm_duplication": "Dupliquer mon projet",
                 "annotation_moved": "Annotation déplacée avec succès"
             },
-            
             "annotation": {
                 "no_content": "aucun contenu",
                 "read_more": "Lire plus"
@@ -67,13 +73,20 @@
                 "edit_project": "Edit the project",
                 "show_metadatas": "Voir les métadonnées"
             },
+            "new_project": {
+                "add_infos_1": "Ajouter des renseignements",
+                "add_infos_2": "à votre projet"
+            },
             "errors": {
                 "error_found": "Erreur détectée", 
-                "unable_reading_file": "Impossible de lire ce type de fichier !",
+                "unable_reading_file": "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
                 "unable_access_file": "Impossible d'accéder à ce fichier !",
                 "manifest_picture_not_found" : "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
                 "wrong_url": "L'URL renseignée n'est pas valide !",
-                "unknown_characters": "Impossible de lire les annotations (Caractères interdits)"
+                "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",
+                "no_title": "Veuillez renseigner un titre à votre projet",
+                "unable_reading_manifest": "Impossible de lire le manifest",
+                "no_iiif": "Projet non IIIF détecté, veuillez renseigner un projet IIIF"
             },
             "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français"
         }

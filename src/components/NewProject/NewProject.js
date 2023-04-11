@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 
 // Import CSS
 import "./NewProject.css"
+import { withTranslation } from "react-i18next";
 
 class NewProject extends Component {
     constructor(props) {
@@ -64,7 +65,7 @@ class NewProject extends Component {
 
         if (document.getElementById("project_name").value === "") {
             Swal.fire({
-                title: "Veuillez renseigner un titre à votre projet",
+                title: this.props.t('errors.no_title'),
                 showCancelButton: true,
                 showConfirmButton: false,
                 cancelButtonText: 'OK',
@@ -74,8 +75,6 @@ class NewProject extends Component {
             this.setState({ isLoading: true })
 
             var manifest_url = localStorage.getItem("adno_image_url")
-
-
 
             let isUrlManifest = "";
 
@@ -152,7 +151,7 @@ class NewProject extends Component {
                                                 resultLink += "/info.json"
                                             } else {
                                                 Swal.fire({
-                                                    title: "Impossible de lire le manifest",
+                                                    title: this.props.t('errors.unable_reading_manifest'),
                                                     showCancelButton: true,
                                                     showConfirmButton: false,
                                                     cancelButtonText: 'OK',
@@ -198,7 +197,7 @@ class NewProject extends Component {
                                         }
                                     } else {
                                         Swal.fire({
-                                            title: "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
+                                            title: this.props.t('errors.no_iiif'),
                                             showCancelButton: false,
                                             showConfirmButton: true,
                                             confirmButtonText: 'OK',
@@ -216,7 +215,7 @@ class NewProject extends Component {
                             } else {
                                 this.setState({ isLoading: false })
                                 Swal.fire({
-                                    title: "Impossible de lire le manifest",
+                                    title: this.props.t('errors.unable_reading_manifest'),
                                     showCancelButton: true,
                                     showConfirmButton: false,
                                     cancelButtonText: 'OK',
@@ -229,44 +228,41 @@ class NewProject extends Component {
             } else {
                 this.setState({ isLoading: false })
                 Swal.fire({
-                    title: "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
+                    title: this.props.t('errors.unable_reading_file'),
                     showCancelButton: true,
                     showConfirmButton: false,
                     cancelButtonText: 'OK',
                     icon: 'warning',
                 })
             }
-
-
         }
     }
 
     render() {
         return (
-            <>  <div className="new-project">
-                    <h1 className="new-project-title">Ajoutez des renseignements<br></br> à votre projet</h1>
-                    <form className="form-new-project" >
-                        <label className="input-group new_project_input">
-                            <span className="new_project_span">Titre</span>
-                            <input id="project_name" className="input input-bordered w-full" type="text" placeholder="Donnez un titre à votre projet" />
-                        </label>
-                        <label className="input-group new_project_input">
-                            <span className="new_project_span">Description</span>
-                            <input id="project_desc" className="input input-bordered w-full" type="text" placeholder="Description de votre projet" />
-                        </label>
-                        <label className="input-group new_project_input">
-                            <span className="new_project_span">URL du Manifest</span>
-                            <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
-                        </label>
-                        <div className="new_project_btns">
-                            <button id="valider_creation" type="submit" className="btn" onClick={(e) => this.createProj(e)}>Créer mon projet</button>
-                            <button id="annuler_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>Retour</button>
-                        </div>
-                    </form>
-                </div>
-            </>
+            <div className="new-project">
+                <h1 className="new-project-title">{this.props.t('new_project.add_infos_1')}<br></br> {this.props.t('new_project.add_infos_2')}</h1>
+                <form className="form-new-project" >
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">{this.props.t('project.title')}</span>
+                        <input id="project_name" className="input input-bordered w-full" type="text" placeholder={this.props.t('project.add_title')} />
+                    </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">{this.props.t('project.description')}</span>
+                        <input id="project_desc" className="input input-bordered w-full" type="text" placeholder={this.props.t('project.add_desc')} />
+                    </label>
+                    <label className="input-group new_project_input">
+                        <span className="new_project_span">{this.props.t('project.manifest_url')}</span>
+                        <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
+                    </label>
+                    <div className="new_project_btns">
+                        <button id="valider_creation" type="submit" className="btn" onClick={(e) => this.createProj(e)}>{this.props.t('project.create')}</button>
+                        <button id="annuler_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>{this.props.t('project.back')}</button>
+                    </div>
+                </form>
+            </div>
         )
     }
 }
 
-export default withRouter(NewProject)
+export default withTranslation()(withRouter(NewProject))
