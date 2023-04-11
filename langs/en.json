@@ -60,7 +60,10 @@
                 "projects_list_up_to_date": "Projects list have been updated",
                 "duplicate_project": "Would you really want to duplicate this project ?",
                 "confirm_duplication": "Yes, duplicate this project",
-                "annotation_moved": "Annotation moved successfully"
+                "annotation_moved": "Annotation moved successfully",
+                "ask_delete": "Would you really like to delete this annotation ?",
+                "confirm_del_annotation": "Yes, delete this annotation",
+                "del_annotation_confirmation": "Annotation deleted successfully"
             },
             "annotation": {
                 "no_content": "no content yet",

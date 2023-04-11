@@ -3,17 +3,18 @@ import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from "react-router";
 
 // Import FontAwesome for all icons
-import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong, faWrench } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Import popup alerts
 import Swal from "sweetalert2";
 
 // JS Utils 
-import { buildTagsList, generateUUID, insertInLS, migrateAnnotations } from "../../../Utils/utils";
+import { buildTagsList, generateUUID, insertInLS } from "../../../Utils/utils";
 
 //Imports CSS
 import "./AnnotationCards.css";
+import { withTranslation } from "react-i18next";
 
 class AnnotationCards extends Component {
     constructor(props) {
@@ -25,10 +26,10 @@ class AnnotationCards extends Component {
             if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
             } else {
-                return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
+                return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
             }
         } else {
-            return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
+            return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
         }
     }
 
@@ -66,9 +67,9 @@ class AnnotationCards extends Component {
         const deleteAnnotation = (annotationID) => {
 
             Swal.fire({
-                title: 'Voulez-vous vraiment supprimer cette annotation ?',
+                title: this.props.t('modal.ask_delete'),
                 showCancelButton: true,
-                confirmButtonText: 'Oui, supprimer mon annotation',
+                confirmButtonText:this.props.t('modal.confirm_del_annotation'),
                 cancelButtonText: 'Annuler',
                 icon: 'warning',
             }).then((result) => {
@@ -78,7 +79,7 @@ class AnnotationCards extends Component {
                     // Update the localStorage without the removed item
                     insertInLS(`${this.props.match.params.id}_annotations`, JSON.stringify(annos.filter(annotation => annotation.id != annotationID)))
 
-                    Swal.fire("L'annotation a bien été supprimée", '', 'success')
+                    Swal.fire(this.props.t('modal.del_annotation_confirmation'), '', 'success')
                         .then((result) => {
                             if (result.isConfirmed) {
                                 this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
@@ -132,4 +133,4 @@ class AnnotationCards extends Component {
         )
     }
 }
-export default withRouter(AnnotationCards)
+export default withTranslation()(withRouter(AnnotationCards));
