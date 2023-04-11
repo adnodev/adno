@@ -43,6 +43,18 @@
             "buttons": {
                 "cancel": "Annuler"
             },
+            "editor": {
+                "approve_changes": "Valider les modifications"
+            },
+            "modal" : {
+                "delete_project": "Voulez-vous vraiment supprimer ce projet ?",
+                "confirm_delete": "Supprimer mon projet",
+                "cancel": "Annuler",
+                "projects_list_up_to_date": "La liste des projets a bien été mise à jour !",
+                "duplicate_project": "Voulez-vous vraiment dupliquer ce projet ?",
+                "confirm_duplication": "Dupliquer mon projet",
+                "annotation_moved": "Annotation déplacée avec succès"
+            },
             "errors": {
                 "error_found": "Erreur détectée", 
                 "unable_reading_file": "Impossible de lire ce type de fichier !",

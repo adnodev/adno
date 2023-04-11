@@ -43,6 +43,18 @@
             "buttons": {
                 "cancel": "Cancel"
             },
+            "editor": {
+                "approve_changes": "Approve changes"
+            },
+            "modal" : {
+                "delete_project": "Would you really want to delete this project ?",
+                "confirm_delete": "Yes, delete my project",
+                "cancel": "Cancel",
+                "projects_list_up_to_date": "Projects list have been updated",
+                "duplicate_project": "Would you really want to duplicate this project ?",
+                "confirm_duplication": "Yes, duplicate this project",
+                "annotation_moved": "Annotation moved successfully"
+            },
             "errors": {
                 "error_found": "An error have been found",
                 "unable_reading_file": "Unable to read this type of file !",

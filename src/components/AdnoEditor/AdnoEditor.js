@@ -1,6 +1,7 @@
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
+import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import Swal from "sweetalert2";
 
@@ -89,16 +90,11 @@ class AdnoEditor extends Component {
 
             // Event triggered when user click on an annotation
             this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-                console.log("selected anno");
 
                 document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.openRichEditor(annotation)
 
                 const selected = this.AdnoAnnotorious.getSelected();
-                //this.setState({ selected })
-
-                console.log(selected);
-
             })
 
 
@@ -145,7 +141,7 @@ class AdnoEditor extends Component {
         this.setState({ isMovingItem: false })
 
         Swal.fire({
-            title: "Annotation déplacée avec succès",
+            title: this.props.t('modal.annotation_moved'),
             showCancelButton: false,
             showConfirmButton: true,
             confirmButtonText: 'OK',
@@ -180,11 +176,11 @@ class AdnoEditor extends Component {
 
                 {
                     this.state.isMovingItem &&
-                    <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /> Valider les modifications  </button>
+                    <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}  </button>
                 }
             </div>
         )
     }
 }
 
-export default withRouter(AdnoEditor)
+export default withTranslation()(withRouter(AdnoEditor))
