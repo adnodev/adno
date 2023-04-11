@@ -1,0 +1,56 @@
+{
+    "fr": {
+        "translation": {
+            "begin_msg":  {
+                "1": "Pour commencer à utiliser Adno",
+                "2": "veuillez renseigner dans le champs ci-dessous l'URL d'un",
+                "3": "Manifeste IIIF",
+                "4": "d'une",
+                "5": "image IIIF",
+                "6": "ou encore d'une",
+                "7": "image statique",
+                "8": "au format",
+                "9": "ou"
+            },
+            "create_project": " Créer mon projet",
+            "import": {
+                "import_project": "Importer un projet",
+                "import_now": "directment",
+                "validate": "Valider l'importation",
+                "cancel": "Annuler l'importation",
+                "adno_project": "Projet ADNO détecté, voulez-vous l'importer ?",
+                "import_success": "Projet importé avec succès"
+            },
+            "projects": {
+                "all": "Vos projets existants",
+                "nothing": "Aucun projet disponible pour le moment"
+            },
+            "project": {
+                "created_on": "Créé le ",
+                "last_update": "Dernière mise à jour le ",
+                "no_desc": "Aucune description disponible pour ce projet",
+                "preview": "Prévisualiser",
+                "edit": "Editer",
+                "delete": "Supprimer",
+                "duplicate": "Dupliquer",
+                "download": "Télécharger",
+                "new": "Créer mon projet",
+                "new_tooltip": "Créer un nouveau projet"
+            },
+            "files": {
+                "one_selected": "1 Fichier selectionné"
+            },
+            "buttons": {
+                "cancel": "Annuler"
+            },
+            "errors": {
+                "error_found": "Erreur détectée", 
+                "unable_reading_file": "Impossible de lire ce type de fichier !",
+                "unable_access_file": "Impossible d'accéder à ce fichier !",
+                "manifest_picture_not_found" : "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
+                "wrong_url": "L'URL renseignée n'est pas valide !"
+            },
+            "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français"
+        }
+    }
+}

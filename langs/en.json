@@ -1,0 +1,56 @@
+{
+    "en": {
+        "translation": {
+            "begin_msg": {
+                "1": "To start using",
+                "2": "please enter in the fields below the URL of an",
+                "3": "IIIF Manifest",
+                "4": "or an",
+                "5": "IIIF picture",
+                "6": "or even a",
+                "7": "static picture",
+                "8": "with the extension",
+                "9": "or"
+            },
+            "create_project": " Create a new project",
+            "import": {
+                "import_project": "Import a project",
+                "import_now": "now",
+                "validate": "Validate",
+                "cancel": "Cancel",
+                "adno_project": "Adno project found, would you like to import it ?",
+                "import_success": "Project imported successfully !"
+            },
+            "projects": {
+                "all": "Your existing projects",
+                "nothing": "Nothing to show, create your first project to start using ADNO"
+            },
+            "project": {
+                "created_on": "Created on ",
+                "last_update": "Last update on ",
+                "no_desc": "No description available for this project",
+                "preview": "Preview",
+                "edit": "Edit",
+                "delete": "Delete",
+                "duplicate": "Duplicate",
+                "download": "Download",
+                "new": "Create my own project",
+                "new_tooltip": "Create a new project"
+            },
+            "files": {
+                "one_selected": "1 file selected"
+            },
+            "buttons": {
+                "cancel": "Cancel"
+            },
+            "errors": {
+                "error_found": "An error have been found",
+                "unable_reading_file": "Unable to read this type of file !",
+                "unable_access_file": "Unable to reach this file ! Please try again or select another file",
+                "manifest_picture_not_found" : "Error - The manifest or the picture you have entered has not been found",
+                "wrong_url": "The URL you have entered is not valid"
+            },
+            "footer": "Poitiers. This project was supported by the French Ministry of Culture"
+        }
+    }
+}
