@@ -60,7 +60,8 @@
                 "unable_reading_file": "Unable to read this type of file !",
                 "unable_access_file": "Unable to reach this file ! Please try again or select another file",
                 "manifest_picture_not_found" : "Error - The manifest or the picture you have entered has not been found",
-                "wrong_url": "The URL you have entered is not valid"
+                "wrong_url": "The URL you have entered is not valid",
+                "unknown_characters": "Unable to read annotations (Forbidden characters)"
             },
             "footer": "Poitiers. This project was supported by the French Ministry of Culture"
         }

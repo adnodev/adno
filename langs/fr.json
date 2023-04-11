@@ -60,7 +60,8 @@
                 "unable_reading_file": "Impossible de lire ce type de fichier !",
                 "unable_access_file": "Impossible d'accéder à ce fichier !",
                 "manifest_picture_not_found" : "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
-                "wrong_url": "L'URL renseignée n'est pas valide !"
+                "wrong_url": "L'URL renseignée n'est pas valide !",
+                "unknown_characters": "Impossible de lire les annotations (Caractères interdits)"
             },
             "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français"
         }

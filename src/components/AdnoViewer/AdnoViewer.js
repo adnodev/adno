@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
-// import "../../libraries/annona-reworked/js/storyboard";
 import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Imports CSS
@@ -61,7 +60,7 @@ class AdnoViewer extends Component {
                 document.getElementById("image_iiif").innerHTML = '<iiif-storyboard  styling="toggleoverlay: true; tts:false;" annotationurl="' + dataURI + '"></iiif-storyboard>';
             } catch (error) {
                 Swal.fire({
-                    title: 'Impossible de lire les annotations (Caractères interdits)',
+                    title: this.props.t('errors.unknown_characters'),
                     showCancelButton: false,
                     confirmButtonText: 'Ok',
                     icon: 'error',
@@ -111,4 +110,4 @@ class AdnoViewer extends Component {
     }
 }
 
-export default withRouter(AdnoViewer)
+export default withTranslation()(withRouter(AdnoViewer))
