@@ -25,8 +25,7 @@ class Navbar extends Component {
 
                 <button onClick={() => this.props.showProjectMetadatas()} className="project-navbar-link" title="Modifier le projet"><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="lg"/></button>
 
-
-                <p>Nom du projet :&nbsp;<strong>{this.props.selectedProject.title} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`}</strong></p>
+                <strong>{this.props.selectedProject.title} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`}</strong>
 
                 {
                     process.env.ADNO_MODE === "FULL" &&
