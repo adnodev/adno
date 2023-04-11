@@ -5,6 +5,7 @@ import { buildTagsList, generateUUID } from "../../../../Utils/utils";
 import ReactHtmlParser from 'react-html-parser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { withTranslation } from "react-i18next";
 
 class OneCardView extends Component {
     constructor(props) {
@@ -27,10 +28,10 @@ class OneCardView extends Component {
             if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
             } else {
-                return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
+                return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
             }
         } else {
-            return ReactHtmlParser('<span class="no-content">Ø aucun contenu</span>')
+            return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
         }
     }
 
@@ -97,7 +98,7 @@ class OneCardView extends Component {
 
                 <div className="btn-line-one-card">
 
-                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> Voir <FontAwesomeIcon icon={faPlusCircle} /></button>}
+                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> {this.props.t('annotation.read_more')} <FontAwesomeIcon icon={faPlusCircle} /></button>}
 
                     <button type="button"
                         onClick={() => this.props.clickOnTarget(this.props.annotation)}
@@ -111,4 +112,4 @@ class OneCardView extends Component {
         )
     }
 }
-export default OneCardView
+export default withTranslation()(OneCardView);

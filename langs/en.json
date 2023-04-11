@@ -55,6 +55,10 @@
                 "confirm_duplication": "Yes, duplicate this project",
                 "annotation_moved": "Annotation moved successfully"
             },
+            "annotation": {
+                "no_content": "no content yet",
+                "read_more": "Read more"
+            },
             "errors": {
                 "error_found": "An error have been found",
                 "unable_reading_file": "Unable to read this type of file !",

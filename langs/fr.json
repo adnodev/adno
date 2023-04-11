@@ -55,6 +55,10 @@
                 "confirm_duplication": "Dupliquer mon projet",
                 "annotation_moved": "Annotation déplacée avec succès"
             },
+            "annotation": {
+                "no_content": "aucun contenu",
+                "read_more": "Lire plus"
+            },
             "errors": {
                 "error_found": "Erreur détectée", 
                 "unable_reading_file": "Impossible de lire ce type de fichier !",
