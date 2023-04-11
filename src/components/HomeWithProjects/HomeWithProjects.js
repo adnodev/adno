@@ -17,6 +17,7 @@ import ProjectsList from "../ProjectsList/ProjectsList";
 
 // Import CSS
 import "./HomeWithProjects.css";
+import { withTranslation } from "react-i18next";
 
 class HomeWithProjects extends Component {
     constructor(props) {
@@ -50,12 +51,12 @@ class HomeWithProjects extends Component {
                             insertInLS("adno_image_url", this.state.adno_image_url)
                             this.props.history.push("/new")
                         } else {
-                            throw new Error("Impossible d'accéder à ce fichier")
+                            throw new Error(this.props.t('errors.unable_access_file'))
                         }
                     })
                     .catch(err => {
                         Swal.fire({
-                            title: `Erreur détectée : ${err.message}`,
+                            title: `${this.props.t('errors.error_found')} : ${err.message}`,
                             showCancelButton: false,
                             showConfirmButton: true,
                             confirmButtonText: 'OK',
@@ -87,11 +88,11 @@ class HomeWithProjects extends Component {
 
                             if (manifest.format && manifest.format === "Adno") {
                                 Swal.fire({
-                                    title: "Projet ADNO détecté, voulez-vous l'importer ?",
+                                    title: this.props.t('import.adno_project'),
                                     showCancelButton: true,
                                     showConfirmButton: true,
                                     confirmButtonText: 'OK',
-                                    cancelButtonText: "Annuler",
+                                    cancelButtonText: his.props.t('buttons.cancel'),
                                     icon: 'info'
                                 })
                                     .then((result) => {
@@ -114,7 +115,7 @@ class HomeWithProjects extends Component {
                                             insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
 
                                             Swal.fire({
-                                                title: "Projet importé avec succès",
+                                                title: this.props.t('import.success'),
                                                 showCancelButton: false,
                                                 showConfirmButton: true,
                                                 confirmButtonText: 'OK',
@@ -137,10 +138,9 @@ class HomeWithProjects extends Component {
                                 this.props.history.push("/new");
                             }
                         })
-                        .catch(error => {
-                            console.error("erreur détectée : ", error)
+                        .catch(() => {
                             Swal.fire({
-                                title: `Erreur - Manifest ou image introuvable`,
+                                title: this.props.t('errors.manifest_picture_not_found'),
                                 showCancelButton: true,
                                 showConfirmButton: false,
                                 cancelButtonText: 'OK',
@@ -149,7 +149,7 @@ class HomeWithProjects extends Component {
                         })
                 } else {
                     Swal.fire({
-                        title: "L'URL renseignée n'est pas valide !",
+                        title: this.props.t('errors.wrong_url'),
                         showCancelButton: true,
                         showConfirmButton: false,
                         cancelButtonText: 'OK',
@@ -161,7 +161,7 @@ class HomeWithProjects extends Component {
         } else {
             // Display a warning popup if the URL is not filled
             Swal.fire({
-                title: 'Veuillez renseigner une URL valide',
+                title: this.props.t('errors.wrong_url'),
                 showCancelButton: true,
                 showConfirmButton: false,
                 cancelButtonText: 'OK',
@@ -185,22 +185,22 @@ class HomeWithProjects extends Component {
                             <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
                         </div>
                     }
-                    <p className="adno_description">Pour commencer à utiliser <strong>Adno</strong>,<br></br> veuillez renseigner dans le champs ci-dessous l'URL d'un <strong>manifest IIIF</strong>,<br></br> d'une <strong>image IIIF</strong> ou encore d'une <strong>image statique</strong> au format <strong>JPG</strong> ou <strong>PNG</strong></p>
+                    <p className="adno_description"> {this.props.t('begin_msg.1')} <strong>Adno</strong>,<br></br> {this.props.t('begin_msg.2')} <strong>{this.props.t('begin_msg.3')}</strong>,<br></br> {this.props.t('begin_msg.4')} <strong>{this.props.t('begin_msg.5')}</strong> {this.props.t('begin_msg.6')} <strong>{this.props.t('begin_msg.7')}</strong> {this.props.t('begin_msg.8')} <strong>JPG</strong> {this.props.t('begin_msg.9')} <strong>PNG</strong></p>
                     <div class="adno_home_selection">
                         <form id="myForm">
                             <div className="input-group mb-3 add_url">
-                                <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL</span>
+                                <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL </span>
                                 <input type="text" id="adno_image_url_2" className="input input-bordered w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
                                     placeholder="https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json" />
                             </div>
                             <div className="home-btn-container">
-                                <div className="tooltip" data-tip="Créer un nouveau projet">
-                                    <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)}> <FontAwesomeIcon icon={faAdd} /> Créer mon projet </button>
+                                <div className="tooltip" data-tip={this.props.t('project.new_tooltip')}>
+                                    <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)}> <FontAwesomeIcon icon={faAdd} /> {this.props.t('project.new')} </button>
                                 </div> 
                             </div>
                         </form>
                         <div className="import_container">
-                            <p className="adno_import_description mb-3"><strong>importer un projet</strong> directement</p>
+                            <p className="adno_import_description mb-3"><strong>{this.props.t('import.import_project')}</strong> {this.props.t('import.import_now')} </p>
                             <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />
                         </div>
                     </div>
@@ -208,11 +208,11 @@ class HomeWithProjects extends Component {
                     {
                         this.state.projects && this.state.projects.length > 0 ?
                             <>
-                                <h2 className="projects_list__title">Vos Projets existants</h2>
+                                <h2 className="projects_list__title">{this.props.t('projects.all')}</h2>
                                 <ProjectsList projects={this.state.projects} updateProjects={(updatedProjects) => this.setState({ projects: updatedProjects })} />
                             </>
                             :
-                            <p className="text-center">Aucun projet disponible pour le moment</p>
+                            <p className="text-center">{this.props.t('projects.nothing')}</p>
                     }
                     </div>
 
@@ -226,7 +226,7 @@ class HomeWithProjects extends Component {
                             {
                                 process.env.ADNO_FOOTER_TEXT ?
                                     <p>{process.env.ADNO_FOOTER_TEXT}</p>
-                                    : <p><a href="https://adno.app/" target="_blank">adno.app</a> - <a href="https://emf.fr/" target="_blank">Espace Mendès France</a>, Poitiers. Ce projet a été soutenu par le ministère de la Culture français.</p>
+                                    : <p><a href="https://adno.app/" target="_blank">adno.app</a> - <a href="https://emf.fr/" target="_blank">Espace Mendès France</a>, {this.props.t('footer')}</p>
                             }
                         </div>
                     </footer>
@@ -238,4 +238,4 @@ class HomeWithProjects extends Component {
     }
 }
 
-export default withRouter(HomeWithProjects);
+export default withTranslation()(withRouter(HomeWithProjects));
