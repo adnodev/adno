@@ -59,6 +59,13 @@
                 "no_content": "no content yet",
                 "read_more": "Read more"
             },
+            "navbar":{
+                "edit_mode": "Edit mode",
+                "back_home": "Back to home",
+                "download_project": "Download the project",
+                "edit_project": "Edit the project",
+                "show_metadatas": "Show metadatas"
+            },
             "errors": {
                 "error_found": "An error have been found",
                 "unable_reading_file": "Unable to read this type of file !",

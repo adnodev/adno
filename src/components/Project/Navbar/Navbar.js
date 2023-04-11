@@ -1,6 +1,7 @@
 import { faDownload, faFile, faFilePen, faGear, faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
+import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import { createExportProjectJsonFile } from "../../../Utils/utils";
@@ -13,17 +14,17 @@ class Navbar extends Component {
     render() {
         return (
             <div className="navbar text-neutral-content">
-                <Link to={"/"} className="project-navbar-link project-page-title" title="Retourner à l'accueil"> 
+                <Link to={"/"} className="project-navbar-link project-page-title" title={this.props.t('navbar.back_home')}> 
                     <h1>ADNO</h1>
                 </Link>
-                <Link to={"/"} className="project-navbar-link" title="Retourner à l'accueil"> <FontAwesomeIcon icon={faHome} size="lg"/> </Link>
+                <Link to={"/"} className="project-navbar-link" title={this.props.t('navbar.back_home')}> <FontAwesomeIcon icon={faHome} size="lg"/> </Link>
 
                 {
                     this.props.selectedProject && this.props.selectedProject.id &&
-                    <a id={"download_btn_" + this.props.selectedProject.id} href={createExportProjectJsonFile(this.props.selectedProject.id)} download={this.props.selectedProject.title + ".json"} className="project-navbar-link" title="Télécharger le projet"> <FontAwesomeIcon icon={faDownload} size="lg"/> </a>
+                    <a id={"download_btn_" + this.props.selectedProject.id} href={createExportProjectJsonFile(this.props.selectedProject.id)} download={this.props.selectedProject.title + ".json"} className="project-navbar-link" title={this.props.t('navbar.download_project')}> <FontAwesomeIcon icon={faDownload} size="lg"/> </a>
                 }
 
-                <button onClick={() => this.props.showProjectMetadatas()} className="project-navbar-link" title="Modifier le projet"><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="lg"/></button>
+                <button onClick={() => this.props.showProjectMetadatas()} className="project-navbar-link" title={this.props.editMode ? this.props.t('navbar.edit_project') : this.props.t('navbar.show_metadatas')}><FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="lg"/></button>
 
                 <strong>{this.props.selectedProject.title} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`}</strong>
 
@@ -38,7 +39,7 @@ class Navbar extends Component {
 
 
                         <label className="cursor-pointer label label-toggle">
-                            <label>Mode édition</label>
+                            <label>{this.props.t('navbar.edit_mode')}</label>
                             <input type="checkbox" className="toggle toggle-lg toggle-success" value={this.props.editMode}
                                 onChange={() => {
                                     if (this.props.editMode) {
@@ -64,4 +65,4 @@ class Navbar extends Component {
     }
 }
 
-export default withRouter(Navbar);
+export default withTranslation()(withRouter(Navbar));

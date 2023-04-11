@@ -55,9 +55,17 @@
                 "confirm_duplication": "Dupliquer mon projet",
                 "annotation_moved": "Annotation déplacée avec succès"
             },
+            
             "annotation": {
                 "no_content": "aucun contenu",
                 "read_more": "Lire plus"
+            },
+            "navbar":{
+                "edit_mode": "Mode édition",
+                "back_home": "Retourner à l'accueil",
+                "download_project": "Télécharger le projet",
+                "edit_project": "Edit the project",
+                "show_metadatas": "Voir les métadonnées"
             },
             "errors": {
                 "error_found": "Erreur détectée", 
