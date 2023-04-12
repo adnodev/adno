@@ -60,6 +60,16 @@
                     "autor": "Add the autor of the artwork here",
                     "editor": "Add the editor of the artwork here",
                     "allocation_rights": "Fill in here the rights of the artwork"
+                },
+                "settings": {
+                    "delay": "Delay between 2 annotations (in seconds)",
+                    "navigator": "Annotations browser",
+                    "fullscreen": "Show toolbar in full screen mode",
+                    "annos_nav": "Show navigation bar for annotations",
+                    "begin_first_anno": "Always start autoplay at first annotation",
+                    "enable_rota": "Enable image rotation",
+                    "toolsbar": "Enable toolsbar",
+                    "save": "Save"
                 }
             },
             "files": {
@@ -86,7 +96,8 @@
                 "ask_delete": "Would you really like to delete this annotation ?",
                 "confirm_del_annotation": "Yes, delete this annotation",
                 "del_annotation_confirmation": "Annotation deleted successfully",
-                "project_edit_success": "Your project have been updated successfully !"
+                "project_edit_success": "Your project have been updated successfully !",
+                "settings_updated_success": "Settings updated successfully !"
             },
             "annotation": {
                 "no_content": "no content yet",

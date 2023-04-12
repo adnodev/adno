@@ -60,6 +60,16 @@
                     "autor": "Renseignez ici l'auteur",
                     "editor": "Renseignez ici l'editeur",
                     "allocation_rights": "Renseignez ici les droits de l'oeuvre"
+                },
+                "settings": {
+                    "delay": "Délai entre 2 annotations (en secondes)",
+                    "navigator": "Navigateur d'ensemble",
+                    "fullscreen": "Afficher barre outils en mode plein écran",
+                    "annos_nav": "Afficher la barre de navigation pour les annotations",
+                    "begin_first_anno": "Toujours commencer la lecture automatique à la première annotation",
+                    "enable_rota": "Activer la rotation de l'image",
+                    "toolsbar": "Afficher la barre d'outils",
+                    "save": "Enregistrer"
                 }
             },
             "files": {
@@ -86,7 +96,8 @@
                 "ask_delete": "Voulez-vous vraiment supprimer cette annotation ?",
                 "confirm_del_annotation": "Oui, supprimer cette annotation",
                 "del_annotation_confirmation": "L'annotation a bien été supprimée",
-                "project_edit_success": "Projet édité avec succés !"
+                "project_edit_success": "Projet édité avec succés !",
+                "settings_updated_success": "Paramètres mis à jour avec succés !"
             },
             "annotation": {
                 "no_content": "aucun contenu",
