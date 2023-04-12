@@ -188,7 +188,7 @@ class HomeWithProjects extends Component {
                         </div>
                     }
                     <p className="adno_description"> {this.props.t('begin_msg.1')} <strong>Adno</strong>,<br></br> {this.props.t('begin_msg.2')} <strong>{this.props.t('begin_msg.3')}</strong>,<br></br> {this.props.t('begin_msg.4')} <strong>{this.props.t('begin_msg.5')}</strong> {this.props.t('begin_msg.6')} <strong>{this.props.t('begin_msg.7')}</strong> {this.props.t('begin_msg.8')} <strong>JPG</strong> {this.props.t('begin_msg.9')} <strong>PNG</strong></p>
-                    <div class="adno_home_selection">
+                    <div className="adno_home_selection">
                         <form id="myForm">
                             <div className="input-group mb-3 add_url">
                                 <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL </span>
