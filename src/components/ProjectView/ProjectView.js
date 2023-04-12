@@ -14,6 +14,9 @@ import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllPro
 // Import CSS
 import "./ProjectView.css";
 
+// Add Internationalization
+import { withTranslation } from "react-i18next";
+
 class ProjectView extends Component {
     constructor(props) {
         super(props);
@@ -72,15 +75,15 @@ class ProjectView extends Component {
 
     deleteProj = (projID) => {
         Swal.fire({
-            title: 'Voulez-vous vraiment supprimer ce projet ?',
+            title: this.props.t('modal.delete_project'),
             showCancelButton: true,
-            confirmButtonText: 'Supprimer mon projet',
-            cancelButtonText: 'Annuler',
+            confirmButtonText: this.props.t('modal.confirm_delete'),
+            cancelButtonText: this.props.t('modal.cancel'),
             icon: 'warning',
         }).then((result) => {
             if (result.isConfirmed) {
                 deleteProject(projID)
-                Swal.fire('La liste des projets a bien été mise à jour !', '', 'success')
+                Swal.fire(this.props.t('modal.projects_list_up_to_date'), '', 'success')
                     .then((result) => {
                         var projects = getAllProjectsFromLS()
                         result.isConfirmed && this.props.updateProjectsList(projects)
@@ -91,15 +94,15 @@ class ProjectView extends Component {
 
     duplicate = (projID) => {
         Swal.fire({
-            title: 'Voulez-vous vraiment dupliquer ce projet ?',
+            title: this.props.t('modal.duplicate_project'),
             showCancelButton: true,
-            confirmButtonText: 'Dupliquer mon projet',
-            cancelButtonText: 'Annuler',
+            confirmButtonText: this.props.t('modal.confirm_duplication'),
+            cancelButtonText: this.props.t('modal.cancel'),
             icon: 'warning',
         }).then((result) => {
             if (result.isConfirmed) {
                 duplicateProject(projID)
-                Swal.fire('La liste des projets a bien été mise à jour !', '', 'success')
+                Swal.fire(this.props.t('modal.projects_list_up_to_date'), '', 'success')
                     .then((result) => {
                         var projects = getAllProjectsFromLS()
                         result.isConfirmed && this.props.updateProjectsList(projects)
@@ -122,28 +125,28 @@ class ProjectView extends Component {
                 <div className="project-card-body">
                     <div className="project-text">
                         <h2 className="card-title">{this.props.project.title}</h2>
-                        <p className="card-text card-date"><small className="text-muted">Créé le {new Date(this.props.project.creation_date).toLocaleDateString()}</small></p>
-                        <p className="card-text">{this.props.project.description ? this.props.project.description : "Aucune description disponible pour ce projet"}</p>
-                        <p className="card-text card-date"><small className="text-muted">Dernière mise à jour le  {new Date(this.props.project.last_update).toLocaleDateString()}</small></p>
-                        <p className="card-text"><small className="text-muted">  <span className="badge badge-lg">{this.state.nbAnnotations > 0 ? this.state.nbAnnotations : "Aucune"} annotation{this.state.nbAnnotations > 1 && "s"}</span> </small></p>
+                        <p className="card-text card-date"><small className="text-muted"> {this.props.t('project.created_on')} {new Date(this.props.project.creation_date).toLocaleDateString()}</small></p>
+                        <p className="card-text">{this.props.project.description ? this.props.project.description : this.props.t('project.no_desc')}</p>
+                        <p className="card-text card-date"><small className="text-muted"> {this.props.t('project.last_update')}  {new Date(this.props.project.last_update).toLocaleDateString()}</small></p>
+                        <p className="card-text"><small className="text-muted"> <span className="badge badge-lg">{this.state.nbAnnotations} annotation{this.state.nbAnnotations > 1 && "s"}</span> </small></p>
                     </div>
                     <div className="project_vw_btns">
-                        <div className="tooltip" data-tip="Prévisualiser">
+                        <div className="tooltip" data-tip={this.props.t('project.preview')}>
                             <button type="button" className="btn btn-md" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}> <FontAwesomeIcon icon={faEye} />   </button>
                         </div>
                         {
                             process.env.ADNO_MODE === "FULL" &&
-                            <div className="tooltip" data-tip="Editer">
+                            <div className="tooltip" data-tip={this.props.t('project.edit')}>
                                 <button type="button" className="btn btn-md" onClick={() => this.props.history.push(`/project/${this.props.project.id}/edit`)}> <FontAwesomeIcon icon={faPenToSquare} /> </button>
                             </div>
                         }
-                        <div className="tooltip" data-tip="Dupliquer">
+                        <div className="tooltip" data-tip={this.props.t('project.duplicate')}>
                             <button type="button" className="btn btn-md btn-outline" onClick={() => this.duplicate(this.props.project.id)}><FontAwesomeIcon icon={faCopy} /></button>
                         </div>
-                        <div className="tooltip" data-tip="Télécharger">
+                        <div className="tooltip" data-tip={this.props.t('project.download')}>
                             <a id={"download_btn_" + this.props.project.id} href={createExportProjectJsonFile(this.props.project.id)} download={this.props.project.title + ".json"} className="btn btn-md btn-outline"> <FontAwesomeIcon icon={faDownload} />  </a>
                         </div>
-                        <div className="tooltip" data-tip="Supprimer">
+                        <div className="tooltip" data-tip={this.props.t('project.delete')}>
                             <button type="button" className="btn btn-md btn-outline btn-error" onClick={() => this.deleteProj(this.props.project.id)}>    <FontAwesomeIcon icon={faTrash} />  </button>
                         </div>
                     </div>
@@ -153,4 +156,4 @@ class ProjectView extends Component {
     }
 }
 
-export default withRouter(ProjectView)
+export default withTranslation()(withRouter(ProjectView));

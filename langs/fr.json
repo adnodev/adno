@@ -97,7 +97,8 @@
                 "confirm_del_annotation": "Oui, supprimer cette annotation",
                 "del_annotation_confirmation": "L'annotation a bien été supprimée",
                 "project_edit_success": "Projet édité avec succés !",
-                "settings_updated_success": "Paramètres mis à jour avec succés !"
+                "settings_updated_success": "Paramètres mis à jour avec succés !",
+                "adno_proj_detected": "Projet ADNO détecté, voulez-vous l'importer ?"
             },
             "annotation": {
                 "no_content": "aucun contenu",
@@ -120,6 +121,7 @@
                 "unable_access_file": "Impossible d'accéder à ce fichier !",
                 "manifest_picture_not_found" : "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
                 "wrong_url": "L'URL renseignée n'est pas valide !",
+                "no_url": "Aucune URL n'a été fournie",
                 "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",
                 "no_title": "Veuillez renseigner un titre à votre projet",
                 "unable_reading_manifest": "Impossible de lire le manifest",

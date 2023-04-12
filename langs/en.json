@@ -97,7 +97,8 @@
                 "confirm_del_annotation": "Yes, delete this annotation",
                 "del_annotation_confirmation": "Annotation deleted successfully",
                 "project_edit_success": "Your project have been updated successfully !",
-                "settings_updated_success": "Settings updated successfully !"
+                "settings_updated_success": "Settings updated successfully !",
+                "adno_proj_detected": "ADNO project detected, would you like to import it ?"
             },
             "annotation": {
                 "no_content": "no content yet",
@@ -120,6 +121,7 @@
                 "unable_access_file": "Unable to reach this file ! Please try again or select another file",
                 "manifest_picture_not_found" : "The manifest or the picture you have entered has not been found",
                 "wrong_url": "The URL you have entered is not valid",
+                "no_url": "No URL was provided",
                 "unknown_characters": "Unable to read annotations (Forbidden characters)",
                 "no_title": "Please, add a name to your project",
                 "unable_reading_manifest": "Unable to read this manifest, please try again or choose another one",

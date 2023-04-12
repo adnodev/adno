@@ -43,7 +43,7 @@ class NewProject extends Component {
                 })
                 .catch(err => {
                     Swal.fire({
-                        title: "Impossible de traiter l'url fournie",
+                        title: this.props.t('errors.wrong_url'),
                         showCancelButton: false,
                         showConfirmButton: true,
                         confirmButtonText: 'OK',
