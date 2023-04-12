@@ -36,7 +36,7 @@ class HomeWithProjects extends Component {
 
         this.setState({ projects })
 
-        checkOldVersion()
+        checkOldVersion(this.props.t)
     }
 
     createNewProject = (e) => {
