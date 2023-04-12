@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import edjsHTML from "editorjs-html";
 import TurndownService from "turndown"
+import { useTranslation } from "react-i18next";
 
 // Function to insert something in the localStorage.
 // Will return an alert if the localStorage is full
@@ -25,52 +26,6 @@ export function generateUUID() {
   });
   return uuid;
 }
-
-// Function to create an IIIF example
-// You have to set a title, description and the manifest URL in order to generate your example
-export function generateExamplePainting(title, description, manifest_url) {
-
-  if (!localStorage.getItem("adno_projects")) {
-    insertInLS("adno_projects", JSON.stringify([]))
-  }
-  let projects = JSON.parse(localStorage.getItem("adno_projects"))
-
-  var projectID = generateUUID()
-
-  var project = {
-    "id": projectID,
-    "title": title,
-    "description": description,
-    "creation_date": createDate(),
-    "last_update": createDate(),
-    "manifest_url": manifest_url,
-    "settings": defaultProjectSettings()
-  }
-
-  // Create and store the new project in the localStorage
-  insertInLS(projectID, JSON.stringify(project))
-
-  // Add new project 
-  projects.push(projectID)
-  insertInLS("adno_projects", JSON.stringify(projects))
-
-  // Create annotations object
-  insertInLS(`${projectID}_annotations`, JSON.stringify([]))
-
-  Swal.fire({
-    title: `Tableau ${title} ajouté aux projets avec succès`,
-    showCancelButton: false,
-    confirmButtonText: 'Ok',
-    icon: 'success',
-  })
-    .then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = "/"
-      }
-    })
-}
-
-
 
 export function findInfoJsonFromManifest(url) {
   return fetch(url)
@@ -435,6 +390,7 @@ export function migrateAnnotations(projectID) {
 
 
 export function checkOldVersion() {
+  const { t } = useTranslation();
   let isOldVersion = false
 
   var projectsID = JSON.parse(localStorage.getItem("adno_projects"))
@@ -450,10 +406,10 @@ export function checkOldVersion() {
         // Traitement 
 
         Swal.fire({
-          title: "Un ou plusieurs projets ont été fait avec une version obsolète d’Adno",
+          title: ('modal.old_version'),
           showCancelButton: false,
           showConfirmButton: true,
-          confirmButtonText: 'Mettre à jour vers la dernière version',
+          confirmButtonText: t('modal.update_old_version'),
           icon: 'warning',
         }).then((result) => {
           if (result.isConfirmed) {
@@ -462,7 +418,7 @@ export function checkOldVersion() {
               migrateAnnotations(projectID)
             })
 
-            Swal.fire("Félicitations, vos projets ADNO sont à jour ! ", '', 'success')
+            Swal.fire(('modal.version_updated'), '', 'success')
 
 
           }

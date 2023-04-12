@@ -6,9 +6,9 @@ import {
 // Import utils
 import history from "./Utils/history";
 import { insertInLS } from "./Utils/utils";
-import AdnoUrls from "./components/AdnoUrls/AdnoUrls";
 
 // Import React components
+import AdnoUrls from "./components/AdnoUrls/AdnoUrls";
 import HomeWithProjects from "./components/HomeWithProjects/HomeWithProjects";
 import NewProject from "./components/NewProject/NewProject";
 import NotFound from "./components/NotFound/NotFound";

@@ -98,7 +98,10 @@
                 "del_annotation_confirmation": "Annotation deleted successfully",
                 "project_edit_success": "Your project have been updated successfully !",
                 "settings_updated_success": "Settings updated successfully !",
-                "adno_proj_detected": "ADNO project detected, would you like to import it ?"
+                "adno_proj_detected": "ADNO project detected, would you like to import it ?",
+                "old_version": "One or more projects were made with an obsolete version of ADNO",
+                "update_old_version": "Update to the latest version of ADNO",
+                "version_updated": "Congratulations, your ADNO projects are now up to date"
             },
             "annotation": {
                 "no_content": "no content yet",
