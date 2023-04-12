@@ -1,7 +1,7 @@
 import Swal from "sweetalert2"
 import { buildJsonProjectWithManifest, generateUUID, get_url_extension, insertInLS } from "../../Utils/utils";
 
-export async function manageUrls(props, url) {
+export async function manageUrls(props, url, translation) {
 
     // We check if the url contains an image
     if (get_url_extension(url) === "png" || get_url_extension(url) === "jpg" || get_url_extension(url) === "jpeg") {
@@ -11,12 +11,12 @@ export async function manageUrls(props, url) {
                     insertInLS("adno_image_url", url)
                     props.history.push("/new")
                 } else {
-                    throw new Error("Impossible d'accéder à ce fichier")
+                    throw new Error(translation('errors.unable_access_file'))
                 }
             })
             .catch(err => {
                 Swal.fire({
-                    title: `Erreur détectée : ${err.message}`,
+                    title: err.message,
                     showCancelButton: false,
                     showConfirmButton: true,
                     confirmButtonText: 'OK',
@@ -47,7 +47,7 @@ export async function manageUrls(props, url) {
                     insertInLS("adno_image_url", url)
 
                     Swal.fire({
-                        title: "Projet ADNO détecté, voulez-vous l'importer ?",
+                        title: translation('modal.adno_proj_detected'),
                         showCancelButton: true,
                         showConfirmButton: true,
                         confirmButtonText: 'OK',
@@ -75,7 +75,7 @@ export async function manageUrls(props, url) {
                                 localStorage.removeItem("adno_image_url")
 
                                 Swal.fire({
-                                    title: "Projet importé avec succès",
+                                    title: translation('import.import_success'),
                                     showCancelButton: false,
                                     showConfirmButton: true,
                                     confirmButtonText: 'OK',
@@ -93,7 +93,7 @@ export async function manageUrls(props, url) {
 
 
                 } else {
-                    // format non ADNO
+                    // Non-ADNO Format detected
 
                     if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
                         insertInLS("adno_image_url", url)
@@ -101,7 +101,7 @@ export async function manageUrls(props, url) {
 
                     } else {
                         Swal.fire({
-                            title: "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
+                            title: translation('errors.no_iiif'),
                             showCancelButton: false,
                             showConfirmButton: true,
                             confirmButtonText: 'OK',
@@ -116,9 +116,9 @@ export async function manageUrls(props, url) {
 
                 }
             })
-            .catch(err => {
+            .catch(() => {
                 Swal.fire({
-                    title: `Impossible de traiter l'url fournie : ${url}` ,
+                    title: `${translation('errors.wrong_url')}: ${url}` ,
                     showCancelButton: false,
                     showConfirmButton: true,
                     confirmButtonText: 'OK',

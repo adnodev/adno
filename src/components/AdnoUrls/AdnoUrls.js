@@ -1,6 +1,13 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
+
+// Add translations
+import { withTranslation } from "react-i18next";
+
+// Import SweetAlert
 import Swal from "sweetalert2";
+
+// Import Components
 import { manageUrls } from "./manageUrls";
 
 class AdnoUrls extends Component {
@@ -10,13 +17,12 @@ class AdnoUrls extends Component {
         let manifest_url = url.get("url")
 
         if (manifest_url) {
-
-            manageUrls(this.props, manifest_url)
+            manageUrls(this.props, manifest_url, this.props.t)
         } else {
             Swal.fire({
-                title: "Aucune URL n'a été fournie",
+                title: this.props.t('errors.no_url'),
                 showCancelButton: false,
-                confirmButtonText: "Retourner à l'accueil",
+                confirmButtonText: this.props.t('navbar.back_home'),
                 icon: 'warning',
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -31,4 +37,4 @@ class AdnoUrls extends Component {
         return (<></>)
     }
 }
-export default withRouter(AdnoUrls)
+export default withTranslation()(withRouter(AdnoUrls));
