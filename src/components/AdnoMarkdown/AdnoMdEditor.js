@@ -23,14 +23,15 @@ class AdnoMdEditor extends Component {
             selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || [],
             markdown: [],
             selectedTags: []
-
         }
     }
 
     editorRef = React.createRef();
 
     saveMD = () => {
-        let annos = this.props.annotations
+        let annos = [...this.props.annotations];
+        let currentSelectedAnno = {...this.props.selectedAnnotation};
+
         let md = this.editorRef.current.getInstance().getMarkdown();
 
         // Check if something has been wrote down
@@ -60,19 +61,19 @@ class AdnoMdEditor extends Component {
         
         let newBody = [newTextBody, HTMLBody, ...tags]
 
-        if (annos.filter(anno => anno.id === this.props.selectedAnnotation.id).length > 0) {
-            annos.filter(anno => anno.id === this.props.selectedAnnotation.id)[0].body = newBody
+        if (annos.filter(anno => anno.id === currentSelectedAnno.id).length > 0) {
+            annos.filter(anno => anno.id === currentSelectedAnno.id)[0].body = newBody
         } else {
-            this.props.selectedAnnotation.body = newBody
-            annos.push(this.props.selectedAnnotation)
+            currentSelectedAnno.body = newBody
+            annos.push(currentSelectedAnno)
         }
 
         insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos))
         this.props.updateAnnos(annos)
+
         document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 
         this.props.closeMdEditor()
-
     }
 
     getAnnoBody = () => {

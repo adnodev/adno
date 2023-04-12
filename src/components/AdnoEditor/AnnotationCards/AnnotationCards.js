@@ -113,10 +113,8 @@ class AnnotationCards extends Component {
                                         }
                                     </div>
 
-
                                     <div className="adno-card-body">
                                         {this.getAnnotationHTMLBody(annotation)}
-                                        {/* {annotation.body[0] && annotation.body[0].value ? ReactHtmlParser(annotation.body[0].value) : "Annotation vide"} */}
                                     </div>
 
                                     <div className="btn-line-one-card">
