@@ -51,46 +51,46 @@ class ProjectSettings extends Component {
                     <div className="project-metadatas">
 
                         <label className="label">
-                            <span className="label-text">{this.props.t('settings.delay')}</span>
+                            <span className="label-text">{this.props.t('project.settings.delay')}</span>
                         </label>
                         <input type="number" placeholder="2" className="input input-bordered w-full max-w-xs" value={this.state.settings.delay} onChange={(e) => this.setState({settings: {...this.state.settings, delay: e.target.value}})} />
 
                         <label className="label">
-                            <span className="label-text">{this.props.t('settings.delay')}</span>
+                            <span className="label-text">{this.props.t('project.settings.navigator')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-navigator" checked={this.state.settings.showNavigator} onChange={() => this.setState({settings: {...this.state.settings, showNavigator: !this.state.settings.showNavigator}})}/>
 
 
                         <label className="label">
-                            <span className="label-text">{this.props.t('settings.fullscreen')}</span>
+                            <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.toolsbarOnFs} onChange={() => this.setState({settings: {...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs}})}/>
 
                         <label className="label">
-                            <span className="label-text">{this.props.t('settings.annos_nav')}</span>
+                            <span className="label-text">{this.props.t('project.settings.annos_nav')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.sidebarEnabled} onChange={() => this.setState({settings: {...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled}})}/>
 
 
                         <label className="label">
-                            <span className="label-text">{this.props.t('settings.begin_first_anno')}</span>
+                            <span className="label-text">{this.props.t('project.settings.begin_first_anno')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.startbyfirstanno} onChange={() => this.setState({settings: {...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno}})}/>
 
                         <label className="label">
-                            <span className="label-text">{this.props.t('settings.enable_rota')}</span>
+                            <span className="label-text">{this.props.t('project.settings.enable_rota')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.rotation} onChange={() => this.setState({settings: {...this.state.settings, rotation: !this.state.settings.rotation}})}/>
 
 
                         <label className="label">
-                            <span className="label-text">{this.props.t('settings.toolsbar')}</span>
+                            <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar} onChange={() => this.setState({settings: {...this.state.settings, displayToolbar: !this.state.settings.displayToolbar}})}/>
 
 
                         <div className="metadata-editor-btns">
-                             <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} />  {this.props.t('settings.save')} </button>
+                             <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} />  {this.props.t('project.settings.save')} </button>
                         </div>
                     </div>
                 </form>

@@ -63,7 +63,7 @@
                 },
                 "settings": {
                     "delay": "Delay between 2 annotations (in seconds)",
-                    "navigator": "Annotations browser",
+                    "navigator": "Annotations Map browser",
                     "fullscreen": "Show toolbar in full screen mode",
                     "annos_nav": "Show navigation bar for annotations",
                     "begin_first_anno": "Always start autoplay at first annotation",
