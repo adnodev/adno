@@ -83,6 +83,19 @@ class AdnoMdEditor extends Component {
         }
     }
 
+    deleteAnnotation = () => {
+        this.setState({ isDeleting: false })
+
+        var annotationID = this.props.selectedAnnotation.id
+        var annos = this.props.annotations;
+    
+        // Update the localStorage without the removed item
+        insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos.filter(annotation => annotation.id != annotationID)))
+        this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
+
+        this.props.closeMdEditor()
+      }
+
 
     render() {
 
@@ -180,7 +193,7 @@ class AdnoMdEditor extends Component {
                     <div className="rich-card-editor-btns">
                         <button className="btn ml-1 mr-1" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> {this.props.t('editor.md_save')} </button>
                         {!this.state.isDeleting && <button className="btn btn-error ml-1 mr-1" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> {this.props.t('editor.md_delete')} </button>}
-                        {this.state.isDeleting && <button className="btn btn-success" onClick={() => { this.setState({ isDeleting: false }), this.deleteAnnotation(), this.props.closeRichEditor() }}> <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.md_delete_confirm')} </button>}
+                        {this.state.isDeleting && <button className="btn btn-success" onClick={() => this.deleteAnnotation()}> <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.md_delete_confirm')} </button>}
                     </div>
 
                 </div>
