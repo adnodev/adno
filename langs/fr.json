@@ -51,7 +51,11 @@
                 "cancel": "Annuler"
             },
             "editor": {
-                "approve_changes": "Valider les modifications"
+                "approve_changes": "Valider les modifications",
+                "md_add_tag": "Ajouter un tag",
+                "md_save": "Enregistrer",
+                "md_delete": "Supprimer",
+                "md_delete_confirm": "Confirmer la suppression"
             },
             "modal" : {
                 "delete_project": "Voulez-vous vraiment supprimer ce projet ?",

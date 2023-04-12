@@ -8,13 +8,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TagsInput } from 'react-tag-input-component';
 
 // Import Markdown editor
-
-// import removeMarkdown from "markdown-to-text";
-import { generateUUID, insertInLS } from '../../Utils/utils';
+import { insertInLS } from '../../Utils/utils';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
+import { withTranslation } from 'react-i18next';
 
 class AdnoMdEditor extends Component {
     constructor(props) {
@@ -22,7 +21,6 @@ class AdnoMdEditor extends Component {
         this.state = {
             isDeleting: false,
             selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || [],
-            // markdown: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.filter(anno => anno.type === "AdnoMarkdown")[0] && this.props.selectedAnnotation.body.filter(anno => anno.type === "AdnoMarkdown")[0].value || ""
             markdown: [],
             selectedTags: []
 
@@ -174,16 +172,15 @@ class AdnoMdEditor extends Component {
                         <TagsInput
                             value={this.state.selectedTags}
                             onChange={(tags) => this.setState({ selectedTags: tags })}
-                            placeHolder="Ajouter un tag"
+                            placeHolder={this.props.t('editor.md_add_tag')}
                         />
                     </div>
 
 
                     <div className="rich-card-editor-btns">
-                        <button className="btn ml-1 mr-1" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> Enregistrer </button>
-                        {!this.state.isDeleting && <button className="btn btn-error ml-1 mr-1" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> Supprimer </button>}
-                        {this.state.isDeleting && <button className="btn btn-success" onClick={() => { this.setState({ isDeleting: false }), this.deleteAnnotation(), this.props.closeRichEditor() }}> <FontAwesomeIcon icon={faCheckCircle} /> Confirmer </button>}
-                        
+                        <button className="btn ml-1 mr-1" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> {this.props.t('editor.md_save')} </button>
+                        {!this.state.isDeleting && <button className="btn btn-error ml-1 mr-1" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> {this.props.t('editor.md_delete')} </button>}
+                        {this.state.isDeleting && <button className="btn btn-success" onClick={() => { this.setState({ isDeleting: false }), this.deleteAnnotation(), this.props.closeRichEditor() }}> <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.md_delete_confirm')} </button>}
                     </div>
 
                 </div>
@@ -192,4 +189,4 @@ class AdnoMdEditor extends Component {
         )
     }
 }
-export default AdnoMdEditor
+export default withTranslation()(AdnoMdEditor);
