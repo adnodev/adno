@@ -17,6 +17,8 @@ import ProjectsList from "../ProjectsList/ProjectsList";
 
 // Import CSS
 import "./HomeWithProjects.css";
+
+// Add translations
 import { withTranslation } from "react-i18next";
 
 class HomeWithProjects extends Component {

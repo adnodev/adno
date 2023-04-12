@@ -1,5 +1,7 @@
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
+
+// Import SweetAlert
 import Swal from "sweetalert2";
 
 // Import utils

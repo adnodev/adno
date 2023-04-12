@@ -13,6 +13,8 @@ import { importProjectJsonFile } from "../../Utils/utils";
 
 // Import CSS
 import "./ImportProject.css";
+
+// Add translations
 import { withTranslation } from "react-i18next";
 
 class ImportProject extends Component {

@@ -1,19 +1,23 @@
 import { Component } from "react";
-import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from "react-router";
 
-// Import FontAwesome for all icons
-import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// Import Html Parser
+import ReactHtmlParser from 'react-html-parser';
 
-// Import popup alerts
+// Import FontAwesome for all icons
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
+
+// Import SweetAlert
 import Swal from "sweetalert2";
 
-// JS Utils 
+// Import Utils 
 import { buildTagsList, generateUUID, insertInLS } from "../../../Utils/utils";
 
 //Imports CSS
 import "./AnnotationCards.css";
+
+// Add translations
 import { withTranslation } from "react-i18next";
 
 class AnnotationCards extends Component {

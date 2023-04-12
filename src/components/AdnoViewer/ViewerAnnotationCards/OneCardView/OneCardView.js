@@ -2,9 +2,15 @@ import { Component } from "react";
 
 // Import Utils
 import { buildTagsList, generateUUID } from "../../../../Utils/utils";
+
+// Import Html Parser
 import ReactHtmlParser from 'react-html-parser';
+
+// Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+
+// Add translations
 import { withTranslation } from "react-i18next";
 
 class OneCardView extends Component {

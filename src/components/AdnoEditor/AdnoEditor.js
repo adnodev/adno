@@ -1,8 +1,11 @@
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
-import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
+
+// Import FontAwesome for all icons
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+
+// Import SweetAlert
 import Swal from "sweetalert2";
 
 // Import utils
@@ -10,6 +13,9 @@ import { checkIfProjectExists, createDate, insertInLS } from "../../Utils/utils"
 
 // Import CSS
 import "./AdnoEditor.css";
+
+// Add translations
+import { withTranslation } from "react-i18next";
 
 class AdnoEditor extends Component {
     constructor(props) {
