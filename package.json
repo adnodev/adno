@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build-full": "yarn install && parcel build public/index.html --dist-dir adno-full",
-    "build-light": "yarn install && parcel build public/index.html --dist-dir adno-light",
+    "start": "yarn install && yarn clean && parcel public/index.html",
+    "build-full": "yarn install && yarn clean && NODE_ENV=ADNOFULL parcel build public/index.html --dist-dir adno-full",
+    "build-light": " yarn install && yarn clean && NODE_ENV=ADNOLIGHT parcel build public/index.html --dist-dir adno-light",
     "clean": "rimraf .parcel-cache && rimraf dist && rimraf adno-full && rimraf adno-light",
     "clean-modules": "rm -r node_modules"
   },
