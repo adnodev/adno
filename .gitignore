@@ -136,3 +136,7 @@ adno-full
 adno-light/
 
 .DS_Store
+
+# ADNO CONF
+.env.ADNOFULL
+.env.ADNOLIGHT
