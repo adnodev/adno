@@ -389,8 +389,7 @@ export function migrateAnnotations(projectID) {
 }
 
 
-export function checkOldVersion() {
-  const { t } = useTranslation();
+export function checkOldVersion(t) {
   let isOldVersion = false
 
   var projectsID = JSON.parse(localStorage.getItem("adno_projects"))
@@ -406,7 +405,7 @@ export function checkOldVersion() {
         // Traitement 
 
         Swal.fire({
-          title: ('modal.old_version'),
+          title: t('modal.old_version'),
           showCancelButton: false,
           showConfirmButton: true,
           confirmButtonText: t('modal.update_old_version'),
