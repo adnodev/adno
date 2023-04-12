@@ -38,11 +38,21 @@
                 "new_tooltip": "Create a new project",
                 "title": "Title",
                 "description": "Description",
+                "autor": "Autor",
+                "editor": "Editor",
                 "manifest_url": "Manifest URL",
                 "create": "Create my new project",
                 "back": "Back",
                 "add_desc": "Add a little text to describe your project (optional)",
-                "add_title": "Add a title to your project"
+                "add_title": "Add a title to your project",
+                "metadatas": {
+                    "identifier" : "Identifier",
+                    "source": "Source",
+                    "creation_date": "Created on",
+                    "last_update": "Last update on",
+                    "format": "Format",
+                    "rights": "Distributed rights"
+                }
             },
             "files": {
                 "one_selected": "1 file selected"

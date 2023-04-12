@@ -38,11 +38,21 @@
                 "new_tooltip": "Créer un nouveau projet",
                 "title": "Titre",
                 "description": "Description",
+                "autor": "Autor",
+                "editor": "Editor",
                 "manifest_url": "URL du Manifeste",
                 "create": "Créer mon projet",
                 "back": "Retour",
                 "add_desc": "Description de votre projet (optionnel)",
-                "add_title": "Donnez un titre à votre projet"
+                "add_title": "Donnez un titre à votre projet",
+                "metadatas": {
+                    "identifier" : "Identifiant",
+                    "source": "Source",
+                    "creation_date": "Date de création",
+                    "last_update": "Dernière modification",
+                    "format": "Format",
+                    "rights": "Droits attribués"
+                }
             },
             "files": {
                 "one_selected": "1 Fichier selectionné"

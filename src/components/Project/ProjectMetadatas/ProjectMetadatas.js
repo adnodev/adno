@@ -1,4 +1,9 @@
 import { Component } from "react";
+
+// Add Translations
+import { withTranslation } from "react-i18next";
+
+// Import CSS
 import "./ProjectMetadatas.css"
 
 class ProjectMetadatas extends Component {
@@ -17,7 +22,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.id &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Identifier</span>
+                                    <span className="label-text">{this.props.t('project.metadatas.identifier')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.id} disabled />
                             </>
@@ -27,7 +32,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.manifest_url &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Source</span>
+                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.manifest_url} disabled />
                             </>
@@ -37,7 +42,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.img_url &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Source</span>
+                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.img_url} disabled />
                             </>
@@ -45,7 +50,7 @@ class ProjectMetadatas extends Component {
                         {this.props.selectedProject.creation_date &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Date de création</span>
+                                    <span className="label-text">{this.props.t('project.metadatas.creation_date')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.creation_date} disabled />
                             </>
@@ -54,21 +59,21 @@ class ProjectMetadatas extends Component {
                         {
                             this.props.selectedProject.last_update && <>
                                 <label className="label">
-                                    <span className="label-text">Dernière modification</span>
+                                    <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.last_update} disabled />
                             </>
                         }
 
                         <label className="label">
-                            <span className="label-text">Format</span>
+                            <span className="label-text">{this.props.t('project.metadatas.format')}</span>
                         </label>
                         <input type="text" className="input input-bordered w-full max-w-xs" value="Adno" disabled />
 
                         {
                             this.props.selectedProject.rights && <>
                                 <label className="label">
-                                    <span className="label-text">Droits attribués</span>
+                                    <span className="label-text">{this.props.t('project.metadatas.rights')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.rights} disabled />
                             </>
@@ -78,7 +83,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.title &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Titre</span>
+                                    <span className="label-text">{this.props.t('project.title')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.title} disabled />
                             </>
@@ -88,7 +93,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.description &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Description</span>
+                                    <span className="label-text">{this.props.t('project.description')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.description} disabled />
                             </>
@@ -98,7 +103,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.creator &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Auteur</span>
+                                    <span className="label-text">{this.props.t('project.autor')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.creator} disabled />
                             </>
@@ -108,7 +113,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.editor &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">Editeur</span>
+                                    <span className="label-text">{this.props.t('project.editor')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.editor} disabled />
                             </>
@@ -120,4 +125,4 @@ class ProjectMetadatas extends Component {
     }
 }
 
-export default ProjectMetadatas
+export default withTranslation()(ProjectMetadatas);
