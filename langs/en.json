@@ -51,7 +51,15 @@
                     "creation_date": "Created on",
                     "last_update": "Last update on",
                     "format": "Format",
-                    "rights": "Distributed rights"
+                    "rights": "Distributed rights",
+                    "allocation_rights": "Allocation of rights"
+                },
+                "metadatas_plh": {
+                    "title": "Give a title to your project",
+                    "description": "Add a little text about your artwork",
+                    "autor": "Add the autor of the artwork here",
+                    "editor": "Add the editor of the artwork here",
+                    "allocation_rights": "Fill in here the rights of the artwork"
                 }
             },
             "files": {
@@ -77,7 +85,8 @@
                 "annotation_moved": "Annotation moved successfully",
                 "ask_delete": "Would you really like to delete this annotation ?",
                 "confirm_del_annotation": "Yes, delete this annotation",
-                "del_annotation_confirmation": "Annotation deleted successfully"
+                "del_annotation_confirmation": "Annotation deleted successfully",
+                "project_edit_success": "Your project have been updated successfully !"
             },
             "annotation": {
                 "no_content": "no content yet",

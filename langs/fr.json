@@ -51,7 +51,15 @@
                     "creation_date": "Date de création",
                     "last_update": "Dernière modification",
                     "format": "Format",
-                    "rights": "Droits attribués"
+                    "rights": "Droits attribués",
+                    "allocation_rights": "Attribution des droits"
+                },
+                "metadatas_plh": {
+                    "title": "Donnez un titre à ce projet",
+                    "description": "Ajoutez une description à votre projet",
+                    "autor": "Renseignez ici l'auteur",
+                    "editor": "Renseignez ici l'editeur",
+                    "allocation_rights": "Renseignez ici les droits de l'oeuvre"
                 }
             },
             "files": {
@@ -77,7 +85,8 @@
                 "annotation_moved": "Annotation déplacée avec succès",
                 "ask_delete": "Voulez-vous vraiment supprimer cette annotation ?",
                 "confirm_del_annotation": "Oui, supprimer cette annotation",
-                "del_annotation_confirmation": "L'annotation a bien été supprimée"
+                "del_annotation_confirmation": "L'annotation a bien été supprimée",
+                "project_edit_success": "Projet édité avec succés !"
             },
             "annotation": {
                 "no_content": "aucun contenu",

@@ -1,8 +1,19 @@
-import { faSave } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
+
+// Import FontAwesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
+
+// Add Translations
+import { withTranslation } from "react-i18next";
+
+// Import SweetAlert
 import Swal from "sweetalert2";
+
+// Import Utils
 import {insertInLS} from "../../../Utils/utils";
+
+// Import CSS
 import "./ProjectEditMetadatas.css"
 
 class ProjectEditMetadatas extends Component {
@@ -22,7 +33,7 @@ class ProjectEditMetadatas extends Component {
         this.props.closeProjectMetadatas()
 
         Swal.fire({
-            title: "Projet édité avec succés !",
+            title: this.props.t('modal.project_edit_success'),
             showCancelButton: false,
             confirmButtonText: 'Ok',
             icon: 'success',
@@ -45,32 +56,32 @@ class ProjectEditMetadatas extends Component {
                     <div className="project-metadatas">
 
                         <label className="label">
-                            <span className="label-text">Titre</span>
+                            <span className="label-text">{this.props.t('project.title')}</span>
                         </label>
-                        <input type="text" placeholder="Votre titre" className="input input-bordered w-full max-w-xs" value={this.state.project.title} onChange={(e) => this.setState({project: {...this.state.project, title: e.target.value}})} />
+                        <input type="text" placeholder={this.props.t('project.metadatas_plh.title')}className="input input-bordered w-full max-w-xs" value={this.state.project.title} onChange={(e) => this.setState({project: {...this.state.project, title: e.target.value}})} />
 
 
                         <label className="label">
-                            <span className="label-text">Description</span>
+                            <span className="label-text">{this.props.t('project.description')}</span>
                         </label>
-                        <input type="text" placeholder="Renseignez ici la description" className="input input-bordered w-full max-w-xs" value={this.state.project.description} onChange={(e) => this.setState({project: {...this.state.project, description: e.target.value}})} />
+                        <input type="text" placeholder={this.props.t('project.metadatas_plh.description')} className="input input-bordered w-full max-w-xs" value={this.state.project.description} onChange={(e) => this.setState({project: {...this.state.project, description: e.target.value}})} />
 
 
                         <label className="label">
-                            <span className="label-text">Auteur</span>
+                            <span className="label-text">{this.props.t('project.autor')}</span>
                         </label>
-                        <input type="text" placeholder="Renseignez ici l'auteur" className="input input-bordered w-full max-w-xs" value={this.state.project.creator} onChange={(e) => this.setState({project: {...this.state.project, creator: e.target.value}})}/>
+                        <input type="text" placeholder={this.props.t('project.metadatas_plh.autor')} className="input input-bordered w-full max-w-xs" value={this.state.project.creator} onChange={(e) => this.setState({project: {...this.state.project, creator: e.target.value}})}/>
 
                         <label className="label">
-                            <span className="label-text">Editeur</span>
+                            <span className="label-text">{this.props.t('project.editor')}</span>
                         </label>
-                        <input type="text" placeholder="Renseignez ici l'editeur" className="input input-bordered w-full max-w-xs" value={this.state.project.editor} onChange={(e) => this.setState({project: {...this.state.project, editor: e.target.value}})} />
+                        <input type="text" placeholder={this.props.t('project.metadatas_plh.editor')} className="input input-bordered w-full max-w-xs" value={this.state.project.editor} onChange={(e) => this.setState({project: {...this.state.project, editor: e.target.value}})} />
 
 
                         <label className="label">
-                            <span className="label-text">Attribution des droits</span>
+                            <span className="label-text">{this.props.t('project.metadatas.allocation_rights')}</span>
                         </label>
-                        <input type="text" placeholder="Renseignez ici les droits de l'oeuvre" className="input input-bordered w-full max-w-xs" value={this.state.project.rights} onChange={(e) => this.setState({project: {...this.state.project, rights: e.target.value}})} />
+                        <input type="text" placeholder={this.props.t('project.metadatas_plh.allocation_rights')} className="input input-bordered w-full max-w-xs" value={this.state.project.rights} onChange={(e) => this.setState({project: {...this.state.project, rights: e.target.value}})} />
 
 
                         <div className="metadata-editor-btns">
@@ -82,4 +93,4 @@ class ProjectEditMetadatas extends Component {
         )
     }
 }
-export default ProjectEditMetadatas;
+export default withTranslation()(ProjectEditMetadatas);
