@@ -128,7 +128,8 @@
                 "unknown_characters": "Unable to read annotations (Forbidden characters)",
                 "no_title": "Please, add a name to your project",
                 "unable_reading_manifest": "Unable to read this manifest, please try again or choose another one",
-                "no_iiif": "Non-IIIF project detected, please fill in an IIIF project"
+                "no_iiif": "Non-IIIF project detected, please fill in an IIIF project",
+                "wrong_file": "This file is not readable by ADNO! Please try again with another file"
             },
             "footer": "Poitiers. This project was supported by the French Ministry of Culture"
         }

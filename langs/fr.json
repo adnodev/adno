@@ -128,7 +128,8 @@
                 "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",
                 "no_title": "Veuillez renseigner un titre à votre projet",
                 "unable_reading_manifest": "Impossible de lire le manifest",
-                "no_iiif": "Projet non IIIF détecté, veuillez renseigner un projet IIIF"
+                "no_iiif": "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
+                "wrong_file": "Ce fichier n'est pas lisible par ADNO ! Veuillez réessayer avec un autre fichier"
             },
             "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français"
         }
