@@ -37,7 +37,7 @@ class ImportProject extends Component {
     loadImportedProj = (event) => {
         if (this.state.loadedProject && this.state.loadedProject.type === "application/json") {
             // Call function to load the project
-            importProjectJsonFile(event, this.state.loadedProject, this.cancelImport, this.props.t('errors.unable_reading_file'))
+            importProjectJsonFile(event, this.state.loadedProject, this.cancelImport, this.props.t('errors.wrong_file'))
         } else {
             Swal.fire({
                 title: this.props.t('errors.unable_reading_file'),

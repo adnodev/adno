@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import { buildJsonProjectWithManifest, generateUUID, get_url_extension, insertInLS } from "../../Utils/utils";
+import { buildJsonProjectWithManifest, generateUUID, get_url_extension, insertInLS, migrateTextBody } from "../../Utils/utils";
 
 export async function manageUrls(props, url, translation) {
 
@@ -70,6 +70,14 @@ export async function manageUrls(props, url, translation) {
 
 
                                 insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
+
+                                // Migrate annotations if there is only TextualBody and not HTMLBody
+                                manifest.first.items?.forEach(annotation => {
+                                    if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+                                      migrateTextBody(projectID, annotation)
+                                    }
+                                  })
+
 
                                 // remove current url
                                 localStorage.removeItem("adno_image_url")

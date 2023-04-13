@@ -187,11 +187,10 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
     if (imported_project.hasOwnProperty("@context")
       && imported_project.hasOwnProperty("date")
       && imported_project.hasOwnProperty("id")
-      && imported_project.hasOwnProperty("title")
+      && (imported_project.hasOwnProperty("title") || imported_project.hasOwnProperty("label"))
       && imported_project.hasOwnProperty("type")
       && imported_project.hasOwnProperty("modified")
       && imported_project.hasOwnProperty("source")
-      && imported_project.hasOwnProperty("description")
       && imported_project.hasOwnProperty("total")
     ) {
 
@@ -204,11 +203,10 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
 
       let proj = {
         "id": imported_project.id,
-        "title": imported_project.title,
-        "description": imported_project.description,
+        "title": imported_project.title || imported_project.label,
+        "description": imported_project.description || "",
         "creation_date": imported_project.date,
         "last_update": imported_project.modified,
-        // "manifest_url": imported_project.source,
         "creator": imported_project.creator || "",
         "editor": imported_project.editor || "",
         "rights": imported_project.rights || "",
@@ -229,13 +227,16 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
       insertInLS(proj.id + "_annotations", JSON.stringify(annos))
       insertInLS(proj.id, JSON.stringify(proj))
 
-      // If the project uses an old version migrate the annotations
-      //migrateAnnotations(proj.id)
+
+      annos?.forEach(annotation => {
+        if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+          migrateTextBody(proj.id, annotation)
+        }
+      })
 
       window.location.reload()
 
-    }
-    else {
+    } else {
       Swal.fire({
         title: errorTitle,
         showCancelButton: false,
@@ -388,16 +389,35 @@ export function migrateAnnotations(projectID) {
   }
 }
 
+export function migrateTextBody(projectID, annotation) {
+
+  const newBody = annotation.body
+
+  newBody.push({
+    "type": "HTMLBody",
+    "value": `<p>${annotation.body.filter(annobody => annobody.type === "TextualBody")[0].value}</p>`,
+    "purpose": "commenting"
+  })
+
+  // Update the localstorage
+  let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
+  projectAnnotations.filter(anno => anno.id === annotation.id)[0].body = newBody
+
+  insertInLS(`${projectID}_annotations`, JSON.stringify(projectAnnotations))
+}
 
 export function checkOldVersion(t) {
-  let isOldVersion = false
-
   var projectsID = JSON.parse(localStorage.getItem("adno_projects"))
 
   projectsID?.forEach(projectID => {
     let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
 
     projectAnnotations?.forEach(annotation => {
+      if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+        migrateTextBody(projectID, annotation)
+      }
+
+
       if (annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
 
 
@@ -417,7 +437,7 @@ export function checkOldVersion(t) {
               migrateAnnotations(projectID)
             })
 
-            Swal.fire(('modal.version_updated'), '', 'success')
+            Swal.fire(t('modal.version_updated'), '', 'success')
 
 
           }
