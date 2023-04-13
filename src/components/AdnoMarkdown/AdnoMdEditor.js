@@ -14,6 +14,7 @@ import { insertInLS } from '../../Utils/utils';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import { withTranslation } from 'react-i18next';
+import Swal from 'sweetalert2';
 
 class AdnoMdEditor extends Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class AdnoMdEditor extends Component {
 
     saveMD = () => {
         let annos = [...this.props.annotations];
-        let currentSelectedAnno = {...this.props.selectedAnnotation};
+        let currentSelectedAnno = { ...this.props.selectedAnnotation };
 
         let md = this.editorRef.current.getInstance().getMarkdown();
 
@@ -58,14 +59,24 @@ class AdnoMdEditor extends Component {
                 }
             )
         })
-        
-        let newBody = [newTextBody, HTMLBody, ...tags]
 
-        if (annos.filter(anno => anno.id === currentSelectedAnno.id).length > 0) {
-            annos.filter(anno => anno.id === currentSelectedAnno.id)[0].body = newBody
+        let newBody = [newTextBody, HTMLBody, ...tags]
+        currentSelectedAnno.body = newBody;
+
+        if (annos.find(anno => anno.id === currentSelectedAnno.id)) {
+            const idx = annos.findIndex(anno => anno.id === currentSelectedAnno.id);
+            annos[idx] = currentSelectedAnno;
         } else {
-            currentSelectedAnno.body = newBody
-            annos.push(currentSelectedAnno)
+            Swal.fire({
+                title: this.props.t('errors.error_found'),
+                showCancelButton: false,
+                confirmButtonText: 'Ok',
+                icon: 'warning',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.props.closeMdEditor()
+                }
+            })
         }
 
         insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos))
@@ -88,14 +99,33 @@ class AdnoMdEditor extends Component {
         this.setState({ isDeleting: false })
 
         var annotationID = this.props.selectedAnnotation.id
-        var annos = this.props.annotations;
-    
-        // Update the localStorage without the removed item
-        insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos.filter(annotation => annotation.id != annotationID)))
-        this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
+        var annos = [...this.props.annotations];
 
-        this.props.closeMdEditor()
-      }
+        if (annos.find(anno => anno.id === annotationID)) {
+            annos = annos.filter(annotation => annotation.id !== annotationID)
+
+            // Update the localStorage without the removed item
+            insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos.filter(annotation => annotation.id != annotationID)))
+
+            // Update the state of the main component
+            this.props.updateAnnos(annos)
+
+            // Close the editor window
+            this.props.closeMdEditor()
+        } else {
+            Swal.fire({
+                title: this.props.t('errors.error_found'),
+                showCancelButton: false,
+                confirmButtonText: 'Ok',
+                icon: 'warning',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Close the editor window
+                    this.props.closeMdEditor()
+                }
+            })
+        }
+    }
 
 
     render() {
@@ -178,9 +208,7 @@ class AdnoMdEditor extends Component {
 
                     />
 
-                    <div id="editor">
-
-                    </div>
+                    <div id="editor"></div>
 
                     <div className="editor-tags">
                         <TagsInput
