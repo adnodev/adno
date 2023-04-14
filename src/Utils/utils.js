@@ -413,12 +413,12 @@ export function checkOldVersion(t) {
     let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
 
     projectAnnotations?.forEach(annotation => {
-      if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+      if (annotation.body && annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
         migrateTextBody(projectID, annotation)
       }
 
 
-      if (annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
+      if (annotation.body && annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
 
 
 
