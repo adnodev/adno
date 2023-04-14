@@ -165,6 +165,7 @@ class Project extends Component {
                                         selectedAnno={this.state.selectedAnnotation}
                                         openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
+                                        rotation={this.state.settings.rotation}
                                     />
                                     :
                                     <OpenView
