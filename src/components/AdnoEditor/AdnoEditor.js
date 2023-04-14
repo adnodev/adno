@@ -54,7 +54,6 @@ class AdnoEditor extends Component {
                 tileSources: tileSources,
                 prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
                 // Enable rotation
-                degrees: 90,
                 showRotationControl: this.props.rotation,
             }), {
                 locale: 'auto',
