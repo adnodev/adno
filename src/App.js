@@ -16,6 +16,7 @@ import Project from "./components/Project/Project";
 
 // Import css
 import "./index.css"
+import AdnoEmbed from "./components/AdnoEmbed/AdnoEmbed";
 
 export default class App extends Component {
     constructor(props) {
@@ -78,6 +79,10 @@ export default class App extends Component {
 
                     <Route exact path="/search">
                         <AdnoUrls />
+                    </Route>
+
+                    <Route exact path="/embed">
+                        <AdnoEmbed />
                     </Route>
 
                     <Route exact path="/">
