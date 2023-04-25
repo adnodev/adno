@@ -45,7 +45,7 @@ class Home extends Component {
 
         // First, we have to check if the url is not empty, not undefined and not null
         if (this.state.url) {
-            manageUrls(this.props, url, this.props.t)
+            manageUrls(this.props, this.state.url, this.props.t)
 
         } else {
             // Display a warning popup if the URL is not filled
