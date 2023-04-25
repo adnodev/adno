@@ -41,6 +41,7 @@
 
 .closeBtnMetadatas{
     width: 80vw;
+    margin-top: 10px;
 }
 
 @media screen and (max-width: 1340px) {
