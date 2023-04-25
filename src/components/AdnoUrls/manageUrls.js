@@ -55,8 +55,11 @@ export async function manageUrls(props, url, translation) {
                             if (result.isConfirmed) {
                                 let projectID = generateUUID();
 
-                                let project = buildJsonProjectWithManifest(projectID, manifest.label, manifest.subject, manifest.source)
+                                let title = manifest.title || manifest.label
+                                let desc = manifest.description || manifest.subject
 
+                                let project = buildJsonProjectWithManifest(projectID, title , desc, manifest.source)
+                                
                                 // Création du projet dans le localStorage
                                 insertInLS(projectID, JSON.stringify(project))
 
