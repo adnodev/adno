@@ -187,7 +187,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
     if (imported_project.hasOwnProperty("@context")
       && imported_project.hasOwnProperty("date")
       && imported_project.hasOwnProperty("id")
-      && (imported_project.hasOwnProperty("title") || imported_project.hasOwnProperty("label"))
+      && (imported_project.hasOwnProperty("title") || imported_project.hasOwnProperty("label"))
       && imported_project.hasOwnProperty("type")
       && imported_project.hasOwnProperty("modified")
       && imported_project.hasOwnProperty("source")
@@ -203,7 +203,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
 
       let proj = {
         "id": imported_project.id,
-        "title": imported_project.title || imported_project.label,
+        "title": imported_project.title || imported_project.label,
         "description": imported_project.description || "",
         "creation_date": imported_project.date,
         "last_update": imported_project.modified,
@@ -413,17 +413,12 @@ export function checkOldVersion(t) {
     let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
 
     projectAnnotations?.forEach(annotation => {
-      if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+      if (annotation.body && annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
         migrateTextBody(projectID, annotation)
       }
 
 
-      if (annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
-
-
-
-        // Traitement 
-
+      if (annotation.body && annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
         Swal.fire({
           title: t('modal.old_version'),
           showCancelButton: false,
