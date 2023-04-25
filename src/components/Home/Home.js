@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 
 // Import utils
 import { checkOldVersion, getAllProjectsFromLS } from "../../Utils/utils";
+import { manageUrls } from "../AdnoUrls/manageUrls";
 
 // Import components
 import ImportProject from "../ImportProject/ImportProject";
@@ -20,13 +21,12 @@ import "./Home.css";
 
 // Add translations
 import { withTranslation } from "react-i18next";
-import { manageUrls } from "../AdnoUrls/manageUrls";
 
 class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            adno_image_url: "",
+            url: "",
             projects: []
         }
     }
@@ -44,8 +44,8 @@ class Home extends Component {
         e.preventDefault()
 
         // First, we have to check if the url is not empty, not undefined and not null
-        if (this.state.adno_image_url) {
-            manageUrls(this.props, this.state.adno_image_url, this.props.t)
+        if (this.state.url) {
+            manageUrls(this.props, url, this.props.t)
 
         } else {
             // Display a warning popup if the URL is not filled
@@ -79,7 +79,7 @@ class Home extends Component {
                         <form id="myForm">
                             <div className="input-group mb-3 add_url">
                                 <span className="input-group-text" id="basic-addon1"> <FontAwesomeIcon icon={faLink} /> URL </span>
-                                <input type="text" id="adno_image_url_2" className="input input-bordered w-full" value={this.state.adno_image_url} onChange={(e) => this.setState({ adno_image_url: e.target.value })}
+                                <input type="text" id="adno_image_url_2" className="input input-bordered w-full" value={this.state.url} onChange={(e) => this.setState({ url: e.target.value })}
                                     placeholder="https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json" />
                             </div>
                             <div className="home-btn-container">
