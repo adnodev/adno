@@ -258,7 +258,7 @@ export function checkProjectAttributes(imported_project) {
   return imported_project.hasOwnProperty('id') && imported_project.hasOwnProperty('title') && imported_project.hasOwnProperty('description') && imported_project.hasOwnProperty('creation_date') && imported_project.hasOwnProperty('last_update') && imported_project.hasOwnProperty('manifest_url')
 }
 
-export function duplicateProject(projectID) {
+export function duplicateProject(projectID, duplicate_name_copy) {
   const project = JSON.parse(localStorage.getItem(projectID))
   const project_annos = JSON.parse(localStorage.getItem(`${projectID}_annotations`)) || []
 
@@ -266,7 +266,7 @@ export function duplicateProject(projectID) {
 
   Object.assign(target, project);
 
-  target.title += " (copie)"
+  target.title =`${target.title} (${duplicate_name_copy})`
   target.id = generateUUID()
   target.last_update = createDate()
   target.creation_date = createDate()

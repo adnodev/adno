@@ -101,7 +101,7 @@ class ProjectView extends Component {
             icon: 'warning',
         }).then((result) => {
             if (result.isConfirmed) {
-                duplicateProject(projID)
+                duplicateProject(projID, this.props.t('project.copy'))
                 Swal.fire(this.props.t('modal.projects_list_up_to_date'), '', 'success')
                     .then((result) => {
                         var projects = getAllProjectsFromLS()

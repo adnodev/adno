@@ -45,6 +45,7 @@
                 "back": "Retour",
                 "add_desc": "Description de votre projet (optionnel)",
                 "add_title": "Donnez un titre à votre projet",
+                "copy": "copie",
                 "metadatas": {
                     "identifier" : "Identifiant",
                     "source": "Source",
