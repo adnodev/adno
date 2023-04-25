@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // Import utils
-import { buildJsonProjectWithManifest, checkOldVersion, generateUUID, getAllProjectsFromLS, get_url_extension, insertInLS, isValidUrl } from "../../Utils/utils";
+import { checkOldVersion, getAllProjectsFromLS } from "../../Utils/utils";
 
 // Import components
 import ImportProject from "../ImportProject/ImportProject";

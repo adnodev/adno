@@ -266,7 +266,7 @@ export function duplicateProject(projectID, duplicate_name_copy) {
 
   Object.assign(target, project);
 
-  target.title =`${target.title} (${duplicate_name_copy})`
+  target.title = `${target.title} (${duplicate_name_copy})`
   target.id = generateUUID()
   target.last_update = createDate()
   target.creation_date = createDate()
