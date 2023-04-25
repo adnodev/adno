@@ -20,6 +20,7 @@ import "./Home.css";
 
 // Add translations
 import { withTranslation } from "react-i18next";
+import { manageUrls } from "../AdnoUrls/manageUrls";
 
 class Home extends Component {
     constructor(props) {
@@ -44,121 +45,7 @@ class Home extends Component {
 
         // First, we have to check if the url is not empty, not undefined and not null
         if (this.state.adno_image_url) {
-
-            // First use case (Image) : check if the url contains an image
-            if (get_url_extension(this.state.adno_image_url) === "png" || get_url_extension(this.state.adno_image_url) === "jpg" || get_url_extension(this.state.adno_image_url) === "jpeg") {
-                fetch(this.state.adno_image_url)
-                    .then(res => {
-                        if (res.status == 200 || res.status == 201) {
-                            insertInLS("adno_image_url", this.state.adno_image_url)
-                            this.props.history.push("/new")
-                        } else {
-                            throw new Error(this.props.t('errors.unable_access_file'))
-                        }
-                    })
-                    .catch(err => {
-                        Swal.fire({
-                            title: `${this.props.t('errors.error_found')} : ${err.message}`,
-                            showCancelButton: false,
-                            showConfirmButton: true,
-                            confirmButtonText: 'OK',
-                            icon: 'error'
-                        })
-                            .then((result) => {
-                                if (result.isConfirmed) {
-                                    this.props.history.push("/")
-                                }
-                            })
-                    })
-            } else {
-                // Then, we check if the given URL is valid
-                // Finally, we check if the URL is reachable
-                if (isValidUrl(this.state.adno_image_url)) {
-
-                    fetch(this.state.adno_image_url)
-                        .then(res => {
-                            if (res.ok) {
-                                return res.text()
-                            } else {
-                                throw new Error(`Error ${res.status}`)
-                            }
-                        })
-                        .then((data) => {
-                            // First, we check if the file looks like an ADNO project
-                            // If an adno project is found then, import it directly
-                            let manifest = JSON.parse(data)
-
-                            if (manifest.format && manifest.format === "Adno") {
-                                Swal.fire({
-                                    title: this.props.t('import.adno_project'),
-                                    showCancelButton: true,
-                                    showConfirmButton: true,
-                                    confirmButtonText: 'OK',
-                                    cancelButtonText: his.props.t('buttons.cancel'),
-                                    icon: 'info'
-                                })
-                                    .then((result) => {
-                                        if (result.isConfirmed) {
-                                            let projectID = generateUUID();
-
-                                            let project = buildJsonProjectWithManifest(projectID, manifest.label, manifest.subject, manifest.source)
-
-                                            // Création du projet dans le localStorage
-                                            insertInLS(projectID, JSON.stringify(project))
-
-                                            // Insertion de l'ID du projet créé dans le tableau des projets
-                                            let projects = JSON.parse(localStorage.getItem("adno_projects"))
-                                            projects.push(projectID)
-
-                                            // Add the current project's id to the projects's list.
-                                            insertInLS("adno_projects", JSON.stringify(projects))
-
-                                            // Insert in LS an array for the annotations linked to this project
-                                            insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
-
-                                            Swal.fire({
-                                                title: this.props.t('import.success'),
-                                                showCancelButton: false,
-                                                showConfirmButton: true,
-                                                confirmButtonText: 'OK',
-                                                icon: 'success'
-                                            })
-                                                .then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        this.props.history.push(`/project/${projectID}/edit`)
-                                                    }
-                                                })
-
-
-                                        }
-                                    })
-
-                            } else {
-                                // If the URL doesn't look like to an adno project just import it from the New Project Page
-                                insertInLS("adno_image_url", this.state.adno_image_url)
-
-                                this.props.history.push("/new");
-                            }
-                        })
-                        .catch(() => {
-                            Swal.fire({
-                                title: this.props.t('errors.manifest_picture_not_found'),
-                                showCancelButton: true,
-                                showConfirmButton: false,
-                                cancelButtonText: 'OK',
-                                icon: 'warning',
-                            })
-                        })
-                } else {
-                    Swal.fire({
-                        title: this.props.t('errors.wrong_url'),
-                        showCancelButton: true,
-                        showConfirmButton: false,
-                        cancelButtonText: 'OK',
-                        icon: 'warning',
-                    })
-                }
-            }
+            manageUrls(this.props, this.state.adno_image_url, this.props.t)
 
         } else {
             // Display a warning popup if the URL is not filled
@@ -180,12 +67,12 @@ class Home extends Component {
                 <div id="container_with_projects" className="adno_container">
                     {
                         process.env.ADNO_TITLE ?
-                        <h1>{process.env.ADNO_TITLE}</h1>
-                        :
-                        <div className="adno_title">
-                            <h1>ADNO</h1>
-                            <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
-                        </div>
+                            <h1>{process.env.ADNO_TITLE}</h1>
+                            :
+                            <div className="adno_title">
+                                <h1>ADNO</h1>
+                                <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
+                            </div>
                     }
                     <p className="adno_description"> {this.props.t('begin_msg.1')} <strong>Adno</strong>,<br></br> {this.props.t('begin_msg.2')} <strong>{this.props.t('begin_msg.3')}</strong>,<br></br> {this.props.t('begin_msg.4')} <strong>{this.props.t('begin_msg.5')}</strong> {this.props.t('begin_msg.6')} <strong>{this.props.t('begin_msg.7')}</strong> {this.props.t('begin_msg.8')} <strong>JPG</strong> {this.props.t('begin_msg.9')} <strong>PNG</strong></p>
                     <div className="adno_home_selection">
@@ -198,7 +85,7 @@ class Home extends Component {
                             <div className="home-btn-container">
                                 <div className="tooltip" data-tip={this.props.t('project.new_tooltip')}>
                                     <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)}> <FontAwesomeIcon icon={faAdd} /> {this.props.t('project.new')} </button>
-                                </div> 
+                                </div>
                             </div>
                         </form>
                         <div className="import_container">
@@ -207,15 +94,15 @@ class Home extends Component {
                         </div>
                     </div>
                     <div className="projects_list__container">
-                    {
-                        this.state.projects && this.state.projects.length > 0 ?
-                            <>
-                                <h2 className="projects_list__title">{this.props.t('projects.all')}</h2>
-                                <ProjectsList projects={this.state.projects} updateProjects={(updatedProjects) => this.setState({ projects: updatedProjects })} />
-                            </>
-                            :
-                            <p className="text-center">{this.props.t('projects.nothing')}</p>
-                    }
+                        {
+                            this.state.projects && this.state.projects.length > 0 ?
+                                <>
+                                    <h2 className="projects_list__title">{this.props.t('projects.all')}</h2>
+                                    <ProjectsList projects={this.state.projects} updateProjects={(updatedProjects) => this.setState({ projects: updatedProjects })} />
+                                </>
+                                :
+                                <p className="text-center">{this.props.t('projects.nothing')}</p>
+                        }
                     </div>
 
 
