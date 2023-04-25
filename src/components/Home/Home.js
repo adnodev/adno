@@ -16,12 +16,12 @@ import ImportProject from "../ImportProject/ImportProject";
 import ProjectsList from "../ProjectsList/ProjectsList";
 
 // Import CSS
-import "./HomeWithProjects.css";
+import "./Home.css";
 
 // Add translations
 import { withTranslation } from "react-i18next";
 
-class HomeWithProjects extends Component {
+class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -240,4 +240,4 @@ class HomeWithProjects extends Component {
     }
 }
 
-export default withTranslation()(withRouter(HomeWithProjects));
+export default withTranslation()(withRouter(Home));

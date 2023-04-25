@@ -51,10 +51,6 @@
     padding: 0 50px;
 }
 
-#myForm .input-group { 
-    
-}
-
 .import_container {
     flex-shrink: 0;
     width: 40%;
@@ -102,10 +98,6 @@
 .projet-page-title{
     text-align: center;
     margin: 4vh auto 4vh auto;
-}
-
-#container_with_projects{
-   
 }
 
 .adno_container{
@@ -171,16 +163,4 @@
     line-height: 2rem;
     font-weight: 300;
     margin-bottom: 30px;
-}
-
-@media (max-width: 1440px) {
-    #projects_list{
-        
-    }
-}
-
-@media (max-width: 800px) {
-    #projects_list{
-        
-    }
 }
