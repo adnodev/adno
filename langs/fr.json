@@ -15,7 +15,7 @@
             "create_project": " Créer mon projet",
             "import": {
                 "import_project": "Importer un projet",
-                "import_now": "directment",
+                "import_now": "directement",
                 "validate": "Valider l'importation",
                 "cancel": "Annuler l'importation",
                 "adno_project": "Projet ADNO détecté, voulez-vous l'importer ?",
@@ -124,7 +124,7 @@
                 "unable_reading_file": "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
                 "unable_access_file": "Impossible d'accéder à ce fichier !",
                 "manifest_picture_not_found" : "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
-                "wrong_url": "L'URL renseignée n'est pas valide !",
+                "wrong_url": "L'URL renseignée n'est pas valide ! Renseignez une image JPG, PNG, un manifest ou encore un fichier info.json",
                 "no_url": "Aucune URL n'a été fournie",
                 "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",
                 "no_title": "Veuillez renseigner un titre à votre projet",
