@@ -115,10 +115,17 @@ class OpenView extends Component {
         if (annotation && annotation.id) {
             this.props.changeSelectedAnno(annotation)
 
-
             if (this.state.isAnnotationsVisible) {
                 this.AdnoAnnotorious.selectAnnotation(annotation.id)
                 this.AdnoAnnotorious.fitBounds(annotation.id)
+            } else {
+                if (annotation.target && annotation.target.selector.value) {
+                    var imgWithTiles = this.openSeadragon.world.getItemAt(0);
+                    var xywh = annotation.target.selector.value.replace("xywh=pixel:", "").split(",")
+                    var rect = new OpenSeadragon.Rect(parseFloat(xywh[0]), parseFloat(xywh[1]), parseFloat(xywh[2]), parseFloat(xywh[3]))
+                    var imgRect = imgWithTiles.imageToViewportRectangle(rect);
+                    this.openSeadragon.viewport.fitBounds(imgRect);
+                }
             }
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
@@ -274,7 +281,7 @@ class OpenView extends Component {
                         {
                             this.props.annos.length > 0 &&
                             <>
-                                {/* <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button> */}
+                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button>
 
                                 <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg" /></button>
                                 <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg" /></button>

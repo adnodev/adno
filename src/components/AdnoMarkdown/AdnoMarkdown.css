@@ -1030,10 +1030,10 @@
 }
 
 .rich-card-editor-btns{
-    width: 20%;
+    width: 100%;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    display: flex;
     margin: auto;
+    display: flex;
 }

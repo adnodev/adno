@@ -45,6 +45,7 @@
                 "back": "Back",
                 "add_desc": "Add a little text to describe your project (optional)",
                 "add_title": "Add a title to your project",
+                "copy": "copy",
                 "metadatas": {
                     "identifier" : "Identifier",
                     "source": "Source",

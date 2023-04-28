@@ -8,8 +8,8 @@ import history from "./Utils/history";
 import { insertInLS } from "./Utils/utils";
 
 // Import React components
+import Home from "./components/Home/Home";
 import AdnoUrls from "./components/AdnoUrls/AdnoUrls";
-import HomeWithProjects from "./components/HomeWithProjects/HomeWithProjects";
 import NewProject from "./components/NewProject/NewProject";
 import NotFound from "./components/NotFound/NotFound";
 import Project from "./components/Project/Project";
@@ -86,7 +86,7 @@ export default class App extends Component {
                     </Route>
 
                     <Route exact path="/">
-                        <HomeWithProjects />
+                        <Home />
                     </Route>
 
                     <Route>

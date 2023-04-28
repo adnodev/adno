@@ -28,24 +28,21 @@ export async function manageUrls(props, url, translation) {
                         }
                     })
             })
-
-
-
     } else {
         fetch(url)
             .then(res => {
                 if (res.status == 200 || res.status == 201) {
                     return res.text()
                 } else {
-                    throw new Error(`Error ${res.status}`)
+                    throw new Error(`${translation('errors.wrong_url')}: ${url}`,)
                 }
             })
             .then((data) => {
                 let manifest = JSON.parse(data)
 
-                if (manifest.format && manifest.format === "Adno") {
-                    insertInLS("adno_image_url", url)
+                // If we detect an ADNO project, we import it to the user's projects
 
+                if (manifest.format && manifest.format === "Adno") {
                     Swal.fire({
                         title: translation('modal.adno_proj_detected'),
                         showCancelButton: true,
@@ -58,8 +55,11 @@ export async function manageUrls(props, url, translation) {
                             if (result.isConfirmed) {
                                 let projectID = generateUUID();
 
-                                let project = buildJsonProjectWithManifest(projectID, manifest.label, manifest.subject, manifest.source)
+                                let title = manifest.title || manifest.label
+                                let desc = manifest.description || manifest.subject
 
+                                let project = buildJsonProjectWithManifest(projectID, title , desc, manifest.source)
+                                
                                 // Création du projet dans le localStorage
                                 insertInLS(projectID, JSON.stringify(project))
 
@@ -74,13 +74,9 @@ export async function manageUrls(props, url, translation) {
                                 // Migrate annotations if there is only TextualBody and not HTMLBody
                                 manifest.first.items?.forEach(annotation => {
                                     if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-                                      migrateTextBody(projectID, annotation)
+                                        migrateTextBody(projectID, annotation)
                                     }
-                                  })
-
-
-                                // remove current url
-                                localStorage.removeItem("adno_image_url")
+                                })
 
                                 Swal.fire({
                                     title: translation('import.import_success'),
@@ -102,11 +98,9 @@ export async function manageUrls(props, url, translation) {
 
                 } else {
                     // Non-ADNO Format detected
-
                     if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
                         insertInLS("adno_image_url", url)
                         props.history.push("/new")
-
                     } else {
                         Swal.fire({
                             title: translation('errors.no_iiif'),
@@ -126,7 +120,7 @@ export async function manageUrls(props, url, translation) {
             })
             .catch(() => {
                 Swal.fire({
-                    title: `${translation('errors.wrong_url')}: ${url}` ,
+                    title: `${translation('errors.wrong_url')}: ${url}`,
                     showCancelButton: false,
                     showConfirmButton: true,
                     confirmButtonText: 'OK',
