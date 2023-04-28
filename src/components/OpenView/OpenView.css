@@ -15,7 +15,7 @@
 .adno-osd-anno-fullscreen{
     position: absolute;
     z-index: 10000;
-    top: 2%;
+    top: 64px;
     left: 2%;
     width: 300px;
     height: 200px;
