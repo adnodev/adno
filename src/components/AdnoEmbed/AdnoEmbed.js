@@ -16,7 +16,7 @@ class AdnoEmbed extends Component {
             currentID: -1,
             intervalID: 0,
             fullScreenEnabled: false,
-            isAnnotationsVisible: true,
+            isAnnotationsVisible: false,
             toolsbarOnFs: false,
             selectedAnno: {},
             settings: defaultProjectSettings(),
@@ -27,7 +27,7 @@ class AdnoEmbed extends Component {
     componentDidMount() {
         const query = new URLSearchParams(this.props.location.search);
         const adnoProjectURL = query.get('url')
-        
+
         this.getAdnoProject(adnoProjectURL)
     }
 
@@ -46,8 +46,10 @@ class AdnoEmbed extends Component {
             drawOnSingleClick: true,
             allowEmpty: true,
             disableEditor: true,
-            readOnly: true
+            readOnly: true,
         });
+
+        this.AdnoAnnotorious.setVisible(false);
 
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
 
@@ -362,7 +364,7 @@ class AdnoEmbed extends Component {
                                             resultLink
                                         ]
 
-                                 
+
 
                                     this.setState({ isLoaded: true })
 
@@ -432,12 +434,14 @@ class AdnoEmbed extends Component {
 
                             <button id="home-button" className="toolbarButton toolbaractive"><FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" /></button>
 
+
                             {
                                 this.state.annos.length > 0 &&
                                 <>
+                                    <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button>
+
                                     <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg" /></button>
                                     <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg" /></button>
-
                                 </>
                             }
 
