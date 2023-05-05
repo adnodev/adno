@@ -176,18 +176,24 @@ class AdnoEmbed extends Component {
     }
 
     changeAnno = (annotation) => {
-        if (annotation && annotation.id) {
-            this.setState({ selectedAnno: annotation })
-
-            if (this.state.isAnnotationsVisible) {
-                this.AdnoAnnotorious.selectAnnotation(annotation.id)
-                this.AdnoAnnotorious.fitBounds(annotation.id)
+        this.setState({ selectedAnno: annotation })
+        
+        if (this.state.isAnnotationsVisible) {
+            this.AdnoAnnotorious.selectAnnotation(annotation.id)
+            this.AdnoAnnotorious.fitBounds(annotation.id)
+        } else {
+            if (annotation.target && annotation.target.selector.value) {
+                var imgWithTiles = this.openSeadragon.world.getItemAt(0);
+                var xywh = annotation.target.selector.value.replace("xywh=pixel:", "").split(",")
+                var rect = new OpenSeadragon.Rect(parseFloat(xywh[0]), parseFloat(xywh[1]), parseFloat(xywh[2]), parseFloat(xywh[3]))
+                var imgRect = imgWithTiles.imageToViewportRectangle(rect);
+                this.openSeadragon.viewport.fitBounds(imgRect);
             }
-
-            let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id)
-
-            this.setState({ currentID: annotationIndex })
         }
+
+        let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id)
+
+        this.setState({ currentID: annotationIndex })
     }
 
 
