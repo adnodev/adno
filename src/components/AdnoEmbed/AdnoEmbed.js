@@ -56,6 +56,31 @@ class AdnoEmbed extends Component {
         this.setState({ ...settings });
 
         this.getAdnoProject(adnoProjectURL)
+
+
+        // Accessibility
+        addEventListener('keydown', (event) => {
+
+            switch (event.code) {
+                case "ArrowRight":
+                    this.nextAnno()
+                    break;
+                case "ArrowLeft":
+                    this.previousAnno()
+                    break;
+                case "Space":
+                    this.startTimer()
+                    break;
+                case "KeyE":
+                    this.toggleFullScreen()
+                    break;
+                case "KeyS":
+                    this.toggleAnnotationsLayer()
+                    break;
+                default:
+                    break;
+            }
+        })
     }
 
     displayViewer = (tileSources, annos) => {
