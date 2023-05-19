@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 
 // Import CSS
 import "./NewProject.css"
+
+// Add translation
 import { withTranslation } from "react-i18next";
 
 class NewProject extends Component {
@@ -17,7 +19,10 @@ class NewProject extends Component {
         this.state = {
             isLoading: false,
             manifestImages: [],
-            currentIndex: 0
+            currentIndex: -1,
+            nbCanvases: 0,
+            selectedCanva: false,
+            images: []
         }
     }
 
@@ -26,7 +31,71 @@ class NewProject extends Component {
         if (!localStorage.getItem("adno_image_url")) {
             this.props.history.push("/")
         }
+
+        var manifest_url = localStorage.getItem("adno_image_url")
+        fetch(manifest_url)
+            .then(rep => rep.json())
+            .then(manifestIIIF => {
+                if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
+
+                    // Get all canvases from the manifest
+                    manifestIIIF.sequences[0].canvases.forEach((canva, index) => {
+
+                        if (canva.images) {
+                            if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
+
+                                var originalImgLink = canva.images[0].resource.service["@id"] + "/full/300,/0/default.jpg"
+                                var manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
+
+                                canva = {
+                                    "thumbnail_link": originalImgLink,
+                                    "canva_url": manifestURL
+                                }
+
+                                this.setState({ manifestImages: [...this.state.manifestImages, canva], currentIndex: 0, nbCanvases: manifestIIIF.sequences[0].canvases.length })
+
+                            } else if (canva.images[0].resource.default && canva.images[0].resource.default.service && canva.images[0].resource.default.service["@id"]) {
+
+                                var originalImgLink = canva.images[0].resource.default.service["@id"] + "/full/300,/0/default.jpg"
+                                let manifestURL = canva.images[0].resource.default.service["@id"] + "/info.json"
+
+                                canva = {
+                                    "thumbnail_link": originalImgLink,
+                                    "canva_url": manifestURL
+                                }
+
+                                this.setState({ manifestImages: [...this.state.manifestImages, canva], currentIndex: 0, nbCanvases: manifestIIIF.sequences[0].canvases.length })
+
+                            } else {
+                                console.error("Resource not found ", index);
+                            }
+
+                        } else if (canva.thumbnail) {
+                            console.log("thumbnail found");
+
+                            if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
+
+                                let imgLink = canva.thumbnail["@id"]
+                                let manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
+
+                                canva = {
+                                    "thumbnail_link": imgLink,
+                                    "canva_url": manifestURL
+                                }
+
+                                this.setState({ manifestImages: [...this.state.manifestImages, canva], currentIndex: 0, nbCanvases: manifestIIIF.sequences[0].canvases.length })
+
+                            } else {
+                                console.error("Resource not found ", index);
+                            }
+                        } else {
+                            console.log("nothing found");
+                        }
+                    });
+                }
+            })
     }
+
 
     isManifest = async (url) => {
         return new Promise((resolve, reject) => {
@@ -260,6 +329,41 @@ class NewProject extends Component {
                         <button id="annuler_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>{this.props.t('project.back')}</button>
                     </div>
                 </form>
+
+                {
+                    this.state.manifestImages && this.state.nbCanvases > 1 &&
+
+                    <div id="select_canva">
+
+
+                        {
+                            this.state.manifestImages && this.state.manifestImages.length > 0 && this.state.currentIndex > 0 && !this.state.selectedCanva &&
+                            <button onClick={() => this.setState({ currentIndex: this.state.currentIndex - 1 })} className="btn btn-circle">❮</button>
+                        }
+
+                        {
+                            this.state.manifestImages && this.state.manifestImages.length > 0 &&
+                            <img src={this.state.manifestImages[this.state.currentIndex].thumbnail_link}></img>
+                        }
+
+                        {
+                            this.state.manifestImages && this.state.currentIndex < this.state.nbCanvases - 1 && !this.state.selectedCanva &&
+
+                            <button onClick={() => this.setState({ currentIndex: this.state.currentIndex + 1 })} className="btn btn-circle">❯</button>
+                        }
+                    </div>
+                }
+
+
+                {
+                    this.state.manifestImages && this.state.nbCanvases > 1 && this.state.currentIndex !== -1 && !this.state.selectedCanva &&
+                    <button className="btn btn-success" onClick={() => {
+                        this.setState({ selectedCanva: true })
+                        localStorage.setItem("adno_image_url", this.state.manifestImages[this.state.currentIndex].canva_url)
+                    }
+                    }>Sélectionner ce canva</button>
+                }
+
             </div>
         )
     }
