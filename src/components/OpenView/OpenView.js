@@ -93,6 +93,21 @@ class OpenView extends Component {
             }
         });
 
+        addEventListener('keydown', (event) => {
+            switch (event.code) {
+                case "ArrowRight":
+                    this.nextAnno()
+                    break;
+                case "ArrowLeft":
+                    this.previousAnno()
+                    break;
+                case "Space":
+                    this.startTimer()
+                    break;
+                default:
+                    break;
+            }
+        })
     }
 
     automateLoading = () => {
@@ -255,6 +270,8 @@ class OpenView extends Component {
             }
         }
     }
+
+
 
 
 
