@@ -12,12 +12,8 @@ class AdnoEmbed extends Component {
         super(props)
         this.state = {
             annos: [],
-            timerDelay: 3,
             currentID: -1,
             intervalID: 0,
-            fullScreenEnabled: false,
-            isAnnotationsVisible: false,
-            toolsbarOnFs: false,
             selectedAnno: {},
             isLoaded: false
         }
@@ -44,6 +40,7 @@ class AdnoEmbed extends Component {
         var rotation = query.get("rotation") ? query.get("rotation") === "true" : false;
         var displayToolbar = query.get("toolbar") ? query.get("toolbar") === "true" : true;
         var isAnnotationsVisible = query.get("anno_bounds") ? query.get("anno_bounds") === "true" : false;
+
         const settings = {
             timerDelay,
             showNavigator,
@@ -279,11 +276,7 @@ class AdnoEmbed extends Component {
 
                         // ADNO project detected
 
-                        console.log("manifest : ", imported_project);
-
                         if (imported_project.hasOwnProperty("format") && imported_project.format === "Adno") {
-                            console.log("projet adno");
-
 
                             if (imported_project.hasOwnProperty("@context")
                                 && imported_project.hasOwnProperty("date")
@@ -294,8 +287,6 @@ class AdnoEmbed extends Component {
                                 && imported_project.hasOwnProperty("source")
                                 && imported_project.hasOwnProperty("total")
                             ) {
-                                console.log("projet VALIDE");
-
 
                                 this.setState({ isLoaded: true })
                                 let annos = [...imported_project.first.items]
@@ -349,12 +340,8 @@ class AdnoEmbed extends Component {
                                 (imported_project.hasOwnProperty("id") || imported_project.hasOwnProperty("@id"))
                                 && (imported_project.hasOwnProperty("context") || imported_project.hasOwnProperty("@context"))
                             ) {
-                                console.log("projet NON-adno mais VALIDe");
-
                                 if (imported_project["@type"] && imported_project["@type"] === "sc:Manifest") {
                                     // type manifest
-
-                                    console.log("type manifest");
 
                                     if (imported_project.sequences[0].canvases && imported_project.sequences[0].canvases.length > 0) {
                                         var resultLink = imported_project.sequences[0].canvases[0].images[0].resource.service["@id"] + "/info.json"
@@ -377,8 +364,6 @@ class AdnoEmbed extends Component {
                                         })
                                     }
                                 }
-
-
 
 
                                 if (resultLink) {
@@ -423,15 +408,6 @@ class AdnoEmbed extends Component {
                             }
 
                         }
-
-                        console.log(imported_project.hasOwnProperty("@context"))
-                        console.log(imported_project.hasOwnProperty("date"))
-                        console.log(imported_project.hasOwnProperty("id"))
-                        console.log((imported_project.hasOwnProperty("title") || imported_project.hasOwnProperty("label")))
-                        console.log(imported_project.hasOwnProperty("type"))
-                        console.log(imported_project.hasOwnProperty("modified"))
-                        console.log(imported_project.hasOwnProperty("source"))
-                        console.log(imported_project.hasOwnProperty("total"))
 
                     } catch (error) {
                         console.error(error.message);
