@@ -67,3 +67,16 @@ ADNO_FOOTER_TEXT=YOUR FOOTER TEXT HERE
 
 ```
 
+# EMBED
+
+Available settings for the embed :
+
+- delay with `min = 1` and `max = 20` (seconds)
+- navigator value = `true` or `false`
+- toolbarsfs value = `true` or `false`
+- startfirst value = `true` or `false`
+- rotation value = `true` or `false`
+- toolbar value = `true` or `false`
+- anno_bounds value = `true` or `false`
+
+Example : https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true
