@@ -11,6 +11,10 @@ body {
     outline: 1px solid red;
 }
 
+.adno-link{
+    color: #551A8B;
+}
+
 * {
     box-sizing: border-box;
 }
