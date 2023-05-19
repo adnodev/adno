@@ -94,6 +94,7 @@ class OpenView extends Component {
         });
 
         addEventListener('keydown', (event) => {
+
             switch (event.code) {
                 case "ArrowRight":
                     this.nextAnno()
@@ -103,6 +104,12 @@ class OpenView extends Component {
                     break;
                 case "Space":
                     this.startTimer()
+                    break;
+                case "KeyE":
+                    this.toggleFullScreen()
+                    break;
+                case "KeyS":
+                    this.toggleAnnotationsLayer()
                     break;
                 default:
                     break;
