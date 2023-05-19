@@ -25,10 +25,10 @@ class Navbar extends Component {
                 <input type="checkbox" id="my-modal" className="modal-toggle" />
                 <div className="modal">
                     <div className="modal-box" style={{ "color": "initial" }}>
-                        <h3 className="font-bold text-lg">Partage du projet</h3>
-                        <p className="py-4">Afin de pouvoir travailler de manière collaborative, vous devez télécharger le projet puis le partager à vos collaborateurs via un service comme IPFS, Google Drive ou WeTransfer.</p>
-                        <p className="py-4">Ainsi, vos collaborateurs pourront importer le projet de leur côté afin de profiter de vos changements.</p>
-                        <p className="py-4">Pour plus d'informations, rendez-vous sur la <a className="adno-link" href="https://adno.app/fr/docs/prologue/quick-start/" target="_blank">documentation officielle d'ADNO</a></p>
+                        <h3 className="font-bold text-lg">{this.props.t('navbar.share_project')}</h3>
+                        <p className="py-4">{this.props.t('navbar.share_project_desc1')}</p>
+                        <p className="py-4">{this.props.t('navbar.share_project_desc2')}</p>
+                        <p className="py-4">{this.props.t('navbar.share_project_desc3')} <a className="adno-link" href="https://adno.app/fr/docs/prologue/quick-start/" target="_blank">{this.props.t('navbar.share_project_desc4')}</a></p>
                         <div className="modal-action">
                             <label htmlFor="my-modal" className="btn">Annuler</label>
                             <label className="btn btn-success">

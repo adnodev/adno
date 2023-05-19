@@ -1,7 +1,7 @@
 {
     "fr": {
         "translation": {
-            "begin_msg":  {
+            "begin_msg": {
                 "1": "Pour commencer à utiliser Adno",
                 "2": "veuillez renseigner dans le champs ci-dessous l'URL d'un",
                 "3": "Manifeste IIIF",
@@ -47,7 +47,7 @@
                 "add_title": "Donnez un titre à votre projet",
                 "copy": "copie",
                 "metadatas": {
-                    "identifier" : "Identifiant",
+                    "identifier": "Identifiant",
                     "source": "Source",
                     "creation_date": "Date de création",
                     "last_update": "Dernière modification",
@@ -86,7 +86,7 @@
                 "md_delete": "Supprimer",
                 "md_delete_confirm": "Confirmer la suppression"
             },
-            "modal" : {
+            "modal": {
                 "delete_project": "Voulez-vous vraiment supprimer ce projet ?",
                 "confirm_delete": "Supprimer mon projet",
                 "cancel": "Annuler",
@@ -108,22 +108,27 @@
                 "no_content": "aucun contenu",
                 "read_more": "Lire plus"
             },
-            "navbar":{
+            "navbar": {
                 "edit_mode": "Mode édition",
                 "back_home": "Retourner à l'accueil",
                 "download_project": "Télécharger le projet",
                 "edit_project": "Edit the project",
-                "show_metadatas": "Voir les métadonnées"
+                "show_metadatas": "Voir les métadonnées",
+                "share_project": "Partage du projet",
+                "share_project_desc1": "Afin de pouvoir travailler de manière collaborative, vous devez télécharger le projet puis le partager à vos collaborateurs via un service comme IPFS, Google Drive ou WeTransfer.",
+                "share_project_desc2": "Ainsi, vos collaborateurs pourront importer le projet de leur côté afin de profiter de vos changements.",
+                "share_project_desc3": "Pour plus d'informations, rendez-vous sur la",
+                "share_project_desc4": "documentation officielle d'ADNO"
             },
             "new_project": {
                 "add_infos_1": "Ajouter des renseignements",
                 "add_infos_2": "à votre projet"
             },
             "errors": {
-                "error_found": "Erreur détectée", 
+                "error_found": "Erreur détectée",
                 "unable_reading_file": "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
                 "unable_access_file": "Impossible d'accéder à ce fichier !",
-                "manifest_picture_not_found" : "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
+                "manifest_picture_not_found": "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
                 "wrong_url": "L'URL renseignée n'est pas valide ! Renseignez une image JPG, PNG, un manifest ou encore un fichier info.json",
                 "no_url": "Aucune URL n'a été fournie",
                 "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",

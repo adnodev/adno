@@ -113,7 +113,12 @@
                 "back_home": "Back to home",
                 "download_project": "Download the project",
                 "edit_project": "Edit the project",
-                "show_metadatas": "Show metadatas"
+                "show_metadatas": "Show metadatas",
+                "share_project": "Project sharing",
+                "share_project_desc1": "In order to be able to work collaboratively, you must download the project and then share it with your collaborators via a service such as IPFS, Google Drive or WeTransfer.",
+                "share_project_desc2": "Thus, your collaborators will be able to import the project on their side in order to benefit from your changes.",
+                "share_project_desc3": "For more information, visit the",
+                "share_project_desc4": "official ADNO documentation"
             },
             "new_project": {
                 "add_infos_1": "Add information",
