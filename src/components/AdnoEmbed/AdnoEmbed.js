@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
-import { defaultProjectSettings, get_url_extension } from "../../Utils/utils";
+import { get_url_extension } from "../../Utils/utils";
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import ReactHtmlParser from 'react-html-parser';
 import Swal from "sweetalert2";
@@ -19,7 +19,6 @@ class AdnoEmbed extends Component {
             isAnnotationsVisible: false,
             toolsbarOnFs: false,
             selectedAnno: {},
-            settings: defaultProjectSettings(),
             isLoaded: false
         }
     }
@@ -27,6 +26,37 @@ class AdnoEmbed extends Component {
     componentDidMount() {
         const query = new URLSearchParams(this.props.location.search);
         const adnoProjectURL = query.get('url')
+
+        // Add default delay of 3 seconds
+        var timerDelay = 3;
+
+        // Check if the user setted a delay in the url settings
+        if (query.get("delay")) {
+            const delay = Number.parseInt(query.get("delay"))
+            if (delay >= 1 && delay <= 20) {
+                timerDelay = delay
+            }
+        }
+
+        var showNavigator = query.get("navigator") ? query.get("navigator") === "true" : true;
+        var toolsbarOnFs = query.get("toolbarsfs") ? query.get("toolbarsfs") === "true" : true;
+        var startbyfirstanno = query.get("startfirst") ? query.get("startfirst") === "true" : false;
+        var rotation = query.get("rotation") ? query.get("rotation") === "true" : false;
+        var displayToolbar = query.get("toolbar") ? query.get("toolbar") === "true" : true;
+        var isAnnotationsVisible = query.get("anno_bounds") ? query.get("anno_bounds") === "true" : false;
+        const settings = {
+            timerDelay,
+            showNavigator,
+            toolsbarOnFs,
+            sidebarEnabled: true,
+            startbyfirstanno,
+            rotation,
+            displayToolbar,
+            isAnnotationsVisible
+        }
+
+        // Update settings
+        this.setState({ ...settings });
 
         this.getAdnoProject(adnoProjectURL)
     }
@@ -49,7 +79,12 @@ class AdnoEmbed extends Component {
             readOnly: true,
         });
 
-        this.AdnoAnnotorious.setVisible(false);
+        if (this.state.isAnnotationsVisible) {
+            this.AdnoAnnotorious.setVisible(true);
+        } else {
+            this.AdnoAnnotorious.setVisible(false);
+        }
+
 
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
 
@@ -177,7 +212,7 @@ class AdnoEmbed extends Component {
 
     changeAnno = (annotation) => {
         this.setState({ selectedAnno: annotation })
-        
+
         if (this.state.isAnnotationsVisible) {
             this.AdnoAnnotorious.selectAnnotation(annotation.id)
             this.AdnoAnnotorious.fitBounds(annotation.id)
@@ -451,7 +486,10 @@ class AdnoEmbed extends Component {
                                 </>
                             }
 
-                            <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}><FontAwesomeIcon icon={faRotateRight} size="lg" /></button>
+                            {
+                                this.state.rotation &&
+                                <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}><FontAwesomeIcon icon={faRotateRight} size="lg" /></button>
+                            }
                             <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}><FontAwesomeIcon icon={faExpand} size="lg" /></button>
                         </div>
                     </div>
