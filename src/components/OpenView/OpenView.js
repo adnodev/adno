@@ -102,7 +102,7 @@ class OpenView extends Component {
                 case "ArrowLeft":
                     this.previousAnno()
                     break;
-                case "Space":
+                case "KeyP":
                     this.startTimer()
                     break;
                 case "KeyE":
