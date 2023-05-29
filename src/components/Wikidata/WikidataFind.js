@@ -1,13 +1,13 @@
 import WBK from "wikibase-sdk"
 
-export function searchOnWikidata(textQuery) {
+export function searchOnWikidata(textQuery, containerID) {
 
     wbk = WBK({
         instance: 'https://www.wikidata.org',
         sparqlEndpoint: 'https://query.wikidata.org/sparql'
     })
     const language = "fr";
-    const limit = 10;
+    const limit = 5;
     const format = "json"
 
     const url = wbk.searchEntities({
@@ -40,8 +40,15 @@ export function searchOnWikidata(textQuery) {
                                     let images = wikiEntity.entities[element.id] && wikiEntity.entities[element.id].claims["P18"]
 
 
+
                                     if(images){
                                         let imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=100`
+
+                                        const imgWikidata = document.createElement("img")
+                                        imgWikidata.src = imgUrl
+
+
+                                        document.getElementById(containerID).appendChild(imgWikidata)
 
                                         console.log("imgUrl", imgUrl);
     

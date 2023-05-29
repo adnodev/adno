@@ -8,13 +8,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TagsInput } from 'react-tag-input-component';
 
 // Import Markdown editor
-import { insertInLS } from '../../Utils/utils';
+import { generateUUID, insertInLS } from '../../Utils/utils';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
+import { searchOnWikidata } from '../Wikidata/WikidataFind';
 
 class AdnoMdEditor extends Component {
     constructor(props) {
@@ -128,6 +129,58 @@ class AdnoMdEditor extends Component {
     }
 
 
+    createWikidataContainer(){
+        const container = document.createElement('div');
+
+        const imgContainer = document.createElement('div');
+        imgContainer.id = `img-container-${generateUUID()}`
+
+        container.appendChild(imgContainer);
+
+
+
+
+        const wikiSearchBar = document.createElement("input")
+        wikiSearchBar.type = "text"
+        wikiSearchBar.id= `wikidata-in-${generateUUID()}`
+        // wikiSearchBar.addEventListener("keydown", (e) => {
+        //     if(e.target.value !== ""){
+
+        //         console.log(e.target.value);
+        //         searchOnWikidata(e.target.value, imgContainer.id)
+        //     }
+        // })
+
+        container.appendChild(wikiSearchBar);
+
+
+        const findButton = document.createElement("button")
+        findButton.textContent = "OK"
+        findButton.onclick = () => {
+
+            while(document.getElementById(imgContainer.id).firstChild){
+                document.getElementById(imgContainer.id).firstChild.remove()
+            }
+
+
+            const searchBarValue = document.getElementById(wikiSearchBar.id).value
+
+            if(searchBarValue !== ""){
+                searchOnWikidata(searchBarValue, imgContainer.id)
+            }
+        }
+
+        container.appendChild(findButton);
+
+
+     
+
+
+
+        return container
+    }
+
+
     render() {
 
         // $$openstreetmap 46.6696162,0.3549242$$
@@ -195,13 +248,26 @@ class AdnoMdEditor extends Component {
                                 //     style: { backgroundImage: 'none', color: 'black' }
                                 // },
                                 // {
-                                //     name: 'Wikidata',
-                                //     tooltip: 'wikidata',
-                                //     command: 'bold',
-                                //     text: '@',
-                                //     className: 'toastui-editor-toolbar-icons',
-                                //     style: { backgroundImage: 'none', color: 'black' }
+                                // name: 'Wikidata',
+                                // tooltip: 'wikidata',
+                                // command: 'bold',
+                                // text: '@',
+                                // className: 'toastui-editor-toolbar-icons',
+                                // style: { backgroundImage: 'none', color: 'black' }
                                 // }
+
+                                {
+                                    name: 'Wikidata',
+                                    tooltip: 'wikidata',
+                                    text: '@',
+                                    className: 'toastui-editor-toolbar-icons',
+                                    popup: {
+                                        className: 'some class',
+                                        body: this.createWikidataContainer(),
+                                        style: { width: 'auto' },
+                                    },
+                                    style: { backgroundImage: 'none', color: 'black' }
+                                }
                             ]
                         ]}
 
