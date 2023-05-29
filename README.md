@@ -41,10 +41,8 @@ Enjoy using Adno !
 
 If you want to contribute to ADNO here are few steps to start 
   * clone the project from github (https://github.com/adnodev/adno.git)
-  * switch to adno-react branch
   * Start the project with the following command : **yarn start**
-    * Create a .env file and put the version you would like to use by using the variable ADNO_MODE=FULL or ADNO_MODE=LIGHT
-  * To build the project you have to choose the version (full or light)
+    * Create a .env file and put the version you would like (examples below)
     * run **yarn build-full** to build full-version and **yarn build-light** to build the light version.
   * In case of errors try to remove node_modules folder, .parcel-cache and yarn.lock file and reinstall module with **yarn install** command.
 
@@ -66,6 +64,34 @@ ADNO_FOOTER=TRUE
 ADNO_FOOTER_TEXT=YOUR FOOTER TEXT HERE
 
 ```
+
+## Build ADNO
+.env.ADNOFULL example :
+
+```
+# MODE 
+ADNO_MODE=FULL
+
+# FOOTER
+ADNO_FOOTER=TRUE
+```
+
+.env.ADNOLIGHT example :
+
+```
+# MODE 
+ADNO_MODE=LIGHT
+
+# FOOTER
+ADNO_FOOTER=TRUE
+
+```
+
+Build both versions :
+
+Warning : this action requires .env.ADNOFULL and .env.ADNOLIGHT files !
+Run **yarn build** in your terminal, it will run both commands **build-full** and **build-light**
+
 
 # EMBED
 
