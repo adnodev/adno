@@ -58,6 +58,13 @@ class AdnoEmbed extends Component {
         this.getAdnoProject(adnoProjectURL)
 
 
+        addEventListener('fullscreenchange', (event) => {
+            // turn off fullscreen
+            if (document.fullscreenEnabled && !document.fullscreenElement) {
+                this.setState({ fullScreenEnabled: false })
+            }
+        });
+
         // Accessibility
         addEventListener('keydown', (event) => {
 
@@ -148,14 +155,19 @@ class AdnoEmbed extends Component {
 
     toggleFullScreen = () => {
         // turn on full screen
-        if (!this.state.fullScreenEnabled) {
-            document.getElementById("adno-osd").requestFullscreen();
-            this.setState({ fullScreenEnabled: true })
+        if (document.fullscreenEnabled) {
+            if (!this.state.fullScreenEnabled) {
+                document.getElementById("adno-osd").requestFullscreen();
+                this.setState({ fullScreenEnabled: true })
+            } else {
+                document.exitFullscreen();
+                this.setState({ fullScreenEnabled: false })
+            }
         } else {
-            document.exitFullscreen();
-            this.setState({ fullScreenEnabled: false })
+            alert("Fullscreen disabled")
         }
     }
+
 
     previousAnno = () => {
         let localCurrentID = this.state.currentID

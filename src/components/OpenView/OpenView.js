@@ -88,7 +88,7 @@ class OpenView extends Component {
 
         addEventListener('fullscreenchange', (event) => {
             // turn off fullscreen
-            if (!document.fullscreenElement) {
+            if (document.fullscreenEnabled && !document.fullscreenElement) {
                 this.setState({ fullScreenEnabled: false })
             }
         });
@@ -237,12 +237,16 @@ class OpenView extends Component {
 
     toggleFullScreen = () => {
         // turn on full screen
-        if (!this.state.fullScreenEnabled) {
-            document.getElementById("adno-osd").requestFullscreen();
-            this.setState({ fullScreenEnabled: true })
+        if (document.fullscreenEnabled) {
+            if (!this.state.fullScreenEnabled) {
+                document.getElementById("adno-osd").requestFullscreen();
+                this.setState({ fullScreenEnabled: true })
+            } else {
+                document.exitFullscreen();
+                this.setState({ fullScreenEnabled: false })
+            }
         } else {
-            document.exitFullscreen();
-            this.setState({ fullScreenEnabled: false })
+            alert("Fullscreen disabled")
         }
     }
 
