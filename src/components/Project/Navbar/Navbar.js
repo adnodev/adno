@@ -59,6 +59,12 @@ class Navbar extends Component {
                             <label>{this.props.t('navbar.edit_mode')}</label>
                             <input type="checkbox" className="toggle toggle-lg toggle-success" value={this.props.editMode}
                                 onChange={() => {
+
+                                    // Turn off autoplay
+                                    if(this.props.autoplayID !== -1){
+                                        clearInterval(this.props.autoplayID)
+                                    }
+
                                     if (this.props.editMode) {
                                         // Unselect current annotation when switching page
                                         this.props.changeSelectedAnno(undefined)
