@@ -80,3 +80,11 @@ Available settings for the embed :
 - anno_bounds value = `true` or `false`
 
 Example : https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true
+
+# SHORTCUTS FOR THE VIEWER
+
+Key 'P' to start the autoplay
+Key 'E' to toggle FullScreen
+Key 'S' to toggle annotation bounds
+Key 'T' to toggle the toolsbar
+Arrows (left and right) to change the current selected annotation
