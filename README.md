@@ -34,10 +34,9 @@ Enjoy using Adno !
 * https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
 
 ## Quickstart with IIIF pictures examples
-* https://ronallo.com/iiif-workshop/presentation/example-manifests.html
-* https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json
-* https://iiif.emf.fr/iiif/3/peutinger.jp2/info.json
-* https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
+* https://w.adno.app/#/search?url=https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json
+* https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/peutinger.jp2/info.json
+* https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
 
 ## Licence
 
