@@ -111,6 +111,9 @@ class OpenView extends Component {
                 case "KeyS":
                     this.toggleAnnotationsLayer()
                     break;
+                case "KeyT":
+                    this.props.changeShowToolbar()
+                    break;
                 default:
                     break;
             }
