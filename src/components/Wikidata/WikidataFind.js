@@ -1,6 +1,6 @@
 import WBK from "wikibase-sdk"
 
-export function searchOnWikidata(textQuery, containerID) {
+export function searchOnWikidata(textQuery, containerID, editorRef) {
 
     wbk = WBK({
         instance: 'https://www.wikidata.org',
@@ -41,20 +41,26 @@ export function searchOnWikidata(textQuery, containerID) {
 
 
 
-                                    if(images){
+                                    if (images) {
                                         let imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=100`
 
                                         const imgWikidata = document.createElement("img")
                                         imgWikidata.src = imgUrl
+                                        imgWikidata.onclick = () => {
+                                            editorRef.getInstance().exec('link', 'http://www.google.com.au/images/nav_logo7.png');
 
+                                            console.log(`[![${textQuery}](http://www.google.com.au/images/nav_logo7.png)](http://google.com.au/)`);
+                                            
+                                            console.log(editorRef.getInstance().eventEmitter.emit('closePopup'));
+                                        }
 
                                         document.getElementById(containerID).appendChild(imgWikidata)
 
                                         console.log("imgUrl", imgUrl);
-    
+
                                     }
 
-                                 
+
                                 })
                         });
 

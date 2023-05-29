@@ -129,8 +129,32 @@ class AdnoMdEditor extends Component {
     }
 
 
-    createWikidataContainer(){
+    createWikidataContainer() {
         const container = document.createElement('div');
+
+        const wikiSearchBar = document.createElement("input")
+        wikiSearchBar.type = "text"
+        wikiSearchBar.id = `wikidata-in-${generateUUID()}`
+
+        container.appendChild(wikiSearchBar);
+
+        const findButton = document.createElement("button")
+        findButton.textContent = "OK"
+        findButton.onclick = () => {
+
+            while (document.getElementById(imgContainer.id).firstChild) {
+                document.getElementById(imgContainer.id).firstChild.remove()
+            }
+
+
+            const searchBarValue = document.getElementById(wikiSearchBar.id).value
+
+            if (searchBarValue !== "") {
+                searchOnWikidata(searchBarValue, imgContainer.id, this.editorRef.current)
+            }
+        }
+        container.appendChild(findButton);
+
 
         const imgContainer = document.createElement('div');
         imgContainer.id = `img-container-${generateUUID()}`
@@ -139,75 +163,10 @@ class AdnoMdEditor extends Component {
 
 
 
-
-        const wikiSearchBar = document.createElement("input")
-        wikiSearchBar.type = "text"
-        wikiSearchBar.id= `wikidata-in-${generateUUID()}`
-        // wikiSearchBar.addEventListener("keydown", (e) => {
-        //     if(e.target.value !== ""){
-
-        //         console.log(e.target.value);
-        //         searchOnWikidata(e.target.value, imgContainer.id)
-        //     }
-        // })
-
-        container.appendChild(wikiSearchBar);
-
-
-        const findButton = document.createElement("button")
-        findButton.textContent = "OK"
-        findButton.onclick = () => {
-
-            while(document.getElementById(imgContainer.id).firstChild){
-                document.getElementById(imgContainer.id).firstChild.remove()
-            }
-
-
-            const searchBarValue = document.getElementById(wikiSearchBar.id).value
-
-            if(searchBarValue !== ""){
-                searchOnWikidata(searchBarValue, imgContainer.id)
-            }
-        }
-
-        container.appendChild(findButton);
-
-
-     
-
-
-
         return container
     }
 
-
     render() {
-
-        // $$openstreetmap 46.6696162,0.3549242$$
-
-        // const openStreetMapPlugin = () => {
-        //     const toHTMLRenderers = {
-        //         openstreetmap(node) {
-        //             console.log(node.firstChild.literal);
-        //             // return {
-        //             //     type: 'text',
-        //             //     content: node.firstChild.literal,
-        //             //     classNames: [`adnomap-${generateUUID}`]
-        //             // };
-
-        //             return [
-        //                 { type: 'openTag', outerNewLine: true},
-        //                 { type: 'html', content: node.firstChild.literal },
-        //                 { type: 'closeTag', outerNewLine: true },
-        //             ]
-        //         },
-        //     }
-
-        //     return { toHTMLRenderers }
-        // }
-
-
-
         return (
             <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
                 <div className="card-body">
@@ -229,8 +188,6 @@ class AdnoMdEditor extends Component {
                         initialEditType="markdown"
                         placeholder="Ajoutez votre texte ici"
                         hideModeSwitch={true}
-                        // plugins= {[openStreetMapPlugin]}
-
                         toolbarItems={[
                             [
                                 'heading',
@@ -247,19 +204,11 @@ class AdnoMdEditor extends Component {
                                 //     className: 'toastui-editor-toolbar-icons',
                                 //     style: { backgroundImage: 'none', color: 'black' }
                                 // },
-                                // {
-                                // name: 'Wikidata',
-                                // tooltip: 'wikidata',
-                                // command: 'bold',
-                                // text: '@',
-                                // className: 'toastui-editor-toolbar-icons',
-                                // style: { backgroundImage: 'none', color: 'black' }
-                                // }
 
                                 {
                                     name: 'Wikidata',
                                     tooltip: 'wikidata',
-                                    text: '@',
+                                    text: 'W',
                                     className: 'toastui-editor-toolbar-icons',
                                     popup: {
                                         className: 'some class',
