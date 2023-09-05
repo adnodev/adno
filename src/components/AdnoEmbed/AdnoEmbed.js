@@ -7,6 +7,9 @@ import ReactHtmlParser from 'react-html-parser';
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
+// Import Style
+import "./AdnoEmbed.css";
+
 class AdnoEmbed extends Component {
     constructor(props) {
         super(props)
@@ -93,7 +96,7 @@ class AdnoEmbed extends Component {
     displayViewer = (tileSources, annos) => {
 
         this.openSeadragon = OpenSeadragon({
-            id: 'adno-osd',
+            id: 'adno-embed',
             homeButton: "home-button",
             showNavigator: false,
             tileSources: tileSources,
@@ -471,7 +474,7 @@ class AdnoEmbed extends Component {
     render() {
         if (this.state.isLoaded) {
             return (
-                <div id="adno-osd">
+                <div id="adno-embed">
 
                     {
                         this.state.selectedAnno && this.state.selectedAnno.body &&
