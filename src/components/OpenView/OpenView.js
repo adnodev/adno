@@ -165,6 +165,7 @@ class OpenView extends Component {
 
 
     startTimer = () => {
+        console.log("timer from starttimer ", this.state.timer);
         // Do not start the timer if there is no content to display
         if (this.props.annos.length > 0) {
 
@@ -186,6 +187,7 @@ class OpenView extends Component {
                 // Call the function to go to the next annotation every "timerDelay" seconds
                 let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
                 this.setState({ timer: true, intervalID: interID })
+                this.props.updateAutoplayId(interID)
             }
         }
     }
