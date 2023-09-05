@@ -24,6 +24,7 @@
     border-radius: 2px;
     padding: 10px;
     overflow: auto;
+    font-size: x-large;
 }
 
 .adno-osd-anno-fullscreen-tb-opened{
@@ -41,6 +42,7 @@
     resize: both;
     min-width: 15vw;
     max-height: calc(100% - 10vh);
+    font-size: x-large;
 }
 
 

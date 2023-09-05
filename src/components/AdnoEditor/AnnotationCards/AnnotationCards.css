@@ -20,6 +20,7 @@
     display: -webkit-box;
     overflow: hidden;
     white-space: pre-wrap;
+    font-size: x-large;
 }
 
 .adno-card-selected-body{
@@ -30,6 +31,7 @@
     display: -webkit-box;
     overflow: hidden;
     white-space: pre-wrap;
+    font-size: x-large;
 }
 
 .anno-cards{
