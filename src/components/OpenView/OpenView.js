@@ -88,11 +88,36 @@ class OpenView extends Component {
 
         addEventListener('fullscreenchange', (event) => {
             // turn off fullscreen
-            if (!document.fullscreenElement) {
+            if (document.fullscreenEnabled && !document.fullscreenElement) {
                 this.setState({ fullScreenEnabled: false })
             }
         });
 
+        addEventListener('keydown', (event) => {
+
+            switch (event.code) {
+                case "ArrowRight":
+                    this.nextAnno()
+                    break;
+                case "ArrowLeft":
+                    this.previousAnno()
+                    break;
+                case "KeyP":
+                    this.startTimer()
+                    break;
+                case "KeyE":
+                    this.toggleFullScreen()
+                    break;
+                case "KeyS":
+                    this.toggleAnnotationsLayer()
+                    break;
+                case "KeyT":
+                    this.props.changeShowToolbar()
+                    break;
+                default:
+                    break;
+            }
+        })
     }
 
     automateLoading = () => {
@@ -212,12 +237,16 @@ class OpenView extends Component {
 
     toggleFullScreen = () => {
         // turn on full screen
-        if (!this.state.fullScreenEnabled) {
-            document.getElementById("adno-osd").requestFullscreen();
-            this.setState({ fullScreenEnabled: true })
+        if (document.fullscreenEnabled) {
+            if (!this.state.fullScreenEnabled) {
+                document.getElementById("adno-osd").requestFullscreen();
+                this.setState({ fullScreenEnabled: true })
+            } else {
+                document.exitFullscreen();
+                this.setState({ fullScreenEnabled: false })
+            }
         } else {
-            document.exitFullscreen();
-            this.setState({ fullScreenEnabled: false })
+            alert("Fullscreen disabled")
         }
     }
 
@@ -255,6 +284,8 @@ class OpenView extends Component {
             }
         }
     }
+
+
 
 
 

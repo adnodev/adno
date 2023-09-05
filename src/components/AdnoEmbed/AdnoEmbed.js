@@ -56,6 +56,38 @@ class AdnoEmbed extends Component {
         this.setState({ ...settings });
 
         this.getAdnoProject(adnoProjectURL)
+
+
+        addEventListener('fullscreenchange', (event) => {
+            // turn off fullscreen
+            if (document.fullscreenEnabled && !document.fullscreenElement) {
+                this.setState({ fullScreenEnabled: false })
+            }
+        });
+
+        // Accessibility
+        addEventListener('keydown', (event) => {
+
+            switch (event.code) {
+                case "ArrowRight":
+                    this.nextAnno()
+                    break;
+                case "ArrowLeft":
+                    this.previousAnno()
+                    break;
+                case "KeyP":
+                    this.startTimer()
+                    break;
+                case "KeyE":
+                    this.toggleFullScreen()
+                    break;
+                case "KeyS":
+                    this.toggleAnnotationsLayer()
+                    break;
+                default:
+                    break;
+            }
+        })
     }
 
     displayViewer = (tileSources, annos) => {
@@ -123,14 +155,19 @@ class AdnoEmbed extends Component {
 
     toggleFullScreen = () => {
         // turn on full screen
-        if (!this.state.fullScreenEnabled) {
-            document.getElementById("adno-osd").requestFullscreen();
-            this.setState({ fullScreenEnabled: true })
+        if (document.fullscreenEnabled) {
+            if (!this.state.fullScreenEnabled) {
+                document.getElementById("adno-osd").requestFullscreen();
+                this.setState({ fullScreenEnabled: true })
+            } else {
+                document.exitFullscreen();
+                this.setState({ fullScreenEnabled: false })
+            }
         } else {
-            document.exitFullscreen();
-            this.setState({ fullScreenEnabled: false })
+            alert("Fullscreen disabled")
         }
     }
+
 
     previousAnno = () => {
         let localCurrentID = this.state.currentID

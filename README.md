@@ -118,3 +118,12 @@ A little example with an iframe that you can insert in your own projects :
     <iframe src="https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true" height="500" width="1200" allowfullscreen="true"></iframe>
 
 ```
+
+# SHORTCUTS FOR THE VIEWER
+
+- Key 'P' to start the autoplay
+- Key 'E' to toggle FullScreen
+- Key 'S' to toggle annotation bounds
+- Key 'T' to toggle the toolsbar
+- Arrows (left and right) to change the current selected annotation
+
