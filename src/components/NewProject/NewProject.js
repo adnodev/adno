@@ -385,9 +385,9 @@ class NewProject extends Component {
 
 
                                 {
-                                    this.state.isCanvaProject && !this.state.selectedCanva &&
+                                    this.state.isCanvaProject && this.state.selectedCanva &&
                                     <button id="annuler_creation" type="submit" className="btn" onClick={() => {
-                                        this.setState({ selectedCanva: false, isCanvaProject: false })
+                                        this.setState({ selectedCanva: false, isCanvaProject: true })
                                         localStorage.removeItem("selected_canva")
                                     }}>{this.props.t('project.back')}</button>
                                 }
@@ -404,12 +404,18 @@ class NewProject extends Component {
                 }
 
 
+                {
+                    this.state.isCanvaProject && !this.state.selectedCanva && this.state.manifestImages && this.state.nbCanvases > 1 &&
+                    <>
+                        <h1>Choisissez une image</h1>
+                        <p className="adno_description">Ce manifest comporte plusieurs images, vous devez en choisir une pour votre projet Adno</p>
+                    </>
+                }
+
 
                 {
                     this.state.manifestImages && this.state.nbCanvases > 1 &&
-
                     <div id="select_canva">
-
 
                         {
                             this.state.manifestImages && this.state.manifestImages.length > 0 && this.state.currentIndex > 0 && !this.state.selectedCanva &&
@@ -436,13 +442,13 @@ class NewProject extends Component {
                         this.setState({ selectedCanva: true, isCanvaProject: true })
                         localStorage.setItem("selected_canva", this.state.manifestImages[this.state.currentIndex].canva_url)
                     }
-                    }>Sélectionner ce canva</button>
+                    }>{this.props.t('project.choose_canva')}</button>
                 }
 
 
                 {
                     this.state.isCanvaProject && !this.state.selectedCanva &&
-                    <button id="cancel_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>{this.props.t('project.cancel')}</button>
+                    <button id="cancel_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>{this.props.t('project.back_home')}</button>
                 }
 
             </div>

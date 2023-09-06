@@ -47,6 +47,8 @@
                 "add_title": "Donnez un titre à votre projet",
                 "copy": "copie",
                 "cancel": "Annuler",
+                "back_home": "Annuler et revenir à l'accueil",
+                "choose_canva": "Utiliser cette image pour mon projet",
                 "metadatas": {
                     "identifier": "Identifiant",
                     "source": "Source",
