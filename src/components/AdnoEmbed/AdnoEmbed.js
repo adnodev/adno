@@ -269,9 +269,12 @@ class AdnoEmbed extends Component {
     }
 
 
+
     getAdnoProject = (url) => {
+        const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
+
         // We check if the url contains an image
-        if (get_url_extension(url) === "png" || get_url_extension(url) === "jpg" || get_url_extension(url) === "jpeg") {
+        if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url))) {
             fetch(url)
                 .then(res => {
                     if (res.status == 200 || res.status == 201) {
@@ -346,8 +349,9 @@ class AdnoEmbed extends Component {
                                 })
 
 
+                                const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
-                                const tileSources = (get_url_extension(imported_project.source) === "png" || get_url_extension(imported_project.source) === "jpg" || get_url_extension(imported_project.source) === "jpeg") ?
+                                const tileSources = (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(imported_project.source))) ?
                                     {
                                         type: 'image',
                                         url: imported_project.source
@@ -372,8 +376,6 @@ class AdnoEmbed extends Component {
                             }
 
                         } else {
-                            console.log("pas adno");
-
                             // Check if it's a manifest
 
                             if (
@@ -408,19 +410,11 @@ class AdnoEmbed extends Component {
 
                                 if (resultLink) {
 
-                                    console.log(resultLink);
-
                                     var annos = [];
 
-                                    // if(imported_project.sequences[0].canvases[0].annotationList.resources){
-                                    //     annos = imported_project.sequences[0].canvases[0].annotationList.resources;
-                                    // }else if (){
+                                    const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
-                                    // }
-
-                                    console.log(imported_project.sequences[0].canvases[0].annotationList.resources);
-
-                                    const tileSources = (get_url_extension(resultLink) === "png" || get_url_extension(resultLink) === "jpg" || get_url_extension(resultLink) === "jpeg") ?
+                                    const tileSources = (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(resultLink))) ?
                                         {
                                             type: 'image',
                                             url: resultLink
