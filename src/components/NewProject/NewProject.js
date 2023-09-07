@@ -77,19 +77,20 @@ class NewProject extends Component {
             var manifest_url = localStorage.getItem("adno_image_url")
 
             let isUrlManifest = "";
+            const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
             // if the url is not an image file (.jpg, .jpeg or .png) it should be a manifest
-            if (get_url_extension(manifest_url) !== "png" && get_url_extension(manifest_url) !== "jpg" && get_url_extension(manifest_url) !== "jpeg") {
+            if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
                 isUrlManifest = await this.isManifest(manifest_url)
             }
 
             var projectID = generateUUID()
 
             // we check if the url is an image (.jpg, .jpeg or .png) or a manifest or a json file (such as an info.json file)
-            if (get_url_extension(manifest_url) === "png" || get_url_extension(manifest_url) === "jpg" || get_url_extension(manifest_url) === "jpeg" || get_url_extension(manifest_url) === "json" || isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest") {
+            if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || get_url_extension(manifest_url) === "json" || isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest") {
                 // fichier accepté
 
-                if (get_url_extension(manifest_url) === "png" || get_url_extension(manifest_url) === "jpg" || get_url_extension(manifest_url) === "jpeg") {
+                if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
 
                     let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
 
