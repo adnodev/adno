@@ -137,7 +137,8 @@
                 "no_iiif": "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
                 "wrong_file": "Ce fichier n'est pas lisible par ADNO ! Veuillez réessayer avec un autre fichier"
             },
-            "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français"
+            "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français",
+            "tags_infos": "Veuillez appuyer sur votre touche 'entrée' pour valider chaque tag"
         }
     }
 }
