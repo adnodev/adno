@@ -46,6 +46,9 @@
                 "add_desc": "Add a little text to describe your project (optional)",
                 "add_title": "Add a title to your project",
                 "copy": "copy",
+                "cancel": "Cancel",
+                "back_home": "Cancel and go back to homepage",
+                "choose_canva": "Use this picture for my project",
                 "metadatas": {
                     "identifier" : "Identifier",
                     "source": "Source",

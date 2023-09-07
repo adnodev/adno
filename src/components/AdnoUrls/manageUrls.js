@@ -10,6 +10,7 @@ export async function manageUrls(props, url, translation) {
             .then(res => {
                 if (res.status == 200 || res.status == 201) {
                     insertInLS("adno_image_url", url)
+                    localStorage.removeItem("selected_canva")
                     props.history.push("/new")
                 } else {
                     throw new Error(translation('errors.unable_access_file'))
@@ -101,6 +102,7 @@ export async function manageUrls(props, url, translation) {
                     // Non-ADNO Format detected
                     if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
                         insertInLS("adno_image_url", url)
+                        localStorage.removeItem("selected_canva")
                         props.history.push("/new")
                     } else {
                         Swal.fire({
