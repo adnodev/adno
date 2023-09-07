@@ -140,7 +140,8 @@
                 "no_iiif": "Non-IIIF project detected, please fill in an IIIF project",
                 "wrong_file": "This file is not readable by ADNO! Please try again with another file"
             },
-            "footer": "Poitiers. This project was supported by the French Ministry of Culture"
+            "footer": "Poitiers. This project was supported by the French Ministry of Culture",
+            "tags_infos": "Please press your key 'enter' between each tag to save them"
         }
     }
 }

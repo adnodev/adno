@@ -34,7 +34,8 @@ class Project extends Component {
             updateAnnotation: false,
             showProjectMetadatas: false,
             showSettings: false,
-            settings: getProjectSettings(this.props.match.params.id)
+            settings: getProjectSettings(this.props.match.params.id),
+            autoplayID: -1
         }
     }
 
@@ -66,6 +67,7 @@ class Project extends Component {
                     editMode={this.props.editMode}
                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                     showEditorSettings={() => this.setState({ showSettings: true })}
+                    autoplayID={this.state.autoplayID}
                 />
 
                 {
@@ -179,6 +181,8 @@ class Project extends Component {
                                         selectedAnno={this.state.selectedAnnotation}
                                         selected_project={this.state.selectedProject}
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
+                                        updateAutoplayId={(id) => this.setState({autoplayID: id})}
+                                        changeShowToolbar={(newState) => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })}
                                     />
                             }
                         </div>

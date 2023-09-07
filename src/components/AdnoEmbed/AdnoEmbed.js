@@ -7,6 +7,9 @@ import ReactHtmlParser from 'react-html-parser';
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
+// Import Style
+import "./AdnoEmbed.css";
+
 class AdnoEmbed extends Component {
     constructor(props) {
         super(props)
@@ -56,12 +59,44 @@ class AdnoEmbed extends Component {
         this.setState({ ...settings });
 
         this.getAdnoProject(adnoProjectURL)
+
+
+        addEventListener('fullscreenchange', (event) => {
+            // turn off fullscreen
+            if (document.fullscreenEnabled && !document.fullscreenElement) {
+                this.setState({ fullScreenEnabled: false })
+            }
+        });
+
+        // Accessibility
+        addEventListener('keydown', (event) => {
+
+            switch (event.code) {
+                case "ArrowRight":
+                    this.nextAnno()
+                    break;
+                case "ArrowLeft":
+                    this.previousAnno()
+                    break;
+                case "KeyP":
+                    this.startTimer()
+                    break;
+                case "KeyE":
+                    this.toggleFullScreen()
+                    break;
+                case "KeyS":
+                    this.toggleAnnotationsLayer()
+                    break;
+                default:
+                    break;
+            }
+        })
     }
 
     displayViewer = (tileSources, annos) => {
 
         this.openSeadragon = OpenSeadragon({
-            id: 'adno-osd',
+            id: 'adno-embed',
             homeButton: "home-button",
             showNavigator: false,
             tileSources: tileSources,
@@ -123,14 +158,19 @@ class AdnoEmbed extends Component {
 
     toggleFullScreen = () => {
         // turn on full screen
-        if (!this.state.fullScreenEnabled) {
-            document.getElementById("adno-osd").requestFullscreen();
-            this.setState({ fullScreenEnabled: true })
+        if (document.fullscreenEnabled) {
+            if (!this.state.fullScreenEnabled) {
+                document.getElementById("adno-osd").requestFullscreen();
+                this.setState({ fullScreenEnabled: true })
+            } else {
+                document.exitFullscreen();
+                this.setState({ fullScreenEnabled: false })
+            }
         } else {
-            document.exitFullscreen();
-            this.setState({ fullScreenEnabled: false })
+            alert("Fullscreen disabled")
         }
     }
+
 
     previousAnno = () => {
         let localCurrentID = this.state.currentID
@@ -229,9 +269,12 @@ class AdnoEmbed extends Component {
     }
 
 
+
     getAdnoProject = (url) => {
+        const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
+
         // We check if the url contains an image
-        if (get_url_extension(url) === "png" || get_url_extension(url) === "jpg" || get_url_extension(url) === "jpeg") {
+        if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url))) {
             fetch(url)
                 .then(res => {
                     if (res.status == 200 || res.status == 201) {
@@ -306,8 +349,9 @@ class AdnoEmbed extends Component {
                                 })
 
 
+                                const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
-                                const tileSources = (get_url_extension(imported_project.source) === "png" || get_url_extension(imported_project.source) === "jpg" || get_url_extension(imported_project.source) === "jpeg") ?
+                                const tileSources = (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(imported_project.source))) ?
                                     {
                                         type: 'image',
                                         url: imported_project.source
@@ -332,8 +376,6 @@ class AdnoEmbed extends Component {
                             }
 
                         } else {
-                            console.log("pas adno");
-
                             // Check if it's a manifest
 
                             if (
@@ -368,19 +410,11 @@ class AdnoEmbed extends Component {
 
                                 if (resultLink) {
 
-                                    console.log(resultLink);
-
                                     var annos = [];
 
-                                    // if(imported_project.sequences[0].canvases[0].annotationList.resources){
-                                    //     annos = imported_project.sequences[0].canvases[0].annotationList.resources;
-                                    // }else if (){
+                                    const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
-                                    // }
-
-                                    console.log(imported_project.sequences[0].canvases[0].annotationList.resources);
-
-                                    const tileSources = (get_url_extension(resultLink) === "png" || get_url_extension(resultLink) === "jpg" || get_url_extension(resultLink) === "jpeg") ?
+                                    const tileSources = (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(resultLink))) ?
                                         {
                                             type: 'image',
                                             url: resultLink
@@ -434,7 +468,7 @@ class AdnoEmbed extends Component {
     render() {
         if (this.state.isLoaded) {
             return (
-                <div id="adno-osd">
+                <div id="adno-embed">
 
                     {
                         this.state.selectedAnno && this.state.selectedAnno.body &&
