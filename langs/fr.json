@@ -18,7 +18,7 @@
                 "import_now": "directement",
                 "validate": "Valider l'importation",
                 "cancel": "Annuler l'importation",
-                "adno_project": "Projet ADNO détecté, voulez-vous l'importer ?",
+                "adno_project": "Projet Adno détecté, voulez-vous l'importer ?",
                 "import_success": "Projet importé avec succès"
             },
             "projects": {
@@ -40,7 +40,7 @@
                 "description": "Description",
                 "autor": "Auteur",
                 "editor": "Editeur",
-                "manifest_url": "URL du Manifeste",
+                "manifest_url": "URL",
                 "create": "Créer mon projet",
                 "back": "Retour",
                 "add_desc": "Description de votre projet (optionnel)",
@@ -102,10 +102,10 @@
                 "del_annotation_confirmation": "L'annotation a bien été supprimée",
                 "project_edit_success": "Projet édité avec succés !",
                 "settings_updated_success": "Paramètres mis à jour avec succés !",
-                "adno_proj_detected": "Projet ADNO détecté, voulez-vous l'importer ?",
+                "adno_proj_detected": "Projet Adno détecté, voulez-vous l'importer ?",
                 "old_version": "Un ou plusieurs projets ont été fait avec une version obsolète d’Adno",
                 "update_old_version": "Mettre à jour vers la dernière version",
-                "version_updated": "Félicitations, vos projets ADNO sont à jour !"
+                "version_updated": "Félicitations, vos projets Adno sont à jour !"
             },
             "annotation": {
                 "no_content": "aucun contenu",
@@ -117,11 +117,11 @@
                 "download_project": "Télécharger le projet",
                 "edit_project": "Edit the project",
                 "show_metadatas": "Voir les métadonnées",
-                "share_project": "Partage du projet",
-                "share_project_desc1": "Afin de pouvoir travailler de manière collaborative, vous devez télécharger le projet puis le partager à vos collaborateurs via un service comme IPFS, Google Drive ou WeTransfer.",
-                "share_project_desc2": "Ainsi, vos collaborateurs pourront importer le projet de leur côté afin de profiter de vos changements.",
+                "share_project": "Sauvegarde et partage du projet",
+                "share_project_desc1": "Téléchargez d’abord le fichier de votre projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
+                "share_project_desc2": "Dès lors que votre projet Adno est en ligne, il est possible de le rendre visible dans une page web en insérant une balise iframe.",
                 "share_project_desc3": "Pour plus d'informations, rendez-vous sur la",
-                "share_project_desc4": "documentation officielle d'ADNO"
+                "share_project_desc4": "documentation officielle d'Adno"
             },
             "new_project": {
                 "add_infos_1": "Ajouter des renseignements",

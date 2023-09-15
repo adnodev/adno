@@ -28,7 +28,7 @@ class Navbar extends Component {
                         <h3 className="font-bold text-lg">{this.props.t('navbar.share_project')}</h3>
                         <p className="py-4">{this.props.t('navbar.share_project_desc1')}</p>
                         <p className="py-4">{this.props.t('navbar.share_project_desc2')}</p>
-                        <p className="py-4">{this.props.t('navbar.share_project_desc3')} <a className="adno-link" href="https://adno.app/fr/docs/prologue/quick-start/" target="_blank">{this.props.t('navbar.share_project_desc4')}</a></p>
+                        <p className="py-4">{this.props.t('navbar.share_project_desc3')} <a className="adno-link" href="https://adno.app/" target="_blank">{this.props.t('navbar.share_project_desc4')}</a></p>
                         <div className="modal-action">
                             <label htmlFor="my-modal" className="btn">{this.props.t('buttons.cancel')}</label>
                             <label className="btn btn-success">
