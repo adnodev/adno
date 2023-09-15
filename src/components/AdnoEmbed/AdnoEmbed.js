@@ -41,7 +41,7 @@ class AdnoEmbed extends Component {
         var toolsbarOnFs = query.get("toolbarsfs") ? query.get("toolbarsfs") === "true" : true;
         var startbyfirstanno = query.get("startfirst") ? query.get("startfirst") === "true" : false;
         var rotation = query.get("rotation") ? query.get("rotation") === "true" : false;
-        var displayToolbar = query.get("toolbar") ? query.get("toolbar") === "true" : true;
+        var showToolbar = query.get("toolbar") ? query.get("toolbar") === "true" : true;
         var isAnnotationsVisible = query.get("anno_bounds") ? query.get("anno_bounds") === "true" : false;
 
         const settings = {
@@ -51,8 +51,8 @@ class AdnoEmbed extends Component {
             sidebarEnabled: true,
             startbyfirstanno,
             rotation,
-            displayToolbar,
-            isAnnotationsVisible
+            isAnnotationsVisible,
+            showToolbar
         }
 
         // Update settings
@@ -157,7 +157,7 @@ class AdnoEmbed extends Component {
                 this.toggleAnnotationsLayer()
                 break;
             case "KeyT":
-                this.props.changeShowToolbar()
+                this.setState({showToolbar: !this.state.showToolbar})
                 break;
             default:
                 break;
@@ -483,7 +483,7 @@ class AdnoEmbed extends Component {
                         this.getAnnotationHTMLBody(this.state.selectedAnno)
                     }
 
-                    <div className={"toolbar-on"}>
+                    <div className={this.state.showToolbar ? "toolbar-on" : "toolbar-off"}>
                         <div className={"osd-buttons-bar"}>
 
                             {
