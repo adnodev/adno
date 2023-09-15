@@ -56,14 +56,6 @@ class Project extends Component {
         localStorage.setItem(this.state.selectedProject.id, JSON.stringify(project))
     }
 
-    // componentDidUpdate(prevProps) {
-    //     if (this.props.editMode !== prevProps.editMode) {
-    //         if (this.props.editMode) {
-                
-    //         }
-    //     }
-    // }
-
     render() {
         return (
             <div className="project">
