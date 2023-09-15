@@ -56,6 +56,14 @@ class Project extends Component {
         localStorage.setItem(this.state.selectedProject.id, JSON.stringify(project))
     }
 
+    // componentDidUpdate(prevProps) {
+    //     if (this.props.editMode !== prevProps.editMode) {
+    //         if (this.props.editMode) {
+                
+    //         }
+    //     }
+    // }
+
     render() {
         return (
             <div className="project">
@@ -181,7 +189,7 @@ class Project extends Component {
                                         selectedAnno={this.state.selectedAnnotation}
                                         selected_project={this.state.selectedProject}
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
-                                        updateAutoplayId={(id) => this.setState({autoplayID: id})}
+                                        updateAutoplayId={(id) => this.setState({ autoplayID: id })}
                                         changeShowToolbar={(newState) => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })}
                                     />
                             }

@@ -29,6 +29,8 @@ class OpenView extends Component {
         }
     }
 
+
+
     componentDidMount() {
         // First of all, verify if the UUID match to an real project in the localStorage
         // If not, then redirect the user to the HomePage
@@ -85,39 +87,45 @@ class OpenView extends Component {
             this.AdnoAnnotorious.loadAnnotations(dataURI)
         }
 
+        addEventListener('fullscreenchange', this.updateFullScreenEvent);
+        addEventListener('keydown', this.keyPressedEvents)
+    }
 
-        addEventListener('fullscreenchange', (event) => {
-            // turn off fullscreen
-            if (document.fullscreenEnabled && !document.fullscreenElement) {
-                this.setState({ fullScreenEnabled: false })
-            }
-        });
+    keyPressedEvents = (event) => {
+        switch (event.code) {
+            case "ArrowRight":
+                this.nextAnno()
+                break;
+            case "ArrowLeft":
+                this.previousAnno()
+                break;
+            case "KeyP":
+                this.startTimer()
+                break;
+            case "KeyE":
+                this.toggleFullScreen()
+                break;
+            case "KeyS":
+                this.toggleAnnotationsLayer()
+                break;
+            case "KeyT":
+                this.props.changeShowToolbar()
+                break;
+            default:
+                break;
+        }
+    }
 
-        addEventListener('keydown', (event) => {
+    updateFullScreenEvent = (event) => {
+        // turn off fullscreen
+        if (document.fullscreenEnabled && !document.fullscreenElement) {
+            this.setState({ fullScreenEnabled: false })
+        }
+    }
 
-            switch (event.code) {
-                case "ArrowRight":
-                    this.nextAnno()
-                    break;
-                case "ArrowLeft":
-                    this.previousAnno()
-                    break;
-                case "KeyP":
-                    this.startTimer()
-                    break;
-                case "KeyE":
-                    this.toggleFullScreen()
-                    break;
-                case "KeyS":
-                    this.toggleAnnotationsLayer()
-                    break;
-                case "KeyT":
-                    this.props.changeShowToolbar()
-                    break;
-                default:
-                    break;
-            }
-        })
+    componentWillUnmount() {
+        removeEventListener("keydown", this.keyPressedEvents)
+        removeEventListener("fullscreenchange", this.updateFullScreenEvent)
     }
 
     automateLoading = () => {
@@ -241,8 +249,12 @@ class OpenView extends Component {
         // turn on full screen
         if (document.fullscreenEnabled) {
             if (!this.state.fullScreenEnabled) {
-                document.getElementById("adno-osd").requestFullscreen();
-                this.setState({ fullScreenEnabled: true })
+                if (document.getElementById("adno-osd")) {
+                    document.getElementById("adno-osd").requestFullscreen();
+                    this.setState({ fullScreenEnabled: true })
+                } else {
+                    alert("Unable to turn on FullScreen")
+                }
             } else {
                 document.exitFullscreen();
                 this.setState({ fullScreenEnabled: false })

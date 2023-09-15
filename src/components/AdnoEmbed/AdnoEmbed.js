@@ -61,36 +61,9 @@ class AdnoEmbed extends Component {
         this.getAdnoProject(adnoProjectURL)
 
 
-        addEventListener('fullscreenchange', (event) => {
-            // turn off fullscreen
-            if (document.fullscreenEnabled && !document.fullscreenElement) {
-                this.setState({ fullScreenEnabled: false })
-            }
-        });
-
-        // Accessibility
-        addEventListener('keydown', (event) => {
-
-            switch (event.code) {
-                case "ArrowRight":
-                    this.nextAnno()
-                    break;
-                case "ArrowLeft":
-                    this.previousAnno()
-                    break;
-                case "KeyP":
-                    this.startTimer()
-                    break;
-                case "KeyE":
-                    this.toggleFullScreen()
-                    break;
-                case "KeyS":
-                    this.toggleAnnotationsLayer()
-                    break;
-                default:
-                    break;
-            }
-        })
+        // Accessibility shortcuts
+        addEventListener('fullscreenchange', this.updateFullScreenEvent);
+        addEventListener('keydown', this.keyPressedEvents)
     }
 
     displayViewer = (tileSources, annos) => {
@@ -160,8 +133,12 @@ class AdnoEmbed extends Component {
         // turn on full screen
         if (document.fullscreenEnabled) {
             if (!this.state.fullScreenEnabled) {
-                document.getElementById("adno-osd").requestFullscreen();
-                this.setState({ fullScreenEnabled: true })
+                if (document.getElementById("adno-embed")) {
+                    document.getElementById("adno-embed").requestFullscreen();
+                    this.setState({ fullScreenEnabled: true })
+                } else {
+                    alert("Unable to turn on FullScreen")
+                }
             } else {
                 document.exitFullscreen();
                 this.setState({ fullScreenEnabled: false })
@@ -170,6 +147,43 @@ class AdnoEmbed extends Component {
             alert("Fullscreen disabled")
         }
     }
+    keyPressedEvents = (event) => {
+        switch (event.code) {
+            case "ArrowRight":
+                this.nextAnno()
+                break;
+            case "ArrowLeft":
+                this.previousAnno()
+                break;
+            case "KeyP":
+                this.startTimer()
+                break;
+            case "KeyE":
+                this.toggleFullScreen()
+                break;
+            case "KeyS":
+                this.toggleAnnotationsLayer()
+                break;
+            case "KeyT":
+                this.props.changeShowToolbar()
+                break;
+            default:
+                break;
+        }
+    }
+
+    updateFullScreenEvent = (event) => {
+        // turn off fullscreen
+        if (document.fullscreenEnabled && !document.fullscreenElement) {
+            this.setState({ fullScreenEnabled: false })
+        }
+    }
+
+    componentWillUnmount() {
+        removeEventListener("keydown", this.keyPressedEvents)
+        removeEventListener("fullscreenchange", this.updateFullScreenEvent)
+    }
+
 
 
     previousAnno = () => {
