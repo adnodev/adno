@@ -67,8 +67,7 @@ class OpenView extends Component {
                 readOnly: true
             });
 
-            this.AdnoAnnotorious.on('clickAnnotation', (annotation, element) => {
-
+            this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
                 if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 }
@@ -173,7 +172,6 @@ class OpenView extends Component {
 
 
     startTimer = () => {
-        console.log("timer from starttimer ", this.state.timer);
         // Do not start the timer if there is no content to display
         if (this.props.annos.length > 0) {
 
@@ -237,11 +235,6 @@ class OpenView extends Component {
             this.setState({ currentID: localCurrentID })
 
             this.changeAnno(this.props.annos[localCurrentID])
-
-            if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
-                document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-            }
-
         }
     }
 

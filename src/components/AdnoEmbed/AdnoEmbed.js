@@ -84,24 +84,16 @@ class AdnoEmbed extends Component {
             readOnly: true,
         });
 
-        if (this.state.isAnnotationsVisible) {
-            this.AdnoAnnotorious.setVisible(true);
-        } else {
-            this.AdnoAnnotorious.setVisible(false);
-        }
-
+        this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
 
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
+            if (this.state.isAnnotationsVisible) {
+                this.AdnoAnnotorious.fitBounds(annotation.id)
 
-            if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id)
+
+                this.setState({ currentID: annotationIndex, selectedAnno: annotation })
             }
-
-            this.AdnoAnnotorious.fitBounds(annotation.id)
-
-            let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id)
-
-            this.setState({ currentID: annotationIndex, selectedAnnotation: annotation })
         });
 
 
@@ -419,6 +411,8 @@ class AdnoEmbed extends Component {
                                             icon: 'warning',
                                         })
                                     }
+                                } else {
+                                    resultLink = url
                                 }
 
 
@@ -520,7 +514,7 @@ class AdnoEmbed extends Component {
                 </div>
             )
         } else {
-            return (<></>)
+            return null;
         }
 
     }
