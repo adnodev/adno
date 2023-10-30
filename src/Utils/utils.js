@@ -214,8 +214,9 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
       }
 
       let importedURL = imported_project.source
+      const isIpfsUrl = importedURL.startsWith(process.env.IPFS_GATEWAY);
 
-      if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg") {
+      if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg" || isIpfsUrl) {
         proj.img_url = imported_project.source
       } else {
         proj.manifest_url = imported_project.source
