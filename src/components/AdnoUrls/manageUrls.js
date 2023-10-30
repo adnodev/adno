@@ -2,7 +2,16 @@ import Swal from "sweetalert2"
 import { buildJsonProjectWithManifest, generateUUID, get_url_extension, insertInLS, migrateTextBody } from "../../Utils/utils";
 
 export async function manageUrls(props, url, translation) {
+    const IPFS_GATEWAY = process.env.IPFS_GATEWAY
     const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
+
+    // We check if the url is an IPFS CID, version 0 or version 1
+    // CIDv0 CIDs are 46 characters long and start with the characters “Qm”
+    // hashes are encoded with base58btc
+    // CIDv1 CIDs start with a multibase prefix indicating which encoding method was used  
+    // we only test base32 which is used by default by IPFS 
+    const regexCID = /^(Qm[1-9A-HJ-NP-Za-km-z]{44}|b[A-Za-z2-7]{58,})$/;
+    if (url.match(regexCID)) url = IPFS_GATEWAY + url;
 
     // We check if the url contains an image
     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url))) {
