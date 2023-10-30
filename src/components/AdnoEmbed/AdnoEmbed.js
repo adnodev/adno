@@ -278,9 +278,10 @@ class AdnoEmbed extends Component {
 
     getAdnoProject = (url) => {
         const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
+        const isIpfsUrl = url.startsWith(process.env.IPFS_GATEWAY);
 
         // We check if the url contains an image
-        if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url))) {
+        if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl) {
             fetch(url)
                 .then(res => {
                     if (res.status == 200 || res.status == 201) {
