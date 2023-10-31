@@ -157,7 +157,7 @@ class AdnoEmbed extends Component {
                 this.toggleAnnotationsLayer()
                 break;
             case "KeyT":
-                this.setState({showToolbar: !this.state.showToolbar})
+                this.setState({ showToolbar: !this.state.showToolbar })
                 break;
             default:
                 break;
@@ -277,8 +277,14 @@ class AdnoEmbed extends Component {
 
 
     getAdnoProject = (url) => {
+        const IPFS_GATEWAY = process.env.IPFS_GATEWAY
+
+        const regexCID = /^(Qm[1-9A-HJ-NP-Za-km-z]{44}|b[A-Za-z2-7]{58,})$/;
+
         const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
-        const isIpfsUrl = url.startsWith(process.env.IPFS_GATEWAY);
+
+        const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
+        if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
         // We check if the url contains an image
         if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl) {
