@@ -191,7 +191,7 @@ class NewProject extends Component {
                 let isUrlManifest = "";
 
                 // if the url is not an image file (.jpg, .jpeg or .png) it should be a manifest
-                if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
+                if (!GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
                     isUrlManifest = await this.isManifest(manifest_url)
                 }
 
