@@ -12,7 +12,7 @@ export async function manageUrls(props, url, translation) {
     // we only test base32 which is used by default by IPFS 
     const regexCID = /^(Qm[1-9A-HJ-NP-Za-km-z]{44}|b[A-Za-z2-7]{58,})$/;
 
-    const isIpfsUrl = url.match(regexCID);
+    const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
     if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
     // We check if the url contains an image
