@@ -71,7 +71,7 @@
     line-height: 1.5;
     color: #24292e;
     font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
-    font-size: 16px;
+    font-size: x-large;
     line-height: 1.5;
     word-wrap: break-word;
   }
@@ -1014,7 +1014,7 @@
 
 .rich-card-editor{
     width: 80vw !important;
-    height: 80vh !important;
+    max-height: 80vh !important;
     background-color: #fff !important;
     border-radius: 10px !important;
     flex-direction: column !important;

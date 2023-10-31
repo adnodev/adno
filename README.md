@@ -2,11 +2,11 @@
 
 Adno is a web application for viewing, editing and sharing narratives and pathways on static images and IIIF images.
 
-ADNO has 2 available versions : a [Full version](https://github.com/adnodev/w.adno.app) including the Editor and Viewer and the [Light](https://github.com/adnodev/r.adno.app) one including only the Viewer.
+ADNO has 2 available versions : a [Full version](https://w.adno.app) including the Editor and Viewer and the [Light](https://r.adno.app) one including only the Viewer.
 
 ## How to start with ADNO ?
 
-First, go to hhttps://github.com/adnodev/adno/releases and download the version you would like to use (FULL or LIGHT)
+First, go to [ADNO's repository](https://github.com/adnodev/adno/releases) and download the version you would like to use (FULL or LIGHT)
 Then, if you want to use it locally you have to use a web server.
 You can create a light web server using **python -m http.server 8080** command to run a web server on the port 8080.
 Unzip the ADNO package to your web server and start it.
@@ -14,7 +14,7 @@ Unzip the ADNO package to your web server and start it.
 
 ## Host ADNO with Github Pages
 
-Download the latest release of Adno with the version of your choice ( full-version or light-version) from (https://github.com/adnodev/adno/releases)
+Download the latest release of Adno with the version of your choice (full-version or light-version) from (https://github.com/adnodev/adno/releases)
 
 Unzip the archive to your folder and push it to your Github repository.
 
@@ -33,6 +33,11 @@ Enjoy using Adno !
 * https://iiif.emf.fr/iiif/3/peutinger.jp2/info.json
 * https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
 
+## Quickstart with IIIF pictures examples
+* https://w.adno.app/#/search?url=https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json
+* https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/peutinger.jp2/info.json
+* https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
+
 ## Licence
 
 [LICENCE](https://github.com/adnodev/adno/blob/main/LICENCE)
@@ -41,14 +46,12 @@ Enjoy using Adno !
 
 If you want to contribute to ADNO here are few steps to start 
   * clone the project from github (https://github.com/adnodev/adno.git)
-  * switch to adno-react branch
   * Start the project with the following command : **yarn start**
-    * Create a .env file and put the version you would like to use by using the variable ADNO_MODE=FULL or ADNO_MODE=LIGHT
-  * To build the project you have to choose the version (full or light)
+    * Create a .env file and put the version you would like (examples below)
     * run **yarn build-full** to build full-version and **yarn build-light** to build the light version.
   * In case of errors try to remove node_modules folder, .parcel-cache and yarn.lock file and reinstall module with **yarn install** command.
 
-## Custom your own ADNO
+## Customize your own ADNO
 Create a .env file and insert the following properties as you wish :
 ```
 # MODE 
@@ -65,9 +68,46 @@ ADNO_TITLE=YOUR OWN TITLE
 ADNO_FOOTER=TRUE
 ADNO_FOOTER_TEXT=YOUR FOOTER TEXT HERE
 
+# GRANTED IMAGES EXTENSIONS
+GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
+
 ```
 
-# EMBED
+## Build ADNO
+.env.ADNOFULL example :
+
+```
+# MODE 
+ADNO_MODE=FULL
+
+# FOOTER
+ADNO_FOOTER=TRUE
+
+# GRANTED IMAGES EXTENSIONS
+GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
+```
+
+.env.ADNOLIGHT example :
+
+```
+# MODE 
+ADNO_MODE=LIGHT
+
+# FOOTER
+ADNO_FOOTER=TRUE
+
+# GRANTED IMAGES EXTENSIONS
+GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
+
+```
+
+Build both versions :
+
+Warning : this action requires .env.ADNOFULL and .env.ADNOLIGHT files !
+Run **yarn build** in your terminal, it will run both commands **build-full** and **build-light**
+
+
+# ADNO embedded in your website
 
 Available settings for the embed :
 
@@ -80,3 +120,19 @@ Available settings for the embed :
 - anno_bounds value = `true` or `false`
 
 Example : https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true
+
+A little example with an iframe that you can insert in your own projects :
+
+```
+    <iframe src="https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true" height="500" width="1200" allowfullscreen="true"></iframe>
+
+```
+
+# SHORTCUTS FOR THE VIEWER
+
+- Key 'P' to start the autoplay
+- Key 'E' to toggle FullScreen
+- Key 'S' to toggle annotation bounds
+- Key 'T' to toggle the toolsbar
+- Arrows (left and right) to change the current selected annotation
+

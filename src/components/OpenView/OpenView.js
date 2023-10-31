@@ -29,6 +29,8 @@ class OpenView extends Component {
         }
     }
 
+
+
     componentDidMount() {
         // First of all, verify if the UUID match to an real project in the localStorage
         // If not, then redirect the user to the HomePage
@@ -65,8 +67,7 @@ class OpenView extends Component {
                 readOnly: true
             });
 
-            this.AdnoAnnotorious.on('clickAnnotation', (annotation, element) => {
-
+            this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
                 if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 }
@@ -85,14 +86,45 @@ class OpenView extends Component {
             this.AdnoAnnotorious.loadAnnotations(dataURI)
         }
 
+        addEventListener('fullscreenchange', this.updateFullScreenEvent);
+        addEventListener('keydown', this.keyPressedEvents)
+    }
 
-        addEventListener('fullscreenchange', (event) => {
-            // turn off fullscreen
-            if (!document.fullscreenElement) {
-                this.setState({ fullScreenEnabled: false })
-            }
-        });
+    keyPressedEvents = (event) => {
+        switch (event.code) {
+            case "ArrowRight":
+                this.nextAnno()
+                break;
+            case "ArrowLeft":
+                this.previousAnno()
+                break;
+            case "KeyP":
+                this.startTimer()
+                break;
+            case "KeyE":
+                this.toggleFullScreen()
+                break;
+            case "KeyS":
+                this.toggleAnnotationsLayer()
+                break;
+            case "KeyT":
+                this.props.changeShowToolbar()
+                break;
+            default:
+                break;
+        }
+    }
 
+    updateFullScreenEvent = (event) => {
+        // turn off fullscreen
+        if (document.fullscreenEnabled && !document.fullscreenElement) {
+            this.setState({ fullScreenEnabled: false })
+        }
+    }
+
+    componentWillUnmount() {
+        removeEventListener("keydown", this.keyPressedEvents)
+        removeEventListener("fullscreenchange", this.updateFullScreenEvent)
     }
 
     automateLoading = () => {
@@ -161,6 +193,7 @@ class OpenView extends Component {
                 // Call the function to go to the next annotation every "timerDelay" seconds
                 let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
                 this.setState({ timer: true, intervalID: interID })
+                this.props.updateAutoplayId(interID)
             }
         }
     }
@@ -202,22 +235,25 @@ class OpenView extends Component {
             this.setState({ currentID: localCurrentID })
 
             this.changeAnno(this.props.annos[localCurrentID])
-
-            if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
-                document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-            }
-
         }
     }
 
     toggleFullScreen = () => {
         // turn on full screen
-        if (!this.state.fullScreenEnabled) {
-            document.getElementById("adno-osd").requestFullscreen();
-            this.setState({ fullScreenEnabled: true })
+        if (document.fullscreenEnabled) {
+            if (!this.state.fullScreenEnabled) {
+                if (document.getElementById("adno-osd")) {
+                    document.getElementById("adno-osd").requestFullscreen();
+                    this.setState({ fullScreenEnabled: true })
+                } else {
+                    alert("Unable to turn on FullScreen")
+                }
+            } else {
+                document.exitFullscreen();
+                this.setState({ fullScreenEnabled: false })
+            }
         } else {
-            document.exitFullscreen();
-            this.setState({ fullScreenEnabled: false })
+            alert("Fullscreen disabled")
         }
     }
 
@@ -255,6 +291,8 @@ class OpenView extends Component {
             }
         }
     }
+
+
 
 
 

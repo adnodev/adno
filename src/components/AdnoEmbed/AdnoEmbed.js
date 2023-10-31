@@ -7,6 +7,9 @@ import ReactHtmlParser from 'react-html-parser';
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
+// Import Style
+import "./AdnoEmbed.css";
+
 class AdnoEmbed extends Component {
     constructor(props) {
         super(props)
@@ -38,7 +41,7 @@ class AdnoEmbed extends Component {
         var toolsbarOnFs = query.get("toolbarsfs") ? query.get("toolbarsfs") === "true" : true;
         var startbyfirstanno = query.get("startfirst") ? query.get("startfirst") === "true" : false;
         var rotation = query.get("rotation") ? query.get("rotation") === "true" : false;
-        var displayToolbar = query.get("toolbar") ? query.get("toolbar") === "true" : true;
+        var showToolbar = query.get("toolbar") ? query.get("toolbar") === "true" : true;
         var isAnnotationsVisible = query.get("anno_bounds") ? query.get("anno_bounds") === "true" : false;
 
         const settings = {
@@ -48,20 +51,25 @@ class AdnoEmbed extends Component {
             sidebarEnabled: true,
             startbyfirstanno,
             rotation,
-            displayToolbar,
-            isAnnotationsVisible
+            isAnnotationsVisible,
+            showToolbar
         }
 
         // Update settings
         this.setState({ ...settings });
 
         this.getAdnoProject(adnoProjectURL)
+
+
+        // Accessibility shortcuts
+        addEventListener('fullscreenchange', this.updateFullScreenEvent);
+        addEventListener('keydown', this.keyPressedEvents)
     }
 
     displayViewer = (tileSources, annos) => {
 
         this.openSeadragon = OpenSeadragon({
-            id: 'adno-osd',
+            id: 'adno-embed',
             homeButton: "home-button",
             showNavigator: false,
             tileSources: tileSources,
@@ -76,24 +84,16 @@ class AdnoEmbed extends Component {
             readOnly: true,
         });
 
-        if (this.state.isAnnotationsVisible) {
-            this.AdnoAnnotorious.setVisible(true);
-        } else {
-            this.AdnoAnnotorious.setVisible(false);
-        }
-
+        this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
 
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
+            if (this.state.isAnnotationsVisible) {
+                this.AdnoAnnotorious.fitBounds(annotation.id)
 
-            if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id)
+
+                this.setState({ currentID: annotationIndex, selectedAnno: annotation })
             }
-
-            this.AdnoAnnotorious.fitBounds(annotation.id)
-
-            let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id)
-
-            this.setState({ currentID: annotationIndex, selectedAnnotation: annotation })
         });
 
 
@@ -123,14 +123,60 @@ class AdnoEmbed extends Component {
 
     toggleFullScreen = () => {
         // turn on full screen
-        if (!this.state.fullScreenEnabled) {
-            document.getElementById("adno-osd").requestFullscreen();
-            this.setState({ fullScreenEnabled: true })
+        if (document.fullscreenEnabled) {
+            if (!this.state.fullScreenEnabled) {
+                if (document.getElementById("adno-embed")) {
+                    document.getElementById("adno-embed").requestFullscreen();
+                    this.setState({ fullScreenEnabled: true })
+                } else {
+                    alert("Unable to turn on FullScreen")
+                }
+            } else {
+                document.exitFullscreen();
+                this.setState({ fullScreenEnabled: false })
+            }
         } else {
-            document.exitFullscreen();
+            alert("Fullscreen disabled")
+        }
+    }
+    keyPressedEvents = (event) => {
+        switch (event.code) {
+            case "ArrowRight":
+                this.nextAnno()
+                break;
+            case "ArrowLeft":
+                this.previousAnno()
+                break;
+            case "KeyP":
+                this.startTimer()
+                break;
+            case "KeyE":
+                this.toggleFullScreen()
+                break;
+            case "KeyS":
+                this.toggleAnnotationsLayer()
+                break;
+            case "KeyT":
+                this.setState({showToolbar: !this.state.showToolbar})
+                break;
+            default:
+                break;
+        }
+    }
+
+    updateFullScreenEvent = (event) => {
+        // turn off fullscreen
+        if (document.fullscreenEnabled && !document.fullscreenElement) {
             this.setState({ fullScreenEnabled: false })
         }
     }
+
+    componentWillUnmount() {
+        removeEventListener("keydown", this.keyPressedEvents)
+        removeEventListener("fullscreenchange", this.updateFullScreenEvent)
+    }
+
+
 
     previousAnno = () => {
         let localCurrentID = this.state.currentID
@@ -229,9 +275,12 @@ class AdnoEmbed extends Component {
     }
 
 
+
     getAdnoProject = (url) => {
+        const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
+
         // We check if the url contains an image
-        if (get_url_extension(url) === "png" || get_url_extension(url) === "jpg" || get_url_extension(url) === "jpeg") {
+        if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url))) {
             fetch(url)
                 .then(res => {
                     if (res.status == 200 || res.status == 201) {
@@ -306,8 +355,9 @@ class AdnoEmbed extends Component {
                                 })
 
 
+                                const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
-                                const tileSources = (get_url_extension(imported_project.source) === "png" || get_url_extension(imported_project.source) === "jpg" || get_url_extension(imported_project.source) === "jpeg") ?
+                                const tileSources = (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(imported_project.source))) ?
                                     {
                                         type: 'image',
                                         url: imported_project.source
@@ -332,8 +382,6 @@ class AdnoEmbed extends Component {
                             }
 
                         } else {
-                            console.log("pas adno");
-
                             // Check if it's a manifest
 
                             if (
@@ -363,24 +411,18 @@ class AdnoEmbed extends Component {
                                             icon: 'warning',
                                         })
                                     }
+                                } else {
+                                    resultLink = url
                                 }
 
 
                                 if (resultLink) {
 
-                                    console.log(resultLink);
-
                                     var annos = [];
 
-                                    // if(imported_project.sequences[0].canvases[0].annotationList.resources){
-                                    //     annos = imported_project.sequences[0].canvases[0].annotationList.resources;
-                                    // }else if (){
+                                    const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
-                                    // }
-
-                                    console.log(imported_project.sequences[0].canvases[0].annotationList.resources);
-
-                                    const tileSources = (get_url_extension(resultLink) === "png" || get_url_extension(resultLink) === "jpg" || get_url_extension(resultLink) === "jpeg") ?
+                                    const tileSources = (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(resultLink))) ?
                                         {
                                             type: 'image',
                                             url: resultLink
@@ -434,14 +476,14 @@ class AdnoEmbed extends Component {
     render() {
         if (this.state.isLoaded) {
             return (
-                <div id="adno-osd">
+                <div id="adno-embed">
 
                     {
                         this.state.selectedAnno && this.state.selectedAnno.body &&
                         this.getAnnotationHTMLBody(this.state.selectedAnno)
                     }
 
-                    <div className={"toolbar-on"}>
+                    <div className={this.state.showToolbar ? "toolbar-on" : "toolbar-off"}>
                         <div className={"osd-buttons-bar"}>
 
                             {
@@ -472,7 +514,7 @@ class AdnoEmbed extends Component {
                 </div>
             )
         } else {
-            return (<></>)
+            return null;
         }
 
     }

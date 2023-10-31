@@ -23,8 +23,7 @@ class AdnoMdEditor extends Component {
         this.state = {
             isDeleting: false,
             selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || [],
-            markdown: [],
-            selectedTags: []
+            markdown: []
         }
     }
 
@@ -231,15 +230,15 @@ class AdnoMdEditor extends Component {
                             onChange={(tags) => this.setState({ selectedTags: tags })}
                             placeHolder={this.props.t('editor.md_add_tag')}
                         />
+                        <span>{this.props.t('tags_infos')}</span>
                     </div>
 
 
                     <div className="rich-card-editor-btns">
-                        <button className="btn ml-1 mr-1" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> &nbsp; {this.props.t('editor.md_save')} </button>
                         {!this.state.isDeleting && <button className="btn btn-error ml-1 mr-1" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> &nbsp; {this.props.t('editor.md_delete')} </button>}
                         {this.state.isDeleting && <button className="btn btn-success" onClick={() => this.deleteAnnotation()}> <FontAwesomeIcon icon={faCheckCircle} /> &nbsp;  {this.props.t('editor.md_delete_confirm')} </button>}
+                        <button className="btn ml-1 mr-1" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> &nbsp; {this.props.t('editor.md_save')} </button>
                     </div>
-
                 </div>
             </div>
 

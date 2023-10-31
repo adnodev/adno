@@ -23,7 +23,7 @@
             },
             "projects": {
                 "all": "Your existing projects",
-                "nothing": "Nothing to show, create your first project to start using ADNO"
+                "nothing": "Nothing to show, create your first project to start using Adno"
             },
             "project": {
                 "created_on": "Created on ",
@@ -40,12 +40,15 @@
                 "description": "Description",
                 "autor": "Autor",
                 "editor": "Editor",
-                "manifest_url": "Manifest URL",
+                "manifest_url": "URL",
                 "create": "Create my new project",
                 "back": "Back",
                 "add_desc": "Add a little text to describe your project (optional)",
                 "add_title": "Add a title to your project",
                 "copy": "copy",
+                "cancel": "Cancel",
+                "back_home": "Cancel and go back to homepage",
+                "choose_canva": "Use this picture for my project",
                 "metadatas": {
                     "identifier" : "Identifier",
                     "source": "Source",
@@ -99,10 +102,10 @@
                 "del_annotation_confirmation": "Annotation deleted successfully",
                 "project_edit_success": "Your project have been updated successfully !",
                 "settings_updated_success": "Settings updated successfully !",
-                "adno_proj_detected": "ADNO project detected, would you like to import it ?",
-                "old_version": "One or more projects were made with an obsolete version of ADNO",
-                "update_old_version": "Update to the latest version of ADNO",
-                "version_updated": "Congratulations, your ADNO projects are now up to date"
+                "adno_proj_detected": "Adno project detected, would you like to import it ?",
+                "old_version": "One or more projects were made with an obsolete version of Adno",
+                "update_old_version": "Update to the latest version of Adno",
+                "version_updated": "Congratulations, your Adno projects are now up to date"
             },
             "annotation": {
                 "no_content": "no content yet",
@@ -114,11 +117,11 @@
                 "download_project": "Download the project",
                 "edit_project": "Edit the project",
                 "show_metadatas": "Show metadatas",
-                "share_project": "Project sharing",
-                "share_project_desc1": "In order to be able to work collaboratively, you must download the project and then share it with your collaborators via a service such as IPFS, Google Drive or WeTransfer.",
-                "share_project_desc2": "Thus, your collaborators will be able to import the project on their side in order to benefit from your changes.",
+                "share_project": "Save and share your project",
+                "share_project_desc1": "First, download your project file. To share it, you can either send it by e-mail, or place it online - on a website, a file server or on the IPFS interplanetary file system - and then share its URL or IPFS CID.",
+                "share_project_desc2": "Once your Adno project is online, you can make it visible on a web page by inserting an iframe tag. ",
                 "share_project_desc3": "For more information, visit the",
-                "share_project_desc4": "official ADNO documentation"
+                "share_project_desc4": "official Adno documentation"
             },
             "new_project": {
                 "add_infos_1": "Add information",
@@ -135,9 +138,10 @@
                 "no_title": "Please, add a name to your project",
                 "unable_reading_manifest": "Unable to read this manifest, please try again or choose another one",
                 "no_iiif": "Non-IIIF project detected, please fill in an IIIF project",
-                "wrong_file": "This file is not readable by ADNO! Please try again with another file"
+                "wrong_file": "This file is not readable by Adno! Please try again with another file"
             },
-            "footer": "Poitiers. This project was supported by the French Ministry of Culture"
+            "footer": "Poitiers. This project was supported by the French Ministry of Culture",
+            "tags_infos": "Please press your key 'enter' between each tag to save them"
         }
     }
 }
