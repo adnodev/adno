@@ -136,3 +136,11 @@ A little example with an iframe that you can insert in your own projects :
 - Key 'T' to toggle the toolsbar
 - Arrows (left and right) to change the current selected annotation
 
+# IPFS SUPPORT
+
+Add the following environment variable to use an IPFS gateway
+
+```
+# IPFS SUPPORT
+IPFS_GATEWAY=https://ipfs.io/ipfs/
+```
