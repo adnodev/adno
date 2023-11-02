@@ -23,9 +23,7 @@ class AdnoMdViewer extends Component {
     applyWikiContent = async (wbk, line) => {
         var finalBody = this.state.annos
 
-        console.log(line);
-
-        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*").length > 0) {
+        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
 
             const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
             var wikiBody = "";
