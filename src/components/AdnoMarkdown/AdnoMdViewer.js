@@ -23,9 +23,12 @@ class AdnoMdViewer extends Component {
     applyWikiContent = async (wbk, line) => {
         var finalBody = this.state.annos
 
-        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
+        console.log(line);
+
+        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*").length > 0) {
 
             const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
+            var wikiBody = "";
 
             const wikiID = element.replace('https://www.wikidata.org/wiki/', '')
 
@@ -41,13 +44,16 @@ class AdnoMdViewer extends Component {
 
             let images = entities[wikiID] && entities[wikiID].claims["P18"]
 
-            finalBody += "\n" + wikiName + "\n"
-            finalBody += wikiDesc + "\n"
+            wikiBody += wikiName + "\n"
+            wikiBody += wikiDesc + "\n"
 
             if (images) {
                 const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
-                finalBody += `![${wikiName}](${new URL(imgUrl)})`
+                wikiBody += `![${wikiName}](${new URL(imgUrl)})`
             }
+
+            const regex = new RegExp("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")
+            finalBody += line.replace(regex, wikiBody)
 
             this.setState({ annos: finalBody })
 
@@ -91,7 +97,7 @@ class AdnoMdViewer extends Component {
                                 <div className="markdown-body">
                                     {
                                         this.state.isLoaded && this.state.annos ?
-                                            <ReactMarkdown children={this.state.annos}/>
+                                            <ReactMarkdown children={this.state.annos} />
                                             :
                                             <InfinitySpin
                                                 width='200'
