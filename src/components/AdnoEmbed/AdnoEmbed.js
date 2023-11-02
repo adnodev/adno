@@ -25,8 +25,6 @@ class AdnoEmbed extends Component {
     overrideSettings = () => {
         const query = new URLSearchParams(this.props.location.search);
 
-        console.log(this.state.settings);
-
         // Add default delay of 3 seconds
         var delay = 3;
 
@@ -68,10 +66,6 @@ class AdnoEmbed extends Component {
         // Accessibility shortcuts
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
         addEventListener('keydown', this.keyPressedEvents)
-    }
-
-    componentDidUpdate() {
-        console.log(this.state);
     }
 
     displayViewer = (tileSources, annos) => {
