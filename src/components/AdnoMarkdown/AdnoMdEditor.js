@@ -8,14 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TagsInput } from 'react-tag-input-component';
 
 // Import Markdown editor
-import { generateUUID, insertInLS } from '../../Utils/utils';
+import { insertInLS } from '../../Utils/utils';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
-import { searchOnWikidata } from '../Wikidata/WikidataFind';
 
 class AdnoMdEditor extends Component {
     constructor(props) {
