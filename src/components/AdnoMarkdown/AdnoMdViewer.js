@@ -13,12 +13,49 @@ class AdnoMdViewer extends Component {
         }
     }
 
-    componentDidMount() {
-        this.getAnnoBody()
+    async componentDidMount() {
+        await this.getAnnoBody()
         this.setState({ isLoaded: true })
     }
 
-    getAnnoBody = () => {
+    applyWikiContent = async (wbk, line) => {
+        var finalBody = this.state.annos
+
+        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
+
+            const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
+
+            const wikiID = element.replace('https://www.wikidata.org/wiki/', '')
+
+            const url = wbk.getEntities({
+                ids: [wikiID],
+                language: ['fr']
+            })
+
+            const { entities } = await fetch(url).then(res => res.json())
+
+            const wikiName = `[${entities[wikiID].labels.fr.value}](${element})`;
+            const wikiDesc = entities[wikiID].descriptions.fr.value;
+
+            let images = entities[wikiID] && entities[wikiID].claims["P18"]
+
+            finalBody += "\n\n" + wikiName + "\n\n"
+            finalBody += wikiDesc + "\n\n"
+
+            if (images) {
+                const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
+                finalBody += `![${wikiName}](${new URL(imgUrl)})` + "\n\n"
+            }
+
+            this.setState({ annos: finalBody })
+
+        } else {
+            finalBody += line
+            this.setState({ annos: finalBody })
+        }
+    }
+
+    getAnnoBody = async () => {
         const wbk = WBK({
             instance: 'https://www.wikidata.org',
             sparqlEndpoint: 'https://query.wikidata.org/sparql'
@@ -27,41 +64,13 @@ class AdnoMdViewer extends Component {
         if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
             var annoMdBody = this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
 
-            var finalBody = ""
+            const allLines = annoMdBody.split("\n")
 
-            annoMdBody.split("\n\n").forEach(async (line) => {
-
-                if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
-                    const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
-
-                    const wikiID = element.replace('https://www.wikidata.org/wiki/', '')
-
-                    const url = wbk.getEntities({
-                        ids: [wikiID],
-                        language: ['fr']
-                    })
-
-                    const { entities } = await fetch(url).then(res => res.json())
-
-                    const wikiName = `[${entities[wikiID].labels.fr.value}](${element})`;
-                    const wikiDesc = entities[wikiID].descriptions.fr.value;
-
-                    let images = entities[wikiID] && entities[wikiID].claims["P18"]
-
-                    finalBody += "\n\n" + wikiName + "\n\n"
-                    finalBody += wikiDesc + "\n\n"
-
-                    if (images) {
-                        const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
-                        finalBody += `![${wikiName}](${new URL(imgUrl)})` + "\n\n"
-                    }
-                    this.setState({ annos: finalBody })
-
-                } else {
-                    finalBody += line
-                    this.setState({ annos: finalBody })
+            for (const line of allLines) {
+                if (line !== "") {
+                    await this.applyWikiContent(wbk, line);
                 }
-            })
+            }
 
         } else {
             this.setState({ annos: "" })
