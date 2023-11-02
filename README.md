@@ -10,6 +10,8 @@ ADNO has 2 available versions : a [Full version](https://w.adno.app) including t
 3. [IIIF EXAMPLES](#iiif-pictures-examples)
 4. [QUICKSTART](#quickstart-with-IIIF-pictures-examples)
 5. [Developpers section](#for-developpers)
+6. [Keyboard shortcuts](#shortcuts-for-the-viewer)
+7. [IPFS support](#ipfs-support)
 
 
 
