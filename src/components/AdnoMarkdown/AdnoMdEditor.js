@@ -127,44 +127,6 @@ class AdnoMdEditor extends Component {
         }
     }
 
-
-    createWikidataContainer() {
-        const container = document.createElement('div');
-
-        const wikiSearchBar = document.createElement("input")
-        wikiSearchBar.type = "text"
-        wikiSearchBar.id = `wikidata-in-${generateUUID()}`
-
-        container.appendChild(wikiSearchBar);
-
-        const findButton = document.createElement("button")
-        findButton.textContent = "OK"
-        findButton.onclick = () => {
-
-            while (document.getElementById(imgContainer.id).firstChild) {
-                document.getElementById(imgContainer.id).firstChild.remove()
-            }
-
-
-            const searchBarValue = document.getElementById(wikiSearchBar.id).value
-
-            if (searchBarValue !== "") {
-                searchOnWikidata(searchBarValue, imgContainer.id, this.editorRef.current)
-            }
-        }
-        container.appendChild(findButton);
-
-
-        const imgContainer = document.createElement('div');
-        imgContainer.id = `img-container-${generateUUID()}`
-
-        container.appendChild(imgContainer);
-
-
-
-        return container
-    }
-
     render() {
         return (
             <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
@@ -195,27 +157,6 @@ class AdnoMdEditor extends Component {
                                 'ul',
                                 'link',
                                 'image',
-                                // {
-                                //     name: 'Map',
-                                //     tooltip: 'openstreetmap',
-                                //     command: 'bold',
-                                //     text: '@',
-                                //     className: 'toastui-editor-toolbar-icons',
-                                //     style: { backgroundImage: 'none', color: 'black' }
-                                // },
-
-                                {
-                                    name: 'Wikidata',
-                                    tooltip: 'wikidata',
-                                    text: 'W',
-                                    className: 'toastui-editor-toolbar-icons',
-                                    popup: {
-                                        className: 'some class',
-                                        body: this.createWikidataContainer(),
-                                        style: { width: 'auto' },
-                                    },
-                                    style: { backgroundImage: 'none', color: 'black' }
-                                }
                             ]
                         ]}
 
