@@ -22,18 +22,17 @@ class AdnoEmbed extends Component {
         }
     }
 
-    componentDidMount() {
+    overrideSettings = () => {
         const query = new URLSearchParams(this.props.location.search);
-        const adnoProjectURL = query.get('url')
 
         // Add default delay of 3 seconds
-        var timerDelay = 3;
+        var delay = 3;
 
         // Check if the user setted a delay in the url settings
         if (query.get("delay")) {
-            const delay = Number.parseInt(query.get("delay"))
+            const timerDelay = Number.parseInt(query.get("delay"))
             if (delay >= 1 && delay <= 20) {
-                timerDelay = delay
+                delay = timerDelay
             }
         }
 
@@ -45,7 +44,7 @@ class AdnoEmbed extends Component {
         var isAnnotationsVisible = query.get("anno_bounds") ? query.get("anno_bounds") === "true" : false;
 
         const settings = {
-            timerDelay,
+            delay,
             showNavigator,
             toolsbarOnFs,
             sidebarEnabled: true,
@@ -54,12 +53,15 @@ class AdnoEmbed extends Component {
             isAnnotationsVisible,
             showToolbar
         }
-
         // Update settings
         this.setState({ ...settings });
+    }
+
+    componentDidMount() {
+        const query = new URLSearchParams(this.props.location.search);
+        const adnoProjectURL = query.get('url')
 
         this.getAdnoProject(adnoProjectURL)
-
 
         // Accessibility shortcuts
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
@@ -95,7 +97,6 @@ class AdnoEmbed extends Component {
                 this.setState({ currentID: annotationIndex, selectedAnno: annotation })
             }
         });
-
 
         // Generate dataURI and load annotations into Annotorious
         const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
@@ -231,8 +232,8 @@ class AdnoEmbed extends Component {
                     this.automateLoading()
 
                 }
-                // Call the function to go to the next annotation every "timerDelay" seconds
-                let interID = setInterval(this.automateLoading, this.state.timerDelay * 1000);
+                // Call the function to go to the next annotation every "delay" seconds
+                let interID = setInterval(this.automateLoading, this.state.delay * 1000);
                 this.setState({ timer: true, intervalID: interID })
             }
         }
@@ -292,6 +293,8 @@ class AdnoEmbed extends Component {
                 .then(res => {
                     if (res.status == 200 || res.status == 201) {
 
+                        this.overrideSettings()
+
                         const tileSources = {
                             type: 'image',
                             url
@@ -344,6 +347,13 @@ class AdnoEmbed extends Component {
                                 && imported_project.hasOwnProperty("total")
                             ) {
 
+                                // if the project has imported settings, override current settings
+                                if (imported_project.hasOwnProperty("adno_settings")) {
+                                    this.setState({ ...imported_project.adno_settings });
+
+                                    this.overrideSettings()
+                                }
+
                                 this.setState({ isLoaded: true })
                                 let annos = [...imported_project.first.items]
 
@@ -395,6 +405,8 @@ class AdnoEmbed extends Component {
                                 (imported_project.hasOwnProperty("id") || imported_project.hasOwnProperty("@id"))
                                 && (imported_project.hasOwnProperty("context") || imported_project.hasOwnProperty("@context"))
                             ) {
+                                this.overrideSettings()
+
                                 if (imported_project["@type"] && imported_project["@type"] === "sc:Manifest") {
                                     // type manifest
 

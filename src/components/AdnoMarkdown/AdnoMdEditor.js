@@ -126,34 +126,7 @@ class AdnoMdEditor extends Component {
         }
     }
 
-
     render() {
-
-        // $$openstreetmap 46.6696162,0.3549242$$
-
-        // const openStreetMapPlugin = () => {
-        //     const toHTMLRenderers = {
-        //         openstreetmap(node) {
-        //             console.log(node.firstChild.literal);
-        //             // return {
-        //             //     type: 'text',
-        //             //     content: node.firstChild.literal,
-        //             //     classNames: [`adnomap-${generateUUID}`]
-        //             // };
-
-        //             return [
-        //                 { type: 'openTag', outerNewLine: true},
-        //                 { type: 'html', content: node.firstChild.literal },
-        //                 { type: 'closeTag', outerNewLine: true },
-        //             ]
-        //         },
-        //     }
-
-        //     return { toHTMLRenderers }
-        // }
-
-
-
         return (
             <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
                 <div className="card-body">
@@ -175,8 +148,6 @@ class AdnoMdEditor extends Component {
                         initialEditType="markdown"
                         placeholder="Ajoutez votre texte ici"
                         hideModeSwitch={true}
-                        // plugins= {[openStreetMapPlugin]}
-
                         toolbarItems={[
                             [
                                 'heading',
@@ -185,22 +156,6 @@ class AdnoMdEditor extends Component {
                                 'ul',
                                 'link',
                                 'image',
-                                // {
-                                //     name: 'Map',
-                                //     tooltip: 'openstreetmap',
-                                //     command: 'bold',
-                                //     text: '@',
-                                //     className: 'toastui-editor-toolbar-icons',
-                                //     style: { backgroundImage: 'none', color: 'black' }
-                                // },
-                                // {
-                                //     name: 'Wikidata',
-                                //     tooltip: 'wikidata',
-                                //     command: 'bold',
-                                //     text: '@',
-                                //     className: 'toastui-editor-toolbar-icons',
-                                //     style: { backgroundImage: 'none', color: 'black' }
-                                // }
                             ]
                         ]}
 

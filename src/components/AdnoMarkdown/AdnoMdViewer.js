@@ -1,21 +1,78 @@
 import { Component } from "react";
 import ReactMarkdown from 'react-markdown'
+import WBK from "wikibase-sdk"
+import { InfinitySpin } from 'react-loader-spinner'
 
+// Import style
 import "./AdnoMarkdown.css";
 
 class AdnoMdViewer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            annos: "",
+            isLoaded: false
         }
     }
 
-    getAnnoBody = () => {
-        if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
-            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
+    async componentDidMount() {
+        await this.getAnnoBody()
+        this.setState({ isLoaded: true })
+    }
+
+    applyWikiContent = async (wbk, line) => {
+        var finalBody = this.state.annos
+
+        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
+
+            const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
+
+            const wikiID = element.replace('https://www.wikidata.org/wiki/', '')
+
+            const url = wbk.getEntities({
+                ids: [wikiID],
+                language: ['fr']
+            })
+
+            const { entities } = await fetch(url).then(res => res.json())
+
+            const wikiName = `[${entities[wikiID].labels.fr.value}](${element})`;
+            const wikiDesc = entities[wikiID].descriptions.fr.value;
+
+            let images = entities[wikiID] && entities[wikiID].claims["P18"]
+
+            finalBody += "\n" + wikiName + "\n"
+            finalBody += wikiDesc + "\n"
+
+            if (images) {
+                const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
+                finalBody += `![${wikiName}](${new URL(imgUrl)})`
+            }
+
+            this.setState({ annos: finalBody })
+
         } else {
-            return ""
+            finalBody += line
+            this.setState({ annos: finalBody })
+        }
+    }
+
+    getAnnoBody = async () => {
+        const wbk = WBK({
+            instance: 'https://www.wikidata.org',
+            sparqlEndpoint: 'https://query.wikidata.org/sparql'
+        })
+
+        if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
+            var annoMdBody = this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
+
+            const allLines = annoMdBody.split("\n")
+
+            for (const line of allLines) {
+                if (line !== "") {
+                    await this.applyWikiContent(wbk, line);
+                }
+            }
         }
     }
 
@@ -32,7 +89,16 @@ class AdnoMdViewer extends Component {
                             </div>
                             <div className="card-body over-hidden">
                                 <div className="markdown-body">
-                                    <ReactMarkdown children={this.getAnnoBody()} />
+                                    {
+                                        this.state.isLoaded && this.state.annos ?
+                                            <ReactMarkdown children={this.state.annos}/>
+                                            :
+                                            <InfinitySpin
+                                                width='200'
+                                                height="200"
+                                                color="black"
+                                            />
+                                    }
                                 </div>
                             </div>
 
