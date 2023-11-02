@@ -31,6 +31,7 @@
     "react-dom": "17.0.2",
     "react-html-parser": "2.0.2",
     "react-i18next": "12.2.0",
+    "react-loader-spinner": "^5.4.5",
     "react-markdown": "8.0.5",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",

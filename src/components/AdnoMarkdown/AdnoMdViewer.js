@@ -1,7 +1,9 @@
 import { Component } from "react";
 import ReactMarkdown from 'react-markdown'
 import WBK from "wikibase-sdk"
+import { InfinitySpin } from 'react-loader-spinner'
 
+// Import style
 import "./AdnoMarkdown.css";
 
 class AdnoMdViewer extends Component {
@@ -71,9 +73,6 @@ class AdnoMdViewer extends Component {
                     await this.applyWikiContent(wbk, line);
                 }
             }
-
-        } else {
-            this.setState({ annos: "" })
         }
     }
 
@@ -91,8 +90,14 @@ class AdnoMdViewer extends Component {
                             <div className="card-body over-hidden">
                                 <div className="markdown-body">
                                     {
-                                        this.state.isLoaded && this.state.annos &&
-                                        <ReactMarkdown children={this.state.annos} />
+                                        this.state.isLoaded && this.state.annos ?
+                                            <ReactMarkdown children={this.state.annos} />
+                                            :
+                                            <InfinitySpin
+                                                width='200'
+                                                height="200"
+                                                color="black"
+                                            />
                                     }
                                 </div>
                             </div>
