@@ -41,12 +41,12 @@ class AdnoMdViewer extends Component {
 
             let images = entities[wikiID] && entities[wikiID].claims["P18"]
 
-            finalBody += "\n\n" + wikiName + "\n\n"
-            finalBody += wikiDesc + "\n\n"
+            finalBody += "\n" + wikiName + "\n"
+            finalBody += wikiDesc + "\n"
 
             if (images) {
                 const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
-                finalBody += `![${wikiName}](${new URL(imgUrl)})` + "\n\n"
+                finalBody += `![${wikiName}](${new URL(imgUrl)})`
             }
 
             this.setState({ annos: finalBody })
@@ -91,7 +91,7 @@ class AdnoMdViewer extends Component {
                                 <div className="markdown-body">
                                     {
                                         this.state.isLoaded && this.state.annos ?
-                                            <ReactMarkdown children={this.state.annos} />
+                                            <ReactMarkdown children={this.state.annos}/>
                                             :
                                             <InfinitySpin
                                                 width='200'
