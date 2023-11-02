@@ -187,6 +187,7 @@ class NewProject extends Component {
             } else {
 
                 var manifest_url = localStorage.getItem("adno_image_url")
+                const isIpfsUrl = manifest_url.startsWith(process.env.IPFS_GATEWAY);
 
                 let isUrlManifest = "";
 
@@ -198,10 +199,10 @@ class NewProject extends Component {
                 var projectID = generateUUID()
 
                 // we check if the url is an image (.jpg, .jpeg or .png) or a manifest or a json file (such as an info.json file)
-                if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || get_url_extension(manifest_url) === "json" || isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest") {
+                if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || get_url_extension(manifest_url) === "json" || isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest" || isIpfsUrl) {
                     // fichier accepté
 
-                    if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
+                    if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
 
                         let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
 
