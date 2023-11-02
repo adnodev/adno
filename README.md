@@ -4,6 +4,15 @@ Adno is a web application for viewing, editing and sharing narratives and pathwa
 
 ADNO has 2 available versions : a [Full version](https://w.adno.app) including the Editor and Viewer and the [Light](https://r.adno.app) one including only the Viewer.
 
+# Table of Contents
+1. [How to start](#how-to-start-with-adno-)
+2. [Host ADNO](#host-adno-with-github-pages)
+3. [IIIF EXAMPLES](#iiif-pictures-examples)
+4. [QUICKSTART](#quickstart-with-IIIF-pictures-examples)
+5. [Developpers section](#for-developpers)
+
+
+
 ## How to start with ADNO ?
 
 First, go to [ADNO's repository](https://github.com/adnodev/adno/releases) and download the version you would like to use (FULL or LIGHT)
