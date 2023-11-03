@@ -17,6 +17,15 @@ import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 import "./OpenView.css";
 
 
+// Import Wikidata SDK
+import WBK from "wikibase-sdk"
+
+// Import Markdown Reader
+import ReactMarkdown from "react-markdown";
+
+// Infinite Loader
+import { InfinitySpin } from 'react-loader-spinner'
+
 class OpenView extends Component {
     constructor(props) {
         super(props);
@@ -25,13 +34,14 @@ class OpenView extends Component {
             timer: false,
             intervalID: 0,
             fullScreenEnabled: false,
-            isAnnotationsVisible: true
+            isAnnotationsVisible: true,
+            currentAnnoFsBody: "",
+            currentAnnoLoading: false,
+            buildingBody: ""
         }
     }
 
-
-
-    componentDidMount() {
+    async componentDidMount() {
         // First of all, verify if the UUID match to an real project in the localStorage
         // If not, then redirect the user to the HomePage
         if (!this.props.match.params.id || !checkIfProjectExists(this.props.match.params.id)) {
@@ -79,7 +89,6 @@ class OpenView extends Component {
                 this.setState({ currentID: annotationIndex })
                 this.props.changeSelectedAnno(annotation)
             });
-
 
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
@@ -145,6 +154,7 @@ class OpenView extends Component {
 
     changeAnno = (annotation) => {
         if (annotation && annotation.id) {
+            // Clear the current annotation text
             this.props.changeSelectedAnno(annotation)
 
             if (this.state.isAnnotationsVisible) {
@@ -257,10 +267,12 @@ class OpenView extends Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    async componentDidUpdate(prevProps, prevState) {
         // check when there is a new selected annotation from the sidebar
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
             this.changeAnno(this.props.selectedAnno)
+            this.setState({ currentAnnoLoading: true })
+            await this.getAnnoBody(this.props.selectedAnno)
         }
 
         // Check if the user toggled the navigator on/off
@@ -279,7 +291,77 @@ class OpenView extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
-    getAnnotationHTMLBody = (annotation) => {
+
+    applyWikiContent = async (wbk, line) => {
+        var buildingBody = this.state.buildingBody
+
+        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
+
+            const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
+            var wikiBody = "";
+
+            const wikiID = element.replace('https://www.wikidata.org/wiki/', '')
+
+            const url = wbk.getEntities({
+                ids: [wikiID],
+                language: ['fr']
+            })
+
+            const { entities } = await fetch(url).then(res => res.json())
+
+            const wikiName = `[${entities[wikiID].labels.fr.value}](${element})`;
+            const wikiDesc = entities[wikiID].descriptions.fr.value;
+
+            let images = entities[wikiID] && entities[wikiID].claims["P18"]
+
+            buildingBody += "\n" + wikiName + "\n"
+            buildingBody += wikiDesc + "\n"
+
+            if (images) {
+                const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
+                buildingBody += `![${wikiName}](${new URL(imgUrl)})`
+            }
+
+            if (line.match(/\[([^\[]+)\](\(.*\))/gm)) {
+                buildingBody += line.replace(/\[([^\[]+)\](\(.*\))/gm, wikiBody)
+            } else {
+                const regex = new RegExp("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")
+                buildingBody += line.replace(regex, wikiBody)
+            }
+
+            this.setState({ buildingBody })
+        } else {
+            buildingBody += line
+            this.setState({ buildingBody })
+        }
+    }
+
+    getAnnoBody = async (annotation) => {
+        const wbk = WBK({
+            instance: 'https://www.wikidata.org',
+            sparqlEndpoint: 'https://query.wikidata.org/sparql'
+        })
+
+        if (annotation.body && annotation.body.length > 0) {
+            var annoMdBody = annotation.body[0].value
+
+            const allLines = annoMdBody.split("\n")
+
+            for (const line of allLines) {
+                if (line !== "") {
+                    await this.applyWikiContent(wbk, line);
+                }
+            }
+        }
+
+        this.setState({
+            currentAnnoFsBody: this.state.buildingBody,
+            currentAnnoLoading: false,
+            buildingBody: ""
+        })
+    }
+
+    getAnnotationHTMLBody = async (annotation) => {
         if (annotation && annotation.body) {
             if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return (
@@ -302,7 +384,20 @@ class OpenView extends Component {
 
                 {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
-                    this.getAnnotationHTMLBody(this.props.selectedAnno)
+                    //this.getAnnotationHTMLBody(this.props.selectedAnno)
+
+                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
+                        {
+                            this.state.currentAnnoLoading ?
+                                <InfinitySpin
+                                    width='200'
+                                    height="200"
+                                    color="black"
+                                />
+                                :
+                                <ReactMarkdown children={this.state.currentAnnoFsBody} />
+                        }
+                    </div>
                 }
 
 
