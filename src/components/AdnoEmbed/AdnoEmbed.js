@@ -7,6 +7,15 @@ import ReactHtmlParser from 'react-html-parser';
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
+// Import Wikidata SDK
+import WBK from "wikibase-sdk"
+
+// Import Markdown Reader
+import ReactMarkdown from "react-markdown";
+
+// Infinite Loader
+import { InfinitySpin } from 'react-loader-spinner'
+
 // Import Style
 import "./AdnoEmbed.css";
 
@@ -18,7 +27,10 @@ class AdnoEmbed extends Component {
             currentID: -1,
             intervalID: 0,
             selectedAnno: {},
-            isLoaded: false
+            isLoaded: false,
+            currentAnnoFsBody: "",
+            currentAnnoLoading: false,
+            buildingBody: ""
         }
     }
 
@@ -107,6 +119,76 @@ class AdnoEmbed extends Component {
     toggleAnnotationsLayer = () => {
         this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
+    }
+
+
+    applyWikiContent = async (wbk, line) => {
+        var buildingBody = this.state.buildingBody
+
+        if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
+
+            const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
+            var wikiBody = "";
+
+            const wikiID = element.replace('https://www.wikidata.org/wiki/', '')
+
+            const url = wbk.getEntities({
+                ids: [wikiID],
+                language: ['fr']
+            })
+
+            const { entities } = await fetch(url).then(res => res.json())
+
+            const wikiName = `[${entities[wikiID].labels.fr.value}](${element})`;
+            const wikiDesc = entities[wikiID].descriptions.fr.value;
+
+            let images = entities[wikiID] && entities[wikiID].claims["P18"]
+
+            buildingBody += "\n" + wikiName + "\n"
+            buildingBody += wikiDesc + "\n"
+
+            if (images) {
+                const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
+                buildingBody += `![${wikiName}](${new URL(imgUrl)})`
+            }
+
+            if (line.match(/\[([^\[]+)\](\(.*\))/gm)) {
+                buildingBody += line.replace(/\[([^\[]+)\](\(.*\))/gm, wikiBody)
+            } else {
+                const regex = new RegExp("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")
+                buildingBody += line.replace(regex, wikiBody)
+            }
+
+            this.setState({ buildingBody })
+        } else {
+            buildingBody += line
+            this.setState({ buildingBody })
+        }
+    }
+
+    getAnnoBody = async (annotation) => {
+        const wbk = WBK({
+            instance: 'https://www.wikidata.org',
+            sparqlEndpoint: 'https://query.wikidata.org/sparql'
+        })
+
+        if (annotation.body && annotation.body.length > 0) {
+            var annoMdBody = annotation.body[0].value
+
+            const allLines = annoMdBody.split("\n")
+
+            for (const line of allLines) {
+                if (line !== "") {
+                    await this.applyWikiContent(wbk, line);
+                }
+            }
+        }
+
+        this.setState({
+            currentAnnoFsBody: this.state.buildingBody,
+            currentAnnoLoading: false,
+            buildingBody: ""
+        })
     }
 
     getAnnotationHTMLBody = (annotation) => {
@@ -254,7 +336,7 @@ class AdnoEmbed extends Component {
         this.changeAnno(this.state.annos[localCurrentID])
     }
 
-    changeAnno = (annotation) => {
+    changeAnno = async (annotation) => {
         this.setState({ selectedAnno: annotation })
 
         if (this.state.isAnnotationsVisible) {
@@ -272,7 +354,10 @@ class AdnoEmbed extends Component {
 
         let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id)
 
-        this.setState({ currentID: annotationIndex })
+        this.setState({ currentID: annotationIndex, currentAnnoLoading: true, currentAnnoFsBody: "" })
+
+        // this.setState({currentAnnoLoading: true})
+        await this.getAnnoBody(annotation)
     }
 
 
@@ -496,11 +581,29 @@ class AdnoEmbed extends Component {
         if (this.state.isLoaded) {
             return (
                 <div id="adno-embed">
-
+                    {/* 
                     {
                         this.state.selectedAnno && this.state.selectedAnno.body &&
                         this.getAnnotationHTMLBody(this.state.selectedAnno)
+                    } */}
+
+                    {
+                        this.state.currentAnnoLoading ?
+                            <div className={this.state.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
+                                <InfinitySpin
+                                    width='200'
+                                    height="200"
+                                    color="black"
+                                />
+                            </div>
+
+                            : this.state.currentAnnoFsBody && this.state.currentAnnoFsBody !== "" &&
+                            <div className={this.state.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
+                                <ReactMarkdown children={this.state.currentAnnoFsBody} />
+                            </div>
                     }
+
+
 
                     <div className={this.state.showToolbar ? "toolbar-on" : "toolbar-off"}>
                         <div className={"osd-buttons-bar"}>
