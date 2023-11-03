@@ -50,8 +50,12 @@ class AdnoMdViewer extends Component {
                 wikiBody += `![${wikiName}](${new URL(imgUrl)})`
             }
 
-            const regex = new RegExp("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")
-            finalBody += line.replace(regex, wikiBody)
+            if (line.match(/\[([^\[]+)\](\(.*\))/gm)) {
+                finalBody += line.replace(/\[([^\[]+)\](\(.*\))/gm, wikiBody)
+            } else {
+                const regex = new RegExp("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")
+                finalBody += line.replace(regex, wikiBody)
+            }
 
             this.setState({ annos: finalBody })
 
