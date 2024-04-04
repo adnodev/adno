@@ -38,6 +38,7 @@ class NewProject extends Component {
         }
 
         var manifest_url = localStorage.getItem("adno_image_url")
+
         fetch(manifest_url)
             .then(rep => rep.json())
             .then(manifestIIIF => {
@@ -57,7 +58,12 @@ class NewProject extends Component {
                                     "canva_url": manifestURL
                                 }
 
-                                this.setState({ manifestImages: [...this.state.manifestImages, canva], currentIndex: 0, nbCanvases: manifestIIIF.sequences[0].canvases.length, isCanvaProject: true })
+                                this.setState({
+                                    manifestImages: [...this.state.manifestImages, canva],
+                                    currentIndex: 0,
+                                    nbCanvases: manifestIIIF.sequences[0].canvases.length,
+                                    isCanvaProject: true
+                                })
 
                             } else if (canva.images[0].resource.default && canva.images[0].resource.default.service && canva.images[0].resource.default.service["@id"]) {
 
@@ -69,7 +75,12 @@ class NewProject extends Component {
                                     "canva_url": manifestURL
                                 }
 
-                                this.setState({ manifestImages: [...this.state.manifestImages, canva], currentIndex: 0, nbCanvases: manifestIIIF.sequences[0].canvases.length, isCanvaProject: true })
+                                this.setState({
+                                    manifestImages: [...this.state.manifestImages, canva],
+                                    currentIndex: 0,
+                                    nbCanvases: manifestIIIF.sequences[0].canvases.length,
+                                    isCanvaProject: true
+                                })
 
                             } else {
                                 console.error("Resource not found ", index);
@@ -86,7 +97,12 @@ class NewProject extends Component {
                                     "canva_url": manifestURL
                                 }
 
-                                this.setState({ manifestImages: [...this.state.manifestImages, canva], currentIndex: 0, nbCanvases: manifestIIIF.sequences[0].canvases.length, isCanvaProject: true })
+                                this.setState({
+                                    manifestImages: [...this.state.manifestImages, canva],
+                                    currentIndex: 0,
+                                    nbCanvases: manifestIIIF.sequences[0].canvases.length,
+                                    isCanvaProject: true
+                                })
 
                             } else {
                                 console.error("Resource not found ", index);
@@ -410,9 +426,8 @@ class NewProject extends Component {
 
 
                 {
-                    this.state.manifestImages && this.state.nbCanvases > 1 &&
+                    this.state.manifestImages && this.state.nbCanvases > 0 &&
                     <div id="select_canva">
-
                         {
                             this.state.manifestImages && this.state.manifestImages.length > 0 && this.state.currentIndex > 0 && !this.state.selectedCanva &&
                             <button onClick={() => this.setState({ currentIndex: this.state.currentIndex - 1 })} className="btn btn-circle">❮</button>
@@ -433,8 +448,8 @@ class NewProject extends Component {
 
 
                 {
-                    this.state.manifestImages && this.state.nbCanvases > 1 && this.state.currentIndex !== -1 && !this.state.selectedCanva &&
-                    <button className="btn btn-success" onClick={() => {
+                    this.state.manifestImages && this.state.nbCanvases > 0 && this.state.currentIndex !== -1 && !this.state.selectedCanva &&
+                    <button className="btn btn-success my-2" onClick={() => {
                         this.setState({ selectedCanva: true, isCanvaProject: true })
                         localStorage.setItem("selected_canva", this.state.manifestImages[this.state.currentIndex].canva_url)
                     }
