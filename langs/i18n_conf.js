@@ -5,7 +5,7 @@ import { initReactI18next } from 'react-i18next';
 import French from './fr.json';
 import English from './en.json';
 
-const locale = "fr"//navigator.language;
+const locale = navigator.language;
 
 i18n
     .use(initReactI18next)

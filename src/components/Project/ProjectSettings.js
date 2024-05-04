@@ -90,7 +90,7 @@ class ProjectSettings extends Component {
                     </div>
 
                     <div className="metadata-editor-btns">
-                        <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} />  &nbsp; {this.props.t('project.settings.save')} </button>
+                        <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} className="mr-2" />  &nbsp; {this.props.t('project.settings.save')} </button>
                     </div>
                 </form>
             </div>

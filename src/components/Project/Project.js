@@ -145,11 +145,12 @@ class Project extends Component {
                                     />
                                     :
                                     <ViewerAnnotationCards
+                                        updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
+                                        selectedProject={this.state.selectedProject}
+                                        annotations={this.state.annotations}
                                         selectedAnno={this.state.selectedAnnotation}
                                         changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                                         editingMode={this.props.editMode}
-                                        annotations={this.state.annotations}
-                                        selectedProject={this.state.selectedProject}
                                         openFullAnnotationView={(annotation) => this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })}
                                     />
                             }

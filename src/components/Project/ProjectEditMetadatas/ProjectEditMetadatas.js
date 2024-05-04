@@ -85,7 +85,7 @@ class ProjectEditMetadatas extends Component {
 
 
                         <div className="metadata-editor-btns">
-                             <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} />  Enregistrer </button>
+                             <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} className="mr-2" />  Enregistrer </button>
                         </div>
                     </div>
                 </form>

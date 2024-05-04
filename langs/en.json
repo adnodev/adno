@@ -134,7 +134,8 @@
                 "target": "Focus annotation",
                 "switch_down": "Switch down",
                 "switch_up": "Switch up",
-                "delete": "Remove annotation"
+                "delete": "Remove annotation",
+                "tags_list": "Filter annotations using tags"
             },
             "navbar": {
                 "edit_mode": "Edit mode",
