@@ -29,7 +29,11 @@ class ViewerAnnotationCards extends Component {
     }
 
     readTagsUserPreferences = () => {
-        return this.props.selectedProject?.user_preferences?.tags.map(tag => ({ value: tag, label: tag }))
+        const userPreferences = this.props.selectedProject.user_preferences;
+        if (userPreferences)
+            return userPreferences.tags.map(tag => ({ value: tag, label: tag }))
+        else
+            return []
     }
 
     handleAnnotationsTags = newTags => {
