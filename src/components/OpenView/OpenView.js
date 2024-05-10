@@ -91,7 +91,6 @@ class OpenView extends Component {
                 this.props.changeSelectedAnno(annotation)
             });
 
-
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)

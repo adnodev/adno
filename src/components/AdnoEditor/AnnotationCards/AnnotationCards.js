@@ -100,17 +100,19 @@ class AnnotationCards extends Component {
     getAllAnnotationsTags = () => {
         const tags = this.props.annotations
             .flatMap(annotation => buildTagsList(annotation))
-            .map(tag => tag.value);
+            .map(tag => tag.value)
 
         return [...new Set(tags)].map(tag => ({ value: tag, label: tag }))
     }
 
     readTagsUserPreferences = () => {
-        const userPreferences = this.props.selectedProject.user_preferences;
+        const userPreferences = this.props.selectedProject.user_preferences
+
+        let tags = []
         if (userPreferences)
-            return userPreferences.tags.map(tag => ({ value: tag, label: tag }))
-        else
-            return []
+            tags = userPreferences.tags.map(tag => ({ value: tag, label: tag }))
+
+        return tags
     }
 
     handleAnnotationsTags = newTags => {
@@ -123,7 +125,10 @@ class AnnotationCards extends Component {
         }
         this.props.updateProject(newProject)
         insertInLS(newProject.id, JSON.stringify(newProject))
-        this.setState({ selectedTags: newTags })
+
+        this.setState({ selectedTags: newTags }, () => {
+            this.props.changeSelectedTags(newTags)
+        })
     }
 
     render() {

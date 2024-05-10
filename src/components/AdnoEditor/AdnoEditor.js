@@ -73,10 +73,13 @@ class AdnoEditor extends Component {
 
 
             // Find annotations from the localStorage in JSON format
-            var annos = localStorage.getItem(`${selected_project.id}_annotations`)
+            // var annos = localStorage.getItem(`${selected_project.id}_annotations`)
+            const annos = this.props.annotations
+
+            console.log('annos before rendering', annos)
 
             // Generate dataURI and load annotations into Annotorious
-            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(annos)));
+            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
 
             Annotorious.SelectorPack(this.AdnoAnnotorious);

@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
+<<<<<<< HEAD
 import { get_url_extension } from "../../Utils/utils";
 import {
     faMagnifyingGlassMinus,
@@ -14,6 +15,11 @@ import {
     faRotateRight,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactHtmlParser from "react-html-parser";
+=======
+import { buildTagsList, get_url_extension } from "../../Utils/utils";
+import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight } from "@fortawesome/free-solid-svg-icons";
+import ReactHtmlParser from 'react-html-parser';
+>>>>>>> 9f2caba (play filtered annotations)
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
@@ -444,6 +450,8 @@ class AdnoEmbed extends Component {
                     try {
                         const imported_project = JSON.parse(rawManifest);
 
+                        console.log(imported_project)
+
                         // ADNO project detected
 
                         if (
@@ -468,8 +476,19 @@ class AdnoEmbed extends Component {
                                     this.overrideSettings();
                                 }
 
-                                this.setState({ isLoaded: true });
+                                this.setState({ isLoaded: true })
+
+                                const selectedTags = imported_project.user_preferences?.tags || [];
+
                                 let annos = [...imported_project.first.items];
+
+                                if (selectedTags.length > 0)
+                                    annos = annos
+                                        .map(annotation => ({
+                                            ...annotation,
+                                            tags: buildTagsList(annotation).map(tag => tag.value)
+                                        }))
+                                        .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
 
                                 annos?.forEach((annotation) => {
                                     if (

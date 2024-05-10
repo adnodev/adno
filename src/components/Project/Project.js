@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router-dom";
 
 // Import utils
-import { checkIfProjectExists, getProjectSettings } from "../../Utils/utils";
+import { buildTagsList, checkIfProjectExists, getProjectSettings } from "../../Utils/utils";
 
 // Import libraries
 import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
@@ -35,7 +35,9 @@ class Project extends Component {
             showProjectMetadatas: false,
             showSettings: false,
             settings: getProjectSettings(this.props.match.params.id),
-            autoplayID: -1
+            autoplayID: -1,
+
+            selectedTags: this.readTagsUserPreferences()
         }
     }
 
@@ -43,6 +45,16 @@ class Project extends Component {
         if (!checkIfProjectExists(this.props.match.params.id)) {
             this.props.history.push("/")
         }
+    }
+
+    readTagsUserPreferences = () => {
+        const userPreferences = (JSON.parse(localStorage.getItem(this.props.match.params.id)) || {}).user_preferences
+
+        let tags = []
+        if (userPreferences)
+            tags = userPreferences.tags.map(tag => ({ value: tag, label: tag }))
+
+        return tags
     }
 
     updateSettings = (newSettings) => {
@@ -57,6 +69,18 @@ class Project extends Component {
     }
 
     render() {
+        const { annotations, selectedTags } = this.state;
+
+        let filteredAnnotations = selectedTags.length === 0 ? annotations :
+            annotations
+                .map(annotation => ({
+                    ...annotation,
+                    tags: buildTagsList(annotation).map(tag => tag.value)
+                }))
+                .filter(annotation => annotation.tags?.find(tag => selectedTags.map(tag => tag.value).includes(tag)))
+
+        console.log(annotations, filteredAnnotations, selectedTags)
+
         return (
             <div className="project">
 
@@ -96,7 +120,7 @@ class Project extends Component {
                             closeMdEditor={() => this.setState({ updateAnnotation: false })}
                             selectedAnnotation={this.state.selectedAnnotation}
                             selectedProjectId={this.props.match.params.id}
-                            annotations={this.state.annotations}
+                            annotations={filteredAnnotations}
                             changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                         />
                     </div>
@@ -122,10 +146,11 @@ class Project extends Component {
                                     updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                     selectedProject={this.state.selectedProject}
                                     openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
-                                    annotations={this.state.annotations}
+                                    annotations={filteredAnnotations}
                                     updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                     selectedAnno={this.state.selectedAnnotation}
                                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
+                                    changeSelectedTags={(newTags) => this.setState({ selectedTags: newTags })}
                                 />
                             }
                         </div>
@@ -138,20 +163,22 @@ class Project extends Component {
                                         updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                         selectedProject={this.state.selectedProject}
                                         openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
-                                        annotations={this.state.annotations}
+                                        annotations={filteredAnnotations}
                                         updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                         selectedAnno={this.state.selectedAnnotation}
                                         changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
+                                        changeSelectedTags={(newTags) => this.setState({ selectedTags: newTags })}
                                     />
                                     :
                                     <ViewerAnnotationCards
                                         updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                         selectedProject={this.state.selectedProject}
-                                        annotations={this.state.annotations}
+                                        annotations={filteredAnnotations}
                                         selectedAnno={this.state.selectedAnnotation}
                                         changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                                         editingMode={this.props.editMode}
                                         openFullAnnotationView={(annotation) => this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })}
+                                        changeSelectedTags={(newTags) => this.setState({ selectedTags: newTags })}
                                     />
                             }
                         </div>
@@ -163,7 +190,7 @@ class Project extends Component {
                             {
                                 this.props.editMode ?
                                     <AdnoEditor
-                                        annotations={this.state.annotations}
+                                        annotations={filteredAnnotations}
                                         updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                         selectedAnno={this.state.selectedAnnotation}
                                         openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
@@ -178,7 +205,7 @@ class Project extends Component {
                                         showToolbar={this.state.settings.displayToolbar}
                                         rotation={this.state.settings.rotation}
                                         timerDelay={this.state.settings.delay}
-                                        annos={this.state.annotations}
+                                        annos={filteredAnnotations}
                                         selectedAnno={this.state.selectedAnnotation}
                                         selected_project={this.state.selectedProject}
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}

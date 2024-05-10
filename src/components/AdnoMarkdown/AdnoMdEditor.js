@@ -111,7 +111,7 @@ class AdnoMdEditor extends Component {
         insertInLS(`${this.props.selectedProjectId}_annotations`, JSON.stringify(annos))
         this.props.updateAnnos(annos)
 
-        document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`)?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 
         this.props.closeMdEditor()
     }
