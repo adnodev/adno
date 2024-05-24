@@ -1,11 +1,12 @@
 {
   "name": "adno-react",
   "version": "1.0.0",
+  "homepage": "https://dhbern.github.io/adno/",
   "description": "",
   "scripts": {
     "start": "yarn install && yarn clean && parcel public/index.html",
-    "build-full": "NODE_ENV=ADNOFULL parcel build public/index.html --dist-dir adno-full",
-    "build-light": "NODE_ENV=ADNOLIGHT parcel build public/index.html --dist-dir adno-light",
+    "build-full": "sh -c 'NODE_ENV=ADNOFULL parcel build public/index.html --dist-dir adno-full --public-url ${PUBLIC_URL:-/}'",
+    "build-light": "sh -c 'NODE_ENV=ADNOLIGHT parcel build public/index.html --dist-dir adno-light --public-url ${PUBLIC_URL:-/}'",
     "build": "yarn install && yarn clean && yarn build-full && yarn build-light",
     "clean": "rimraf .parcel-cache && rimraf dist && rimraf adno-full && rimraf adno-light",
     "clean-modules": "rm -r node_modules"
