@@ -190,6 +190,8 @@ class Project extends Component {
                             {
                                 this.props.editMode ?
                                     <AdnoEditor
+                                        resetSelectedTags={() => this.setState({ selectedTags: [] })}
+                                        unfilteredAnnotations={this.state.annotations}
                                         annotations={this.state.annotations}
                                         updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                         selectedAnno={this.state.selectedAnnotation}

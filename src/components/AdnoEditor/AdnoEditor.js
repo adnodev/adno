@@ -76,8 +76,6 @@ class AdnoEditor extends Component {
             // var annos = localStorage.getItem(`${selected_project.id}_annotations`)
             const annos = this.props.annotations
 
-            console.log('annos before rendering', annos)
-
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
@@ -89,7 +87,7 @@ class AdnoEditor extends Component {
 
             // Event triggered by using saveSelected annotorious function
             this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                var annotations = [...this.props.annotations] || []
+                var annotations = [...this.props.unfilteredAnnotations] || []
                 annotations.push(newAnnotation)
 
                 // Update the last update date for the selected project
@@ -102,6 +100,8 @@ class AdnoEditor extends Component {
                 this.props.updateAnnos(annotations)
 
                 this.props.openRichEditor(newAnnotation)
+
+                this.props.resetSelectedTags()
             });
 
             // Event triggered when drawing a new shape
