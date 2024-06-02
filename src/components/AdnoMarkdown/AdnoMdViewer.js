@@ -16,6 +16,7 @@ class AdnoMdViewer extends Component {
     }
 
     async componentDidMount() {
+        console.log('hererer')
         await this.getAnnoBody()
         this.setState({ isLoaded: true })
     }
@@ -26,7 +27,6 @@ class AdnoMdViewer extends Component {
         if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
 
             const element = line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")[0];
-            var wikiBody = "";
 
             const wikiID = element.replace('https://www.wikidata.org/wiki/', '')
 
@@ -42,12 +42,13 @@ class AdnoMdViewer extends Component {
 
             let images = entities[wikiID] && entities[wikiID].claims["P18"]
 
+            let wikiBody = "";
             wikiBody += wikiName + "\n"
             wikiBody += wikiDesc + "\n"
 
             if (images) {
                 const imgUrl = `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${images[0].mainsnak.datavalue.value}&width=200`
-                wikiBody += `![${wikiName}](${new URL(imgUrl)})`
+                wikiBody += `\n ![${wikiName}](${new URL(imgUrl)}) \n`
             }
 
             const regex = new RegExp("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")
@@ -57,7 +58,8 @@ class AdnoMdViewer extends Component {
 
         } else {
             finalBody += line
-            this.setState({ annos: finalBody })
+            console.log('here', line)
+            this.setState({ annos: "\n\n" + finalBody + "\n\n" })
         }
     }
 
@@ -92,7 +94,10 @@ class AdnoMdViewer extends Component {
                                 </button>
                             </div>
                             <div className="card-body over-hidden">
-                                <div className="markdown-body">
+                                <div className="markdown-body" style={{
+                                    display: 'flex',
+                                    flexDirection: 'column'
+                                }}>
                                     {
                                         this.state.isLoaded && this.state.annos ?
                                             <ReactMarkdown children={this.state.annos} />

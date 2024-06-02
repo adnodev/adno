@@ -87,7 +87,27 @@
                 "md_add_tag": "Ajouter un tag",
                 "md_save": "Enregistrer",
                 "md_delete": "Supprimer",
-                "md_delete_confirm": "Confirmer la suppression"
+                "md_delete_confirm": "Confirmer la suppression",
+                "fullpage": "Mettre en plein écran",
+                "home": "Aller à l'accueil",
+                "zoom_in": "Zoomer",
+                "zoom_out": "Dézoomer",
+                "next_page": "Page suivante",
+                "previous_page": "Page précédente",
+                "rotate_left": "Tourner vers la gauche",
+                "rotate_right": "Tourner vers la droite",
+                "flip": "Retourner horizontalemenent",
+                "placeholder": "Ajoutez votre texte ici"
+            },
+            "visualizer": {
+                "expand": "Mettre en plein écran",
+                "pause": "Mettre en pause",
+                "play": "Lancer",
+                "reset_zoom": "Dézoomer",
+                "toggle_annotations": "Afficher/masquer les annotations",
+                "previous_annotation": "Annotation précédente",
+                "next_annotation": "Annotation suivante",
+                "rotation": "Tourner de 90 degrés"
             },
             "modal": {
                 "delete_project": "Voulez-vous vraiment supprimer ce projet ?",
@@ -109,7 +129,12 @@
             },
             "annotation": {
                 "no_content": "aucun contenu",
-                "read_more": "Lire plus"
+                "read_more": "Lire plus",
+                "edit": "Editer",
+                "target": "Mettre en évidence",
+                "switch_down": "Descendre l'annotation",
+                "switch_up": "Remonter l'annotation",
+                "delete": "Supprimer l'annotation"
             },
             "navbar": {
                 "edit_mode": "Mode édition",

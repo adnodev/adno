@@ -97,18 +97,27 @@ class OneCardView extends Component {
                     }
                 </div>
 
-                <div className={ this.props.selectedAnno && this.props.selectedAnno.id === this.props.annotation.id? "adno-card-selected-body" :  "adno-card-body"}>
+                <div className={this.props.selectedAnno && this.props.selectedAnno.id === this.props.annotation.id ? "adno-card-selected-body" : "adno-card-body"}>
                     {this.getAnnotationHTMLBody()}
                 </div>
 
 
                 <div className="btn-line-one-card">
 
-                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more" onClick={() => this.props.openFullAnnotationView(this.props.annotation)}> {this.props.t('annotation.read_more')} <FontAwesomeIcon icon={faPlusCircle} /></button>}
+                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more"
+                        onClick={() => this.props.openFullAnnotationView(this.props.annotation)}>
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.read_more')}>
+                            {this.props.t('annotation.read_more')}{' '}
+                            <FontAwesomeIcon icon={faPlusCircle} />
+                        </div>
+                    </button>}
 
                     <button type="button"
                         onClick={() => this.props.clickOnTarget(this.props.annotation)}
-                        className="btn btn-outline btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} />
+                        className="btn btn-outline btn-sm btn-show-more">
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.target')}>
+                            <FontAwesomeIcon icon={faBullseye} />
+                        </div>
                     </button>
 
                     {/* Afficher la redirection vers la zone de l'annotation */}

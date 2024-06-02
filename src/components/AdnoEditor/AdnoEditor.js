@@ -47,7 +47,16 @@ class AdnoEditor extends Component {
                     url: selected_project.img_url
                 }
             }
-
+    
+            OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
+            OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
+            OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
+            OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
+            OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
+            OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
+            OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
+            OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
+            OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
                 id: 'openseadragon1',
@@ -61,6 +70,7 @@ class AdnoEditor extends Component {
                 allowEmpty: true,
                 disableEditor: true
             });
+
 
             // Find annotations from the localStorage in JSON format
             var annos = localStorage.getItem(`${selected_project.id}_annotations`)
@@ -107,7 +117,7 @@ class AdnoEditor extends Component {
             this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
                 this.setState({ isMovingItem: true })
 
-                const selected = this.state.selected ? {...this.state.selected} : this.AdnoAnnotorious.getSelected();
+                const selected = this.state.selected ? { ...this.state.selected } : this.AdnoAnnotorious.getSelected();
                 selected.target = newTarget
 
                 this.setState({ selected })
@@ -117,7 +127,7 @@ class AdnoEditor extends Component {
 
     changeAnno = (annotation) => {
         // If the user edits the annotation from the modal, update the current selected annotation in the state
-        this.setState({selected: annotation})
+        this.setState({ selected: annotation })
 
         this.AdnoAnnotorious.selectAnnotation(annotation.id)
         this.AdnoAnnotorious.fitBounds(annotation.id)
@@ -181,7 +191,11 @@ class AdnoEditor extends Component {
 
                 {
                     this.state.isMovingItem &&
-                    <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}> <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}  </button>
+                    <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
+                            <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
+                        </div>
+                    </button>
                 }
             </div>
         )

@@ -50,7 +50,7 @@
                 "back_home": "Cancel and go back to homepage",
                 "choose_canva": "Use this picture for my project",
                 "metadatas": {
-                    "identifier" : "Identifier",
+                    "identifier": "Identifier",
                     "source": "Source",
                     "creation_date": "Created on",
                     "last_update": "Last update on",
@@ -87,9 +87,29 @@
                 "md_add_tag": "Add a new tag",
                 "md_save": "Save",
                 "md_delete": "Delete",
-                "md_delete_confirm": "Confirm deletion"
+                "md_delete_confirm": "Confirm deletion",
+                "fullpage": "Toggle full page",
+                "home": "Go home",
+                "zoom_in": "Zoom in",
+                "zoom_out": "Zoom out",
+                "next_page": "Next page",
+                "previous_page": "Previous page",
+                "rotate_left": "Rotate left",
+                "rotate_right": "Rotate right",
+                "flip": "Flip Horizontally",
+                "placeholder": "Enter text here"
             },
-            "modal" : {
+            "visualizer": {
+                "expand": "Enter Full Screen",
+                "pause": "Pause",
+                "play": "Play",
+                "reset_zoom": "Zoom",
+                "toggle_annotations": "Hide/show annotations",
+                "previous_annotation": "Go to previous annotation",
+                "next_annotation": "Go to next annotation",
+                "rotation": "Rotate of 90 degrees"
+            },
+            "modal": {
                 "delete_project": "Would you really want to delete this project ?",
                 "confirm_delete": "Yes, delete my project",
                 "cancel": "Cancel",
@@ -109,9 +129,14 @@
             },
             "annotation": {
                 "no_content": "no content yet",
-                "read_more": "Read more"
+                "read_more": "Read more",
+                "edit": "Edit",
+                "target": "Focus annotation",
+                "switch_down": "Switch down",
+                "switch_up": "Switch up",
+                "delete": "Remove annotation"
             },
-            "navbar":{
+            "navbar": {
                 "edit_mode": "Edit mode",
                 "back_home": "Back to home",
                 "download_project": "Download the project",
@@ -131,7 +156,7 @@
                 "error_found": "An error have been found",
                 "unable_reading_file": "Unable to read this type of file !",
                 "unable_access_file": "Unable to reach this file ! Please try again or select another file",
-                "manifest_picture_not_found" : "The manifest or the picture you have entered has not been found",
+                "manifest_picture_not_found": "The manifest or the picture you have entered has not been found",
                 "wrong_url": "The URL you have entered is not valid",
                 "no_url": "No URL was provided",
                 "unknown_characters": "Unable to read annotations (Forbidden characters)",

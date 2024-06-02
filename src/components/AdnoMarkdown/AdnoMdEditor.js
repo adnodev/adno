@@ -12,7 +12,14 @@ import { insertInLS } from '../../Utils/utils';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { Editor } from '@toast-ui/react-editor';
+
+// import { Editor } from '@toast-ui/react-editor';
+
+
+import Editor from '@toast-ui/editor';
+
+import '@toast-ui/editor/dist/i18n/fr-fr';
+
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 
@@ -26,16 +33,39 @@ class AdnoMdEditor extends Component {
         }
     }
 
-    editorRef = React.createRef();
+    componentDidMount() {
+        this.editor = new Editor({
+            language: 'fr-FR',
+            el: document.querySelector('#editor'),
+            initialValue: this.getAnnoBody(),
+            previewStyle: "tab",
+            height: "600px",
+            initialEditType: "markdown",
+            usageStatistics: false,
+            initialEditType: "markdown",
+            placeholder: this.props.t("editor.placeholder"),
+            hideModeSwitch: true,
+            language: "fr-FR",
+            toolbarItems: [[
+                "heading",
+                "italic",
+                "bold",
+                "ul",
+                "link",
+                "image",
+            ]]
+        })
+        console.log(this.editor)
+    }
 
     saveMD = () => {
         let annos = [...this.props.annotations];
         let currentSelectedAnno = { ...this.props.selectedAnnotation };
 
-        let md = this.editorRef.current.getInstance().getMarkdown();
+        let md = this.editor.getMarkdown();
 
         // Check if something has been wrote down
-        let html = this.editorRef.current.getInstance().getMarkdown() ? this.editorRef.current.getInstance().getHTML() : "";
+        let html = this.editor.getMarkdown() ? this.editor.getHTML() : "";
 
         let newTextBody = {
             "type": "TextualBody",
@@ -135,32 +165,6 @@ class AdnoMdEditor extends Component {
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
-
-
-                    <Editor
-                        initialValue={this.getAnnoBody()}
-                        previewStyle="vertical"
-                        height="600px"
-                        initialEditType="markdown"
-                        ref={this.editorRef}
-                        usageStatistics={false}
-                        previewStyle="tab"
-                        initialEditType="markdown"
-                        placeholder="Ajoutez votre texte ici"
-                        hideModeSwitch={true}
-                        toolbarItems={[
-                            [
-                                'heading',
-                                'italic',
-                                'bold',
-                                'ul',
-                                'link',
-                                'image',
-                            ]
-                        ]}
-
-
-                    />
 
                     <div id="editor"></div>
 

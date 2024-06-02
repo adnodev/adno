@@ -72,7 +72,7 @@ class AnnotationCards extends Component {
         Swal.fire({
             title: this.props.t('modal.ask_delete'),
             showCancelButton: true,
-            confirmButtonText:this.props.t('modal.confirm_del_annotation'),
+            confirmButtonText: this.props.t('modal.confirm_del_annotation'),
             cancelButtonText: this.props.t('modal.cancel'),
             icon: 'warning',
         }).then((result) => {
@@ -118,20 +118,40 @@ class AnnotationCards extends Component {
                                     </div>
 
                                     <div className="btn-line-one-card">
-                                        <button className="btn btn-sm" onClick={() => this.props.openRichEditor(annotation)}> <FontAwesomeIcon icon={faEdit} /></button>
+                                        <button className="btn btn-sm" onClick={() => this.props.openRichEditor(annotation)}>
+                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.edit')}>
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </div>
+                                        </button>
                                         <button type="button"
                                             onClick={() => this.props.changeSelectedAnno(annotation)}
-                                            className="btn btn-sm btn-show-more"> <FontAwesomeIcon icon={faBullseye} /></button>
-                                        {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline" onClick={() => this.annoSwitchDown(index)}> <FontAwesomeIcon icon={faDownLong} /> </button> : <></>}
-                                        {index > 0 ? <button className="btn btn-sm" onClick={() => this.annoSwitchUp(index)}> <FontAwesomeIcon icon={faUpLong} /> </button> : <></>}
-                                        <button className="btn btn-sm btn-outline btn-error" onClick={() => this.deleteAnnotation(annotation.id)}> <FontAwesomeIcon icon={faTrashAlt} /></button>
+                                            className="btn btn-sm btn-show-more">
+                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.target')}>
+                                                <FontAwesomeIcon icon={faBullseye} />
+                                            </div>
+                                        </button>
+                                        {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline" onClick={() => this.annoSwitchDown(index)}>
+                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.switch_down')}>
+                                                <FontAwesomeIcon icon={faDownLong} />
+                                            </div>
+                                        </button> : <></>}
+                                        {index > 0 ? <button className="btn btn-sm" onClick={() => this.annoSwitchUp(index)}>
+                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.switch_up')}>
+                                                <FontAwesomeIcon icon={faUpLong} />
+                                            </div>
+                                        </button> : <></>}
+                                        <button className="btn btn-sm btn-outline btn-error" onClick={() => this.deleteAnnotation(annotation.id)}>
+                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.delete')}>
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </div>
+                                        </button>
                                     </div>
                                 </div >
                             </div >
                         )
                     })
                 }
-            </div>
+            </div >
         )
     }
 }

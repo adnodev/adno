@@ -42,6 +42,7 @@ class NewProject extends Component {
         fetch(manifest_url)
             .then(rep => rep.json())
             .then(manifestIIIF => {
+                console.log(manifestIIIF)
                 if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
 
                     // Get all canvases from the manifest

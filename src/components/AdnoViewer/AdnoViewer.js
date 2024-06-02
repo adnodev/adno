@@ -54,7 +54,7 @@ class AdnoViewer extends Component {
             // Create the dataURI linked to the annotations
 
 
-            
+
             try {
                 const dataURI = "data:application/json;base64," + btoa(JSON.stringify(newAnnos));
 
@@ -93,6 +93,15 @@ class AdnoViewer extends Component {
                     prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
                 });
             }
+            OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
+            OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
+            OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
+            OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
+            OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
+            OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
+            OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
+            OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
+            OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
         }
 
     }

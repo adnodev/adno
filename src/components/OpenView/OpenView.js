@@ -15,6 +15,7 @@ import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Import CSS
 import "./OpenView.css";
+import { withTranslation } from "react-i18next";
 
 
 class OpenView extends Component {
@@ -58,6 +59,16 @@ class OpenView extends Component {
                 tileSources: tileSources,
                 prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
             })
+
+            OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
+            OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
+            OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
+            OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
+            OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
+            OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
+            OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
+            OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
+            OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
                 locale: 'auto',
@@ -285,7 +296,7 @@ class OpenView extends Component {
                 return (
                     <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
 
-                        { ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
+                        {ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
                     </div>
                 )
             }
@@ -311,27 +322,54 @@ class OpenView extends Component {
 
                         {
                             this.props.annos.length > 0 &&
-                            <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}><FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" /></button>
+                            <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}>
+                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t(`visualizer.${this.state.timer ? 'pause' : 'play'}`)}>
+                                    <FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" />
+                                </div>
+                            </button>
                         }
 
-                        <button id="home-button" className="toolbarButton toolbaractive"><FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" /></button>
+                        <button id="home-button" className="toolbarButton toolbaractive">
+                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_zoom')}>
+                                <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" />
+                            </div>
+                        </button>
 
                         {
                             this.props.annos.length > 0 &&
                             <>
-                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}><FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" /></button>
+                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
+                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
+                                        <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
+                                    </div>
+                                </button>
 
-                                <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}><FontAwesomeIcon icon={faArrowLeft} size="lg" /></button>
-                                <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}><FontAwesomeIcon icon={faArrowRight} size="lg" /></button>
-
+                                <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
+                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>
+                                        <FontAwesomeIcon icon={faArrowLeft} size="lg" />
+                                    </div>
+                                </button>
+                                <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}>
+                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.next_annotation')}>
+                                        <FontAwesomeIcon icon={faArrowRight} size="lg" />
+                                    </div>
+                                </button>
                             </>
                         }
 
                         {
                             this.props.rotation &&
-                            <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}><FontAwesomeIcon icon={faRotateRight} size="lg" /></button>
+                            <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}>
+                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.rotation')}>
+                                    <FontAwesomeIcon icon={faRotateRight} size="lg" />
+                                </div>
+                            </button>
                         }
-                        <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}><FontAwesomeIcon icon={faExpand} size="lg" /></button>
+                        <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
+                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
+                                <FontAwesomeIcon icon={faExpand} size="lg" />
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -339,4 +377,4 @@ class OpenView extends Component {
     }
 }
 
-export default withRouter(OpenView);
+export default withTranslation()(withRouter(OpenView));
