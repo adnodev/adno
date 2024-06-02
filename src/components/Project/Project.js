@@ -120,7 +120,7 @@ class Project extends Component {
                             closeMdEditor={() => this.setState({ updateAnnotation: false })}
                             selectedAnnotation={this.state.selectedAnnotation}
                             selectedProjectId={this.props.match.params.id}
-                            annotations={filteredAnnotations}
+                            annotations={this.state.annotations}
                             changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                         />
                     </div>
@@ -146,7 +146,7 @@ class Project extends Component {
                                     updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                     selectedProject={this.state.selectedProject}
                                     openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
-                                    annotations={filteredAnnotations}
+                                    annotations={this.state.annotations}
                                     updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                     selectedAnno={this.state.selectedAnnotation}
                                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
@@ -163,7 +163,7 @@ class Project extends Component {
                                         updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                         selectedProject={this.state.selectedProject}
                                         openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
-                                        annotations={filteredAnnotations}
+                                        annotations={this.state.annotations}
                                         updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                         selectedAnno={this.state.selectedAnnotation}
                                         changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
@@ -190,7 +190,7 @@ class Project extends Component {
                             {
                                 this.props.editMode ?
                                     <AdnoEditor
-                                        annotations={filteredAnnotations}
+                                        annotations={this.state.annotations}
                                         updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
                                         selectedAnno={this.state.selectedAnnotation}
                                         openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
@@ -205,7 +205,7 @@ class Project extends Component {
                                         showToolbar={this.state.settings.displayToolbar}
                                         rotation={this.state.settings.rotation}
                                         timerDelay={this.state.settings.delay}
-                                        annos={filteredAnnotations}
+                                        annos={this.state.annotations}
                                         selectedAnno={this.state.selectedAnnotation}
                                         selected_project={this.state.selectedProject}
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
