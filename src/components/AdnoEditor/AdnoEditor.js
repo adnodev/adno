@@ -87,7 +87,7 @@ class AdnoEditor extends Component {
 
             // Event triggered by using saveSelected annotorious function
             this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                var annotations = [...this.props.unfilteredAnnotations] || []
+                var annotations = [...this.props.annotations] || []
                 annotations.push(newAnnotation)
 
                 // Update the last update date for the selected project
@@ -100,8 +100,6 @@ class AdnoEditor extends Component {
                 this.props.updateAnnos(annotations)
 
                 this.props.openRichEditor(newAnnotation)
-
-                this.props.resetSelectedTags()
             });
 
             // Event triggered when drawing a new shape

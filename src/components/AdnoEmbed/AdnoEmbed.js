@@ -70,6 +70,7 @@ class AdnoEmbed extends Component {
         var isAnnotationsVisible = query.get("anno_bounds")
             ? query.get("anno_bounds") === "true"
             : false;
+        const tags = query.get("tags") || []
 
         const settings = {
             delay,
@@ -80,6 +81,7 @@ class AdnoEmbed extends Component {
             rotation,
             isAnnotationsVisible,
             showToolbar,
+            tags
         };
         // Update settings
         this.setState({ ...settings });
@@ -478,7 +480,7 @@ class AdnoEmbed extends Component {
 
                                 this.setState({ isLoaded: true })
 
-                                const selectedTags = imported_project.user_preferences?.tags || [];
+                                const selectedTags = imported_project.adno_settings.tags || [];
 
                                 let annos = [...imported_project.first.items];
 

@@ -160,9 +160,6 @@ export const createExportProjectJsonFile = (projectID) => {
     "date": project.creation_date,
     "modified": project.last_update,
     "source": project.manifest_url ? project.manifest_url : project.img_url,
-    "user_preferences": {
-      "tags": project?.user_preferences?.tags || []
-    },
     "format": "Adno",
     "total": annotations && annotations.length ? annotations.length : 0,
     "first": {
@@ -214,9 +211,6 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
         "editor": imported_project.editor || "",
         "rights": imported_project.rights || "",
         "settings": imported_project.adno_settings || defaultProjectSettings(),
-        "user_preferences": {
-          "tags": imported_project?.user_preferences?.tags || []
-        }
       }
 
       let importedURL = imported_project.source
@@ -323,7 +317,8 @@ export function defaultProjectSettings() {
     sidebarEnabled: true,
     startbyfirstanno: false,
     rotation: false,
-    displayToolbar: true
+    displayToolbar: true,
+    tags: []
   }
 }
 

@@ -13,6 +13,9 @@ import "./ProjectSettings.css"
 // Add translations
 import { withTranslation } from "react-i18next";
 
+import ReactSelect from 'react-select';
+import { buildTagsList, insertInLS } from "../../Utils/utils";
+
 class ProjectSettings extends Component {
     constructor(props) {
         super(props);
@@ -35,7 +38,17 @@ class ProjectSettings extends Component {
         })
     }
 
+    getAllAnnotationsTags = () => {
+        const tags = this.props.annotations
+            .flatMap(annotation => buildTagsList(annotation))
+            .map(tag => tag.value);
+
+        return [...new Set(tags)].map(tag => ({ value: tag, label: tag }))
+    }
+
     render() {
+        const tags = this.getAllAnnotationsTags()
+
         return (
             <div className="project-metadatas-backdrop">
                 <form className="project-metadatas-container" onSubmit={(e) => { this.updateProjectSettings(e) }}>
@@ -51,9 +64,24 @@ class ProjectSettings extends Component {
                     <div className="project-metadatas">
 
                         <label className="label">
+                            <span className="label-text">{this.props.t('project.settings.tags')}</span>
+                        </label>
+                        {tags.length > 0 && <ReactSelect
+                            isMulti
+                            name="tags"
+                            options={tags}
+                            value={(this.state.settings.tags || []).map(tag => ({ label: tag, value: tag }))}
+                            onChange={newTags => this.setState({ settings: { ...this.state.settings, tags: newTags.map(tag => tag.value) } })}
+                            placeholder={this.props.t('annotation.tags_list')}
+                            className="basic-multi-select mb-2 custom-react-select"
+                            classNamePrefix="select"
+                        />}
+
+                        <label className="label">
                             <span className="label-text">{this.props.t('project.settings.delay')}</span>
                         </label>
-                        <input type="number" placeholder="2" className="input input-bordered w-full max-w-xs" value={this.state.settings.delay} onChange={(e) => this.setState({ settings: { ...this.state.settings, delay: e.target.value } })} />
+                        <input type="number" placeholder="2" className="input input-bordered w-full max-w-xs" value={this.state.settings.delay}
+                            onChange={(e) => this.setState({ settings: { ...this.state.settings, delay: e.target.value } })} />
 
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.navigator')}</span>

@@ -73,7 +73,8 @@
                     "begin_first_anno": "Always start autoplay at first annotation",
                     "enable_rota": "Enable image rotation",
                     "toolsbar": "Enable toolsbar",
-                    "save": "Save"
+                    "save": "Save",
+                    "tags": "Only annotations including at least one of this tag will be displayed"
                 }
             },
             "files": {

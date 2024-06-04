@@ -273,6 +273,11 @@ class OpenView extends Component {
             this.changeAnno(this.props.selectedAnno)
         }
 
+        if(prevProps.annos !== this.props.annos) {
+            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+            this.AdnoAnnotorious.loadAnnotations(dataURI)
+        }
+
         // Check if the user toggled the navigator on/off
         if (this.props.showNavigator !== prevProps.showNavigator) {
             if (this.props.showNavigator) {
@@ -301,10 +306,6 @@ class OpenView extends Component {
             }
         }
     }
-
-
-
-
 
     render() {
         return (

@@ -73,7 +73,8 @@
                     "begin_first_anno": "Toujours commencer la lecture automatique à la première annotation",
                     "enable_rota": "Activer la rotation de l'image",
                     "toolsbar": "Afficher la barre d'outils",
-                    "save": "Enregistrer"
+                    "save": "Enregistrer",
+                    "tags": "Seules les annotations incluant un des tags suivants seront affichés"
                 }
             },
             "files": {
