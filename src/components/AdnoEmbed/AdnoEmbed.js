@@ -451,9 +451,6 @@ class AdnoEmbed extends Component {
                 .then((rawManifest) => {
                     try {
                         const imported_project = JSON.parse(rawManifest);
-
-                        console.log(imported_project)
-
                         // ADNO project detected
 
                         if (

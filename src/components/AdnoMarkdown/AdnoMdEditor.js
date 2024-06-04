@@ -55,7 +55,6 @@ class AdnoMdEditor extends Component {
                 "image",
             ]]
         })
-        console.log(this.editor)
     }
 
     saveMD = () => {
