@@ -103,7 +103,7 @@ class ProjectMetadatas extends Component {
                             this.props.selectedProject.creator &&
                             <>
                                 <label className="label">
-                                    <span className="label-text">{this.props.t('project.autor')}</span>
+                                    <span className="label-text">{this.props.t('project.author')}</span>
                                 </label>
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.creator} disabled />
                             </>

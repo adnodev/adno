@@ -59,7 +59,7 @@ class Navbar extends Component {
                     </button>
                 </div>
 
-                <strong>{this.props.selectedProject.title} {(this.props.settings.tags || []).map(tag => " #"+tag)} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`}</strong>
+                <strong>{this.props.selectedProject.title} {(this.props.settings.tags || []).map(tag => " #"+tag)} {this.props.selectedProject.author && `(${this.props.selectedProject.author})`}</strong>
 
                 {
                     process.env.ADNO_MODE === "FULL" &&

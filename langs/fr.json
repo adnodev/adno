@@ -38,7 +38,7 @@
                 "new_tooltip": "Créer un nouveau projet",
                 "title": "Titre",
                 "description": "Description",
-                "autor": "Auteur",
+                "author": "Auteur",
                 "editor": "Editeur",
                 "manifest_url": "URL",
                 "create": "Créer mon projet",
@@ -61,7 +61,7 @@
                 "metadatas_plh": {
                     "title": "Donnez un titre à ce projet",
                     "description": "Ajoutez une description à votre projet",
-                    "autor": "Renseignez ici l'auteur",
+                    "author": "Renseignez ici l'auteur",
                     "editor": "Renseignez ici l'editeur",
                     "allocation_rights": "Renseignez ici les droits de l'oeuvre"
                 },
