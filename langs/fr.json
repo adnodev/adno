@@ -74,7 +74,7 @@
                     "enable_rota": "Activer la rotation de l'image",
                     "toolsbar": "Afficher la barre d'outils",
                     "save": "Enregistrer",
-                    "tags": "Seules les annotations incluant un des tags suivants seront affichés"
+                    "tags": "Seules les annotations incluant un des tags suivants seront affichées"
                 }
             },
             "files": {
