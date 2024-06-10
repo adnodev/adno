@@ -12,6 +12,7 @@ class Navbar extends Component {
     }
 
     render() {
+        console.log(this.props)
         return (
             <div className="navbar text-neutral-content">
                 <Link to={"/"} className="project-navbar-link project-page-title" title={this.props.t('navbar.back_home')}>
@@ -59,7 +60,7 @@ class Navbar extends Component {
                     </button>
                 </div>
 
-                <strong>{this.props.selectedProject.title} {(this.props.settings.tags || []).map(tag => " #"+tag)} {this.props.selectedProject.author && `(${this.props.selectedProject.author})`}</strong>
+                <strong>{this.props.selectedProject.title} {(this.props.settings?.tags || []).map(tag => ` #${tag}`)} {this.props.selectedProject.creator && `(${this.props.selectedProject.creator})`}</strong>
 
                 {
                     process.env.ADNO_MODE === "FULL" &&
