@@ -38,7 +38,7 @@
                 "new_tooltip": "Create a new project",
                 "title": "Title",
                 "description": "Description",
-                "autor": "Autor",
+                "author": "Author",
                 "editor": "Editor",
                 "manifest_url": "URL",
                 "create": "Create my new project",
@@ -61,7 +61,7 @@
                 "metadatas_plh": {
                     "title": "Give a title to your project",
                     "description": "Add a little text about your artwork",
-                    "autor": "Add the autor of the artwork here",
+                    "author": "Add the author of the artwork here",
                     "editor": "Add the editor of the artwork here",
                     "allocation_rights": "Fill in here the rights of the artwork"
                 },
