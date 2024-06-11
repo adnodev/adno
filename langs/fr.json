@@ -136,7 +136,8 @@
                 "switch_down": "Descendre l'annotation",
                 "switch_up": "Remonter l'annotation",
                 "delete": "Supprimer l'annotation",
-                "tags_list": "Filter les annotations comportant les tags"
+                "tags_list": "Filter les annotations comportant les tags",
+                "empty_tags_list": "Les tags appairaitront ici"
             },
             "navbar": {
                 "edit_mode": "Mode édition",

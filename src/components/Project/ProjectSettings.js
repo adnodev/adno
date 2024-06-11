@@ -66,16 +66,17 @@ class ProjectSettings extends Component {
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.tags')}</span>
                         </label>
-                        {tags.length > 0 && <ReactSelect
+                        <ReactSelect
                             isMulti
                             name="tags"
                             options={tags}
-                            value={(this.state.settings.tags || []).map(tag => ({ label: tag, value: tag }))}
+                            value={(this.state.settings?.tags || []).map(tag => ({ label: tag, value: tag }))}
                             onChange={newTags => this.setState({ settings: { ...this.state.settings, tags: newTags.map(tag => tag.value) } })}
                             placeholder={this.props.t('annotation.tags_list')}
+                            noOptionsMessage={() => this.props.t('annotation.empty_tags_list')}
                             className="basic-multi-select mb-2 custom-react-select"
                             classNamePrefix="select"
-                        />}
+                        />
 
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.delay')}</span>

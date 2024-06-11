@@ -136,7 +136,8 @@
                 "switch_down": "Switch down",
                 "switch_up": "Switch up",
                 "delete": "Remove annotation",
-                "tags_list": "Filter annotations using tags"
+                "tags_list": "Filter annotations using tags",
+                "empty_tags_list": "The created tags will be displayed here."
             },
             "navbar": {
                 "edit_mode": "Edit mode",
