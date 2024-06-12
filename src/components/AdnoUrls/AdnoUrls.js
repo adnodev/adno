@@ -13,11 +13,20 @@ import { manageUrls } from "./manageUrls";
 class AdnoUrls extends Component {
 
     componentDidMount() {
-        let url = (new URLSearchParams(this.props.location.search))
-        let manifest_url = url.get("url")
+        const query = new URLSearchParams(this.props.location.search);
 
-        if (manifest_url) {
-            manageUrls(this.props, manifest_url, this.props.t)
+        let manifestURL = query.get("url")
+        if (manifestURL) {
+            const rawURLParam = this.props.location.search
+                .split("?")
+                .slice(1)
+                .find(query => query.startsWith("url="));
+
+            manifestURL = rawURLParam.replace("url=", "")
+        }
+
+        if (manifestURL) {
+            manageUrls(this.props, manifestURL, this.props.t)
         } else {
             Swal.fire({
                 title: this.props.t('errors.no_url'),

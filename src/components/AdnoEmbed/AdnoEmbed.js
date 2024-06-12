@@ -83,9 +83,18 @@ class AdnoEmbed extends Component {
 
     componentDidMount() {
         const query = new URLSearchParams(this.props.location.search);
-        const adnoProjectURL = query.get("url");
 
-        this.getAdnoProject(adnoProjectURL);
+        let urlParam = query.get("url")
+        if (urlParam) {
+            const rawURLParam = this.props.location.search
+                .split("?")
+                .slice(1)
+                .find(query => query.startsWith("url="));
+
+            urlParam = rawURLParam.replace("url=", "")
+        }
+
+        this.getAdnoProject(urlParam);
 
         // Accessibility shortcuts
         addEventListener("fullscreenchange", this.updateFullScreenEvent);
@@ -403,6 +412,9 @@ class AdnoEmbed extends Component {
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
+
+        console.log(url)
+
         // We check if the url contains an image
         if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl) {
             fetch(url)
@@ -622,7 +634,8 @@ class AdnoEmbed extends Component {
                         });
                     }
                 })
-                .catch(() => {
+                .catch(err => {
+                    console.log(err)
                     Swal.fire({
                         title: this.props.t("errors.wrong_url"),
                         showCancelButton: false,
