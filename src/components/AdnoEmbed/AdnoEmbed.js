@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
-<<<<<<< HEAD
 import { get_url_extension } from "../../Utils/utils";
 import {
     faMagnifyingGlassMinus,
@@ -15,11 +14,6 @@ import {
     faRotateRight,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactHtmlParser from "react-html-parser";
-=======
-import { buildTagsList, get_url_extension } from "../../Utils/utils";
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight } from "@fortawesome/free-solid-svg-icons";
-import ReactHtmlParser from 'react-html-parser';
->>>>>>> 9f2caba (play filtered annotations)
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
