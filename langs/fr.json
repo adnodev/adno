@@ -3,14 +3,14 @@
         "translation": {
             "begin_msg": {
                 "1": "Pour commencer à utiliser",
-                "2": "veuillez renseigner dans le champs ci-dessous l'URL d'un",
-                "3": "Manifeste IIIF",
-                "4": "d'une",
+                "2": "veuillez renseigner l'URL d'un",
+                "3": "manifeste",
+                "4": "ou d'une",
                 "5": "image IIIF",
-                "6": "ou encore d'une",
+                "6": "d'une",
                 "7": "image statique",
-                "8": "au format",
-                "9": "ou"
+                "8": "au format jpg ou png, ou encore d'un",
+                "9": "projet Adno"
             },
             "create_project": " Créer mon projet",
             "import": {

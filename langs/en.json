@@ -3,14 +3,14 @@
         "translation": {
             "begin_msg": {
                 "1": "To start using",
-                "2": "please enter in the fields below the URL of an",
+                "2": "please enter the URL of an",
                 "3": "IIIF Manifest",
                 "4": "or an",
                 "5": "IIIF picture",
-                "6": "or even a",
+                "6": "a",
                 "7": "static picture",
-                "8": "with the extension",
-                "9": "or"
+                "8": "in jpg or png format, or an",
+                "9": "Adno project"
             },
             "create_project": " Create a new project",
             "import": {
