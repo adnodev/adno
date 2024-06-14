@@ -149,26 +149,26 @@
                 "share_project_desc1": "Téléchargez d’abord le fichier de votre projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
                 "share_project_desc2": "Dès lors que votre projet Adno est en ligne, il est possible de le rendre visible dans une page web en insérant une balise iframe.",
                 "share_project_desc3": "Pour plus d'informations, rendez-vous sur la",
-                "share_project_desc4": "documentation officielle d'Adno"
+                "share_project_desc4": "documentation officielle de Adno."
             },
             "new_project": {
-                "add_infos_1": "Ajouter des renseignements",
-                "add_infos_2": "à votre projet"
+                "add_infos_1": "Renseignez votre projet",
+                "add_infos_2": ""
             },
             "errors": {
                 "error_found": "Erreur détectée",
                 "unable_reading_file": "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
                 "unable_access_file": "Impossible d'accéder à ce fichier !",
-                "manifest_picture_not_found": "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
-                "wrong_url": "L'URL renseignée n'est pas valide ! Renseignez une image JPG, PNG, un manifest ou encore un fichier info.json",
+                "manifest_picture_not_found": "Erreur - Le manifeste ou l'image que vous avez entré est introuvable",
+                "wrong_url": "L'URL renseignée n'est pas valide ! Indiquez un lien vers un manifeste ou une image IIIF, une image JPG, PNG, ou encore un fichier d'un projet Adno",
                 "no_url": "Aucune URL n'a été fournie",
                 "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",
-                "no_title": "Veuillez renseigner un titre à votre projet",
-                "unable_reading_manifest": "Impossible de lire le manifest",
+                "no_title": "Veuillez donner un titre à votre projet",
+                "unable_reading_manifest": "Impossible de lire le manifeste",
                 "no_iiif": "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
                 "wrong_file": "Ce fichier n'est pas lisible par ADNO ! Veuillez réessayer avec un autre fichier"
             },
-            "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français",
+            "footer": "Poitiers. Ce projet a été soutenu par le ministère français de la Culture",
             "tags_infos": "Veuillez appuyer sur votre touche 'entrée' pour valider chaque tag"
         }
     }
