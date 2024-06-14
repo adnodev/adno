@@ -29,6 +29,8 @@
                 "created_on": "Created on ",
                 "last_update": "Last update on ",
                 "no_desc": "No description available for this project",
+                "no_creator": "No author indicated",
+                "no_editor": " - No editor indicated",
                 "preview": "Preview",
                 "edit": "Edit",
                 "delete": "Delete",
