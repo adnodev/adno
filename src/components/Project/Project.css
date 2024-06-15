@@ -17,12 +17,12 @@
 
 .project .navbar .toggle-success {
     border: var(--adno-second-color);
-    background: var(--adno-second-color);
+    background: var(--adno-view-color);
 }
 
 .project .navbar .toggle-success:checked {
     border: var(--adno-main-color);
-    background: var(--adno-main-color);
+    background: var(--adno-edit-color);
 }
 
 .adno-project-view {

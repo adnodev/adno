@@ -1,6 +1,8 @@
 body {
     --adno-main-color: #71719d;
     --adno-second-color: #4b4b6d;
+    --adno-edit-color: #FF6633;
+    --adno-view-color: #33CC33;
 }
 
 @tailwind base;

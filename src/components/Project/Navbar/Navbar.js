@@ -72,9 +72,9 @@ class Navbar extends Component {
                         }
 
 
-                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.edit_mode')}>
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode') }>
                             <label className="cursor-pointer label label-toggle">
-                                <label>{this.props.t('navbar.edit_mode')}</label>
+                                <label>{this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}</label>
                                 <input type="checkbox" className="toggle toggle-lg toggle-success" value={this.props.editMode}
                                     onChange={() => {
 

@@ -143,6 +143,7 @@
             },
             "navbar": {
                 "edit_mode": "Mode édition",
+                "view_mode": "Mode lecture",
                 "back_home": "Retourner à l'accueil",
                 "download_project": "Télécharger le projet",
                 "edit_project": "Edit the project",
