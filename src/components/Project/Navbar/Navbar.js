@@ -60,7 +60,7 @@ class Navbar extends Component {
                     </button>
                 </div>
 
-                <strong>{this.props.selectedProject.title} {(this.props.settings?.tags || []).map(tag => ` #${tag}`)} {this.props.selectedProject.creator && `(${this.props.selectedProject.creator})`}</strong>
+                <strong>{this.props.selectedProject.title.length <= 81 ? this.props.selectedProject.title : `${this.props.selectedProject.title.substring(0,80)}…`}<br /> {(this.props.settings?.tags || []).map(tag => ` #${tag} `)} {this.props.selectedProject.creator && ` [ ${this.props.selectedProject.creator} ]`}</strong>
 
                 {
                     process.env.ADNO_MODE === "FULL" &&
