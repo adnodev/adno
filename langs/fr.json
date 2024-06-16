@@ -76,7 +76,7 @@
                     "enable_rota": "Activer la rotation de l'image",
                     "toolsbar": "Afficher la barre d'outils",
                     "save": "Enregistrer",
-                    "tags": "Seules les annotations incluant un des tags suivants seront affichées"
+                    "tags": "Seules les annotations incluant le ou l'un des mots clés suivants seront affichées"
                 }
             },
             "files": {
@@ -87,7 +87,7 @@
             },
             "editor": {
                 "approve_changes": "Valider les modifications",
-                "md_add_tag": "Ajouter un tag",
+                "md_add_tag": "Ajouter un mot clé",
                 "md_save": "Enregistrer",
                 "md_delete": "Supprimer",
                 "md_delete_confirm": "Confirmer la suppression",
@@ -138,8 +138,8 @@
                 "switch_down": "Descendre l'annotation",
                 "switch_up": "Remonter l'annotation",
                 "delete": "Supprimer l'annotation",
-                "tags_list": "Filter les annotations comportant les tags",
-                "empty_tags_list": "Les tags apparaitront ici"
+                "tags_list": "Filter les annotations comportant les mots clés",
+                "empty_tags_list": "Les mots clés apparaitront ici"
             },
             "navbar": {
                 "edit_mode": "Mode édition",
@@ -149,7 +149,7 @@
                 "edit_project": "Edit the project",
                 "show_metadatas": "Voir les métadonnées",
                 "share_project": "Sauvegarde et partage du projet",
-                "share_project_desc1": "Téléchargez d’abord le fichier de votre projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
+                "share_project_desc1": "Téléchargez d’abord le fichier du projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
                 "share_project_desc2": "Dès lors que votre projet Adno est en ligne, il est possible de le rendre visible dans une page web en insérant une balise iframe.",
                 "share_project_desc3": "Pour plus d'informations, rendez-vous sur la",
                 "share_project_desc4": "documentation officielle de Adno."
@@ -172,7 +172,7 @@
                 "wrong_file": "Ce fichier n'est pas lisible par ADNO ! Veuillez réessayer avec un autre fichier"
             },
             "footer": "Poitiers. Ce projet a été soutenu par le ministère français de la Culture",
-            "tags_infos": "Veuillez appuyer sur votre touche 'entrée' pour valider chaque tag"
+            "tags_infos": "Veuillez appuyer sur la touche 'entrée' pour valider chaque mot clé"
         }
     }
 }
