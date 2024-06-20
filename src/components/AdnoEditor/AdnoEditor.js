@@ -36,15 +36,13 @@ class AdnoEditor extends Component {
             let tileSources;
 
             if (selected_project.manifest_url) {
-
                 tileSources = [
                     selected_project.manifest_url
                 ]
-
             } else {
                 tileSources = {
                     type: 'image',
-                    url: selected_project.img_url
+                    url: `https://little-alert-chill.glitch.me/?url=${selected_project.img_url}`
                 }
             }
     

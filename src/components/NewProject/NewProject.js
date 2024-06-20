@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import utils
-import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID } from "../../Utils/utils";
+import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID, enhancedFetch } from "../../Utils/utils";
 
 // Import popup alerts
 import Swal from "sweetalert2";
@@ -39,7 +39,7 @@ class NewProject extends Component {
 
         var manifest_url = localStorage.getItem("adno_image_url")
 
-        fetch(manifest_url)
+        enhancedFetch(manifest_url)
             .then(rep => rep.json())
             .then(manifestIIIF => {
                 console.log(manifestIIIF)
@@ -119,7 +119,7 @@ class NewProject extends Component {
 
     isManifest = async (url) => {
         return new Promise((resolve, reject) => {
-            fetch(url)
+            enhancedFetch(url)
                 .then(res => {
                     if (res.status == 200 || res.status == 201) {
                         return res.text()
@@ -254,7 +254,7 @@ class NewProject extends Component {
                         }
 
                     } else {
-                        fetch(manifest_url)
+                        enhancedFetch(manifest_url)
                             .then(rep => {
                                 if (rep.status === 200) {
 

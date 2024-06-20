@@ -446,3 +446,20 @@ export function checkOldVersion(t) {
   })
 
 }
+
+export async function enhancedFetch(url) {
+  try {
+    const response = await fetch(url, {
+      mode: 'cors'
+    });
+
+    return response
+  } catch (error) {
+    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+      console.log('CORS error: Could not fetch the image.')
+      return fetch(`https://little-alert-chill.glitch.me?url=${url}`)
+    } else {
+      console.log(`An error occurred: ${error.message}`)
+    }
+  }
+}

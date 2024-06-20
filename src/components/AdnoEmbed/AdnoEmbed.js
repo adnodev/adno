@@ -412,9 +412,6 @@ class AdnoEmbed extends Component {
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-
-        console.log(url)
-
         // We check if the url contains an image
         if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl) {
             fetch(url)
