@@ -35,7 +35,6 @@ class AdnoMdEditor extends Component {
 
     componentDidMount() {
         this.editor = new Editor({
-            language: 'fr-FR',
             el: document.querySelector('#editor'),
             initialValue: this.getAnnoBody(),
             previewStyle: "tab",
