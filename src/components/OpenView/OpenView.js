@@ -4,7 +4,7 @@ import ReactHtmlParser from 'react-html-parser';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 
 // Import utils
@@ -370,6 +370,30 @@ class OpenView extends Component {
                                 <FontAwesomeIcon icon={faExpand} size="lg" />
                             </div>
                         </button>
+                        <button id="help" className="toolbarButton toolbaractive" >
+                            <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.help')}>
+                                <FontAwesomeIcon icon={faQuestion} size="lg" />
+                            </label>
+                        </button>
+
+			<input type="checkbox" id="help-modal" className="modal-toggle" />
+			<div className="modal">
+			    <div className="modal-box" style={{ "color": "initial" }}>
+			        <h3 className="font-bold text-lg">{this.props.t('visualizer.help_title')}</h3>
+				<p className="py-4">{this.props.t('visualizer.help_intro')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> P </strong>{this.props.t('visualizer.help_or')}<strong> p </strong>{this.props.t('visualizer.help_key_p')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> E </strong>{this.props.t('visualizer.help_or')}<strong> e </strong>{this.props.t('visualizer.help_key_e')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> S </strong>{this.props.t('visualizer.help_or')}<strong> s </strong>{this.props.t('visualizer.help_key_s')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> T </strong>{this.props.t('visualizer.help_or')}<strong> t </strong>{this.props.t('visualizer.help_key_t')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> ← </strong>{this.props.t('visualizer.help_and')}<strong> → </strong>{this.props.t('visualizer.help_key_arrows')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key')}<strong> esc </strong>{this.props.t('visualizer.help_and')}<strong> → </strong>{this.props.t('visualizer.help_key_arrows')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_end')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank">{this.props.t('navbar.share_project_desc4')}</a></p>
+				<div className="modal-action">
+				    <label htmlFor="help-modal" className="btn">{this.props.t('buttons.close')}</label>
+				</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

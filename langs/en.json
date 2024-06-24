@@ -85,7 +85,8 @@
                 "one_selected": "1 file selected"
             },
             "buttons": {
-                "cancel": "Cancel"
+                "cancel": "Cancel",
+                "close": "Close"
             },
             "editor": {
                 "approve_changes": "Approve changes",
@@ -112,7 +113,8 @@
                 "toggle_annotations": "Hide/show annotations",
                 "previous_annotation": "Go to previous annotation",
                 "next_annotation": "Go to next annotation",
-                "rotation": "Rotate of 90 degrees"
+                "rotation": "Rotate of 90 degrees",
+		"help": "Aide"
             },
             "modal": {
                 "delete_project": "Would you really want to delete this project ?",
