@@ -26,7 +26,8 @@ class OpenView extends Component {
             timer: false,
             intervalID: 0,
             fullScreenEnabled: false,
-            isAnnotationsVisible: true
+            isAnnotationsVisible: true,
+            eyes: []
         }
     }
 
@@ -94,6 +95,86 @@ class OpenView extends Component {
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+
+            setTimeout(() => {
+                const annos = [...document.getElementsByClassName("a9s-annotation")]
+
+                annos.map(anno => {
+                    const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                    svgElement.setAttribute('viewBox', '0 0 24 24');
+                    svgElement.setAttribute('fill', 'currentColor');
+                    svgElement.setAttribute('class', 'size-6');
+
+                    const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path1.setAttribute('d', 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z');
+                    svgElement.appendChild(path1);
+
+                    const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path2.setAttribute('fill-rule', 'evenodd');
+                    path2.setAttribute('d', 'M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z');
+                    path2.setAttribute('clip-rule', 'evenodd');
+                    svgElement.appendChild(path2);
+
+                    svgElement.setAttribute('width', '100');
+                    svgElement.setAttribute('height', '100');
+
+                    const type = [...anno.children][0].tagName
+
+                    // "ellipse"
+                    // "rect"
+                    // "path"
+                    // "polygon"
+                    // "circle"
+                    if (type === "ellipse" || type == "circle") {
+                        svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - 50);
+                        svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - 50);
+                        svgElement.style.fill = "#000"
+                        svgElement.style.stroke = "#000"
+                        svgElement.style.strokeWidth = 2
+                        svgElement.classList.add('a9s-annotation--show')
+
+                        if (anno.classList.contains("a9s-point")) {
+                            anno.removeAttribute("transform", "")
+
+                            // svgElement.setAttribute('width', '50');
+                            // svgElement.setAttribute('height', '50');
+                            // svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - 15);
+                            // svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - 15);
+                        }
+
+                        anno.appendChild(svgElement);
+                    } else if (type === "rect") {
+                        svgElement.setAttribute('x', anno.children[0].getAttribute("x") - 50 + anno.children[0].getAttribute("width") / 2);
+                        svgElement.setAttribute('y', anno.children[0].getAttribute("y") - 50 + anno.children[0].getAttribute("height") / 2);
+                        svgElement.style.fill = "#000"
+                        svgElement.style.stroke = "#000"
+                        svgElement.style.strokeWidth = 2
+                        svgElement.classList.add('a9s-annotation--show')
+
+                        anno.appendChild(svgElement);
+                    } else if (type === "path" || type === "polygon") {
+                        var bbox = anno.getBBox();
+
+                        // Calculate the center coordinates
+                        var centerX = bbox.x + bbox.width / 2;
+                        var centerY = bbox.y + bbox.height / 2;
+
+                        svgElement.setAttribute('x', centerX - 50);
+                        svgElement.setAttribute('y', centerY - 50);
+                        svgElement.style.fill = "#000"
+                        svgElement.style.stroke = "#000"
+                        svgElement.style.strokeWidth = 2;
+                        svgElement.classList.add('a9s-annotation--show')
+
+                        anno.appendChild(svgElement);
+                    }
+
+                    [...anno.children].map(r => r.classList.add("a9s-annotation--hidden"))
+                })
+            }, 500)
+
         }
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
@@ -273,7 +354,7 @@ class OpenView extends Component {
             this.changeAnno(this.props.selectedAnno)
         }
 
-        if(prevProps.annos !== this.props.annos) {
+        if (prevProps.annos !== this.props.annos) {
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
         }
@@ -309,7 +390,24 @@ class OpenView extends Component {
 
     render() {
         return (
-            <div id="adno-osd">
+            <div id="adno-osd" style={{ position: 'relative' }}>
+                {this.state.eyes.map(({ top, left }) => {
+                    return <div style={{
+                        position: 'absolute',
+                        top: top * document.getElementById('adno-osd').clientHeight + 40,
+                        left: left * document.getElementById('adno-osd').clientWidth - 20,
+                        height: 32,
+                        width: 32,
+                        background: 'red',
+                        zIndex: 100
+                    }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                        </svg>
+
+                    </div>
+                })}
 
                 {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&

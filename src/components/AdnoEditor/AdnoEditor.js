@@ -45,7 +45,7 @@ class AdnoEditor extends Component {
                     url: `https://little-alert-chill.glitch.me/?url=${selected_project.img_url}`
                 }
             }
-    
+
             OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
             OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
             OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));

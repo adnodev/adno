@@ -57,3 +57,11 @@
 .toolbar-off{
     display: none;
 }
+
+.a9s-annotation--hidden {
+    display: none;
+}
+
+.a9s-annotation--show {
+    display: block !important;
+}
