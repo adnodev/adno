@@ -54,8 +54,8 @@ ul {
 }
 
 #toolbar-container button.a9s-toolbar-btn {
-  margin: 0 4px 0 0;
-  padding: 8px;
+  margin: 0 4px 0 ;
+  padding: 4px;
   width: 40px;
   height: 40px;
 }
