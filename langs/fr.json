@@ -85,8 +85,7 @@
                 "one_selected": "1 Fichier selectionné"
             },
             "buttons": {
-                "cancel": "Annuler",
-                "close": "Fermer"
+                "cancel": "Annuler"
             },
             "editor": {
                 "approve_changes": "Valider les modifications",
@@ -115,21 +114,20 @@
                 "next_annotation": "Annotation suivante",
                 "rotation": "Tourner de 90 degrés",
                 "help": "Aide",
-                "help_title": "Aide rapide",
-                "help_intro": "Intro",
-                "help_key": "— touche",
-                "help_key_plural": "— touches",
-                "help_or": "ou",
-                "help_and": "et",
-                "help_key_p": "to start the autoplay,",
-                "help_key_e": "to toggle FullScreen,",
-                "help_key_s": "to toggle annotation bounds,",
-                "help_key_t": "to toggle the toolsbar,",
-                "help_key_escape": "quitter le mode plein écran,",
-                "help_key_arrows": "arrows (left and right) to change the current selected annotation.",
-                "help_end": "Conclusion",
+                "help_title": "Raccourcis clavier",
+                "help_key": "— touche ",
+                "help_key_plural": "— touches ",
+                "help_or": " ou ",
+                "help_and": " et ",
+                "help_key_p": " pour démarrer automatiquement,",
+                "help_key_e": " pour activer le mode plein écran,",
+                "help_key_escape": " pour quitter le mode plein écran,",
+                "help_key_s": " pour afficher les contours des annotations,",
+                "help_key_t": " pour afficher les icones de navigation et de visualisation,",
+                "help_key_arrows": " flèches (gauche et droite) pour changer l'annotation courante.",
                 "help_doc": "Pour plus d'informations, consultez la ",
-                "help_doc_link": "documentation officielle de Adno"
+                "help_doc_link": "documentation officielle de Adno",
+                "close": "Fermer"
             },
             "modal": {
                 "delete_project": "Voulez-vous vraiment supprimer ce projet ?",

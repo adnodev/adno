@@ -380,17 +380,15 @@ class OpenView extends Component {
 			<div className="modal">
 			    <div className="modal-box" style={{ "color": "initial" }}>
 			        <h3 className="font-bold text-lg">{this.props.t('visualizer.help_title')}</h3>
-				<p className="py-4">{this.props.t('visualizer.help_intro')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> P </strong>{this.props.t('visualizer.help_or')}<strong> p </strong>{this.props.t('visualizer.help_key_p')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> E </strong>{this.props.t('visualizer.help_or')}<strong> e </strong>{this.props.t('visualizer.help_key_e')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> S </strong>{this.props.t('visualizer.help_or')}<strong> s </strong>{this.props.t('visualizer.help_key_s')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> T </strong>{this.props.t('visualizer.help_or')}<strong> t </strong>{this.props.t('visualizer.help_key_t')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')}<strong> ← </strong>{this.props.t('visualizer.help_and')}<strong> → </strong>{this.props.t('visualizer.help_key_arrows')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key')}<strong> esc </strong>{this.props.t('visualizer.help_and')}<strong> → </strong>{this.props.t('visualizer.help_key_arrows')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_end')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank">{this.props.t('navbar.share_project_desc4')}</a></p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>S</code> {this.props.t('visualizer.help_or')} <code>s</code>{this.props.t('visualizer.help_key_s')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>T</code>{this.props.t('visualizer.help_or')} <code>t</code> {this.props.t('visualizer.help_key_t')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>←</code> {this.props.t('visualizer.help_and')} <code>→</code> {this.props.t('visualizer.help_key_arrows')}</p>
+				<p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank">{this.props.t('visualizer.help_doc_link')}</a></p>
 				<div className="modal-action">
-				    <label htmlFor="help-modal" className="btn">{this.props.t('buttons.close')}</label>
+				    <label htmlFor="help-modal" className="btn">{this.props.t('visualizer.close')}</label>
 				</div>
                             </div>
                         </div>

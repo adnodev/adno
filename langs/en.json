@@ -114,7 +114,21 @@
                 "previous_annotation": "Go to previous annotation",
                 "next_annotation": "Go to next annotation",
                 "rotation": "Rotate of 90 degrees",
-		"help": "Aide"
+                "help": "Help",
+                "help_title": "Keyboard shortcuts",
+                "help_key": "— key ",
+                "help_key_plural": "— keys ",
+                "help_or": " or ",
+                "help_and": " and ",
+                "help_key_p": " to start the autoplay,",
+                "help_key_e": " to toggle FullScreen,",
+                "help_key_escape": " to exit full-screen mode,",
+                "help_key_s": " to toggle annotation bounds,",
+                "help_key_t": " to toggle the toolsbar,",
+                "help_key_arrows": " arrows (left and right) to change the current selected annotation.",
+                "help_doc": "For more information, please consult the  ",
+                "help_doc_link": "official documentation of Adno",
+                "close": "Fermer"
             },
             "modal": {
                 "delete_project": "Would you really want to delete this project ?",

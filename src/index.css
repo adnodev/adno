@@ -48,6 +48,11 @@ ul {
     list-style: disc;
 }
 
+.py-4 code {
+    padding: 0 0.5em;
+    margin: 0 0.5em;
+}
+
 .toastui-editor-toolbar-icons {
     background: url(../img/md-icons.png)  0 0 / 466px 146px no-repeat;
     background-position-y: 3px;
