@@ -59,7 +59,13 @@ class Navbar extends Component {
                     </button>
                 </div>
 
-                <strong>{this.props.selectedProject.title} {this.props.selectedProject.autor && `(${this.props.selectedProject.autor})`}</strong>
+                <strong style={{
+                    maxWidth: 400,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: 'block'
+                }}>{this.props.selectedProject.title}<br /> {(this.props.settings?.tags || []).map(tag => ` #${tag} `)} {this.props.selectedProject.creator && ` [ ${this.props.selectedProject.creator} ]`}</strong>
 
                 {
                     process.env.ADNO_MODE === "FULL" &&
@@ -71,9 +77,9 @@ class Navbar extends Component {
                         }
 
 
-                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.edit_mode')}>
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}>
                             <label className="cursor-pointer label label-toggle">
-                                <label>{this.props.t('navbar.edit_mode')}</label>
+                                <label>{this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}</label>
                                 <input type="checkbox" className="toggle toggle-lg toggle-success" value={this.props.editMode}
                                     onChange={() => {
 

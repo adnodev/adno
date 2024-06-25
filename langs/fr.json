@@ -2,15 +2,15 @@
     "fr": {
         "translation": {
             "begin_msg": {
-                "1": "Pour commencer à utiliser Adno",
-                "2": "veuillez renseigner dans le champs ci-dessous l'URL d'un",
-                "3": "Manifeste IIIF",
-                "4": "d'une",
+                "1": "Pour commencer à utiliser",
+                "2": "veuillez renseigner l'URL d'un",
+                "3": "manifeste",
+                "4": "ou d'une",
                 "5": "image IIIF",
-                "6": "ou encore d'une",
+                "6": "d'une",
                 "7": "image statique",
-                "8": "au format",
-                "9": "ou"
+                "8": "au format jpg ou png, ou encore d'un",
+                "9": "projet Adno"
             },
             "create_project": " Créer mon projet",
             "import": {
@@ -29,6 +29,8 @@
                 "created_on": "Créé le ",
                 "last_update": "Dernière mise à jour le ",
                 "no_desc": "Aucune description disponible pour ce projet",
+                "no_creator": "Pas d'auteur indiqué",
+                "no_editor": " — Pas d'éditeur indiqué",
                 "preview": "Prévisualiser",
                 "edit": "Editer",
                 "delete": "Supprimer",
@@ -38,7 +40,7 @@
                 "new_tooltip": "Créer un nouveau projet",
                 "title": "Titre",
                 "description": "Description",
-                "autor": "Auteur",
+                "author": "Auteur",
                 "editor": "Editeur",
                 "manifest_url": "URL",
                 "create": "Créer mon projet",
@@ -61,7 +63,7 @@
                 "metadatas_plh": {
                     "title": "Donnez un titre à ce projet",
                     "description": "Ajoutez une description à votre projet",
-                    "autor": "Renseignez ici l'auteur",
+                    "author": "Renseignez ici l'auteur",
                     "editor": "Renseignez ici l'editeur",
                     "allocation_rights": "Renseignez ici les droits de l'oeuvre"
                 },
@@ -74,7 +76,7 @@
                     "enable_rota": "Activer la rotation de l'image",
                     "toolsbar": "Afficher la barre d'outils",
                     "save": "Enregistrer",
-                    "tags": "Seules les annotations incluant un des tags suivants seront affichés"
+                    "tags": "Seules les annotations incluant le ou l'un des mots clés suivants seront affichées"
                 }
             },
             "files": {
@@ -85,7 +87,7 @@
             },
             "editor": {
                 "approve_changes": "Valider les modifications",
-                "md_add_tag": "Ajouter un tag",
+                "md_add_tag": "Ajouter un mot clé",
                 "md_save": "Enregistrer",
                 "md_delete": "Supprimer",
                 "md_delete_confirm": "Confirmer la suppression",
@@ -136,39 +138,41 @@
                 "switch_down": "Descendre l'annotation",
                 "switch_up": "Remonter l'annotation",
                 "delete": "Supprimer l'annotation",
-                "tags_list": "Filter les annotations comportant les tags"
+                "tags_list": "Filter les annotations comportant les mots clés",
+                "empty_tags_list": "Les mots clés apparaitront ici"
             },
             "navbar": {
                 "edit_mode": "Mode édition",
+                "view_mode": "Mode lecture",
                 "back_home": "Retourner à l'accueil",
                 "download_project": "Télécharger le projet",
                 "edit_project": "Edit the project",
                 "show_metadatas": "Voir les métadonnées",
                 "share_project": "Sauvegarde et partage du projet",
-                "share_project_desc1": "Téléchargez d’abord le fichier de votre projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
+                "share_project_desc1": "Téléchargez d’abord le fichier du projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
                 "share_project_desc2": "Dès lors que votre projet Adno est en ligne, il est possible de le rendre visible dans une page web en insérant une balise iframe.",
                 "share_project_desc3": "Pour plus d'informations, rendez-vous sur la",
-                "share_project_desc4": "documentation officielle d'Adno"
+                "share_project_desc4": "documentation officielle de Adno."
             },
             "new_project": {
-                "add_infos_1": "Ajouter des renseignements",
-                "add_infos_2": "à votre projet"
+                "add_infos_1": "Renseignez votre projet",
+                "add_infos_2": ""
             },
             "errors": {
                 "error_found": "Erreur détectée",
                 "unable_reading_file": "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
                 "unable_access_file": "Impossible d'accéder à ce fichier !",
-                "manifest_picture_not_found": "Erreur - Le manifest ou l'image que vous avez entré est introuvable",
-                "wrong_url": "L'URL renseignée n'est pas valide ! Renseignez une image JPG, PNG, un manifest ou encore un fichier info.json",
+                "manifest_picture_not_found": "Erreur - Le manifeste ou l'image que vous avez entré est introuvable",
+                "wrong_url": "L'URL renseignée n'est pas valide ! Indiquez un lien vers un manifeste ou une image IIIF, une image JPG, PNG, ou encore un fichier d'un projet Adno",
                 "no_url": "Aucune URL n'a été fournie",
                 "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",
-                "no_title": "Veuillez renseigner un titre à votre projet",
-                "unable_reading_manifest": "Impossible de lire le manifest",
+                "no_title": "Veuillez donner un titre à votre projet",
+                "unable_reading_manifest": "Impossible de lire le manifeste",
                 "no_iiif": "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
                 "wrong_file": "Ce fichier n'est pas lisible par ADNO ! Veuillez réessayer avec un autre fichier"
             },
-            "footer": "Poitiers. Ce projet a été soutenu par le ministère de la Culture Français",
-            "tags_infos": "Veuillez appuyer sur votre touche 'entrée' pour valider chaque tag"
+            "footer": "Poitiers. Ce projet a été soutenu par le ministère français de la Culture",
+            "tags_infos": "Veuillez appuyer sur la touche 'entrée' pour valider chaque mot clé"
         }
     }
 }

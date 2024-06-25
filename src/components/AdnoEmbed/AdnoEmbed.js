@@ -1,8 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
-<<<<<<< HEAD
-import { get_url_extension } from "../../Utils/utils";
+import { enhancedFetch, get_url_extension } from "../../Utils/utils";
 import {
     faMagnifyingGlassMinus,
     faPlay,
@@ -15,11 +14,6 @@ import {
     faRotateRight,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactHtmlParser from "react-html-parser";
-=======
-import { buildTagsList, get_url_extension } from "../../Utils/utils";
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight } from "@fortawesome/free-solid-svg-icons";
-import ReactHtmlParser from 'react-html-parser';
->>>>>>> 9f2caba (play filtered annotations)
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
@@ -89,9 +83,18 @@ class AdnoEmbed extends Component {
 
     componentDidMount() {
         const query = new URLSearchParams(this.props.location.search);
-        const adnoProjectURL = query.get("url");
 
-        this.getAdnoProject(adnoProjectURL);
+        let urlParam = query.get("url")
+        if (urlParam) {
+            const rawURLParam = this.props.location.search
+                .split("?")
+                .slice(1)
+                .find(query => query.startsWith("url="));
+
+            urlParam = rawURLParam.replace("url=", "")
+        }
+
+        this.getAdnoProject(urlParam);
 
         // Accessibility shortcuts
         addEventListener("fullscreenchange", this.updateFullScreenEvent);
@@ -403,237 +406,442 @@ class AdnoEmbed extends Component {
 
         const regexCID = /^(Qm[1-9A-HJ-NP-Za-km-z]{44}|b[A-Za-z2-7]{58,})$/;
 
-        const GRANTED_IMG_EXTENSIONS =
-            process.env.GRANTED_IMG_EXTENSIONS.split(",");
+        // const GRANTED_IMG_EXTENSIONS =
+        //     process.env.GRANTED_IMG_EXTENSIONS.split(",");
 
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-        // We check if the url contains an image
-        if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl) {
-            fetch(url)
-                .then((res) => {
-                    if (res.status == 200 || res.status == 201) {
+        enhancedFetch(url)
+            .then(response => {
+                if (response.ok) {
+                    const contentType = response.headers.get('Content-Type')
+                    if (['application/json', 'text/html', 'text/plain'].includes(contentType)) {
+                        response.text()
+                            .then(data => {
+                                const imported_project = JSON.parse(data);
+
+                                console.log(imported_project)
+
+                                // ADNO project detected
+
+                                if (
+                                    imported_project.hasOwnProperty("format") &&
+                                    imported_project.format === "Adno"
+                                ) {
+                                    if (
+                                        imported_project.hasOwnProperty("@context") &&
+                                        imported_project.hasOwnProperty("date") &&
+                                        imported_project.hasOwnProperty("id") &&
+                                        (imported_project.hasOwnProperty("title") ||
+                                            imported_project.hasOwnProperty("label")) &&
+                                        imported_project.hasOwnProperty("type") &&
+                                        imported_project.hasOwnProperty("modified") &&
+                                        imported_project.hasOwnProperty("source") &&
+                                        imported_project.hasOwnProperty("total")
+                                    ) {
+                                        // if the project has imported settings, override current settings
+                                        if (imported_project.hasOwnProperty("adno_settings")) {
+                                            this.setState({ ...imported_project.adno_settings });
+
+                                            this.overrideSettings();
+                                        }
+
+                                        this.setState({ isLoaded: true })
+
+                                        const selectedTags = imported_project.adno_settings.tags || [];
+
+                                        let annos = [...imported_project.first.items];
+
+                                        if (selectedTags.length > 0)
+                                            annos = annos
+                                                .map(annotation => ({
+                                                    ...annotation,
+                                                    tags: buildTagsList(annotation).map(tag => tag.value)
+                                                }))
+                                                .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
+
+                                        annos?.forEach((annotation) => {
+                                            if (
+                                                annotation.body.find(
+                                                    (annoBody) => annoBody.type === "TextualBody"
+                                                ) &&
+                                                !annotation.body.find(
+                                                    (annoBody) => annoBody.type === "HTMLBody"
+                                                )
+                                            ) {
+                                                const newBody = annotation.body;
+
+                                                newBody.push({
+                                                    type: "HTMLBody",
+                                                    value: `<p>${annotation.body.filter(
+                                                        (annobody) => annobody.type === "TextualBody"
+                                                    )[0].value
+                                                        }</p>`,
+                                                    purpose: "commenting",
+                                                });
+
+                                                annos.filter((anno) => anno.id === annotation.id)[0].body =
+                                                    newBody;
+                                            }
+                                        });
+
+                                        const GRANTED_IMG_EXTENSIONS =
+                                            process.env.GRANTED_IMG_EXTENSIONS.split(",");
+
+                                        const tileSources = GRANTED_IMG_EXTENSIONS.includes(
+                                            get_url_extension(imported_project.source)
+                                        )
+                                            ? {
+                                                type: "image",
+                                                url: imported_project.source,
+                                            }
+                                            : [imported_project.source];
+
+                                        this.displayViewer(tileSources, annos);
+
+                                        // Add annotations to the state
+                                        this.setState({ annos });
+                                    } else {
+                                        Swal.fire({
+                                            title: `projet adno INVALIDE`,
+                                            showCancelButton: false,
+                                            showConfirmButton: false,
+                                            icon: "error",
+                                        });
+                                    }
+                                } else {
+                                    // Check if it's a manifest
+
+                                    if (
+                                        (imported_project.hasOwnProperty("id") ||
+                                            imported_project.hasOwnProperty("@id")) &&
+                                        (imported_project.hasOwnProperty("context") ||
+                                            imported_project.hasOwnProperty("@context"))
+                                    ) {
+                                        this.overrideSettings();
+
+                                        if (
+                                            imported_project["@type"] &&
+                                            imported_project["@type"] === "sc:Manifest"
+                                        ) {
+                                            // type manifest
+
+                                            if (
+                                                imported_project.sequences[0].canvases &&
+                                                imported_project.sequences[0].canvases.length > 0
+                                            ) {
+                                                var resultLink =
+                                                    imported_project.sequences[0].canvases[0].images[0]
+                                                        .resource.service["@id"] + "/info.json";
+                                            } else if (imported_project.logo["@id"]) {
+                                                var resultLink =
+                                                    imported_project.logo["@id"].split("/")[0] + "//";
+
+                                                for (
+                                                    let index = 1;
+                                                    index <
+                                                    imported_project.logo["@id"].split("/").length - 4;
+                                                    index++
+                                                ) {
+                                                    resultLink +=
+                                                        imported_project.logo["@id"].split("/")[index] + "/";
+                                                }
+
+                                                resultLink += "/info.json";
+                                            } else {
+                                                Swal.fire({
+                                                    title: this.props.t("errors.unable_reading_manifest"),
+                                                    showCancelButton: true,
+                                                    showConfirmButton: false,
+                                                    cancelButtonText: "OK",
+                                                    icon: "warning",
+                                                });
+                                            }
+                                        } else {
+                                            resultLink = url;
+                                        }
+
+                                        if (resultLink) {
+                                            var annos = [];
+
+                                            const GRANTED_IMG_EXTENSIONS =
+                                                process.env.GRANTED_IMG_EXTENSIONS.split(",");
+
+                                            const tileSources = GRANTED_IMG_EXTENSIONS.includes(
+                                                get_url_extension(resultLink)
+                                            )
+                                                ? {
+                                                    type: "image",
+                                                    url: resultLink,
+                                                }
+                                                : [resultLink];
+
+                                            this.setState({ isLoaded: true });
+
+                                            // Add annotations to the state
+                                            this.setState({ annos });
+                                            this.displayViewer(tileSources, annos);
+                                        }
+                                    } else {
+                                        console.log("projet non adno INVALIDE");
+                                    }
+                                }
+                            })
+                    } else {
                         this.overrideSettings();
 
                         const tileSources = {
                             type: "image",
-                            url,
+                            url: `https://little-alert-chill.glitch.me/?url=${url}`,
                         };
 
                         this.setState({ isLoaded: true });
 
                         this.displayViewer(tileSources, []);
-                    } else {
-                        this.setState({ isLoaded: true });
-                        throw new Error(this.props.t("errors.unable_access_file"));
                     }
-                })
-                .catch((err) => {
-                    Swal.fire({
-                        title: err.message,
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        icon: "warning",
-                    });
-                });
-        } else {
-            // If we don't have a picture
+                } else {
+                    throw new Error(translation('errors.unable_access_file'))
+                }
+            })
+        // .catch((err) => {
+        //     Swal.fire({
+        //         title: err.message,
+        //         showCancelButton: false,
+        //         showConfirmButton: false,
+        //         icon: "warning",
+        //     });
+        // });
 
-            fetch(url)
-                .then((res) => {
-                    if (res.status == 200 || res.status == 201) {
-                        return res.text();
-                    } else {
-                        throw new Error(this.props.t("errors.unable_access_file"));
-                    }
-                })
-                .then((rawManifest) => {
-                    try {
-                        const imported_project = JSON.parse(rawManifest);
-                        // ADNO project detected
+        // We check if the url contains an image
+        // if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl) {
+        //     enhancedFetch(url)
+        //         .then((res) => {
+        //             if (res.status == 200 || res.status == 201) {
+        //                 this.overrideSettings();
 
-                        if (
-                            imported_project.hasOwnProperty("format") &&
-                            imported_project.format === "Adno"
-                        ) {
-                            if (
-                                imported_project.hasOwnProperty("@context") &&
-                                imported_project.hasOwnProperty("date") &&
-                                imported_project.hasOwnProperty("id") &&
-                                (imported_project.hasOwnProperty("title") ||
-                                    imported_project.hasOwnProperty("label")) &&
-                                imported_project.hasOwnProperty("type") &&
-                                imported_project.hasOwnProperty("modified") &&
-                                imported_project.hasOwnProperty("source") &&
-                                imported_project.hasOwnProperty("total")
-                            ) {
-                                // if the project has imported settings, override current settings
-                                if (imported_project.hasOwnProperty("adno_settings")) {
-                                    this.setState({ ...imported_project.adno_settings });
+        //                 const tileSources = {
+        //                     type: "image",
+        //                     url,
+        //                 };
 
-                                    this.overrideSettings();
-                                }
+        //                 this.setState({ isLoaded: true });
 
-                                this.setState({ isLoaded: true })
+        //                 this.displayViewer(tileSources, []);
+        //             } else {
+        //                 this.setState({ isLoaded: true });
+        //                 throw new Error(this.props.t("errors.unable_access_file"));
+        //             }
+        //         })
+        //         .catch((err) => {
+        //             Swal.fire({
+        //                 title: err.message,
+        //                 showCancelButton: false,
+        //                 showConfirmButton: false,
+        //                 icon: "warning",
+        //             });
+        //         });
+        // } else {
+        //     // If we don't have a picture
 
-                                const selectedTags = imported_project.adno_settings.tags || [];
+        //     enhancedFetch(url)
+        //         .then((res) => {
+        //             if (res.status == 200 || res.status == 201) {
+        //                 return res.text();
+        //             } else {
+        //                 throw new Error(this.props.t("errors.unable_access_file"));
+        //             }
+        //         })
+        //         .then((rawManifest) => {
+        //             try {
+        //                 const imported_project = JSON.parse(rawManifest);
 
-                                let annos = [...imported_project.first.items];
+        //                 console.log(imported_project)
 
-                                if (selectedTags.length > 0)
-                                    annos = annos
-                                        .map(annotation => ({
-                                            ...annotation,
-                                            tags: buildTagsList(annotation).map(tag => tag.value)
-                                        }))
-                                        .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
+        //                 // ADNO project detected
 
-                                annos?.forEach((annotation) => {
-                                    if (
-                                        annotation.body.find(
-                                            (annoBody) => annoBody.type === "TextualBody"
-                                        ) &&
-                                        !annotation.body.find(
-                                            (annoBody) => annoBody.type === "HTMLBody"
-                                        )
-                                    ) {
-                                        const newBody = annotation.body;
+        //                 if (
+        //                     imported_project.hasOwnProperty("format") &&
+        //                     imported_project.format === "Adno"
+        //                 ) {
+        //                     if (
+        //                         imported_project.hasOwnProperty("@context") &&
+        //                         imported_project.hasOwnProperty("date") &&
+        //                         imported_project.hasOwnProperty("id") &&
+        //                         (imported_project.hasOwnProperty("title") ||
+        //                             imported_project.hasOwnProperty("label")) &&
+        //                         imported_project.hasOwnProperty("type") &&
+        //                         imported_project.hasOwnProperty("modified") &&
+        //                         imported_project.hasOwnProperty("source") &&
+        //                         imported_project.hasOwnProperty("total")
+        //                     ) {
+        //                         // if the project has imported settings, override current settings
+        //                         if (imported_project.hasOwnProperty("adno_settings")) {
+        //                             this.setState({ ...imported_project.adno_settings });
 
-                                        newBody.push({
-                                            type: "HTMLBody",
-                                            value: `<p>${annotation.body.filter(
-                                                (annobody) => annobody.type === "TextualBody"
-                                            )[0].value
-                                                }</p>`,
-                                            purpose: "commenting",
-                                        });
+        //                             this.overrideSettings();
+        //                         }
 
-                                        annos.filter((anno) => anno.id === annotation.id)[0].body =
-                                            newBody;
-                                    }
-                                });
+        //                         this.setState({ isLoaded: true })
 
-                                const GRANTED_IMG_EXTENSIONS =
-                                    process.env.GRANTED_IMG_EXTENSIONS.split(",");
+        //                         const selectedTags = imported_project.adno_settings.tags || [];
 
-                                const tileSources = GRANTED_IMG_EXTENSIONS.includes(
-                                    get_url_extension(imported_project.source)
-                                )
-                                    ? {
-                                        type: "image",
-                                        url: imported_project.source,
-                                    }
-                                    : [imported_project.source];
+        //                         let annos = [...imported_project.first.items];
 
-                                this.displayViewer(tileSources, annos);
+        //                         if (selectedTags.length > 0)
+        //                             annos = annos
+        //                                 .map(annotation => ({
+        //                                     ...annotation,
+        //                                     tags: buildTagsList(annotation).map(tag => tag.value)
+        //                                 }))
+        //                                 .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
 
-                                // Add annotations to the state
-                                this.setState({ annos });
-                            } else {
-                                Swal.fire({
-                                    title: `projet adno INVALIDE`,
-                                    showCancelButton: false,
-                                    showConfirmButton: false,
-                                    icon: "error",
-                                });
-                            }
-                        } else {
-                            // Check if it's a manifest
+        //                         annos?.forEach((annotation) => {
+        //                             if (
+        //                                 annotation.body.find(
+        //                                     (annoBody) => annoBody.type === "TextualBody"
+        //                                 ) &&
+        //                                 !annotation.body.find(
+        //                                     (annoBody) => annoBody.type === "HTMLBody"
+        //                                 )
+        //                             ) {
+        //                                 const newBody = annotation.body;
 
-                            if (
-                                (imported_project.hasOwnProperty("id") ||
-                                    imported_project.hasOwnProperty("@id")) &&
-                                (imported_project.hasOwnProperty("context") ||
-                                    imported_project.hasOwnProperty("@context"))
-                            ) {
-                                this.overrideSettings();
+        //                                 newBody.push({
+        //                                     type: "HTMLBody",
+        //                                     value: `<p>${annotation.body.filter(
+        //                                         (annobody) => annobody.type === "TextualBody"
+        //                                     )[0].value
+        //                                         }</p>`,
+        //                                     purpose: "commenting",
+        //                                 });
 
-                                if (
-                                    imported_project["@type"] &&
-                                    imported_project["@type"] === "sc:Manifest"
-                                ) {
-                                    // type manifest
+        //                                 annos.filter((anno) => anno.id === annotation.id)[0].body =
+        //                                     newBody;
+        //                             }
+        //                         });
 
-                                    if (
-                                        imported_project.sequences[0].canvases &&
-                                        imported_project.sequences[0].canvases.length > 0
-                                    ) {
-                                        var resultLink =
-                                            imported_project.sequences[0].canvases[0].images[0]
-                                                .resource.service["@id"] + "/info.json";
-                                    } else if (imported_project.logo["@id"]) {
-                                        var resultLink =
-                                            imported_project.logo["@id"].split("/")[0] + "//";
+        //                         const GRANTED_IMG_EXTENSIONS =
+        //                             process.env.GRANTED_IMG_EXTENSIONS.split(",");
 
-                                        for (
-                                            let index = 1;
-                                            index <
-                                            imported_project.logo["@id"].split("/").length - 4;
-                                            index++
-                                        ) {
-                                            resultLink +=
-                                                imported_project.logo["@id"].split("/")[index] + "/";
-                                        }
+        //                         const tileSources = GRANTED_IMG_EXTENSIONS.includes(
+        //                             get_url_extension(imported_project.source)
+        //                         )
+        //                             ? {
+        //                                 type: "image",
+        //                                 url: imported_project.source,
+        //                             }
+        //                             : [imported_project.source];
 
-                                        resultLink += "/info.json";
-                                    } else {
-                                        Swal.fire({
-                                            title: this.props.t("errors.unable_reading_manifest"),
-                                            showCancelButton: true,
-                                            showConfirmButton: false,
-                                            cancelButtonText: "OK",
-                                            icon: "warning",
-                                        });
-                                    }
-                                } else {
-                                    resultLink = url;
-                                }
+        //                         this.displayViewer(tileSources, annos);
 
-                                if (resultLink) {
-                                    var annos = [];
+        //                         // Add annotations to the state
+        //                         this.setState({ annos });
+        //                     } else {
+        //                         Swal.fire({
+        //                             title: `projet adno INVALIDE`,
+        //                             showCancelButton: false,
+        //                             showConfirmButton: false,
+        //                             icon: "error",
+        //                         });
+        //                     }
+        //                 } else {
+        //                     // Check if it's a manifest
 
-                                    const GRANTED_IMG_EXTENSIONS =
-                                        process.env.GRANTED_IMG_EXTENSIONS.split(",");
+        //                     if (
+        //                         (imported_project.hasOwnProperty("id") ||
+        //                             imported_project.hasOwnProperty("@id")) &&
+        //                         (imported_project.hasOwnProperty("context") ||
+        //                             imported_project.hasOwnProperty("@context"))
+        //                     ) {
+        //                         this.overrideSettings();
 
-                                    const tileSources = GRANTED_IMG_EXTENSIONS.includes(
-                                        get_url_extension(resultLink)
-                                    )
-                                        ? {
-                                            type: "image",
-                                            url: resultLink,
-                                        }
-                                        : [resultLink];
+        //                         if (
+        //                             imported_project["@type"] &&
+        //                             imported_project["@type"] === "sc:Manifest"
+        //                         ) {
+        //                             // type manifest
 
-                                    this.setState({ isLoaded: true });
+        //                             if (
+        //                                 imported_project.sequences[0].canvases &&
+        //                                 imported_project.sequences[0].canvases.length > 0
+        //                             ) {
+        //                                 var resultLink =
+        //                                     imported_project.sequences[0].canvases[0].images[0]
+        //                                         .resource.service["@id"] + "/info.json";
+        //                             } else if (imported_project.logo["@id"]) {
+        //                                 var resultLink =
+        //                                     imported_project.logo["@id"].split("/")[0] + "//";
 
-                                    // Add annotations to the state
-                                    this.setState({ annos });
-                                    this.displayViewer(tileSources, annos);
-                                }
-                            } else {
-                                console.log("projet non adno INVALIDE");
-                            }
-                        }
-                    } catch (error) {
-                        console.error(error.message);
-                        Swal.fire({
-                            title: `Impossible de parser le json`,
-                            showCancelButton: false,
-                            showConfirmButton: false,
-                            icon: "warning",
-                        });
-                    }
-                })
-                .catch(() => {
-                    Swal.fire({
-                        title: this.props.t("errors.wrong_url"),
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        icon: "warning",
-                    });
-                });
-        }
+        //                                 for (
+        //                                     let index = 1;
+        //                                     index <
+        //                                     imported_project.logo["@id"].split("/").length - 4;
+        //                                     index++
+        //                                 ) {
+        //                                     resultLink +=
+        //                                         imported_project.logo["@id"].split("/")[index] + "/";
+        //                                 }
+
+        //                                 resultLink += "/info.json";
+        //                             } else {
+        //                                 Swal.fire({
+        //                                     title: this.props.t("errors.unable_reading_manifest"),
+        //                                     showCancelButton: true,
+        //                                     showConfirmButton: false,
+        //                                     cancelButtonText: "OK",
+        //                                     icon: "warning",
+        //                                 });
+        //                             }
+        //                         } else {
+        //                             resultLink = url;
+        //                         }
+
+        //                         if (resultLink) {
+        //                             var annos = [];
+
+        //                             const GRANTED_IMG_EXTENSIONS =
+        //                                 process.env.GRANTED_IMG_EXTENSIONS.split(",");
+
+        //                             const tileSources = GRANTED_IMG_EXTENSIONS.includes(
+        //                                 get_url_extension(resultLink)
+        //                             )
+        //                                 ? {
+        //                                     type: "image",
+        //                                     url: resultLink,
+        //                                 }
+        //                                 : [resultLink];
+
+        //                             this.setState({ isLoaded: true });
+
+        //                             // Add annotations to the state
+        //                             this.setState({ annos });
+        //                             this.displayViewer(tileSources, annos);
+        //                         }
+        //                     } else {
+        //                         console.log("projet non adno INVALIDE");
+        //                     }
+        //                 }
+        //             } catch (error) {
+        //                 console.error(error.message);
+        //                 Swal.fire({
+        //                     title: `Impossible de parser le json`,
+        //                     showCancelButton: false,
+        //                     showConfirmButton: false,
+        //                     icon: "warning",
+        //                 });
+        //             }
+        //         })
+        //         .catch(err => {
+        //             console.log(err)
+        //             Swal.fire({
+        //                 title: this.props.t("errors.wrong_url"),
+        //                 showCancelButton: false,
+        //                 showConfirmButton: false,
+        //                 icon: "warning",
+        //             });
+        //         });
+        // }
     };
 
     render() {

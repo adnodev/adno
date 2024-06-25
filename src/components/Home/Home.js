@@ -66,15 +66,15 @@ class Home extends Component {
             <div className="home">
                 <div id="container_with_projects" className="adno_container">
                     {
-                        process.env.ADNO_TITLE ?
-                            <h1>{process.env.ADNO_TITLE}</h1>
-                            :
-                            <div className="adno_title">
-                                <h1>ADNO</h1>
-                                <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
-                            </div>
+		    process.env.ADNO_TITLE ? <h1>{process.env.ADNO_TITLE}</h1> : ``
                     }
-                    <p className="adno_description"> {this.props.t('begin_msg.1')} <strong>Adno</strong>,<br></br> {this.props.t('begin_msg.2')} <strong>{this.props.t('begin_msg.3')}</strong>,<br></br> {this.props.t('begin_msg.4')} <strong>{this.props.t('begin_msg.5')}</strong> {this.props.t('begin_msg.6')} <strong>{this.props.t('begin_msg.7')}</strong> {this.props.t('begin_msg.8')} <strong>JPG</strong> {this.props.t('begin_msg.9')} <strong>PNG</strong></p>
+                    {
+		    <div className="adno_title">
+                        <h1>ADNO</h1>
+                        <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
+                    </div>
+                    }
+                    <p className="adno_description"> {this.props.t('begin_msg.1')} <strong>Adno</strong>,<br /> {this.props.t('begin_msg.2')} <strong>{this.props.t('begin_msg.3')}</strong> {this.props.t('begin_msg.4')} <strong>{this.props.t('begin_msg.5')}</strong>,<br /> {this.props.t('begin_msg.6')} <strong>{this.props.t('begin_msg.7')}</strong>, {this.props.t('begin_msg.8')} <strong>{this.props.t('begin_msg.9')}</strong>.</p>
                     <div className="adno_home_selection">
                         <form id="myForm">
                             <div className="input-group mb-3 add_url">
@@ -105,7 +105,6 @@ class Home extends Component {
                         }
                     </div>
 
-
                 </div>
 
                 {
@@ -113,8 +112,8 @@ class Home extends Component {
                     <footer className="footer footer-center p-4 bg-base-300 text-base-content">
                         <div>
                             {
-                                process.env.ADNO_FOOTER_TEXT ?
-                                    <p>{process.env.ADNO_FOOTER_TEXT}</p>
+				    process.env.ADNO_FOOTER_TEXT ?
+                                    <p>{process.env.ADNO_FOOTER_TEXT} — <a href="https://adno.app/" target="_blank">adno.app</a></p>
                                     : <p><a href="https://adno.app/" target="_blank">adno.app</a> - <a href="https://emf.fr/" target="_blank">Espace Mendès France</a>, {this.props.t('footer')}</p>
                             }
                         </div>

@@ -3,14 +3,14 @@
         "translation": {
             "begin_msg": {
                 "1": "To start using",
-                "2": "please enter in the fields below the URL of an",
+                "2": "please enter the URL of an",
                 "3": "IIIF Manifest",
                 "4": "or an",
                 "5": "IIIF picture",
-                "6": "or even a",
+                "6": "a",
                 "7": "static picture",
-                "8": "with the extension",
-                "9": "or"
+                "8": "in jpg or png format, or an",
+                "9": "Adno project"
             },
             "create_project": " Create a new project",
             "import": {
@@ -29,6 +29,8 @@
                 "created_on": "Created on ",
                 "last_update": "Last update on ",
                 "no_desc": "No description available for this project",
+                "no_creator": "No author indicated",
+                "no_editor": " — No editor indicated",
                 "preview": "Preview",
                 "edit": "Edit",
                 "delete": "Delete",
@@ -38,7 +40,7 @@
                 "new_tooltip": "Create a new project",
                 "title": "Title",
                 "description": "Description",
-                "autor": "Autor",
+                "author": "Author",
                 "editor": "Editor",
                 "manifest_url": "URL",
                 "create": "Create my new project",
@@ -61,7 +63,7 @@
                 "metadatas_plh": {
                     "title": "Give a title to your project",
                     "description": "Add a little text about your artwork",
-                    "autor": "Add the autor of the artwork here",
+                    "author": "Add the author of the artwork here",
                     "editor": "Add the editor of the artwork here",
                     "allocation_rights": "Fill in here the rights of the artwork"
                 },
@@ -136,10 +138,12 @@
                 "switch_down": "Switch down",
                 "switch_up": "Switch up",
                 "delete": "Remove annotation",
-                "tags_list": "Filter annotations using tags"
+                "tags_list": "Filter annotations using tags",
+                "empty_tags_list": "The created tags will be displayed here."
             },
             "navbar": {
                 "edit_mode": "Edit mode",
+		"view_mode": "View mode",
                 "back_home": "Back to home",
                 "download_project": "Download the project",
                 "edit_project": "Edit the project",
