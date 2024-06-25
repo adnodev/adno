@@ -65,3 +65,21 @@
 .a9s-annotation--show {
     display: block !important;
 }
+
+.a9s-annotation--show path {
+    fill: #fff !important;
+    stroke: #fff !important;
+    stroke-width: 1;
+}
+
+.a9s-annotation--show circle {
+    fill: #000 !important;
+    stroke: #000 !important;
+    stroke-width: 1;
+}
+
+.a9s-annotation-background-eye {
+    width: 42px;
+    height: 42px;
+    background: red;
+}
