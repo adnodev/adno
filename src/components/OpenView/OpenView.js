@@ -57,7 +57,7 @@ class OpenView extends Component {
                 homeButton: "home-button",
                 showNavigator: this.props.showNavigator,
                 tileSources: tileSources,
-                prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
+                prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/'
             })
 
             OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
