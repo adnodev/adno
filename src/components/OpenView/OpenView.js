@@ -8,7 +8,7 @@ import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faVectorSqu
 
 
 // Import utils
-import { checkIfProjectExists } from "../../Utils/utils";
+import { checkIfProjectExists, getEye } from "../../Utils/utils";
 
 // Import OpenSeaDragon and Annotorious
 import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
@@ -30,110 +30,6 @@ class OpenView extends Component {
             freeMode: true
         }
     }
-
-    getEye() {
-        // Define the SVG namespace
-        const SVG_NS = "http://www.w3.org/2000/svg";
-
-        // Create the main SVG element
-        const svg = document.createElementNS(SVG_NS, "svg");
-        // svg.setAttribute("xmlns", SVG_NS);
-        // svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-        // svg.setAttribute("version", "1.1");
-        // svg.setAttribute("width", "1080");
-        // svg.setAttribute("height", "1080");
-        svg.setAttribute("viewBox", "0 0 1080 1080");
-        // svg.setAttribute("xml:space", "preserve");
-
-        svg.setAttribute("transform", "")
-
-
-        // Create and append the first <g> element
-        const g1 = document.createElementNS(SVG_NS, "g");
-        g1.setAttribute("transform", "matrix(1 0 0 1 540 540)");
-        g1.setAttribute("id", "c6a526e9-9dab-4148-b63e-bac2caea7bce");
-
-        // Create and append the <rect> element inside the first <g>
-        const rect = document.createElementNS(SVG_NS, "rect");
-        rect.setAttribute("style", "stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;");
-        rect.setAttribute("vector-effect", "non-scaling-stroke");
-        rect.setAttribute("x", "-540");
-        rect.setAttribute("y", "-540");
-        rect.setAttribute("rx", "0");
-        rect.setAttribute("ry", "0");
-        rect.setAttribute("width", "1080");
-        rect.setAttribute("height", "1080");
-
-        g1.appendChild(rect);
-        svg.appendChild(g1);
-
-        // Create and append the second <g> element
-        const g2 = document.createElementNS(SVG_NS, "g");
-        g2.setAttribute("transform", "matrix(1 0 0 1 540 540)");
-        g2.setAttribute("id", "05f04bf2-f462-40ad-80b7-1b9374547f70");
-
-        svg.appendChild(g2);
-
-        // Create and append the third <g> element with a <circle> inside it
-        const g3 = document.createElementNS(SVG_NS, "g");
-        g3.setAttribute("transform", "matrix(12.65 0 0 12.65 540 540)");
-        g3.setAttribute("id", "2618588e-47a0-410a-8c15-d3a89681704d");
-
-        const circle = document.createElementNS(SVG_NS, "circle");
-        circle.setAttribute("style", "stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;");
-        circle.setAttribute("vector-effect", "non-scaling-stroke");
-        circle.setAttribute("cx", "0");
-        circle.setAttribute("cy", "0");
-        circle.setAttribute("r", "35");
-
-        g3.appendChild(circle);
-        svg.appendChild(g3);
-
-        // Create and append the fourth <g> element
-        const g4 = document.createElementNS(SVG_NS, "g");
-        g4.setAttribute("transform", "matrix(1 0 0 1 540 540)");
-
-        // Create a nested <g> element and append multiple <path> elements inside it
-        const g5 = document.createElementNS(SVG_NS, "g");
-        g5.setAttribute("style", "");
-        g5.setAttribute("vector-effect", "non-scaling-stroke");
-
-        // First path
-        const path1 = document.createElementNS(SVG_NS, "path");
-        path1.setAttribute("style", "stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;");
-        path1.setAttribute("vector-effect", "non-scaling-stroke");
-        path1.setAttribute("transform", "translate(-221.02, -221.02)");
-        path1.setAttribute("d", "M 221.02 341.304 C 171.312 341.304 117.81400000000001 321.864 66.31 285.08399999999995 C 27.808 257.59 4.044 230.351 3.051 229.203 C -1.0169999999999995 224.506 -1.0169999999999995 217.534 3.051 212.836 C 4.0440000000000005 211.69000000000003 27.807000000000002 184.449 66.31 156.955 C 117.815 120.17800000000001 171.313 100.73600000000002 221.02 100.73600000000002 C 270.728 100.73600000000002 324.227 120.17700000000002 375.73 156.955 C 414.232 184.449 437.99600000000004 211.68900000000002 438.98900000000003 212.836 C 443.057 217.53300000000002 443.057 224.50500000000002 438.98900000000003 229.203 C 437.99600000000004 230.349 414.23300000000006 257.59000000000003 375.73 285.084 C 324.227 321.863 270.729 341.304 221.02 341.304 z M 29.638 221.021 C 39.248000000000005 230.82 57.385000000000005 248.051 81.33200000000001 265.092 C 114.162 288.453 165.046 316.304 221.01999999999998 316.304 C 276.99399999999997 316.304 327.87899999999996 288.453 360.70799999999997 265.092 C 384.652 248.05399999999997 402.78999999999996 230.82099999999997 412.402 221.021 C 402.793 211.22199999999998 384.655 193.99099999999999 360.70799999999997 176.95 C 327.87899999999996 153.588 276.99399999999997 125.73799999999999 221.01999999999998 125.73799999999999 C 165.046 125.73799999999999 114.16199999999998 153.588 81.332 176.95 C 57.388 193.988 39.25 211.219 29.638 221.021 z");
-        path1.setAttribute("stroke-linecap", "round");
-        g5.appendChild(path1);
-
-        // Second path
-        const path2 = document.createElementNS(SVG_NS, "path");
-        path2.setAttribute("style", "stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;");
-        path2.setAttribute("vector-effect", "non-scaling-stroke");
-        path2.setAttribute("transform", "translate(-221.02, -221.02)");
-        path2.setAttribute("d", "M 221.02 298.521 C 178.286 298.521 143.52 263.754 143.52 221.02100000000002 C 143.52 178.288 178.286 143.52100000000002 221.02 143.52100000000002 C 239.81400000000002 143.52100000000002 257.944 150.335 272.068 162.709 C 277.26099999999997 167.258 277.78299999999996 175.155 273.234 180.348 C 268.685 185.54100000000003 260.787 186.062 255.59499999999997 181.514 C 246.03099999999998 173.13500000000002 233.75099999999998 168.52100000000002 221.01899999999998 168.52100000000002 C 192.06999999999996 168.52100000000002 168.51899999999998 192.073 168.51899999999998 221.02100000000002 C 168.51899999999998 249.96900000000002 192.06999999999996 273.521 221.01899999999998 273.521 C 249.96899999999997 273.521 273.519 249.96900000000002 273.519 221.02100000000002 C 273.519 214.11800000000002 279.116 208.52100000000002 286.019 208.52100000000002 C 292.922 208.52100000000002 298.519 214.11800000000002 298.519 221.02100000000002 C 298.521 263.754 263.754 298.521 221.02 298.521 z");
-        path2.setAttribute("stroke-linecap", "round");
-        g5.appendChild(path2);
-
-        // Third path
-        const path3 = document.createElementNS(SVG_NS, "path");
-        path3.setAttribute("style", "stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;");
-        path3.setAttribute("vector-effect", "non-scaling-stroke");
-        path3.setAttribute("transform", "translate(-221.02, -221.02)");
-        path3.setAttribute("d", "M 221.02 246.021 C 207.235 246.021 196.02 234.80599999999998 196.02 221.021 C 196.02 207.236 207.235 196.021 221.02 196.021 C 234.806 196.021 246.02 207.236 246.02 221.021 C 246.02 234.80599999999998 234.806 246.021 221.02 246.021 z");
-        path3.setAttribute("stroke-linecap", "round");
-        g5.appendChild(path3);
-
-        // Append the nested <g> to the fourth <g>
-        g4.appendChild(g5);
-
-        // Append the fourth <g> to the SVG
-        svg.appendChild(g4);
-
-        return svg
-    }
-
 
     componentDidMount() {
         // First of all, verify if the UUID match to an real project in the localStorage
@@ -207,7 +103,7 @@ class OpenView extends Component {
         const annos = [...document.getElementsByClassName("a9s-annotation")]
 
         annos.map(anno => {
-            const svgElement = this.getEye()
+            const svgElement = getEye()
 
             const tileSize = document.getElementById('adno-osd').clientWidth / 8
 
@@ -513,7 +409,7 @@ class OpenView extends Component {
 
                                 <button id="set-visible" className="toolbarButton toolbaractive" onClick={this.toggleFreeMode}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
-                                         <FontAwesomeIcon icon={faVectorSquare} size="lg" />
+                                        <FontAwesomeIcon icon={faVectorSquare} size="lg" />
                                     </div>
                                 </button>
 
