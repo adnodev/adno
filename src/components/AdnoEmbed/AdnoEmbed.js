@@ -218,7 +218,11 @@ class AdnoEmbed extends Component {
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.state.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
         } else {
-            this.freeMode()
+            if (!this.state.isAnnotationsVisible) {
+                this.toggleAnnotationsLayer()
+                setTimeout(this.freeMode, 1000)
+            } else
+                this.freeMode()
         }
 
         this.setState({ freeMode: !this.state.freeMode })
