@@ -79,6 +79,9 @@ class OpenView extends Component {
             this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
                 if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+                    this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+                    document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
                 }
 
                 this.AdnoAnnotorious.fitBounds(annotation.id)
@@ -135,6 +138,7 @@ class OpenView extends Component {
                 svgElement.style.stroke = "#000"
                 svgElement.style.strokeWidth = 2
                 svgElement.classList.add('eye')
+                svgElement.id = `eye-${anno.getAttribute('data-id')}`;
 
                 const type = [...anno.children][0].tagName
 
@@ -252,6 +256,8 @@ class OpenView extends Component {
 
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                 document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+                document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
             }
         }
     }
@@ -381,7 +387,7 @@ class OpenView extends Component {
             [...anno.children].forEach(r => {
                 if (this.props.showOutlines) {
                     r.classList.toggle("a9s-annotation--hidden")
-                } else if(r.classList.contains("eye")) {
+                } else if (r.classList.contains("eye")) {
                     r.classList.toggle("a9s-annotation--hidden")
                 }
             })

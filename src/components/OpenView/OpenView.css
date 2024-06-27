@@ -74,6 +74,18 @@
     stroke-width: 1;
 }
 
+.eye-selected path {
+    fill: #000 !important;
+    stroke: #000 !important;
+    stroke-width: 1;
+}
+
+.eye-selected circle {
+    fill: #fff !important;
+    stroke: #fff !important;
+    stroke-width: 1;
+}
+
 .a9s-annotation-background-eye {
     width: 42px;
     height: 42px;
