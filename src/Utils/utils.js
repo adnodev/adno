@@ -318,7 +318,9 @@ export function defaultProjectSettings() {
     startbyfirstanno: false,
     rotation: false,
     displayToolbar: true,
-    tags: []
+    tags: [],
+    showOutlines: true,
+    showEyes: true
   }
 }
 

@@ -89,6 +89,34 @@ class ProjectSettings extends Component {
                         </label>
                         <input type="checkbox" className="toggle toggle-navigator" checked={this.state.settings.showNavigator} onChange={() => this.setState({ settings: { ...this.state.settings, showNavigator: !this.state.settings.showNavigator } })} />
 
+                        <label className="label">
+                            <span className="label-text">
+                                {this.props.t('project.settings.show_outlines')}
+                            </span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-navigator"
+                            checked={this.state.settings.showOutlines}
+                            onChange={() => this.setState({
+                                settings: {
+                                    ...this.state.settings,
+                                    showOutlines: !this.state.settings.showOutlines
+                                }
+                            })} />
+
+                        <label className="label">
+                            <span className="label-text">
+                                {this.props.t('project.settings.show_eyes')}
+                            </span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-navigator"
+                            checked={this.state.settings.showEyes}
+                            onChange={() => this.setState({
+                                settings: {
+                                    ...this.state.settings,
+                                    showEyes: !this.state.settings.showEyes
+                                }
+                            })} />
+
 
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>

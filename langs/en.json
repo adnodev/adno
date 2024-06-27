@@ -76,7 +76,9 @@
                     "enable_rota": "Enable image rotation",
                     "toolsbar": "Enable toolsbar",
                     "save": "Save",
-                    "tags": "Only annotations including at least one of this tag will be displayed"
+                    "tags": "Only annotations including at least one of this tag will be displayed",
+                    "show_outlines": "Display the outlines",
+                    "show_eyes": "Display icon inside shapes"
                 }
             },
             "files": {

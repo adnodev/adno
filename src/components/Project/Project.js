@@ -197,6 +197,8 @@ class Project extends Component {
                                         showToolbar={this.state.settings.displayToolbar}
                                         rotation={this.state.settings.rotation}
                                         timerDelay={this.state.settings.delay}
+                                        showOutlines={this.state.settings.showOutlines}
+                                        showEyes={this.state.settings.showEyes}
                                         annos={viewerAnnotations}
                                         selectedAnno={this.state.selectedAnnotation}
                                         selected_project={this.state.selectedProject}

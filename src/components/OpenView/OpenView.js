@@ -93,64 +93,87 @@ class OpenView extends Component {
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
 
-            setTimeout(this.freeMode, 1000)
+            setTimeout(() => {
+                this.freeMode()
+                this.toggleOutlines(this.props.showOutlines)
+            }, 1000)
         }
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
         addEventListener('keydown', this.keyPressedEvents)
     }
 
-    freeMode = () => {
+    toggleOutlines = showOutlines => {
         const annos = [...document.getElementsByClassName("a9s-annotation")]
+        annos.forEach(anno => {
+            if (showOutlines)
+                [...anno.children].forEach(r => {
+                    r.classList.remove("a9s-annotation--hidden")
+                })
+            else
+                [...anno.children].forEach(r => {
+                    r.classList.add("a9s-annotation--hidden")
+                })
+        })
+    }
 
-        annos.map(anno => {
-            const svgElement = getEye()
+    freeMode = () => {
+        console.log('freemode', this.props.showEyes)
 
-            const tileSize = document.getElementById('adno-osd').clientWidth / 10
+        if (this.props.showEyes) {
+            const annos = [...document.getElementsByClassName("a9s-annotation")]
 
-            svgElement.setAttribute('width', tileSize);
-            svgElement.setAttribute('height', tileSize);
+            annos.map(anno => {
+                const svgElement = getEye()
 
-            svgElement.style.fill = "#000"
-            svgElement.style.stroke = "#000"
-            svgElement.style.strokeWidth = 2
-            svgElement.classList.add('eye')
+                const tileSize = document.getElementById('adno-osd').clientWidth / 10
 
-            const type = [...anno.children][0].tagName
+                svgElement.setAttribute('width', tileSize);
+                svgElement.setAttribute('height', tileSize);
 
-            if (type === "ellipse" || type == "circle") {
-                svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
-                svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
+                svgElement.style.fill = "#000"
+                svgElement.style.stroke = "#000"
+                svgElement.style.strokeWidth = 2
+                svgElement.classList.add('eye')
 
-                if (anno.classList.contains("a9s-point")) {
-                    anno.removeAttribute("transform", "")
+                const type = [...anno.children][0].tagName
 
-                    anno.classList.remove("a9s-point")
-                    anno.classList.remove("a9s-non-scaling")
+                if (type === "ellipse" || type == "circle") {
+                    svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
+                    svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
+
+                    if (anno.classList.contains("a9s-point")) {
+                        anno.removeAttribute("transform", "")
+
+                        anno.classList.remove("a9s-point")
+                        anno.classList.remove("a9s-non-scaling")
+                    }
+
+                    anno.appendChild(svgElement)
+                } else if (type === "rect") {
+                    svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
+                    svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
+
+                    anno.appendChild(svgElement)
+                } else if (type === "path" || type === "polygon") {
+                    const bbox = anno.getBBox();
+
+                    const centerX = bbox.x + bbox.width / 2;
+                    const centerY = bbox.y + bbox.height / 2;
+
+                    svgElement.setAttribute('x', centerX - tileSize / 2);
+                    svgElement.setAttribute('y', centerY - tileSize / 2);
+
+                    anno.appendChild(svgElement)
                 }
 
-                anno.appendChild(svgElement)
-            } else if (type === "rect") {
-                svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
-                svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
-
-                anno.appendChild(svgElement)
-            } else if (type === "path" || type === "polygon") {
-                const bbox = anno.getBBox();
-
-                const centerX = bbox.x + bbox.width / 2;
-                const centerY = bbox.y + bbox.height / 2;
-
-                svgElement.setAttribute('x', centerX - tileSize / 2);
-                svgElement.setAttribute('y', centerY - tileSize / 2);
-
-                anno.appendChild(svgElement)
-            }
-
-            // [...anno.children].map(r => {
-            //     r.classList.add("a9s-annotation--hidden")
-            // })
-        })
+                // [...anno.children].map(r => {
+                //     r.classList.add("a9s-annotation--hidden")
+                // })
+            })
+        } else {
+            [...document.getElementsByClassName('eye')].forEach(r => r.remove())
+        }
     }
 
     keyPressedEvents = (event) => {
@@ -211,8 +234,8 @@ class OpenView extends Component {
             this.props.changeSelectedAnno(annotation)
 
             // if (this.state.isAnnotationsVisible) {
-                this.AdnoAnnotorious.selectAnnotation(annotation.id)
-                this.AdnoAnnotorious.fitBounds(annotation.id)
+            this.AdnoAnnotorious.selectAnnotation(annotation.id)
+            this.AdnoAnnotorious.fitBounds(annotation.id)
             // } else {
             //     if (annotation.target && annotation.target.selector.value) {
             //         var imgWithTiles = this.openSeadragon.world.getItemAt(0);
@@ -333,6 +356,13 @@ class OpenView extends Component {
             setTimeout(this.freeMode, 1000)
         }
 
+        if (prevProps.showOutlines !== this.props.showOutlines) {
+            this.toggleOutlines(this.props.showOutlines)
+        }
+
+        if (prevProps.showEyes !== this.props.showEyes)
+            setTimeout(this.freeMode, 1000)
+
         // Check if the user toggled the navigator on/off
         if (this.props.showNavigator !== prevProps.showNavigator) {
             if (this.props.showNavigator) {
@@ -345,10 +375,15 @@ class OpenView extends Component {
     }
 
     toggleAnnotations = () => {
+        console.log("toggle annotations")
         const annos = [...document.getElementsByClassName("a9s-annotation")]
         annos.forEach(anno => {
             [...anno.children].forEach(r => {
-                r.classList.toggle("a9s-annotation--hidden")
+                if (this.props.showOutlines) {
+                    r.classList.toggle("a9s-annotation--hidden")
+                } else if(r.classList.contains("eye")) {
+                    r.classList.toggle("a9s-annotation--hidden")
+                }
             })
         })
     }
