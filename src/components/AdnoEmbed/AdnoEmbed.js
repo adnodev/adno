@@ -29,8 +29,7 @@ class AdnoEmbed extends Component {
             currentID: -1,
             intervalID: 0,
             selectedAnno: {},
-            isLoaded: false,
-            freeMode: true
+            isLoaded: false
         };
     }
 
@@ -84,56 +83,63 @@ class AdnoEmbed extends Component {
     };
 
     freeMode = () => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        console.log('freemode', this.state.showEyes)
 
-        annos.map(anno => {
-            const svgElement = getEye()
+        if (this.state.showEyes) {
+            const annos = [...document.getElementsByClassName("a9s-annotation")]
 
-            const tileSize = document.getElementById('adno-embed').clientWidth / 8
+            annos.map(anno => {
+                const svgElement = getEye()
 
-            svgElement.setAttribute('width', tileSize);
-            svgElement.setAttribute('height', tileSize);
+                const tileSize = document.getElementById('adno-embed').clientWidth / 10
 
-            svgElement.style.fill = "#000"
-            svgElement.style.stroke = "#000"
-            svgElement.style.strokeWidth = 2
-            svgElement.classList.add('a9s-annotation--show')
+                svgElement.setAttribute('width', tileSize);
+                svgElement.setAttribute('height', tileSize);
 
-            const type = [...anno.children][0].tagName
+                svgElement.style.fill = "#000"
+                svgElement.style.stroke = "#000"
+                svgElement.style.strokeWidth = 2
+                svgElement.classList.add('eye')
+                svgElement.id = `eye-${anno.getAttribute('data-id')}`;
 
-            if (type === "ellipse" || type == "circle") {
-                svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
-                svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
+                const type = [...anno.children][0].tagName
 
-                if (anno.classList.contains("a9s-point")) {
-                    anno.removeAttribute("transform", "")
+                if (type === "ellipse" || type == "circle") {
+                    svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
+                    svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
 
-                    anno.classList.remove("a9s-point")
-                    anno.classList.remove("a9s-non-scaling")
+                    if (anno.classList.contains("a9s-point")) {
+                        anno.removeAttribute("transform", "")
+
+                        anno.classList.remove("a9s-point")
+                        anno.classList.remove("a9s-non-scaling")
+                    }
+
+                    anno.appendChild(svgElement)
+                } else if (type === "rect") {
+                    svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
+                    svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
+
+                    anno.appendChild(svgElement)
+                } else if (type === "path" || type === "polygon") {
+                    const bbox = anno.getBBox();
+
+                    const centerX = bbox.x + bbox.width / 2;
+                    const centerY = bbox.y + bbox.height / 2;
+
+                    svgElement.setAttribute('x', centerX - tileSize / 2);
+                    svgElement.setAttribute('y', centerY - tileSize / 2);
+
+                    anno.appendChild(svgElement)
                 }
 
-                anno.appendChild(svgElement)
-            } else if (type === "rect") {
-                svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
-                svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
-
-                anno.appendChild(svgElement)
-            } else if (type === "path" || type === "polygon") {
-                const bbox = anno.getBBox();
-
-                const centerX = bbox.x + bbox.width / 2;
-                const centerY = bbox.y + bbox.height / 2;
-
-                svgElement.setAttribute('x', centerX - tileSize / 2);
-                svgElement.setAttribute('y', centerY - tileSize / 2);
-
-                anno.appendChild(svgElement)
-            }
-
-            [...anno.children].map(r => {
-                r.classList.add("a9s-annotation--hidden")
+                // [...anno.children].map(r => {
+                //     r.classList.add("a9s-annotation--hidden")
+                // })
             })
-        })
+        } else {
+            [...document.getElementsByClassName('eye')].forEach(r => r.remove())
+        }
     }
 
     componentDidMount() {
@@ -191,7 +197,7 @@ class AdnoEmbed extends Component {
             readOnly: true,
         });
 
-        this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
+        // this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
 
         this.AdnoAnnotorious.on("clickAnnotation", (annotation) => {
             if (this.state.isAnnotationsVisible) {
@@ -207,31 +213,56 @@ class AdnoEmbed extends Component {
 
         // Generate dataURI and load annotations into Annotorious
         const dataURI =
-            "data:application/json;base64," +
-            btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
-        this.AdnoAnnotorious.loadAnnotations(dataURI);
+            `data:application/json;base64,${btoa(unescape(encodeURIComponent(JSON.stringify(annos))))}`;
+        this.AdnoAnnotorious.loadAnnotations(dataURI)
+            .then(() => {
+                setTimeout(() => {
+                    this.freeMode()
+
+                    if (!this.state.showOutlines)
+                        this.toggleOutlines()
+                    else
+                        this.toggleAnnotations()
+                    // this.toggleOutlines(this.state.showOutlines)
+                }, 200)
+            })
     };
 
-    toggleFreeMode = () => {
-        if (!this.state.freeMode) {
-            this.AdnoAnnotorious.clearAnnotations()
-            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.state.annos))));
-            this.AdnoAnnotorious.loadAnnotations(dataURI)
-        } else {
-            if (!this.state.isAnnotationsVisible) {
-                this.toggleAnnotationsLayer()
-                setTimeout(this.freeMode, 1000)
-            } else
-                this.freeMode()
-        }
+    toggleOutlines = showOutlines => {
+        console.log("toggleOutlines", showOutlines)
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        annos.forEach(anno => {
+            if (showOutlines)
+                [...anno.children].forEach(r => {
+                    r.classList.remove("a9s-annotation--hidden")
+                })
+            else
+                [...anno.children].forEach(r => {
+                    r.classList.add("a9s-annotation--hidden")
+                })
+        })
+    }
 
-        this.setState({ freeMode: !this.state.freeMode })
+    toggleAnnotations = () => {
+        console.log("toggle annotations")
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        annos.forEach(anno => {
+            [...anno.children].forEach(r => {
+                if (this.state.showOutlines) {
+                    r.classList.toggle("a9s-annotation--hidden")
+                } else if (r.classList.contains("eye")) {
+                    r.classList.toggle("a9s-annotation--hidden")
+                }
+            })
+        })
     }
 
     toggleAnnotationsLayer = () => {
-        this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible);
-        this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible });
-    };
+        // this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
+
+        this.toggleAnnotations()
+        this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
+    }
 
     getAnnotationHTMLBody = (annotation) => {
         if (annotation && annotation.body) {
@@ -392,135 +423,134 @@ class AdnoEmbed extends Component {
 
     changeAnno = (annotation) => {
         this.setState({ selectedAnno: annotation });
-        if (this.state.isAnnotationsVisible) {
-            this.AdnoAnnotorious.selectAnnotation(annotation.id);
-            this.AdnoAnnotorious.fitBounds(annotation.id);
-        } else {
-            if (annotation.target && annotation.target.selector.value) {
-                var imgWithTiles = this.openSeadragon.world.getItemAt(0);
+        // if (this.state.isAnnotationsVisible) {
+        this.AdnoAnnotorious.selectAnnotation(annotation.id);
+        this.AdnoAnnotorious.fitBounds(annotation.id);
+        // } else {
+        //     if (annotation.target && annotation.target.selector.value) {
+        //         var imgWithTiles = this.openSeadragon.world.getItemAt(0);
 
-                const { value } = annotation.target.selector;
+        //         const { value } = annotation.target.selector;
 
-                console.log(value)
+        //         let xywh;
+        //         if (value.includes("xywh=pixel:")) {
+        //             xywh = value
+        //                 .replace("xywh=pixel:", "")
+        //                 .split(",");
+        //         } else if (value.includes("polygon")) {
+        //             // Extract the xywh values from svg polygon element with points="" in annotation.target.selector.value
+        //             var pointsArray = value
+        //                 .split("points=")[1]
+        //                 .split(" ");
+        //             // Initialize min and max values
+        //             let minX = Infinity,
+        //                 minY = Infinity,
+        //                 maxX = -Infinity,
+        //                 maxY = -Infinity;
 
-                let xywh;
-                if (value.includes("xywh=pixel:")) {
-                    xywh = value
-                        .replace("xywh=pixel:", "")
-                        .split(",");
-                } else if (value.includes("polygon")) {
-                    // Extract the xywh values from svg polygon element with points="" in annotation.target.selector.value
-                    var pointsArray = value
-                        .split("points=")[1]
-                        .split(" ");
-                    // Initialize min and max values
-                    let minX = Infinity,
-                        minY = Infinity,
-                        maxX = -Infinity,
-                        maxY = -Infinity;
+        //             // Iterate through each point
+        //             pointsArray.forEach((point) => {
+        //                 // Split each pair into x and y
+        //                 const [x, y] = point.split(",").map(Number);
 
-                    // Iterate through each point
-                    pointsArray.forEach((point) => {
-                        // Split each pair into x and y
-                        const [x, y] = point.split(",").map(Number);
+        //                 // Update min and max values
+        //                 if (x < minX) minX = x;
+        //                 if (x > maxX) maxX = x;
+        //                 if (y < minY) minY = y;
+        //                 if (y > maxY) maxY = y;
+        //             });
 
-                        // Update min and max values
-                        if (x < minX) minX = x;
-                        if (x > maxX) maxX = x;
-                        if (y < minY) minY = y;
-                        if (y > maxY) maxY = y;
-                    });
+        //             if (minX === Infinity)
+        //                 minX = 0
 
-                    if (minX === Infinity)
-                        minX = 0
+        //             if (minY === Infinity)
+        //                 minY = 0
 
-                    if (minY === Infinity)
-                        minY = 0
+        //             if (maxX === -Infinity)
+        //                 maxX = 0
 
-                    if (maxX === -Infinity)
-                        maxX = 0
+        //             if (maxY === -Infinity)
+        //                 maxY = 0
 
-                    if (maxY === -Infinity)
-                        maxY = 0
+        //             // Calculate width and height
+        //             const width = maxX - minX;
+        //             const height = maxY - minY;
 
-                    // Calculate width and height
-                    const width = maxX - minX;
-                    const height = maxY - minY;
+        //             xywh = [minX, minY, width, height];
+        //         } else if (value.includes("ellipse")) {
+        //             // Create a DOM parser to parse the SVG string
+        //             const parser = new DOMParser();
+        //             const svgDoc = parser.parseFromString(value, "image/svg+xml");
+        //             const ellipse = svgDoc.querySelector("ellipse");
 
-                    xywh = [minX, minY, width, height];
-                } else if (value.includes("ellipse")) {
-                    // Create a DOM parser to parse the SVG string
-                    const parser = new DOMParser();
-                    const svgDoc = parser.parseFromString(value, "image/svg+xml");
-                    const ellipse = svgDoc.querySelector("ellipse");
+        //             // Extract the attributes from the ellipse element
+        //             const cx = parseFloat(ellipse.getAttribute("cx"));
+        //             const cy = parseFloat(ellipse.getAttribute("cy"));
+        //             const rx = parseFloat(ellipse.getAttribute("rx"));
+        //             const ry = parseFloat(ellipse.getAttribute("ry"));
 
-                    // Extract the attributes from the ellipse element
-                    const cx = parseFloat(ellipse.getAttribute("cx"));
-                    const cy = parseFloat(ellipse.getAttribute("cy"));
-                    const rx = parseFloat(ellipse.getAttribute("rx"));
-                    const ry = parseFloat(ellipse.getAttribute("ry"));
+        //             // Calculate the bounding rectangle
+        //             const x = cx - rx;
+        //             const y = cy - ry;
+        //             const width = 2 * rx;
+        //             const height = 2 * ry;
 
-                    // Calculate the bounding rectangle
-                    const x = cx - rx;
-                    const y = cy - ry;
-                    const width = 2 * rx;
-                    const height = 2 * ry;
+        //             xywh = [x, y, width, height];
+        //         } else if (value.includes("path")) {
+        //             const parser = new DOMParser();
+        //             const svgDoc = parser.parseFromString(value, "image/svg+xml");
+        //             const path = svgDoc.querySelector("path");
 
-                    xywh = [x, y, width, height];
-                } else if (value.includes("path")) {
-                    const parser = new DOMParser();
-                    const svgDoc = parser.parseFromString(value, "image/svg+xml");
-                    const path = svgDoc.querySelector("path");
+        //             const points = path.getAttribute("d")
 
-                    const points = path.getAttribute("d")
+        //             function getPathCentroid(pathData) {
+        //                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        //                 path.setAttribute('d', pathData);
 
-                    function getPathCentroid(pathData) {
-                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                        path.setAttribute('d', pathData);
+        //                 const length = path.getTotalLength();
 
-                        const length = path.getTotalLength();
+        //                 // Number of points to sample along the path
+        //                 const numPoints = 100;
+        //                 let sumX = 0, sumY = 0;
 
-                        // Number of points to sample along the path
-                        const numPoints = 100;
-                        let sumX = 0, sumY = 0;
+        //                 // Sample points along the path
+        //                 for (let i = 0; i < numPoints; i++) {
+        //                     const point = path.getPointAtLength((i / numPoints) * length);
+        //                     sumX += point.x;
+        //                     sumY += point.y;
+        //                 }
 
-                        // Sample points along the path
-                        for (let i = 0; i < numPoints; i++) {
-                            const point = path.getPointAtLength((i / numPoints) * length);
-                            sumX += point.x;
-                            sumY += point.y;
-                        }
+        //                 // Calculate the centroid
+        //                 const centroidX = sumX / numPoints;
+        //                 const centroidY = sumY / numPoints;
 
-                        // Calculate the centroid
-                        const centroidX = sumX / numPoints;
-                        const centroidY = sumY / numPoints;
+        //                 return [centroidX, centroidY, 20, 20]
+        //             }
 
-                        return [centroidX, centroidY, 20, 20]
-                    }
+        //             xywh = getPathCentroid(points)
+        //         }
 
-                    xywh = getPathCentroid(points)
-                }
+        //         if (xywh) {
+        //             const [x, y, w, h] = xywh
 
-                if (xywh) {
-                    const [x, y, w, h] = xywh
-
-                    console.log(annotation.target.selector.value, [x, y, w, h])
-
-                    const rect = new OpenSeadragon.Rect(
-                        parseFloat(x),
-                        parseFloat(y),
-                        parseFloat(w) === 0 ? 20 : parseFloat(w),
-                        parseFloat(h) === 0 ? 20 : parseFloat(h)
-                    );
-                    const imgRect = imgWithTiles.imageToViewportRectangle(rect);
-                    this.openSeadragon.viewport.fitBounds(imgRect);
-                }
-            }
-        }
+        //             const rect = new OpenSeadragon.Rect(
+        //                 parseFloat(x),
+        //                 parseFloat(y),
+        //                 parseFloat(w) === 0 ? 20 : parseFloat(w),
+        //                 parseFloat(h) === 0 ? 20 : parseFloat(h)
+        //             );
+        //             const imgRect = imgWithTiles.imageToViewportRectangle(rect);
+        //             this.openSeadragon.viewport.fitBounds(imgRect);
+        //         }
+        //     }
+        // }
 
         let annotationIndex = this.state.annos.findIndex(
             (anno) => anno.id === annotation.id
         );
+
+        this.state.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+        document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
 
         this.setState({ currentID: annotationIndex });
     };
@@ -545,8 +575,6 @@ class AdnoEmbed extends Component {
                         response.text()
                             .then(data => {
                                 const imported_project = JSON.parse(data);
-
-                                console.log(imported_project)
 
                                 // ADNO project detected
 
@@ -613,8 +641,6 @@ class AdnoEmbed extends Component {
 
                                         const GRANTED_IMG_EXTENSIONS =
                                             process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
-
-                                        console.log(imported_project.source)
 
                                         const tileSources = GRANTED_IMG_EXTENSIONS.includes(
                                             get_url_extension(imported_project.source)
@@ -695,8 +721,6 @@ class AdnoEmbed extends Component {
                                             const GRANTED_IMG_EXTENSIONS =
                                                 process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
 
-                                            console.log(resultLink)
-
                                             const tileSources = GRANTED_IMG_EXTENSIONS.includes(
                                                 get_url_extension(resultLink)
                                             )
@@ -722,8 +746,8 @@ class AdnoEmbed extends Component {
 
                         const tileSources = {
                             type: "image",
-                            // url: `https://little-alert-chill.glitch.me/?url=${url}`,
-                            url: `http://localhost:3000?url=${url}`,
+                            url: `https://little-alert-chill.glitch.me/?url=${url}`,
+                            // url: `http://localhost:3000?url=${url}`,
                         };
 
                         this.setState({ isLoaded: true });
@@ -751,6 +775,10 @@ class AdnoEmbed extends Component {
     };
 
     render() {
+        const showAnnotationsButton = this.state.showOutlines || this.state.showEyes
+
+        console.log(this.state.isAnnotationsVisible)
+
         if (this.state.isLoaded) {
             return (
                 <div id="adno-embed">
@@ -781,17 +809,11 @@ class AdnoEmbed extends Component {
                             {
                                 this.state.annos.length > 0 &&
                                 <>
-                                    <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
+                                    {showAnnotationsButton && <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
                                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
                                             <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
                                         </div>
-                                    </button>
-
-                                    <button id="set-visible" className="toolbarButton toolbaractive" onClick={this.toggleFreeMode}>
-                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
-                                            <FontAwesomeIcon icon={faVectorSquare} size="lg" />
-                                        </div>
-                                    </button>
+                                    </button>}
 
                                     <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
                                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>

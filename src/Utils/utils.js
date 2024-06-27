@@ -320,7 +320,7 @@ export function defaultProjectSettings() {
     displayToolbar: true,
     tags: [],
     showOutlines: true,
-    showEyes: true
+    showEyes: false
   }
 }
 
@@ -459,8 +459,8 @@ export async function enhancedFetch(url) {
   } catch (error) {
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
       console.log('CORS error: Could not fetch the image.')
-      // return fetch(`https://little-alert-chill.glitch.me?url=${url}`)
-      return fetch(`http://localhost:3000?url=${url}`)
+      return fetch(`https://little-alert-chill.glitch.me?url=${url}`)
+      // return fetch(`http://localhost:3000?url=${url}`)
     } else {
       console.log(`An error occurred: ${error.message}`)
     }

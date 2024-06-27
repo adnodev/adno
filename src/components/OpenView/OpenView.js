@@ -95,11 +95,12 @@ class OpenView extends Component {
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
-
-            setTimeout(() => {
-                this.freeMode()
-                this.toggleOutlines(this.props.showOutlines)
-            }, 1000)
+                .then(() => {
+                    setTimeout(() => {
+                        this.freeMode()
+                        this.toggleOutlines(this.props.showOutlines)
+                    }, 200)
+                })
         }
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
@@ -416,6 +417,8 @@ class OpenView extends Component {
     }
 
     render() {
+        const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
+
         return (
             <div id="adno-osd" style={{ position: 'relative' }}>
                 {
@@ -445,11 +448,11 @@ class OpenView extends Component {
                         {
                             this.props.annos.length > 0 &&
                             <>
-                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
+                                {showAnnotationsButton && <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
                                         <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
                                     </div>
-                                </button>
+                                </button>}
 
                                 <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>
