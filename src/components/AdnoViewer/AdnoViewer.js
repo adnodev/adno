@@ -81,7 +81,7 @@ class AdnoViewer extends Component {
                 OpenSeadragon({
                     id: 'image_iiif',
                     tileSources: [JSON.parse(localStorage.getItem(this.props.match.params.id)).manifest_url],
-                    prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
+                    prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/'
                 });
             } else {
                 OpenSeadragon({
@@ -90,7 +90,7 @@ class AdnoViewer extends Component {
                         type: 'image',
                         url: checkIfProjectExists(this.props.match.params.id) && JSON.parse(localStorage.getItem(this.props.match.params.id)).img_url
                     },
-                    prefixUrl: 'https://openseadragon.github.io/openseadragon/images/'
+                    prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/'
                 });
             }
             OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));

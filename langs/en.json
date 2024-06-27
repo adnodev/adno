@@ -49,8 +49,10 @@
                 "add_title": "Add a title to your project",
                 "copy": "copy",
                 "cancel": "Cancel",
-                "back_home": "Cancel and go back to homepage",
+		"choose": "Select an image",
+                "choose_desc": "Choose the image you want to use for your project",
                 "choose_canva": "Use this picture for my project",
+                "back_home": "Cancel and go back to homepage",
                 "metadatas": {
                     "identifier": "Identifier",
                     "source": "Source",

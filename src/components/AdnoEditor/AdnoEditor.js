@@ -61,7 +61,7 @@ class AdnoEditor extends Component {
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
                 id: 'openseadragon1',
                 tileSources: tileSources,
-                prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
+                prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
                 // Enable rotation
                 showRotationControl: this.props.rotation,
             }), {
