@@ -59,20 +59,16 @@
 }
 
 .a9s-annotation--hidden {
-    display: none;
+    opacity: 0;
 }
 
-.a9s-annotation--show {
-    display: block !important;
-}
-
-.a9s-annotation--show path {
+.eye path {
     fill: #fff !important;
     stroke: #fff !important;
     stroke-width: 1;
 }
 
-.a9s-annotation--show circle {
+.eye circle {
     fill: #000 !important;
     stroke: #000 !important;
     stroke-width: 1;

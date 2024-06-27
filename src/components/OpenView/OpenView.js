@@ -27,7 +27,6 @@ class OpenView extends Component {
             intervalID: 0,
             fullScreenEnabled: false,
             isAnnotationsVisible: true,
-            freeMode: true
         }
     }
 
@@ -93,6 +92,8 @@ class OpenView extends Component {
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+            setTimeout(this.freeMode, 1000)
         }
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
@@ -105,7 +106,7 @@ class OpenView extends Component {
         annos.map(anno => {
             const svgElement = getEye()
 
-            const tileSize = document.getElementById('adno-osd').clientWidth / 8
+            const tileSize = document.getElementById('adno-osd').clientWidth / 10
 
             svgElement.setAttribute('width', tileSize);
             svgElement.setAttribute('height', tileSize);
@@ -113,7 +114,7 @@ class OpenView extends Component {
             svgElement.style.fill = "#000"
             svgElement.style.stroke = "#000"
             svgElement.style.strokeWidth = 2
-            svgElement.classList.add('a9s-annotation--show')
+            svgElement.classList.add('eye')
 
             const type = [...anno.children][0].tagName
 
@@ -146,9 +147,9 @@ class OpenView extends Component {
                 anno.appendChild(svgElement)
             }
 
-            [...anno.children].map(r => {
-                r.classList.add("a9s-annotation--hidden")
-            })
+            // [...anno.children].map(r => {
+            //     r.classList.add("a9s-annotation--hidden")
+            // })
         })
     }
 
@@ -209,18 +210,18 @@ class OpenView extends Component {
         if (annotation && annotation.id) {
             this.props.changeSelectedAnno(annotation)
 
-            if (this.state.isAnnotationsVisible) {
+            // if (this.state.isAnnotationsVisible) {
                 this.AdnoAnnotorious.selectAnnotation(annotation.id)
                 this.AdnoAnnotorious.fitBounds(annotation.id)
-            } else {
-                if (annotation.target && annotation.target.selector.value) {
-                    var imgWithTiles = this.openSeadragon.world.getItemAt(0);
-                    var xywh = annotation.target.selector.value.replace("xywh=pixel:", "").split(",")
-                    var rect = new OpenSeadragon.Rect(parseFloat(xywh[0]), parseFloat(xywh[1]), parseFloat(xywh[2]), parseFloat(xywh[3]))
-                    var imgRect = imgWithTiles.imageToViewportRectangle(rect);
-                    this.openSeadragon.viewport.fitBounds(imgRect);
-                }
-            }
+            // } else {
+            //     if (annotation.target && annotation.target.selector.value) {
+            //         var imgWithTiles = this.openSeadragon.world.getItemAt(0);
+            //         var xywh = annotation.target.selector.value.replace("xywh=pixel:", "").split(",")
+            //         var rect = new OpenSeadragon.Rect(parseFloat(xywh[0]), parseFloat(xywh[1]), parseFloat(xywh[2]), parseFloat(xywh[3]))
+            //         var imgRect = imgWithTiles.imageToViewportRectangle(rect);
+            //         this.openSeadragon.viewport.fitBounds(imgRect);
+            //     }
+            // }
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
 
@@ -328,6 +329,8 @@ class OpenView extends Component {
         if (prevProps.annos !== this.props.annos) {
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+            setTimeout(this.freeMode, 1000)
         }
 
         // Check if the user toggled the navigator on/off
@@ -341,20 +344,20 @@ class OpenView extends Component {
         }
     }
 
-    toggleFreeMode = () => {
-        if (!this.state.freeMode) {
-            this.AdnoAnnotorious.clearAnnotations()
-            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
-            this.AdnoAnnotorious.loadAnnotations(dataURI)
-        } else {
-            this.freeMode()
-        }
-
-        this.setState({ freeMode: !this.state.freeMode })
+    toggleAnnotations = () => {
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        annos.forEach(anno => {
+            [...anno.children].forEach(r => {
+                r.classList.toggle("a9s-annotation--hidden")
+            })
+        })
     }
 
+
     toggleAnnotationsLayer = () => {
-        this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
+        // this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
+
+        this.toggleAnnotations()
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
@@ -404,12 +407,6 @@ class OpenView extends Component {
                                 <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
                                         <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
-                                    </div>
-                                </button>
-
-                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={this.toggleFreeMode}>
-                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
-                                        <FontAwesomeIcon icon={faVectorSquare} size="lg" />
                                     </div>
                                 </button>
 
