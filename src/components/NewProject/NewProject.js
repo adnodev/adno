@@ -216,8 +216,12 @@ class NewProject extends Component {
                 var projectID = generateUUID()
 
                 // we check if the url is an image (.jpg, .jpeg or .png) or a manifest or a json file (such as an info.json file)
-                if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || get_url_extension(manifest_url) === "json" || isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest" || isIpfsUrl) {
-                    // fichier accepté
+                // if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) ||
+                //     get_url_extension(manifest_url) === "json" ||
+                //     isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest" ||
+                //     isIpfsUrl) {
+                //     // fichier accepté
+                try {
 
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
 
@@ -257,12 +261,8 @@ class NewProject extends Component {
                         enhancedFetch(manifest_url)
                             .then(rep => {
                                 if (rep.status === 200) {
-
                                     rep.json().then(manifest => {
-
-
                                         if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
-
 
                                             let project;
 
@@ -294,7 +294,6 @@ class NewProject extends Component {
                                             } else {
                                                 project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
                                             }
-
 
                                             if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
 
@@ -358,7 +357,7 @@ class NewProject extends Component {
                             })
                     }
 
-                } else {
+                } catch (err) {
                     this.setState({ isLoading: false })
                     Swal.fire({
                         title: this.props.t('errors.unable_reading_file'),

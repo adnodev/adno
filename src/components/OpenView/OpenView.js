@@ -37,16 +37,18 @@ class OpenView extends Component {
             this.props.history.push("/")
         } else {
             let tileSources;
-            if (this.props.selected_project.manifest_url) {
 
+            if (this.props.selected_project.manifest_url) {
                 tileSources = [
-                    this.props.selected_project.manifest_url
+                    process.env.CORS_SERVER ? `${process.env.CORS_SERVER}/?url=${encodeURIComponent(this.props.selected_project.manifest_url)}` :
+                        this.props.selected_project.manifest_url
                 ]
 
             } else {
                 tileSources = {
                     type: 'image',
-                    url: this.props.selected_project.img_url
+                    url: process.env.CORS_SERVER ?
+                        `${process.env.CORS_SERVER}/?url=${encodeURIComponent(this.props.selected_project.img_url)}` : this.props.selected_project.img_url
                 }
             }
 
@@ -56,6 +58,8 @@ class OpenView extends Component {
                 showNavigator: this.props.showNavigator,
                 tileSources: tileSources,
                 prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
+                crossOriginPolicy: 'Anonymous',
+                ajaxWithCredentials: false
             })
 
             OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));

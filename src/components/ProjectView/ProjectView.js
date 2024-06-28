@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 // Import utils
-import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllProjectsFromLS } from "../../Utils/utils";
+import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllProjectsFromLS, enhancedFetch } from "../../Utils/utils";
 
 // Import CSS
 import "./ProjectView.css";
@@ -29,7 +29,7 @@ class ProjectView extends Component {
 
     componentDidMount() {
         if (this.props.project.manifest_url) {
-            fetch(this.props.project.manifest_url)
+            enhancedFetch(this.props.project.manifest_url)
                 .then(rep => rep.json())
                 .then(manifest => {
                     if (manifest["@id"] && manifest["sizes"] && manifest["sizes"].length > 0) {

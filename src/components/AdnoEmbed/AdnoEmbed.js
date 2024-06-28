@@ -66,6 +66,12 @@ class AdnoEmbed extends Component {
             ? query.get("anno_bounds") === "true"
             : false;
         const tags = query.get("tags") || []
+        const showOutlines = query.get("show_outlines")
+            ? query.get("show_outlines") === "true"
+            : true;
+        const showEyes = query.get("show_eyes")
+            ? query.get("show_eyes") === "true"
+            : false;
 
         const settings = {
             delay,
@@ -76,7 +82,9 @@ class AdnoEmbed extends Component {
             rotation,
             isAnnotationsVisible,
             showToolbar,
-            tags
+            tags,
+            showOutlines,
+            showEyes
         };
         // Update settings
         this.setState({ ...settings });
@@ -746,8 +754,7 @@ class AdnoEmbed extends Component {
 
                         const tileSources = {
                             type: "image",
-                            url: `https://little-alert-chill.glitch.me/?url=${url}`,
-                            // url: `http://localhost:3000?url=${url}`,
+                            url: process.env.CORS_SERVER ? `${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}` : url,
                         };
 
                         this.setState({ isLoaded: true });

@@ -27,7 +27,8 @@ class Home extends Component {
         super(props);
         this.state = {
             url: "",
-            projects: []
+            projects: [],
+            loading: false
         }
     }
 
@@ -43,20 +44,38 @@ class Home extends Component {
     createNewProject = (e) => {
         e.preventDefault()
 
-        // First, we have to check if the url is not empty, not undefined and not null
-        if (this.state.url) {
-            manageUrls(this.props, this.state.url, this.props.t)
+        this.setState({ loading: true }, () => {
+            // First, we have to check if the url is not empty, not undefined and not null
+            if (this.state.url) {
+                try {
+                    manageUrls(this.props, this.state.url, this.props.t)
+                        .catch(message => {
+                            Swal.fire({
+                                title: this.props.t('errors.wrong_url'),
+                                showCancelButton: true,
+                                showConfirmButton: false,
+                                cancelButtonText: 'OK',
+                                icon: 'warning',
+                            })
+                        })
+                        .finally(() => this.setState({ loading: false }))
+                } catch (err) {
+                    this.setState({ loading: false })
+                    alert(err)
+                }
 
-        } else {
-            // Display a warning popup if the URL is not filled
-            Swal.fire({
-                title: this.props.t('errors.wrong_url'),
-                showCancelButton: true,
-                showConfirmButton: false,
-                cancelButtonText: 'OK',
-                icon: 'warning',
-            })
-        }
+            } else {
+                // Display a warning popup if the URL is not filled
+                Swal.fire({
+                    title: this.props.t('errors.wrong_url'),
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonText: 'OK',
+                    icon: 'warning',
+                })
+                this.setState({ loading: false })
+            }
+        })
     }
 
 
@@ -66,13 +85,13 @@ class Home extends Component {
             <div className="home">
                 <div id="container_with_projects" className="adno_container">
                     {
-		    process.env.ADNO_TITLE ? <h1>{process.env.ADNO_TITLE}</h1> : ``
+                        process.env.ADNO_TITLE ? <h1>{process.env.ADNO_TITLE}</h1> : ``
                     }
                     {
-		    <div className="adno_title">
-                        <h1>ADNO</h1>
-                        <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
-                    </div>
+                        <div className="adno_title">
+                            <h1>ADNO</h1>
+                            <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
+                        </div>
                     }
                     <p className="adno_description"> {this.props.t('begin_msg.1')} <strong>Adno</strong>,<br /> {this.props.t('begin_msg.2')} <strong>{this.props.t('begin_msg.3')}</strong> {this.props.t('begin_msg.4')} <strong>{this.props.t('begin_msg.5')}</strong>,<br /> {this.props.t('begin_msg.6')} <strong>{this.props.t('begin_msg.7')}</strong>, {this.props.t('begin_msg.8')} <strong>{this.props.t('begin_msg.9')}</strong>.</p>
                     <div className="adno_home_selection">
@@ -84,7 +103,10 @@ class Home extends Component {
                             </div>
                             <div className="home-btn-container">
                                 <div className="tooltip" data-tip={this.props.t('project.new_tooltip')}>
-                                    <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)}> <FontAwesomeIcon icon={faAdd} /> {this.props.t('project.new')} </button>
+                                    <button className="create_project_2 btn" type="submit" onClick={(e) => this.createNewProject(e)} disabled={this.state.loading}>
+                                        <FontAwesomeIcon icon={faAdd} className={this.state.loading ? 'spin' : ''} />
+                                        {this.props.t('project.new')}
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -112,7 +134,7 @@ class Home extends Component {
                     <footer className="footer footer-center p-4 bg-base-300 text-base-content">
                         <div>
                             {
-				    process.env.ADNO_FOOTER_TEXT ?
+                                process.env.ADNO_FOOTER_TEXT ?
                                     <p>{process.env.ADNO_FOOTER_TEXT} — <a href="https://adno.app/" target="_blank">adno.app</a></p>
                                     : <p><a href="https://adno.app/" target="_blank">adno.app</a> - <a href="https://emf.fr/" target="_blank">Espace Mendès France</a>, {this.props.t('footer')}</p>
                             }

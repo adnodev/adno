@@ -37,12 +37,14 @@ class AdnoEditor extends Component {
 
             if (selected_project.manifest_url) {
                 tileSources = [
-                    selected_project.manifest_url
+                    process.env.CORS_SERVER ?
+                        `${process.env.CORS_SERVER}/?url=${encodeURIComponent(selected_project.manifest_url)}` : selected_project.manifest_url
                 ]
             } else {
                 tileSources = {
                     type: 'image',
-                    url: `https://little-alert-chill.glitch.me/?url=${selected_project.img_url}`
+                    url: process.env.CORS_SERVER ?
+                        `${process.env.CORS_SERVER}/?url=${encodeURIComponent(selected_project.img_url)}` : selected_project.img_url
                 }
             }
 

@@ -450,6 +450,7 @@ export function checkOldVersion(t) {
 }
 
 export async function enhancedFetch(url) {
+  console.log('enhacedFetch', url)
   try {
     const response = await fetch(url, {
       mode: 'cors'
@@ -459,8 +460,7 @@ export async function enhancedFetch(url) {
   } catch (error) {
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
       console.log('CORS error: Could not fetch the image.')
-      return fetch(`https://little-alert-chill.glitch.me?url=${url}`)
-      // return fetch(`http://localhost:3000?url=${url}`)
+      return process.env.CORS_SERVER ? fetch(`${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}`) : url
     } else {
       console.log(`An error occurred: ${error.message}`)
     }
