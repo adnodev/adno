@@ -69,3 +69,43 @@ footer{
     position: fixed;
     top: calc(100vh - 52px)
 }
+
+.a9s-annotationlayer .anno-stroke-w1 .a9s-inner {
+	stroke-width: 1px;
+}
+
+.a9s-annotationlayer .anno-stroke-w1 .a9s-outer {
+	stroke-width: 3px;
+}
+
+.a9s-annotationlayer .anno-stroke-w2 .a9s-inner {
+	stroke-width: 2px;
+}
+
+.a9s-annotationlayer .anno-stroke-w2 .a9s-outer {
+	stroke-width: 4px;
+}
+
+.a9s-annotationlayer .anno-stroke-w3 .a9s-inner {
+	stroke-width: 3px;
+}
+
+.a9s-annotationlayer .anno-stroke-w3 .a9s-outer {
+	stroke-width: 5px;
+}
+
+.a9s-annotationlayer .anno-stroke-w5 .a9s-inner {
+	stroke-width: 5px;
+}
+
+.a9s-annotationlayer .anno-stroke-w5 .a9s-outer {
+	stroke-width: 7px;
+}
+
+.a9s-annotationlayer .anno-stroke-w8 .a9s-inner {
+	stroke-width: 8px;
+}
+
+.a9s-annotationlayer .anno-stroke-w8 .a9s-outer {
+	stroke-width: 10px;
+}

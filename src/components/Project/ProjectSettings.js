@@ -84,6 +84,18 @@ class ProjectSettings extends Component {
                         <input type="number" placeholder="2" className="input input-bordered w-full max-w-xs" value={this.state.settings.delay}
                             onChange={(e) => this.setState({ settings: { ...this.state.settings, delay: e.target.value } })} />
 
+
+                        <label className="label">
+                            <span className="label-text">{this.props.t('project.settings.stroke_width')}</span>
+                        </label>
+                        <select className="input input-bordered w-full max-w-xs" defaultValue={this.state.settings.strokeWidth}
+                            onChange={(e) => this.setState({ settings: { ...this.state.settings, strokeWidth: e.target.value } })}>
+		            <option value="anno-stroke-w1">▁▁▁▁▁▁▁▁▁▁</option>
+		            <option value="anno-stroke-w2">▂▂▂▂▂▂▂▂▂▂</option>
+		            <option value="anno-stroke-w3">▃▃▃▃▃▃▃▃▃▃</option>
+		            <option value="anno-stroke-w5">▅▅▅▅▅▅▅▅▅▅</option>
+		            <option value="anno-stroke-w8">▇▇▇▇▇▇▇▇▇▇</option>
+		        </select>
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.navigator')}</span>
                         </label>

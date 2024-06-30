@@ -71,6 +71,7 @@
                 },
                 "settings": {
                     "delay": "Délai entre 2 annotations (en secondes)",
+		    "stroke_width": "Épaisseur des annotations",
                     "navigator": "Navigateur d'ensemble",
                     "fullscreen": "Afficher barre outils en mode plein écran",
                     "annos_nav": "Afficher la barre de navigation pour les annotations",

@@ -318,7 +318,8 @@ export function defaultProjectSettings() {
     startbyfirstanno: false,
     rotation: false,
     displayToolbar: true,
-    tags: []
+    tags: [],
+    strokeWidth: "anno-stroke-w1",
   }
 }
 

@@ -71,6 +71,7 @@
                 },
                 "settings": {
                     "delay": "Delay between 2 annotations (in seconds)",
+                    "stroke_width": "Annotations outline thickness",
                     "navigator": "Annotations Map browser",
                     "fullscreen": "Show toolbar in full screen mode",
                     "annos_nav": "Show navigation bar for annotations",

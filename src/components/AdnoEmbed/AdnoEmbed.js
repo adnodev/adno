@@ -121,13 +121,11 @@ class AdnoEmbed extends Component {
         OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
         OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
-        this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
-            locale: 'auto',
-            drawOnSingleClick: true,
-            allowEmpty: true,
-            disableEditor: true,
-            readOnly: true,
-        });
+	const annoStrokeW = this.props.annoStrokeWidth;
+
+	const annoFormatter = function() {
+	    return annoStrokeW;
+	}
 
         this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
             locale: "auto",
@@ -135,6 +133,7 @@ class AdnoEmbed extends Component {
             allowEmpty: true,
             disableEditor: true,
             readOnly: true,
+	    formatters: annoFormatter
         });
 
         this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
