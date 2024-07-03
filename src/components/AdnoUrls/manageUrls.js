@@ -18,12 +18,15 @@ export async function manageUrls(props, url, translation) {
     // TODO 
     // GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl
 
-    if (url.startsWith('http://') || url.startsWith("https://"))
+    if (url.startsWith('http://') || url.startsWith("https://")) {
+        console.log('MANAGE URLS 22')
         return enhancedFetch(url)
-            .then(response => {
-                if (response.ok) {
+            .then(rawReponse => {
+                console.log(rawReponse.response)
+                if (rawReponse.response.ok) {
+                    const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
-                    console.log(contentType)
+
                     if (['application/json', 'text/html', 'text/plain'].includes(contentType)) {
                         response.text()
                             .then(data => {
@@ -46,6 +49,8 @@ export async function manageUrls(props, url, translation) {
 
                                                 let title = manifest.title || manifest.label
                                                 let desc = manifest.description || manifest.subject
+
+                                                console.log('ADNO PROJECT')
 
                                                 let project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
 
@@ -88,7 +93,7 @@ export async function manageUrls(props, url, translation) {
                                 } else {
                                     // Non-ADNO Format detected
                                     if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
-                                        insertInLS("adno_image_url", url)
+                                        insertInLS("adno_image_url", rawReponse.url)
                                         localStorage.removeItem("selected_canva")
                                         props.history.push("/new")
                                     } else {
@@ -109,7 +114,7 @@ export async function manageUrls(props, url, translation) {
                                 }
                             })
                     } else {
-                        insertInLS("adno_image_url", url)
+                        insertInLS("adno_image_url", rawReponse.url)
                         localStorage.removeItem("selected_canva")
                         props.history.push("/new")
                     }
@@ -117,7 +122,7 @@ export async function manageUrls(props, url, translation) {
                     return Promise.reject(translation('errors.unable_access_file'))
                 }
             })
-    else
+    } else
         return Promise.reject(`${translation('errors.wrong_url')}: ${url}`)
     // .catch(() => {
     //     Swal.fire({

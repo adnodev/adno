@@ -574,6 +574,8 @@ class AdnoEmbed extends Component {
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
+        console.log('ADNO EMBED 577')
+
         enhancedFetch(url)
             .then(response => {
                 if (response.ok) {
@@ -754,7 +756,7 @@ class AdnoEmbed extends Component {
 
                         const tileSources = {
                             type: "image",
-                            url: process.env.CORS_SERVER ? `${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}` : url,
+                            url,
                         };
 
                         this.setState({ isLoaded: true });

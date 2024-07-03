@@ -30,7 +30,7 @@ class ProjectView extends Component {
     componentDidMount() {
         if (this.props.project.manifest_url) {
             enhancedFetch(this.props.project.manifest_url)
-                .then(rep => rep.json())
+                .then(rep => rep.response.json())
                 .then(manifest => {
                     if (manifest["@id"] && manifest["sizes"] && manifest["sizes"].length > 0) {
 

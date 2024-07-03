@@ -50,6 +50,7 @@ class Home extends Component {
                 try {
                     manageUrls(this.props, this.state.url, this.props.t)
                         .catch(message => {
+                            console.log(message)
                             Swal.fire({
                                 title: this.props.t('errors.wrong_url'),
                                 showCancelButton: true,

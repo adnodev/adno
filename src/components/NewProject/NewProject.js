@@ -39,8 +39,11 @@ class NewProject extends Component {
 
         var manifest_url = localStorage.getItem("adno_image_url")
 
+
+        console.log('NEW PROJECT 43')
+
         enhancedFetch(manifest_url)
-            .then(rep => rep.json())
+            .then(rep => rep.response.json())
             .then(manifestIIIF => {
                 console.log(manifestIIIF)
                 if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
@@ -119,8 +122,10 @@ class NewProject extends Component {
 
     isManifest = async (url) => {
         return new Promise((resolve, reject) => {
+            console.log('NEW PROJECT 125')
             enhancedFetch(url)
-                .then(res => {
+                .then(rawResponse => {
+                    const res = rawResponse.response
                     if (res.status == 200 || res.status == 201) {
                         return res.text()
                     } else {
@@ -131,6 +136,7 @@ class NewProject extends Component {
                     return resolve(data ? JSON.parse(data) : {})
                 })
                 .catch(err => {
+                    console.log(err)
                     Swal.fire({
                         title: this.props.t('errors.wrong_url'),
                         showCancelButton: false,
@@ -206,23 +212,17 @@ class NewProject extends Component {
                 var manifest_url = localStorage.getItem("adno_image_url")
                 const isIpfsUrl = manifest_url.startsWith(process.env.IPFS_GATEWAY);
 
-                let isUrlManifest = "";
+                // let isUrlManifest = "";
 
                 // if the url is not an image file (.jpg, .jpeg or .png) it should be a manifest
-                if (!isIpfsUrl && !GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
-                    isUrlManifest = await this.isManifest(manifest_url)
-                }
+                // if (!isIpfsUrl && !GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
+                //     isUrlManifest = await this.isManifest(manifest_url)
+                // }
 
                 var projectID = generateUUID()
 
-                // we check if the url is an image (.jpg, .jpeg or .png) or a manifest or a json file (such as an info.json file)
-                // if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) ||
-                //     get_url_extension(manifest_url) === "json" ||
-                //     isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest" ||
-                //     isIpfsUrl) {
-                //     // fichier accepté
-                try {
 
+                try {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
 
                         let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
@@ -258,8 +258,11 @@ class NewProject extends Component {
                         }
 
                     } else {
+                        console.log('NEW PROJECT 264')
                         enhancedFetch(manifest_url)
-                            .then(rep => {
+                            .then(rawResponse => {
+                                const rep = rawResponse.response
+
                                 if (rep.status === 200) {
                                     rep.json().then(manifest => {
                                         if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {

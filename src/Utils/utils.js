@@ -73,7 +73,10 @@ export const isValidUrl = (url) => {
 };
 
 export const get_url_extension = (url) => {
-  return url.split(/[#?]/)[0].split('.').pop().trim();
+  if (url.includes('?url=https'))
+    return get_url_extension(url.split(/[#?]/)[1].replace('url=', ''));
+  else
+    return url.split(/[#?]/)[0].split('.').pop().trim();
 }
 
 export const buildTagsList = (annotation) => {
@@ -450,17 +453,30 @@ export function checkOldVersion(t) {
 }
 
 export async function enhancedFetch(url) {
-  console.log('enhacedFetch', url)
   try {
     const response = await fetch(url, {
       mode: 'cors'
     });
 
-    return response
+    return {
+      response,
+      url
+    }
   } catch (error) {
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
       console.log('CORS error: Could not fetch the image.')
-      return process.env.CORS_SERVER ? fetch(`${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}`) : url
+      if (process.env.CORS_SERVER) {
+        const newUrl = `${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}`;
+        const response = await fetch(newUrl);
+        return {
+          response,
+          url: newUrl
+        }
+      } else
+        return {
+          response: url,
+          url
+        }
     } else {
       console.log(`An error occurred: ${error.message}`)
     }
