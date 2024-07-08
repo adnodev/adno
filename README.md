@@ -82,6 +82,8 @@ ADNO_FOOTER_TEXT=YOUR FOOTER TEXT HERE
 # GRANTED IMAGES EXTENSIONS
 GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
 
+# CORS SERVER
+CORS_SERVER=https://little-alert-chill.glitch.me
 ```
 
 ## Build ADNO
@@ -96,6 +98,9 @@ ADNO_FOOTER=TRUE
 
 # GRANTED IMAGES EXTENSIONS
 GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
+
+# CORS SERVER
+CORS_SERVER=https://little-alert-chill.glitch.me
 ```
 
 .env.ADNOLIGHT example :
@@ -110,6 +115,8 @@ ADNO_FOOTER=TRUE
 # GRANTED IMAGES EXTENSIONS
 GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
 
+# CORS SERVER
+CORS_SERVER=https://little-alert-chill.glitch.me
 ```
 
 Build both versions :
@@ -129,8 +136,10 @@ Available settings for the embed :
 - rotation value = `true` or `false`
 - toolbar value = `true` or `false`
 - anno_bounds value = `true` or `false`
+- show_outlines value = `true` or `false`
+- show_eyes value = `true` or `false`
 
-Example : https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true
+Example : https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true&show_outlines=true
 
 A little example with an iframe that you can insert in your own projects :
 

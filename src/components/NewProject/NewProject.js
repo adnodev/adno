@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import utils
-import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID } from "../../Utils/utils";
+import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID, enhancedFetch } from "../../Utils/utils";
 
 // Import popup alerts
 import Swal from "sweetalert2";
@@ -39,10 +39,9 @@ class NewProject extends Component {
 
         var manifest_url = localStorage.getItem("adno_image_url")
 
-        fetch(manifest_url)
-            .then(rep => rep.json())
+        enhancedFetch(manifest_url)
+            .then(rep => rep.response.json())
             .then(manifestIIIF => {
-                console.log(manifestIIIF)
                 if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
 
                     // Get all canvases from the manifest
@@ -119,8 +118,9 @@ class NewProject extends Component {
 
     isManifest = async (url) => {
         return new Promise((resolve, reject) => {
-            fetch(url)
-                .then(res => {
+            enhancedFetch(url)
+                .then(rawResponse => {
+                    const res = rawResponse.response
                     if (res.status == 200 || res.status == 201) {
                         return res.text()
                     } else {
@@ -206,19 +206,17 @@ class NewProject extends Component {
                 var manifest_url = localStorage.getItem("adno_image_url")
                 const isIpfsUrl = manifest_url.startsWith(process.env.IPFS_GATEWAY);
 
-                let isUrlManifest = "";
+                // let isUrlManifest = "";
 
                 // if the url is not an image file (.jpg, .jpeg or .png) it should be a manifest
-                if (!isIpfsUrl && !GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
-                    isUrlManifest = await this.isManifest(manifest_url)
-                }
+                // if (!isIpfsUrl && !GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
+                //     isUrlManifest = await this.isManifest(manifest_url)
+                // }
 
                 var projectID = generateUUID()
 
-                // we check if the url is an image (.jpg, .jpeg or .png) or a manifest or a json file (such as an info.json file)
-                if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || get_url_extension(manifest_url) === "json" || isUrlManifest["@type"] && isUrlManifest["@type"] === "sc:Manifest" || isIpfsUrl) {
-                    // fichier accepté
 
+                try {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
 
                         let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
@@ -254,15 +252,13 @@ class NewProject extends Component {
                         }
 
                     } else {
-                        fetch(manifest_url)
-                            .then(rep => {
+                        enhancedFetch(manifest_url)
+                            .then(rawResponse => {
+                                const rep = rawResponse.response
+
                                 if (rep.status === 200) {
-
                                     rep.json().then(manifest => {
-
-
                                         if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
-
 
                                             let project;
 
@@ -294,7 +290,6 @@ class NewProject extends Component {
                                             } else {
                                                 project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
                                             }
-
 
                                             if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
 
@@ -358,7 +353,7 @@ class NewProject extends Component {
                             })
                     }
 
-                } else {
+                } catch (err) {
                     this.setState({ isLoading: false })
                     Swal.fire({
                         title: this.props.t('errors.unable_reading_file'),

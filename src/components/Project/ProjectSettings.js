@@ -85,10 +85,48 @@ class ProjectSettings extends Component {
                             onChange={(e) => this.setState({ settings: { ...this.state.settings, delay: e.target.value } })} />
 
                         <label className="label">
+                            <span className="label-text">{this.props.t('project.settings.begin_first_anno')}</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.startbyfirstanno} onChange={() => this.setState({ settings: { ...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno } })} />
+
+
+                        <label className="label">
                             <span className="label-text">{this.props.t('project.settings.navigator')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-navigator" checked={this.state.settings.showNavigator} onChange={() => this.setState({ settings: { ...this.state.settings, showNavigator: !this.state.settings.showNavigator } })} />
 
+                        <label className="label">
+                            <span className="label-text">
+                                {this.props.t('project.settings.show_outlines')}
+                            </span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-navigator"
+                            checked={this.state.settings.showOutlines}
+                            onChange={() => this.setState({
+                                settings: {
+                                    ...this.state.settings,
+                                    showOutlines: !this.state.settings.showOutlines
+                                }
+                            })} />
+
+                        <label className="label">
+                            <span className="label-text">
+                                {this.props.t('project.settings.show_eyes')}
+                            </span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-navigator"
+                            checked={this.state.settings.showEyes}
+                            onChange={() => this.setState({
+                                settings: {
+                                    ...this.state.settings,
+                                    showEyes: !this.state.settings.showEyes
+                                }
+                            })} />
+
+                        <label className="label">
+                            <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar} onChange={() => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })} />
 
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
@@ -100,22 +138,10 @@ class ProjectSettings extends Component {
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.sidebarEnabled} onChange={() => this.setState({ settings: { ...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled } })} />
 
-
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.settings.begin_first_anno')}</span>
-                        </label>
-                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.startbyfirstanno} onChange={() => this.setState({ settings: { ...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno } })} />
-
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.enable_rota')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.rotation} onChange={() => this.setState({ settings: { ...this.state.settings, rotation: !this.state.settings.rotation } })} />
-
-
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
-                        </label>
-                        <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar} onChange={() => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })} />
                     </div>
 
                     <div className="metadata-editor-btns">

@@ -78,7 +78,9 @@
                     "enable_rota": "Activer la rotation de l'image",
                     "toolsbar": "Afficher la barre d'outils",
                     "save": "Enregistrer",
-                    "tags": "Seules les annotations incluant le ou l'un des mots clés suivants seront affichées"
+                    "tags": "Seules les annotations incluant le ou l'un des mots clés suivants seront affichées",
+                    "show_outlines": "Afficher les contours",
+                    "show_eyes": "Afficher une icone à l'intérieur des formes"
                 }
             },
             "files": {
