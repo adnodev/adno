@@ -35,17 +35,14 @@ class AdnoMdEditor extends Component {
 
     componentDidMount() {
         this.editor = new Editor({
-            language: 'fr-FR',
             el: document.querySelector('#editor'),
             initialValue: this.getAnnoBody(),
-            previewStyle: "tab",
+            previewStyle: "vertical",
             height: "600px",
-            initialEditType: "markdown",
+            initialEditType: "wysiwyg",
             usageStatistics: false,
-            initialEditType: "markdown",
             placeholder: this.props.t("editor.placeholder"),
-            hideModeSwitch: true,
-            language: "fr-FR",
+            hideModeSwitch: false,
             toolbarItems: [[
                 "heading",
                 "italic",

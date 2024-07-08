@@ -49,8 +49,10 @@
                 "add_title": "Donnez un titre à votre projet",
                 "copy": "copie",
                 "cancel": "Annuler",
-                "back_home": "Annuler et revenir à l'accueil",
+                "choose": "Sélectionnez une image",
+                "choose_desc": "Choisissez l'image que vous souhaitez utiliser pour votre projet Adno",
                 "choose_canva": "Utiliser cette image pour mon projet",
+                "back_home": "Annuler et revenir à l'accueil",
                 "metadatas": {
                     "identifier": "Identifiant",
                     "source": "Source",

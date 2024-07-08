@@ -415,8 +415,8 @@ class NewProject extends Component {
                 {
                     this.state.isCanvaProject && !this.state.selectedCanva && this.state.manifestImages && this.state.nbCanvases > 1 &&
                     <>
-                        <h1>Choisissez une image</h1>
-                        <p className="adno_description">Ce manifest comporte plusieurs images, vous devez en choisir une pour votre projet Adno</p>
+                        <h1>{this.props.t('project.choose')}</h1>
+                        <p className="adno_description">{this.props.t('project.choose_desc')}</p>
                     </>
                 }
 
