@@ -847,18 +847,19 @@ class AdnoEmbed extends Component {
                                     <FontAwesomeIcon icon={faExpand} size="lg" />
                                 </div>
                             </button>
-			    <button id="help" className="toolbarButton toolbaractive" >
-			        <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.help')}>
+                            <button id="help" className="toolbarButton toolbaractive">
+                                <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
+                                    style={{ display: 'block' }}>
                                     <FontAwesomeIcon icon={faQuestion} size="lg" />
                                 </label>
                             </button>
 
-			    <input type="checkbox" id="help-modal" className="modal-toggle" />
-			    <div className="modal">
-			         <div className="modal-box" style={{ "color": "initial" }}>
+                            <input type="checkbox" id="help-modal" className="modal-toggle" />
+                            <div className="modal">
+                                <div className="modal-box" style={{ "color": "initial" }}>
                                     <div className="modal-action mt-0 justify-end">
                                         <button className="btn btn-square btn-sm">
-                                            <label htmlFor="help-modal">
+                                            <label htmlFor="help-modal" className="cursor-pointer">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                             </label>
                                         </button>
