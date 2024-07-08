@@ -91,8 +91,6 @@ class AdnoEmbed extends Component {
     };
 
     freeMode = () => {
-        console.log('freemode', this.state.showEyes)
-
         if (this.state.showEyes) {
             const annos = [...document.getElementsByClassName("a9s-annotation")]
 
@@ -237,7 +235,6 @@ class AdnoEmbed extends Component {
     };
 
     toggleOutlines = showOutlines => {
-        console.log("toggleOutlines", showOutlines)
         const annos = [...document.getElementsByClassName("a9s-annotation")]
         annos.forEach(anno => {
             if (showOutlines)
@@ -252,7 +249,6 @@ class AdnoEmbed extends Component {
     }
 
     toggleAnnotations = () => {
-        console.log("toggle annotations")
         const annos = [...document.getElementsByClassName("a9s-annotation")]
         annos.forEach(anno => {
             [...anno.children].forEach(r => {
@@ -574,10 +570,9 @@ class AdnoEmbed extends Component {
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-        console.log('ADNO EMBED 577')
-
         enhancedFetch(url)
-            .then(response => {
+            .then(rawResponse => {
+                const { response } = rawResponse
                 if (response.ok) {
                     const contentType = response.headers.get('Content-Type')
                     if (['application/json', 'text/html', 'text/plain'].includes(contentType) ||
@@ -785,8 +780,6 @@ class AdnoEmbed extends Component {
 
     render() {
         const showAnnotationsButton = this.state.showOutlines || this.state.showEyes
-
-        console.log(this.state.isAnnotationsVisible)
 
         if (this.state.isLoaded) {
             return (

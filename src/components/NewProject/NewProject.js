@@ -39,13 +39,9 @@ class NewProject extends Component {
 
         var manifest_url = localStorage.getItem("adno_image_url")
 
-
-        console.log('NEW PROJECT 43')
-
         enhancedFetch(manifest_url)
             .then(rep => rep.response.json())
             .then(manifestIIIF => {
-                console.log(manifestIIIF)
                 if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
 
                     // Get all canvases from the manifest
@@ -122,7 +118,6 @@ class NewProject extends Component {
 
     isManifest = async (url) => {
         return new Promise((resolve, reject) => {
-            console.log('NEW PROJECT 125')
             enhancedFetch(url)
                 .then(rawResponse => {
                     const res = rawResponse.response
@@ -136,7 +131,6 @@ class NewProject extends Component {
                     return resolve(data ? JSON.parse(data) : {})
                 })
                 .catch(err => {
-                    console.log(err)
                     Swal.fire({
                         title: this.props.t('errors.wrong_url'),
                         showCancelButton: false,
@@ -258,7 +252,6 @@ class NewProject extends Component {
                         }
 
                     } else {
-                        console.log('NEW PROJECT 264')
                         enhancedFetch(manifest_url)
                             .then(rawResponse => {
                                 const rep = rawResponse.response

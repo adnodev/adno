@@ -124,8 +124,6 @@ class OpenView extends Component {
     }
 
     freeMode = () => {
-        console.log('freemode', this.props.showEyes)
-
         if (this.props.showEyes) {
             const annos = [...document.getElementsByClassName("a9s-annotation")]
 
@@ -384,7 +382,6 @@ class OpenView extends Component {
     }
 
     toggleAnnotations = () => {
-        console.log("toggle annotations")
         const annos = [...document.getElementsByClassName("a9s-annotation")]
         annos.forEach(anno => {
             [...anno.children].forEach(r => {

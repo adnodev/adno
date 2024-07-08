@@ -19,10 +19,8 @@ export async function manageUrls(props, url, translation) {
     // GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl
 
     if (url.startsWith('http://') || url.startsWith("https://")) {
-        console.log('MANAGE URLS 22')
         return enhancedFetch(url)
             .then(rawReponse => {
-                console.log(rawReponse.response)
                 if (rawReponse.response.ok) {
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
@@ -49,8 +47,6 @@ export async function manageUrls(props, url, translation) {
 
                                                 let title = manifest.title || manifest.label
                                                 let desc = manifest.description || manifest.subject
-
-                                                console.log('ADNO PROJECT')
 
                                                 let project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
 
