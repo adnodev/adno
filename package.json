@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "start": "yarn install && yarn clean && parcel public/index.html",
+    "dev": "yarn install && yarn clean && parcel public/index.html",
     "build-full": "NODE_ENV=ADNOFULL parcel build public/index.html --dist-dir adno-full",
     "build-light": "NODE_ENV=ADNOLIGHT parcel build public/index.html --dist-dir adno-light",
     "build": "yarn install && yarn clean && yarn build-full && yarn build-light",
