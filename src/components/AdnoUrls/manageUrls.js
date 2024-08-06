@@ -18,14 +18,14 @@ export async function manageUrls(props, url, translation) {
     // TODO 
     // GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl
 
-    if (url.startsWith('http://') || url.startsWith("https://")) {
-        return enhancedFetch(url)
+    if (url.startsWith('http') || url.startsWith("https")) {
+        return enhancedFetch(decodeURIComponent(url))
             .then(rawReponse => {
                 if (rawReponse.response.ok) {
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
 
-                    if (['application/json', 'text/html', 'text/plain'].includes(contentType)) {
+                    if (['application/json', 'text/html', 'text/plain'].find(c => contentType.includes(c))) {
                         response.text()
                             .then(data => {
                                 let manifest = JSON.parse(data)
@@ -118,8 +118,9 @@ export async function manageUrls(props, url, translation) {
                     return Promise.reject(translation('errors.unable_access_file'))
                 }
             })
-    } else
+    } else {
         return Promise.reject(`${translation('errors.wrong_url')}: ${url}`)
+    }
     // .catch(() => {
     //     Swal.fire({
     //         title: `${translation('errors.wrong_url')}: ${url}`,
