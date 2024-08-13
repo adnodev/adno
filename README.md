@@ -1,50 +1,57 @@
-# ADNO
+# Adno
 
 Adno is a web application for viewing, editing and sharing narratives and pathways on static images and IIIF images.
 
-ADNO has 2 available versions : a [Full version](https://w.adno.app) including the Editor and Viewer and the [Light](https://r.adno.app) one including only the Viewer.
+Adno has 2 available versions : a [Full version](https://w.adno.app) including the Editor and Viewer and the [Light](https://r.adno.app) one including only the Viewer.
 
 # Table of Contents
 1. [How to start](#how-to-start-with-adno-)
-2. [Host ADNO](#host-adno-with-github-pages)
+2. [Host Adno](#host-adno-with-github-pages)
 3. [IIIF EXAMPLES](#iiif-pictures-examples)
 4. [QUICKSTART](#quickstart-with-IIIF-pictures-examples)
 5. [Developpers section](#for-developpers)
 6. [Keyboard shortcuts](#shortcuts-for-the-viewer)
 7. [IPFS support](#ipfs-support)
 
+## How to start with Adno ?
 
+First, go to [Adno's repository](https://github.com/adnodev/adno/releases) and download the version you would like to use (FULL or LIGHT). 
 
-## How to start with ADNO ?
-
-First, go to [ADNO's repository](https://github.com/adnodev/adno/releases) and download the version you would like to use (FULL or LIGHT)
 Then, if you want to use it locally you have to use a web server.
-You can create a light web server using **python -m http.server 8080** command to run a web server on the port 8080.
-Unzip the ADNO package to your web server and start it.
 
+- Unzip the package and go inside the directory.
+- Create a light web server using `python -m http.server 8080`or `php -S localhost:8080` command to run a web server on the port 8080.
+- Use localhost:8080 URL in your browser.
 
-## Host ADNO with Github Pages
-
-Download the latest release of Adno with the version of your choice (full-version or light-version) from (https://github.com/adnodev/adno/releases)
-
-Unzip the archive to your folder and push it to your Github repository.
-
-Once you’ve pushed to Github you need to go to Github’s website, select your repository and click on the “settings” tab.
-
-Then, select the tab “Pages” on the left panel.
-
-You’ll have to select the branch you want to deploy the website from and save your choice.
+On the web, unzip the Adno package to your web server and start it.
 
 Enjoy using Adno !
 
+## Host Adno with your Github Pages
+
+It's the simplest way to deploy your own Adno on the Web.
+
+- Fork Adno repo repository.
+- Copy the file `.env.example` to `.env` and adjust it's content. 
+- Select this new repository and click on the “Settings” tab.
+- Select the tab “Pages” on the left panel. 
+- Then, you’ll have to select the source of build en deployement : Github Actions.
+- On the top menu click on the “Actions” tab and click on the green button “I understand my workflows, go ahead and enable them”.
+- On the left panel, select the tab “ADNO BUILD FULL” or “ADNO BUILD LIGHT” depending of `.env`content, on the left panel.
+- Click on Run workflow" (Branch:main).
+- Return to “Settings” then “Pages”, click on `Visit site` button.
+
+Enjoy using Adno !
 
 ## IIIF pictures examples
+
 * https://ronallo.com/iiif-workshop/presentation/example-manifests.html
 * https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json
 * https://iiif.emf.fr/iiif/3/peutinger.jp2/info.json
 * https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
 
 ## Quickstart with IIIF pictures examples
+
 * https://w.adno.app/#/search?url=https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json
 * https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/peutinger.jp2/info.json
 * https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
@@ -55,15 +62,18 @@ Enjoy using Adno !
 
 ## For developpers
 
-If you want to contribute to ADNO here are few steps to start 
+If you want to contribute to Adno here are few steps to start 
+
   * clone the project from github (https://github.com/adnodev/adno.git)
   * Start the project with the following command : **yarn start**
     * Create a .env file and put the version you would like (examples below)
     * run **yarn build-full** to build full-version and **yarn build-light** to build the light version.
   * In case of errors try to remove node_modules folder, .parcel-cache and yarn.lock file and reinstall module with **yarn install** command.
 
-## Customize your own ADNO
+## Customize your own Adno
+
 Create a .env file and insert the following properties as you wish :
+
 ```
 # MODE 
 ADNO_MODE=FULL
@@ -86,7 +96,8 @@ GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
 CORS_SERVER=https://little-alert-chill.glitch.me
 ```
 
-## Build ADNO
+## Build Adno
+
 .env.ADNOFULL example :
 
 ```
@@ -122,10 +133,10 @@ CORS_SERVER=https://little-alert-chill.glitch.me
 Build both versions :
 
 Warning : this action requires .env.ADNOFULL and .env.ADNOLIGHT files !
+
 Run **yarn build** in your terminal, it will run both commands **build-full** and **build-light**
 
-
-# ADNO embedded in your website
+# Adno embedded in your website
 
 Available settings for the embed :
 

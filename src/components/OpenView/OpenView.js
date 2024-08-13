@@ -131,7 +131,7 @@ class OpenView extends Component {
             annos.map(anno => {
                 const svgElement = getEye()
 
-                const tileSize = document.getElementById('adno-osd').clientWidth / 10
+                const tileSize = document.getElementById('adno-osd').clientWidth / 5 
 
                 svgElement.setAttribute('width', tileSize);
                 svgElement.setAttribute('height', tileSize);
