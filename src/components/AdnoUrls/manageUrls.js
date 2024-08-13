@@ -3,7 +3,6 @@ import { buildJsonProjectWithManifest, enhancedFetch, generateUUID, get_url_exte
 
 export async function manageUrls(props, url, translation) {
     const IPFS_GATEWAY = process.env.IPFS_GATEWAY
-    const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
     // We check if the url is an IPFS CID, version 0 or version 1
     // CIDv0 CIDs are 46 characters long and start with the characters “Qm”
@@ -15,8 +14,8 @@ export async function manageUrls(props, url, translation) {
     const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
     if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-    // TODO 
-    // GRANTED_IMG_EXTENSIONS.includes(get_url_extension(url)) || isIpfsUrl
+
+    console.log(url)
 
     if (url.startsWith('http') || url.startsWith("https")) {
         return enhancedFetch(decodeURIComponent(url))
@@ -25,7 +24,7 @@ export async function manageUrls(props, url, translation) {
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
 
-                    if (['application/json', 'text/html', 'text/plain'].find(c => contentType.includes(c))) {
+                    if (['application/json', 'text/html', 'text/plain', 'application/octet-stream'].find(c => contentType.includes(c))) {
                         response.text()
                             .then(data => {
                                 let manifest = JSON.parse(data)

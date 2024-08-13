@@ -56,6 +56,7 @@ class AdnoEditor extends Component {
             OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
             OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
+
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
                 id: 'openseadragon1',
                 tileSources: tileSources,

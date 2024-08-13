@@ -465,9 +465,11 @@ export async function enhancedFetch(url) {
   } catch (error) {
     if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
       console.log('CORS error: Could not fetch the image.')
+
       if (process.env.CORS_SERVER) {
         const newUrl = `${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}`;
         const response = await fetch(newUrl);
+
         return {
           response,
           url: newUrl
