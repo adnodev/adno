@@ -37,7 +37,7 @@ It's the simplest way to deploy your own Adno on the Web.
 - Select the tab `Pages` on the left panel. 
 - Then, you’ll have to select the source of build en deployement : `Github Actions`.
 - On the top menu click on the `Actions` tab and click on the green button “I understand my workflows, go ahead and enable them”.
-- On the left panel, select the tab “ADNO BUILD FULL” or “ADNO BUILD LIGHT” depending of `.env`content, on the left panel.
+- On the left panel, select the tab “ADNO BUILD FULL” or “ADNO BUILD LIGHT” depending of `.env`content.
 - Click on `Run workflow` (Branch:main).
 - Return to “Settings” then “Pages”, click on `Visit site` button.
 
