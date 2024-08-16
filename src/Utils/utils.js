@@ -319,7 +319,9 @@ export function defaultProjectSettings() {
     rotation: false,
     displayToolbar: true,
     tags: [],
-    strokeWidth: "anno-stroke-w1",
+    outlineWidth: "outline-1px",
+    outlineColor: "outline-white",
+    outlineColorFocus: "outline-focus-yellow",
   }
 }
 

@@ -71,7 +71,9 @@
                 },
                 "settings": {
                     "delay": "Delay between 2 annotations (in seconds)",
-                    "stroke_width": "Annotations outline thickness",
+                    "outline_width": "Annotations outline width",
+                    "outline_color": "Annotation outline color",
+                    "outline_focus": "Color of annotation outline with focus",
                     "navigator": "Annotations Map browser",
                     "fullscreen": "Show toolbar in full screen mode",
                     "annos_nav": "Show navigation bar for annotations",

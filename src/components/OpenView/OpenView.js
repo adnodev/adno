@@ -70,10 +70,10 @@ class OpenView extends Component {
             OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
             OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
-	    const annoStrokeW = this.props.annoStrokeWidth;
+	    const annoStyle = this.props.outlineWidth+" "+this.props.outlineColor+" "+this.props.outlineColorFocus;
 
 	    const annoFormatter = function() {
-		return annoStrokeW;
+		return annoStyle;
 	    }
 
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
