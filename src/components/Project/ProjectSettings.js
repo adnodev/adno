@@ -87,13 +87,13 @@ class ProjectSettings extends Component {
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.outline_width')}</span>
                         </label>
-                        <select size="5" className="input input-bordered h-fit w-fit font-mono" defaultValue={this.state.settings.outlineWidth}
+                        <select size="5" className="input input-bordered h-fit w-full font-mono outline-select" defaultValue={this.state.settings.outlineWidth}
                             onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineWidth: e.target.value } })}>
-		            <option value="outline-1px">▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</option>
-		            <option value="outline-2px">▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂</option>
-		            <option value="outline-3px">▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃</option>
-		            <option value="outline-5px">▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅</option>
-		            <option value="outline-8px">▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇</option>
+		            <option value="outline-1px" className="outline-1px">1px</option>
+		            <option value="outline-2px" className="outline-2px">2px</option>
+		            <option value="outline-3px" className="outline-3px">3px</option>
+		            <option value="outline-5px" className="outline-5px">5px</option>
+		            <option value="outline-8px" className="outline-8px">8px</option>
 		        </select>
 
                         <label className="label">
