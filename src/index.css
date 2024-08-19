@@ -59,10 +59,10 @@ ul {
 }
 
 #toolbar-container button.a9s-toolbar-btn {
-  margin: 0 4px 0 ;
-  padding: 4px;
-  width: 40px;
-  height: 40px;
+    margin: 0 4px 0 ;
+    padding: 4px;
+    width: 40px;
+    height: 40px;
 }
 
 footer{
@@ -70,114 +70,42 @@ footer{
     top: calc(100vh - 52px)
 }
 
-.outline-select option {
-color: black; 
-font-size: 12px; 
-}
-
-.outline-select option::before { 
-content: " "; 
-display: block; 
-margin: 10px 0 10px 20px; 
-height: 0; 
-}
-
-.outline-select option.outline-1px::before { 
-border-bottom: 1px solid black; 
-}
-
-.outline-select option.outline-2px::before { 
-border-bottom: 2px solid black; 
-}
-
-.outline-select option.outline-3px::before { 
-border-bottom: 3px solid black; 
-}
-
-.outline-select option.outline-5px::before { 
-border-bottom: 5px solid black; 
-}
-
-.outline-select option.outline-8px::before { 
-border-bottom: 8px solid black; 
-}
-
-.a9s-annotationlayer .outline-white .a9s-inner, 
-.a9s-annotationlayer .outline-focus-white.hover .a9s-inner {
-	stroke: #ffffff; /* white */
-}
-
-.a9s-annotationlayer .outline-red .a9s-inner, 
-.a9s-annotationlayer .outline-focus-red.hover .a9s-inner {
-	stroke: #ef4444; /* red-500 */
-}
-
-.a9s-annotationlayer .outline-orange .a9s-inner, 
-.a9s-annotationlayer .outline-focus-orange.hover .a9s-inner {
-	stroke: #f59e0b; /* amber-500 */
-}
-
-.a9s-annotationlayer .outline-yellow .a9s-inner, 
-.a9s-annotationlayer .outline-focus-yellow.hover .a9s-inner {
-	stroke: #fde047; /* yellow-300 */
-}
-
-.a9s-annotationlayer .outline-green .a9s-inner, 
-.a9s-annotationlayer .outline-focus-green.hover .a9s-inner {
-	stroke: #84cc16; /* lime-500 */
-}
-
-.a9s-annotationlayer .outline-blue .a9s-inner, 
-.a9s-annotationlayer .outline-focus-blue.hover .a9s-inner {
-	stroke: #60a5fa; /* blue-400 */
-}
-
-.a9s-annotationlayer .outline-violet .a9s-inner, 
-.a9s-annotationlayer .outline-focus-violet.hover .a9s-inner {
-	stroke: #1e293b; /* slate-800 */
-}
-
-.a9s-annotationlayer .outline-black .a9s-inner, 
-.a9s-annotationlayer .outline-focus-black.hover .a9s-inner {
-	stroke: #000000; /* black */
-}
-
 .a9s-annotationlayer .outline-1px .a9s-inner {
-	stroke-width: 1px;
+    stroke-width: 1px;
 }
 
 .a9s-annotationlayer .outline-1px .a9s-outer {
-	stroke-width: 3px;
+    stroke-width: 3px;
 }
 
 .a9s-annotationlayer .outline-2px .a9s-inner {
-	stroke-width: 2px;
+    stroke-width: 2px;
 }
 
 .a9s-annotationlayer .outline-2px .a9s-outer {
-	stroke-width: 4px;
+    stroke-width: 4px;
 }
 
 .a9s-annotationlayer .outline-3px .a9s-inner {
-	stroke-width: 3px;
+    stroke-width: 3px;
 }
 
 .a9s-annotationlayer .outline-3px .a9s-outer {
-	stroke-width: 5px;
+    stroke-width: 5px;
 }
 
 .a9s-annotationlayer .outline-5px .a9s-inner {
-	stroke-width: 5px;
+    stroke-width: 5px;
 }
 
 .a9s-annotationlayer .outline-5px .a9s-outer {
-	stroke-width: 7px;
+    stroke-width: 7px;
 }
 
 .a9s-annotationlayer .outline-8px .a9s-inner {
-	stroke-width: 8px;
+    stroke-width: 8px;
 }
 
 .a9s-annotationlayer .outline-8px .a9s-outer {
-	stroke-width: 10px;
+    stroke-width: 10px;
 }

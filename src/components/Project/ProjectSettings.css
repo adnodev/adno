@@ -1,3 +1,80 @@
 .toggle-navigator, .toggle-toolsbar{
     max-width: 50px !important;
 }
+
+.outline-select option {
+    color: black;
+    font-size: 12px;
+}
+
+.outline-select option::before {
+    content: " ";
+    display: block;
+    height: 0;
+}
+
+.outline-select option.outline-1px::before {
+    border-bottom: 1px solid black;
+    margin: 14px 0 10px 20px;
+}
+
+.outline-select option.outline-2px::before {
+    border-bottom: 2px solid black;
+    margin: 13px 0 9px 20px;
+}
+
+.outline-select option.outline-3px::before {
+    border-bottom: 3px solid black;
+    margin: 12px 0 8px 20px;
+}
+
+.outline-select option.outline-5px::before {
+    border-bottom: 5px solid black;
+    margin: 10px 0 6px 20px;
+}
+
+.outline-select option.outline-8px::before {
+    border-bottom: 8px solid black;
+    margin: 7px 0 3px 20px;
+}
+
+.a9s-annotationlayer .outline-white .a9s-inner,
+.a9s-annotationlayer .outline-focus-white.hover .a9s-inner {
+    stroke: #ffffff; /* white */
+}
+
+.a9s-annotationlayer .outline-red .a9s-inner,
+.a9s-annotationlayer .outline-focus-red.hover .a9s-inner {
+    stroke: #ef4444; /* red-500 */
+}
+
+.a9s-annotationlayer .outline-orange .a9s-inner,
+.a9s-annotationlayer .outline-focus-orange.hover .a9s-inner {
+    stroke: #f59e0b; /* amber-500 */
+}
+
+.a9s-annotationlayer .outline-yellow .a9s-inner,
+.a9s-annotationlayer .outline-focus-yellow.hover .a9s-inner {
+    stroke: #fde047; /* yellow-300 */
+}
+
+.a9s-annotationlayer .outline-green .a9s-inner,
+.a9s-annotationlayer .outline-focus-green.hover .a9s-inner {
+    stroke: #84cc16; /* lime-500 */
+}
+
+.a9s-annotationlayer .outline-blue .a9s-inner,
+.a9s-annotationlayer .outline-focus-blue.hover .a9s-inner {
+    stroke: #60a5fa; /* blue-400 */
+}
+
+.a9s-annotationlayer .outline-violet .a9s-inner,
+.a9s-annotationlayer .outline-focus-violet.hover .a9s-inner {
+    stroke: #1e293b; /* slate-800 */
+}
+
+.a9s-annotationlayer .outline-black .a9s-inner,
+.a9s-annotationlayer .outline-focus-black.hover .a9s-inner {
+    stroke: #000000; /* black */
+}
+
