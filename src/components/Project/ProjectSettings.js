@@ -97,7 +97,7 @@ class ProjectSettings extends Component {
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.outline_color')}</span>
                         </label>
-                        <div className="m-2 flex space-x-4 bg-gray-100 w-fit p-4 rounded-lg cursor-none">
+                        <div className="m-2 flex space-x-4 bg-gray-100 w-fit p-4 rounded-lg">
                             <input type="radio" name="color" value="outline-white"
                                 className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-white checked:bg-white rounded-lg cursor-pointer"
                                 checked={!this.state.settings.outlineColor || (this.state.settings.outlineColor === "outline-white")} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
@@ -136,7 +136,7 @@ class ProjectSettings extends Component {
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.outline_focus')}</span>
                         </label>
-                        <div className="m-2 flex space-x-4 bg-gray-100 w-fit p-4 rounded-lg cursor-none">
+                        <div className="m-2 flex space-x-4 bg-gray-100 w-fit p-4 rounded-lg">
                             <input type="radio" name="focus" value="outline-focus-white"
                                 className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-white checked:bg-white rounded-lg cursor-pointer"
                                 checked={this.state.settings.outlineColorFocus === "outline-focus-white"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
