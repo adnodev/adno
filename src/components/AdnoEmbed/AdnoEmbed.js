@@ -48,22 +48,22 @@ class AdnoEmbed extends Component {
             }
         }
 
-        var showNavigator = query.get("navigator")
+        const showNavigator = query.get("navigator")
             ? query.get("navigator") === "true"
             : true;
-        var toolsbarOnFs = query.get("toolbarsfs")
+        const toolsbarOnFs = query.get("toolbarsfs")
             ? query.get("toolbarsfs") === "true"
             : true;
-        var startbyfirstanno = query.get("startfirst")
+        const startbyfirstanno = query.get("startfirst")
             ? query.get("startfirst") === "true"
             : false;
-        var rotation = query.get("rotation")
+        const rotation = query.get("rotation")
             ? query.get("rotation") === "true"
             : false;
-        var showToolbar = query.get("toolbar")
+        const showToolbar = query.get("toolbar")
             ? query.get("toolbar") === "true"
             : true;
-        var isAnnotationsVisible = query.get("anno_bounds")
+        const isAnnotationsVisible = query.get("anno_bounds")
             ? query.get("anno_bounds") === "true"
             : false;
         const tags = query.get("tags") || []
@@ -73,6 +73,15 @@ class AdnoEmbed extends Component {
         const showEyes = query.get("show_eyes")
             ? query.get("show_eyes") === "true"
             : false;
+        const outlineWidth = query.has("outlineWidth")
+            ? query.get("outlineWidth")
+            : this.state.outlineWidth ? this.state.outlineWidth : "outline-1px";
+        const outlineColor = query.has("outlineColor")
+            ? query.get("outlineColor")
+            : this.state.outlineColor ? this.state.outlineColor : "outline-white";
+        const outlineColorFocus = query.has("outlineColorFocus")
+            ? query.get("outlineColorFocus")
+            : this.state.outlineColorFocus ? this.state.outlineColorFocus : "outline-focus-yellow";
 
         const settings = {
             delay,
@@ -85,7 +94,10 @@ class AdnoEmbed extends Component {
             showToolbar,
             tags,
             showOutlines,
-            showEyes
+            showEyes,
+            outlineWidth,
+            outlineColor,
+            outlineColorFocus
         };
         // Update settings
         this.setState({ ...settings });
@@ -188,11 +200,11 @@ class AdnoEmbed extends Component {
         OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
         OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
-	const annoStyles = this.props.outlineWidth+" "+this.props.outlineColor+" "+this.props.outlineColorFocus;
+        const annoStyles = this.state.outlineWidth + " " + this.state.outlineColor + " " + this.state.outlineColorFocus;
 
-	const annoFormatter = function() {
-		return annoStyles;
-	}
+        const annoFormatter = function () {
+            return annoStyles;
+        }
 
         this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
             locale: "auto",
@@ -200,7 +212,7 @@ class AdnoEmbed extends Component {
             allowEmpty: true,
             disableEditor: true,
             readOnly: true,
-	    formatters: annoFormatter
+            formatters: annoFormatter
         });
 
         // this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
@@ -600,9 +612,9 @@ class AdnoEmbed extends Component {
                                     ) {
                                         // if the project has imported settings, override current settings
                                         if (imported_project.hasOwnProperty("adno_settings")) {
-                                            this.setState({ ...imported_project.adno_settings });
-
-                                            this.overrideSettings();
+                                            this.setState({ ...imported_project.adno_settings }, () => {
+                                                this.overrideSettings();
+                                            });
                                         }
 
                                         this.setState({ isLoaded: true })

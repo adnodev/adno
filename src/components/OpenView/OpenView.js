@@ -71,11 +71,11 @@ class OpenView extends Component {
             OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
             OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
-	    const annoStyles = this.props.outlineWidth+" "+this.props.outlineColor+" "+this.props.outlineColorFocus;
+            const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
 
-	    const annoFormatter = function() {
-		return annoStyles;
-	    }
+            const annoFormatter = function () {
+                return annoStyles;
+            }
 
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
                 locale: 'auto',
@@ -83,7 +83,7 @@ class OpenView extends Component {
                 allowEmpty: true,
                 disableEditor: true,
                 readOnly: true,
-		formatters: annoFormatter    
+                formatters: annoFormatter
             });
 
             this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
@@ -138,7 +138,7 @@ class OpenView extends Component {
             annos.map(anno => {
                 const svgElement = getEye()
 
-                const tileSize = document.getElementById('adno-osd').clientWidth / 5 
+                const tileSize = document.getElementById('adno-osd').clientWidth / 5
 
                 svgElement.setAttribute('width', tileSize);
                 svgElement.setAttribute('height', tileSize);
@@ -358,6 +358,13 @@ class OpenView extends Component {
         }
     }
 
+    reloadAnnotationsFromProps = () => {
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+        this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+        setTimeout(this.freeMode, 1000)
+    }
+
     componentDidUpdate(prevProps, prevState) {
         // check when there is a new selected annotation from the sidebar
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
@@ -365,10 +372,17 @@ class OpenView extends Component {
         }
 
         if (prevProps.annos !== this.props.annos) {
-            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
-            this.AdnoAnnotorious.loadAnnotations(dataURI)
+            this.reloadAnnotationsFromProps()
+        }
 
-            setTimeout(this.freeMode, 1000)
+        if (prevProps.outlineWidth !== this.props.outlineWidth ||
+            prevProps.outlineColor !== this.props.outlineColor ||
+            prevProps.outlineColorFocus !== this.props.outlineColorFocus
+        ) {
+            const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
+            this.AdnoAnnotorious.formatters = [() => annoStyles]
+
+            this.reloadAnnotationsFromProps()
         }
 
         if (prevProps.showOutlines !== this.props.showOutlines) {
