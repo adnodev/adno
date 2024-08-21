@@ -36,18 +36,16 @@ class AdnoEditor extends Component {
             let tileSources;
 
             if (selected_project.manifest_url) {
-
                 tileSources = [
                     selected_project.manifest_url
                 ]
-
             } else {
                 tileSources = {
                     type: 'image',
                     url: selected_project.img_url
                 }
             }
-    
+
             OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
             OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
             OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
@@ -57,6 +55,7 @@ class AdnoEditor extends Component {
             OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
             OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
             OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
+
 
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
                 id: 'openseadragon1',

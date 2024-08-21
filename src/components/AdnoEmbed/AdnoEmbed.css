@@ -2,3 +2,36 @@
     width: 100vw;
     height: calc(100vh - 48px);
 }
+
+.adno-embed-anno-fullscreen{
+    position: absolute;
+    z-index: 10000;
+    top: 64px;
+    left: 2%;
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    color: cadetblue;
+    border-radius: 2px;
+    padding: 10px;
+    overflow: auto;
+    font-size: x-large;
+}
+
+.adno-embed-anno-fullscreen-tb-opened {
+    position: absolute;
+    z-index: 10000;
+    top: 8%;
+    left: 2%;
+    width: 20vw;
+    height: auto;
+    background-color: white;
+    color: cadetblue;
+    border-radius: 2px;
+    padding: 10px;
+    overflow: auto;
+    resize: both;
+    min-width: 15vw;
+    max-height: calc(100% - 10vh);
+    font-size: x-large;
+}

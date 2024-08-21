@@ -16,7 +16,6 @@ class AdnoMdViewer extends Component {
     }
 
     async componentDidMount() {
-        console.log('hererer')
         await this.getAnnoBody()
         this.setState({ isLoaded: true })
     }
@@ -58,7 +57,6 @@ class AdnoMdViewer extends Component {
 
         } else {
             finalBody += line
-            console.log('here', line)
             this.setState({ annos: "\n\n" + finalBody + "\n\n" })
         }
     }

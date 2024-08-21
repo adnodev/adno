@@ -12,7 +12,6 @@ class Navbar extends Component {
     }
 
     render() {
-        console.log(this.props)
         return (
             <div className="navbar text-neutral-content">
                 <Link to={"/"} className="project-navbar-link project-page-title" title={this.props.t('navbar.back_home')}>

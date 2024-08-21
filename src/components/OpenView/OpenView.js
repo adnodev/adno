@@ -4,11 +4,12 @@ import ReactHtmlParser from 'react-html-parser';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 
 // Import utils
-import { checkIfProjectExists } from "../../Utils/utils";
+import { checkIfProjectExists, getEye } from "../../Utils/utils";
 
 // Import OpenSeaDragon and Annotorious
 import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
@@ -26,11 +27,9 @@ class OpenView extends Component {
             timer: false,
             intervalID: 0,
             fullScreenEnabled: false,
-            isAnnotationsVisible: true
+            isAnnotationsVisible: true,
         }
     }
-
-
 
     componentDidMount() {
         // First of all, verify if the UUID match to an real project in the localStorage
@@ -39,8 +38,8 @@ class OpenView extends Component {
             this.props.history.push("/")
         } else {
             let tileSources;
-            if (this.props.selected_project.manifest_url) {
 
+            if (this.props.selected_project.manifest_url) {
                 tileSources = [
                     this.props.selected_project.manifest_url
                 ]
@@ -57,7 +56,9 @@ class OpenView extends Component {
                 homeButton: "home-button",
                 showNavigator: this.props.showNavigator,
                 tileSources: tileSources,
-                prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/'
+                prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
+                crossOriginPolicy: 'Anonymous',
+                ajaxWithCredentials: false
             })
 
             OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
@@ -88,6 +89,9 @@ class OpenView extends Component {
             this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
                 if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+                    this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+                    document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
                 }
 
                 this.AdnoAnnotorious.fitBounds(annotation.id)
@@ -101,10 +105,88 @@ class OpenView extends Component {
             // Generate dataURI and load annotations into Annotorious
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
+                .then(() => {
+                    setTimeout(() => {
+                        this.freeMode()
+                        this.toggleOutlines(this.props.showOutlines)
+                    }, 200)
+                })
         }
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
         addEventListener('keydown', this.keyPressedEvents)
+    }
+
+    toggleOutlines = showOutlines => {
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        annos.forEach(anno => {
+            if (showOutlines)
+                [...anno.children].forEach(r => {
+                    r.classList.remove("a9s-annotation--hidden")
+                })
+            else
+                [...anno.children].forEach(r => {
+                    r.classList.add("a9s-annotation--hidden")
+                })
+        })
+    }
+
+    freeMode = () => {
+        if (this.props.showEyes) {
+            const annos = [...document.getElementsByClassName("a9s-annotation")]
+
+            annos.map(anno => {
+                const svgElement = getEye()
+
+                const tileSize = document.getElementById('adno-osd').clientWidth / 5 
+
+                svgElement.setAttribute('width', tileSize);
+                svgElement.setAttribute('height', tileSize);
+
+                svgElement.style.fill = "#000"
+                svgElement.style.stroke = "#000"
+                svgElement.style.strokeWidth = 2
+                svgElement.classList.add('eye')
+                svgElement.id = `eye-${anno.getAttribute('data-id')}`;
+
+                const type = [...anno.children][0].tagName
+
+                if (type === "ellipse" || type == "circle") {
+                    svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
+                    svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
+
+                    if (anno.classList.contains("a9s-point")) {
+                        anno.removeAttribute("transform", "")
+
+                        anno.classList.remove("a9s-point")
+                        anno.classList.remove("a9s-non-scaling")
+                    }
+
+                    anno.appendChild(svgElement)
+                } else if (type === "rect") {
+                    svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
+                    svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
+
+                    anno.appendChild(svgElement)
+                } else if (type === "path" || type === "polygon") {
+                    const bbox = anno.getBBox();
+
+                    const centerX = bbox.x + bbox.width / 2;
+                    const centerY = bbox.y + bbox.height / 2;
+
+                    svgElement.setAttribute('x', centerX - tileSize / 2);
+                    svgElement.setAttribute('y', centerY - tileSize / 2);
+
+                    anno.appendChild(svgElement)
+                }
+
+                // [...anno.children].map(r => {
+                //     r.classList.add("a9s-annotation--hidden")
+                // })
+            })
+        } else {
+            [...document.getElementsByClassName('eye')].forEach(r => r.remove())
+        }
     }
 
     keyPressedEvents = (event) => {
@@ -164,18 +246,18 @@ class OpenView extends Component {
         if (annotation && annotation.id) {
             this.props.changeSelectedAnno(annotation)
 
-            if (this.state.isAnnotationsVisible) {
-                this.AdnoAnnotorious.selectAnnotation(annotation.id)
-                this.AdnoAnnotorious.fitBounds(annotation.id)
-            } else {
-                if (annotation.target && annotation.target.selector.value) {
-                    var imgWithTiles = this.openSeadragon.world.getItemAt(0);
-                    var xywh = annotation.target.selector.value.replace("xywh=pixel:", "").split(",")
-                    var rect = new OpenSeadragon.Rect(parseFloat(xywh[0]), parseFloat(xywh[1]), parseFloat(xywh[2]), parseFloat(xywh[3]))
-                    var imgRect = imgWithTiles.imageToViewportRectangle(rect);
-                    this.openSeadragon.viewport.fitBounds(imgRect);
-                }
-            }
+            // if (this.state.isAnnotationsVisible) {
+            this.AdnoAnnotorious.selectAnnotation(annotation.id)
+            this.AdnoAnnotorious.fitBounds(annotation.id)
+            // } else {
+            //     if (annotation.target && annotation.target.selector.value) {
+            //         var imgWithTiles = this.openSeadragon.world.getItemAt(0);
+            //         var xywh = annotation.target.selector.value.replace("xywh=pixel:", "").split(",")
+            //         var rect = new OpenSeadragon.Rect(parseFloat(xywh[0]), parseFloat(xywh[1]), parseFloat(xywh[2]), parseFloat(xywh[3]))
+            //         var imgRect = imgWithTiles.imageToViewportRectangle(rect);
+            //         this.openSeadragon.viewport.fitBounds(imgRect);
+            //     }
+            // }
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
 
@@ -183,6 +265,8 @@ class OpenView extends Component {
 
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                 document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+                document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
             }
         }
     }
@@ -280,10 +364,19 @@ class OpenView extends Component {
             this.changeAnno(this.props.selectedAnno)
         }
 
-        if(prevProps.annos !== this.props.annos) {
+        if (prevProps.annos !== this.props.annos) {
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+            setTimeout(this.freeMode, 1000)
         }
+
+        if (prevProps.showOutlines !== this.props.showOutlines) {
+            this.toggleOutlines(this.props.showOutlines)
+        }
+
+        if (prevProps.showEyes !== this.props.showEyes)
+            setTimeout(this.freeMode, 1000)
 
         // Check if the user toggled the navigator on/off
         if (this.props.showNavigator !== prevProps.showNavigator) {
@@ -296,8 +389,24 @@ class OpenView extends Component {
         }
     }
 
+    toggleAnnotations = () => {
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        annos.forEach(anno => {
+            [...anno.children].forEach(r => {
+                if (this.props.showOutlines) {
+                    r.classList.toggle("a9s-annotation--hidden")
+                } else if (r.classList.contains("eye")) {
+                    r.classList.toggle("a9s-annotation--hidden")
+                }
+            })
+        })
+    }
+
+
     toggleAnnotationsLayer = () => {
-        this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
+        // this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
+
+        this.toggleAnnotations()
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
@@ -315,9 +424,10 @@ class OpenView extends Component {
     }
 
     render() {
-        return (
-            <div id="adno-osd">
+        const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
 
+        return (
+            <div id="adno-osd" style={{ position: 'relative' }}>
                 {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
                     this.getAnnotationHTMLBody(this.props.selectedAnno)
@@ -345,11 +455,11 @@ class OpenView extends Component {
                         {
                             this.props.annos.length > 0 &&
                             <>
-                                <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
+                                {showAnnotationsButton && <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
                                         <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
                                     </div>
-                                </button>
+                                </button>}
 
                                 <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>
@@ -377,30 +487,31 @@ class OpenView extends Component {
                                 <FontAwesomeIcon icon={faExpand} size="lg" />
                             </div>
                         </button>
-                        <button id="help" className="toolbarButton toolbaractive" >
-                            <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.help')}>
+                        <button id="help" className="toolbarButton toolbaractive">
+                            <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
+                                style={{ display: 'block' }}>
                                 <FontAwesomeIcon icon={faQuestion} size="lg" />
                             </label>
                         </button>
 
-			<input type="checkbox" id="help-modal" className="modal-toggle" />
-			<div className="modal">
-			    <div className="modal-box" style={{ "color": "initial" }}>
+                        <input type="checkbox" id="help-modal" className="modal-toggle" />
+                        <div className="modal">
+                            <div className="modal-box" style={{ "color": "initial" }}>
                                 <div className="modal-action mt-0 justify-end">
                                     <button className="btn btn-square btn-sm">
-                                        <label htmlFor="help-modal">
+                                        <label htmlFor="help-modal" className="cursor-pointer">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                         </label>
                                     </button>
                                 </div>
-			        <h3 className="font-bold text-lg py-4">{this.props.t('visualizer.help_title')}</h3>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>S</code> {this.props.t('visualizer.help_or')} <code>s</code>{this.props.t('visualizer.help_key_s')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>T</code>{this.props.t('visualizer.help_or')} <code>t</code> {this.props.t('visualizer.help_key_t')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>←</code> {this.props.t('visualizer.help_and')} <code>→</code> {this.props.t('visualizer.help_key_arrows')}</p>
-				<p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank">{this.props.t('visualizer.help_doc_link')}</a></p>
+                                <h3 className="font-bold text-lg py-4">{this.props.t('visualizer.help_title')}</h3>
+                                <p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</p>
+                                <p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</p>
+                                <p className="py-4">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</p>
+                                <p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>S</code> {this.props.t('visualizer.help_or')} <code>s</code>{this.props.t('visualizer.help_key_s')}</p>
+                                <p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>T</code>{this.props.t('visualizer.help_or')} <code>t</code> {this.props.t('visualizer.help_key_t')}</p>
+                                <p className="py-4">{this.props.t('visualizer.help_key_plural')} <code>←</code> {this.props.t('visualizer.help_and')} <code>→</code> {this.props.t('visualizer.help_key_arrows')}</p>
+                                <p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank">{this.props.t('visualizer.help_doc_link')}</a></p>
                             </div>
                         </div>
                     </div>
