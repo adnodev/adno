@@ -571,12 +571,12 @@ class AdnoEmbed extends Component {
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-        enhancedFetch(url)
+        enhancedFetch(decodeURIComponent(url))
             .then(rawResponse => {
                 const { response } = rawResponse
                 if (response.ok) {
                     const contentType = response.headers.get('Content-Type')
-                    if (['application/json', 'text/html', 'text/plain'].includes(contentType) ||
+                    if (['application/json', 'text/html', 'text/plain', 'application/octet-stream'].find(c => contentType.includes(c)) ||
                         contentType.includes("application/json")) {
                         response.text()
                             .then(data => {
