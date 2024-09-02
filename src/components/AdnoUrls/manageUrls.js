@@ -14,9 +14,6 @@ export async function manageUrls(props, url, translation) {
     const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
     if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-
-    // console.log("manageUrls", url)
-
     if (url.startsWith('http') || url.startsWith("https")) {
         return enhancedFetch(decodeURIComponent(url))
             .then(rawReponse => {

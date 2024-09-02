@@ -28,6 +28,7 @@ class OpenView extends Component {
             intervalID: 0,
             fullScreenEnabled: false,
             isAnnotationsVisible: true,
+            currentTrack: undefined
         }
     }
 
@@ -101,6 +102,7 @@ class OpenView extends Component {
                 .then(() => {
                     setTimeout(() => {
                         this.freeMode()
+                        this.loadAudio()
                         this.toggleOutlines(this.props.showOutlines)
                     }, 200)
                 })
@@ -128,13 +130,14 @@ class OpenView extends Component {
         if (this.props.showEyes) {
             const annos = [...document.getElementsByClassName("a9s-annotation")]
 
-            annos.map(anno => {
+            annos.map((anno, i) => {
                 const svgElement = getEye()
 
-                const tileSize = document.getElementById('adno-osd').clientWidth / 5 
+                const tileSize = document.getElementById('adno-osd').clientWidth / 5
 
                 svgElement.setAttribute('width', tileSize);
                 svgElement.setAttribute('height', tileSize);
+
 
                 svgElement.style.fill = "#000"
                 svgElement.style.stroke = "#000"
@@ -256,10 +259,34 @@ class OpenView extends Component {
 
             this.setState({ currentID: annotationIndex })
 
+            const { currentTrack } = this.state
+
+            if (currentTrack) {
+                currentTrack.pause()
+                currentTrack.currentTime = 0;
+            }
+
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                 document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
                 this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
                 document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
+
+                const annos = [...document.getElementsByClassName("a9s-annotation")]
+                const annoSvg = annos.find(anno => anno.getAttribute('data-id') === annotation.id)
+
+                if (annoSvg) {
+                    const audioElement = [...annoSvg.getElementsByTagName("audio")];
+
+                    if (audioElement.length > 0) {
+                        const source = audioElement[0]
+
+                        source.play()
+
+                        this.setState({
+                            currentTrack: source
+                        })
+                    }
+                }
             }
         }
     }
@@ -361,6 +388,8 @@ class OpenView extends Component {
             const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
             this.AdnoAnnotorious.loadAnnotations(dataURI)
 
+            this.loadAudio()
+
             setTimeout(this.freeMode, 1000)
         }
 
@@ -380,6 +409,35 @@ class OpenView extends Component {
             }
 
         }
+    }
+
+    loadAudio = () => {
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+
+        annos.forEach(anno => {
+            const audioElement = document.createElement('audio')
+            audioElement.setAttribute("volume", 100)
+
+            const id = anno.getAttribute("data-id")
+            const annotation = this.props.annos?.find(anno => anno.id === id);
+
+            if (annotation && annotation.body && Array.isArray(annotation.body)) {
+                const track = annotation.body.find(body => body.type === "Sound")
+
+                if (track) {
+                    const sourceElement = document.createElement('source')
+                    sourceElement.src = track.id
+                    audioElement.appendChild(sourceElement)
+
+                    const unimplemented = document.createElement("p")
+                    unimplemented.textContent = "Your browser doesn't support the HTML5 audio element"
+                    audioElement.appendChild(unimplemented)
+
+                    anno.appendChild(audioElement)
+                }
+            }
+
+        })
     }
 
     toggleAnnotations = () => {

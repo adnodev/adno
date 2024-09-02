@@ -30,7 +30,8 @@ class AdnoEmbed extends Component {
             currentID: -1,
             intervalID: 0,
             selectedAnno: {},
-            isLoaded: false
+            isLoaded: false,
+            currentTrack: undefined
         };
     }
 
@@ -225,6 +226,8 @@ class AdnoEmbed extends Component {
             .then(() => {
                 setTimeout(() => {
                     this.freeMode()
+
+                    this.loadAudio()
 
                     if (!this.state.showOutlines)
                         this.toggleOutlines()
@@ -558,7 +561,61 @@ class AdnoEmbed extends Component {
         document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
 
         this.setState({ currentID: annotationIndex });
+
+        const { currentTrack } = this.state
+
+        if (currentTrack) {
+            currentTrack.pause()
+            currentTrack.currentTime = 0;
+        }
+
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        const annoSvg = annos.find(anno => anno.getAttribute('data-id') === annotation.id)
+
+        if (annoSvg) {
+            const audioElement = [...annoSvg.getElementsByTagName("audio")];
+
+            if (audioElement.length > 0) {
+                const source = audioElement[0]
+
+                source.play()
+
+                this.setState({
+                    currentTrack: source
+                })
+            }
+        }
     };
+
+    loadAudio = () => {
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+
+        annos.forEach(anno => {
+            const id = anno.getAttribute("data-id")
+            const annotation = this.state.annos?.find(anno => anno.id === id);
+
+
+            if (annotation && annotation.body && Array.isArray(annotation.body)) {
+                const track = annotation.body.find(body => body.type === "Sound")
+
+                if (track) {
+                    const audioElement = document.createElement('audio')
+                    audioElement.setAttribute("volume", 100)
+
+                    const sourceElement = document.createElement('source')
+                    sourceElement.src = track.id
+                    audioElement.appendChild(sourceElement)
+
+                    const unimplemented = document.createElement("p")
+                    unimplemented.textContent = "Your browser doesn't support the HTML5 audio element"
+                    audioElement.appendChild(unimplemented)
+
+                    anno.appendChild(audioElement)
+                }
+            }
+
+        })
+    }
 
     getAdnoProject = (url) => {
         const IPFS_GATEWAY = process.env.IPFS_GATEWAY;

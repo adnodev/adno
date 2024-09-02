@@ -93,6 +93,7 @@
             "editor": {
                 "approve_changes": "Approve changes",
                 "md_add_tag": "Add a new tag",
+                "audio_track": "Audio Track (URL)",
                 "md_save": "Save",
                 "md_delete": "Delete",
                 "md_delete_confirm": "Confirm deletion",

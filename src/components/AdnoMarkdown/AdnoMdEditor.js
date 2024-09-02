@@ -29,6 +29,7 @@ class AdnoMdEditor extends Component {
         this.state = {
             isDeleting: false,
             selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || [],
+            audioTrack: this.getAudioBody(),
             markdown: []
         }
     }
@@ -75,6 +76,11 @@ class AdnoMdEditor extends Component {
             "purpose": "commenting"
         }
 
+        const audioBody = {
+            type: 'Sound',
+            id: this.state.audioTrack,
+        }
+
         let tags = this.state.selectedTags.map(tag => {
             return (
                 {
@@ -85,7 +91,7 @@ class AdnoMdEditor extends Component {
             )
         })
 
-        let newBody = [newTextBody, HTMLBody, ...tags]
+        let newBody = [newTextBody, HTMLBody, ...tags, audioBody]
         currentSelectedAnno.body = newBody;
 
         if (annos.find(anno => anno.id === currentSelectedAnno.id)) {
@@ -110,6 +116,17 @@ class AdnoMdEditor extends Component {
         document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`)?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 
         this.props.closeMdEditor()
+    }
+
+    getAudioBody = () => {
+        if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
+            const resource = this.props.selectedAnnotation.body
+                .find(body => body.type === "Sound")
+            if (resource)
+                return resource.id
+        } else {
+            return ""
+        }
     }
 
     getAnnoBody = () => {
@@ -173,6 +190,22 @@ class AdnoMdEditor extends Component {
                         <span>{this.props.t('tags_infos')}</span>
                     </div>
 
+                    <label className="form-control w-full">
+                        <div className="label">
+                            <span className="label-text" style={{ color: '#000' }}>{this.props.t('editor.audio_track')}</span>
+                        </div>
+                        <div className='flex items-center gap-2'>
+                            <input type="text"
+                                className="input input-bordered w-full grow"
+                                id="track"
+                                onChange={e => this.setState({ audioTrack: e.target.value })}
+                                value={this.state.audioTrack} />
+                            {this.state.audioTrack && <figure>
+                                <audio controls src={this.state.audioTrack}></audio>
+                            </figure>}
+                        </div>
+                    </label>
+
 
                     <div className="rich-card-editor-btns">
                         {!this.state.isDeleting && <button className="btn btn-error ml-1 mr-1" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> &nbsp; {this.props.t('editor.md_delete')} </button>}
@@ -180,7 +213,7 @@ class AdnoMdEditor extends Component {
                         <button className="btn ml-1 mr-1" onClick={() => this.saveMD()}><FontAwesomeIcon icon={faSave} /> &nbsp; {this.props.t('editor.md_save')} </button>
                     </div>
                 </div>
-            </div>
+            </div >
 
         )
     }
