@@ -94,6 +94,47 @@ class OpenView extends Component {
 
                 this.setState({ currentID: annotationIndex })
                 this.props.changeSelectedAnno(annotation)
+
+                const viewer = this.openSeadragon
+
+                console.log(viewer)
+
+                function calculateDistanceFromAnnotation(annotation) {
+                    // Extract coordinates from the annotation (assumes polygon or line annotation)
+                    console.log(annotation)
+                    if (annotation.target.selector && annotation.target.selector.type === 'FragmentSelector') {
+                        // Get xywh=pixel_x,pixel_y,width,height from the selector value
+                        var fragment = annotation.target.selector.value.match(/xywh=pixel:(\d+(\.\d+)?),(\d+(\.\d+)?),(\d+(\.\d+)?),(\d+(\.\d+)?)/);
+                        console.log(fragment)
+                        if (fragment) {
+                            var x = parseFloat(fragment[1]);
+                            var y = parseFloat(fragment[3]);
+                            var width = parseFloat(fragment[5]);
+                            var height = parseFloat(fragment[7]);
+
+                            // Assuming you want to measure the distance between the top-left and bottom-right corners
+                            var point1 = new OpenSeadragon.Point(x, y); // Top-left corner
+                            var point2 = new OpenSeadragon.Point(x + width, y + height); // Bottom-right corner
+
+                            // Calculate the distance between the two points
+                            var distance = calculateDistance(point1, point2);
+                            console.log("Distance between points:", distance);
+                        }
+                    }
+                }
+
+                // Function to calculate the distance between two points (in viewport coordinates)
+                function calculateDistance(point1, point2) {
+                    var viewportPoint1 = viewer.viewport.pointFromPixel(point1, true);
+                    var viewportPoint2 = viewer.viewport.pointFromPixel(point2, true);
+
+                    var dx = viewportPoint1.x - viewportPoint2.x;
+                    var dy = viewportPoint1.y - viewportPoint2.y;
+
+                    return Math.sqrt(dx * dx + dy * dy);
+                }
+
+                calculateDistanceFromAnnotation(annotation)
             });
 
             // Generate dataURI and load annotations into Annotorious
@@ -280,17 +321,58 @@ class OpenView extends Component {
                     if (audioElement.length > 0) {
                         const source = audioElement[0]
 
-                        source.play()
+                        // source.play()
+                        this.playSpatialSound(source.cloneNode(true))
 
                         this.setState({
                             currentTrack: source
                         })
                     }
+
                 }
             }
         }
     }
 
+    playSpatialSound = audioElement => {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const listener = audioCtx.listener;
+
+        const track = new MediaElementAudioSourceNode(audioCtx, {
+            mediaElement: audioElement,
+        });
+
+        const posX = 0;
+        const posY = window.innerHeight / 2;
+        const posZ = 300;
+
+        const panner = new PannerNode(audioCtx, {
+            panningModel: "HRTF",
+            distanceModel: "linear",
+            positionX: posX,
+            positionY: posY,
+            positionZ: posZ,
+            orientationX: 0.0,
+            orientationY: 0.0,
+            orientationZ: -1.0,
+            refDistance: 1,
+            maxDistance: 20_000,
+            rolloffFactor: 10,
+            coneInnerAngle: 40,
+            coneOuterAngle: 50,
+            coneOuterGain: 0.4,
+        })
+
+        track
+            .connect(panner)
+            .connect(audioCtx.destination)
+
+        console.log(this.openSeadragon)
+
+        audioElement.crossOrigin = "anonymous";
+        audioElement.play()
+    }
 
     startTimer = () => {
         // Do not start the timer if there is no content to display
@@ -411,6 +493,7 @@ class OpenView extends Component {
         }
     }
 
+    // https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Web_audio_spatialization_basics
     loadAudio = () => {
         const annos = [...document.getElementsByClassName("a9s-annotation")]
 
