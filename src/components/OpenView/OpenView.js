@@ -505,11 +505,11 @@ class OpenView extends Component {
             const annotation = this.props.annos?.find(anno => anno.id === id);
 
             if (annotation && annotation.body && Array.isArray(annotation.body)) {
-                const track = annotation.body.find(body => body.type === "Sound")
+                const track = annotation.body.find(body => body.type === "SpecificResource")
 
                 if (track) {
                     const sourceElement = document.createElement('source')
-                    sourceElement.src = track.id
+                    sourceElement.src = track.source?.id
                     audioElement.appendChild(sourceElement)
 
                     const unimplemented = document.createElement("p")

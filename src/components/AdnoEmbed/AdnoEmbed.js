@@ -596,14 +596,14 @@ class AdnoEmbed extends Component {
 
 
             if (annotation && annotation.body && Array.isArray(annotation.body)) {
-                const track = annotation.body.find(body => body.type === "Sound")
+                const track = annotation.body.find(body => body.type === "SpecificResource")
 
                 if (track) {
                     const audioElement = document.createElement('audio')
                     audioElement.setAttribute("volume", 100)
 
                     const sourceElement = document.createElement('source')
-                    sourceElement.src = track.id
+                    sourceElement.src = track.source?.id
                     audioElement.appendChild(sourceElement)
 
                     const unimplemented = document.createElement("p")

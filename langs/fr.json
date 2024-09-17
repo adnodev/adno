@@ -93,6 +93,7 @@
                 "approve_changes": "Valider les modifications",
                 "md_add_tag": "Ajouter un mot clé",
                 "audio_track": "Piste audio (URL)",
+                "audio_creator": "Créateur de la piste audio (Crédit)",
                 "md_save": "Enregistrer",
                 "md_delete": "Supprimer",
                 "md_delete_confirm": "Confirmer la suppression",
