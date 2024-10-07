@@ -36,6 +36,14 @@ class Project extends Component {
             showSettings: false,
             settings: getProjectSettings(this.props.match.params.id),
             autoplayID: -1,
+
+            audioContexts: []
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.editMode !== this.props.editMode) {
+            this.state.audioContexts.forEach(r => r.suspend())
         }
     }
 
@@ -191,6 +199,7 @@ class Project extends Component {
                                     />
                                     :
                                     <OpenView
+                                        setAudioContexts={audioContexts => this.setState({ audioContexts })}
                                         startbyfirstanno={this.state.settings.startbyfirstanno}
                                         showNavigator={this.state.settings.showNavigator}
                                         toolsbarOnFs={this.state.settings.toolsbarOnFs}

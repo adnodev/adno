@@ -1,7 +1,7 @@
 import Swal from "sweetalert2"
 import { buildJsonProjectWithManifest, enhancedFetch, generateUUID, get_url_extension, insertInLS, migrateTextBody } from "../../Utils/utils";
 
-export async function manageUrls(props, url, translation) {
+export async function manageUrls(props, url, translation, step = "decoreURIComponent") {
     const IPFS_GATEWAY = process.env.IPFS_GATEWAY
 
     // We check if the url is an IPFS CID, version 0 or version 1
@@ -15,15 +15,17 @@ export async function manageUrls(props, url, translation) {
     if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
     if (url.startsWith('http') || url.startsWith("https")) {
-        return enhancedFetch(decodeURIComponent(url))
+        return enhancedFetch(step === "decoreURIComponent" ? decodeURIComponent(url) : url)
             .then(rawReponse => {
                 if (rawReponse.response.ok) {
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
 
+                    console.log(contentType)
                     if (['application/json', 'text/html', 'text/plain', 'application/octet-stream'].find(c => contentType.includes(c))) {
                         response.text()
                             .then(data => {
+                                console.log(data)
                                 let manifest = JSON.parse(data)
 
                                 // If we detect an ADNO project, we import it to the user's projects
@@ -103,6 +105,11 @@ export async function manageUrls(props, url, translation) {
                                             })
                                     }
 
+                                }
+                            })
+                            .catch(_err => {
+                                if (step === "decoreURIComponent") {
+                                    return manageUrls(props, url, translation, "rawURL")
                                 }
                             })
                     } else {

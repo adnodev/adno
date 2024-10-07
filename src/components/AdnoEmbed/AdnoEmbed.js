@@ -14,6 +14,8 @@ import {
     faExpand,
     faRotateRight,
     faQuestion,
+    faVolumeHigh,
+    faVolumeOff
 } from "@fortawesome/free-solid-svg-icons";
 import ReactHtmlParser from "react-html-parser";
 import Swal from "sweetalert2";
@@ -31,7 +33,8 @@ class AdnoEmbed extends Component {
             intervalID: 0,
             selectedAnno: {},
             isLoaded: false,
-            currentTrack: undefined
+            currentTrack: undefined,
+            playSound: true
         };
     }
 
@@ -74,6 +77,9 @@ class AdnoEmbed extends Component {
         const showEyes = query.get("show_eyes")
             ? query.get("show_eyes") === "true"
             : false;
+        const playSound = query.get("play_sound")
+            ? query.get("play_sound") === "true"
+            : false;
 
         const settings = {
             delay,
@@ -86,7 +92,8 @@ class AdnoEmbed extends Component {
             showToolbar,
             tags,
             showOutlines,
-            showEyes
+            showEyes,
+            playSound
         };
         // Update settings
         this.setState({ ...settings });
@@ -272,6 +279,15 @@ class AdnoEmbed extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
+    hasAudio = annotation => {
+        if (Array.isArray(annotation.body) && annotation.body.length > 0) {
+            const resource = annotation.body
+                .find(body => body.type === "SpecificResource")
+            return resource?.source?.id
+        }
+        return false
+    }
+
     getAnnotationHTMLBody = (annotation) => {
         if (annotation && annotation.body) {
             if (
@@ -288,6 +304,7 @@ class AdnoEmbed extends Component {
                                 : "adno-embed-anno-fullscreen"
                         }
                     >
+                        {this.hasAudio(annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
                         {ReactHtmlParser(
                             annotation.body.find((annoBody) => annoBody.type === "HTMLBody")
                                 .value
@@ -316,6 +333,16 @@ class AdnoEmbed extends Component {
             alert("Fullscreen disabled");
         }
     };
+
+    toggleSound = () => {
+        const playSound = !this.state.playSound;
+
+        [...document.getElementsByTagName('audio')].map(audiTag => audiTag.volume = playSound ? 1 : 0)
+
+        this.setState({ playSound })
+    }
+
+
     keyPressedEvents = (event) => {
         switch (event.code) {
             case "ArrowRight":
@@ -578,6 +605,8 @@ class AdnoEmbed extends Component {
             if (audioElement.length > 0) {
                 const source = audioElement[0]
 
+                console.log(source)
+
                 source.play()
 
                 this.setState({
@@ -600,7 +629,7 @@ class AdnoEmbed extends Component {
 
                 if (track) {
                     const audioElement = document.createElement('audio')
-                    audioElement.setAttribute("volume", 100)
+                    audioElement.volume = this.state.playSound ? 1 : 0
 
                     const sourceElement = document.createElement('source')
                     sourceElement.src = track.source?.id
@@ -839,6 +868,8 @@ class AdnoEmbed extends Component {
     render() {
         const showAnnotationsButton = this.state.showOutlines || this.state.showEyes
 
+        console.log(this.state.playSound)
+
         if (this.state.isLoaded) {
             return (
                 <div id="adno-embed">
@@ -904,6 +935,12 @@ class AdnoEmbed extends Component {
                                     <FontAwesomeIcon icon={faExpand} size="lg" />
                                 </div>
                             </button>
+                            <button id="toggle-sound" className="toolbarButton toolbaractive" onClick={() => this.toggleSound()}>
+                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.sound')}>
+                                    <FontAwesomeIcon icon={this.state.playSound ? faVolumeHigh : faVolumeOff} size="lg" />
+                                </div>
+                            </button>
+
                             <button id="help" className="toolbarButton toolbaractive">
                                 <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
                                     style={{ display: 'block' }}>

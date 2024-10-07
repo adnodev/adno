@@ -8,7 +8,7 @@ import ReactHtmlParser from 'react-html-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faPlusCircle, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 
 // Add translations
 import { withTranslation } from "react-i18next";
@@ -80,10 +80,20 @@ class OneCardView extends Component {
         }
     }
 
+    hasAudio = annotation => {
+        if (Array.isArray(annotation.body) && annotation.body.length > 0) {
+            const resource = annotation.body
+                .find(body => body.type === "SpecificResource")
+            return resource?.source?.id
+        }
+        return false
+    }
+
     render() {
         return (
             <div className="anno-card-body">
                 {/* <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(this.props.annotation)} </h6> */}
+                {this.hasAudio(this.props.annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
 
                 <div className="card-tags-list">
                     {
