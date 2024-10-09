@@ -10,7 +10,6 @@ import {
     faEyeSlash,
     faArrowRight,
     faArrowLeft,
-    faVectorSquare,
     faExpand,
     faRotateRight,
     faQuestion,
@@ -77,8 +76,11 @@ class AdnoEmbed extends Component {
         const showEyes = query.get("show_eyes")
             ? query.get("show_eyes") === "true"
             : false;
-        const playSound = query.get("play_sound")
-            ? query.get("play_sound") === "true"
+        const soundEnabled = query.get("sound_enabled")
+            ? query.get("sound_enabled") === "true"
+            : false;
+        const spatialization = query.get("spatialization")
+            ? query.get("spatialization") === "true"
             : false;
 
         const settings = {
@@ -93,7 +95,8 @@ class AdnoEmbed extends Component {
             tags,
             showOutlines,
             showEyes,
-            playSound
+            soundEnabled,
+            spatialization
         };
         // Update settings
         this.setState({ ...settings });

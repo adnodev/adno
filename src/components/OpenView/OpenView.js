@@ -28,7 +28,7 @@ class OpenView extends Component {
             fullScreenEnabled: false,
             isAnnotationsVisible: true,
             currentTrack: undefined,
-            playSound: true,
+            playSound: this.props.soundEnabled,
             audioContexts: []
         }
     }
@@ -250,12 +250,33 @@ class OpenView extends Component {
 
             this.setState({ currentID: annotationIndex })
 
-            // const { currentTrack } = this.state
+            if (!this.props.spatialization) {
+                const { currentTrack } = this.state
 
-            // if (currentTrack) {
-            //     currentTrack.pause()
-            //     currentTrack.currentTime = 0;
-            // }
+                if (currentTrack) {
+                    currentTrack.pause()
+                    currentTrack.currentTime = 0;
+                }
+
+                const annos = [...document.getElementsByClassName("a9s-annotation")]
+                const annoSvg = annos.find(anno => anno.getAttribute('data-id') === annotation.id)
+
+                if (annoSvg) {
+                    const audioElement = [...annoSvg.getElementsByTagName("audio")];
+
+                    if (audioElement.length > 0) {
+                        const source = audioElement[0]
+
+                        console.log(source)
+
+                        source.play()
+
+                        this.setState({
+                            currentTrack: source
+                        })
+                    }
+                }
+            }
 
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                 document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
@@ -265,7 +286,7 @@ class OpenView extends Component {
         }
     }
 
-    playSpatialSound = audioElement => {
+    playSound = (audioElement, spatialization) => {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         const track = new MediaElementAudioSourceNode(audioCtx, {
@@ -317,6 +338,9 @@ class OpenView extends Component {
 
         audioElement.crossOrigin = "anonymous";
         audioElement.play()
+
+        if (!this.state.playSound || !spatialization)
+            audioCtx.suspend()
 
         this.setState({
             audioContexts: [...this.state.audioContexts, audioCtx]
@@ -409,16 +433,29 @@ class OpenView extends Component {
         }
     }
 
-    toggleSound = () => {
-        const playSound = !this.state.playSound;
+    toggleSound = incomingSound => {
+        const playSound = incomingSound !== undefined ? incomingSound : !this.state.playSound;
 
-        // [...document.getElementsByTagName('audio')].map(audiTag => audiTag.volume = playSound ? 1 : 0);
-        if (playSound)
-            this.state.audioContexts.forEach(r => r.resume())
-        else
-            this.state.audioContexts.forEach(r => r.suspend())
+        this.applySound(playSound)
 
         this.setState({ playSound })
+    }
+
+    applySound = playSound => {
+        if (this.props.spatialization) {
+            if (playSound)
+                this.state.audioContexts.forEach(r => r.resume())
+            else
+                this.state.audioContexts.forEach(r => r.suspend())
+        } else {
+            if (this.state.currentTrack) {
+                this.state.currentTrack.currentTime = 0;
+                if (playSound)
+                    this.state.currentTrack.play()
+                else
+                    this.state.currentTrack.pause()
+            }
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -434,6 +471,17 @@ class OpenView extends Component {
             this.loadAudio()
 
             setTimeout(this.freeMode, 1000)
+        }
+
+        if (prevProps.spatialization !== this.props.spatialization) {
+            if (!this.props.spatialization) {
+                this.state.audioContexts.forEach(r => r.suspend())
+            }
+            this.setState({ spatialization: this.props.spatialization }, this.applySound)
+        }
+
+        if (prevProps.soundEnabled !== this.props.soundEnabled) {
+            this.setState({ playSound: this.props.soundEnabled }, () => this.applySound(this.state.playSound))
         }
 
         if (prevProps.showOutlines !== this.props.showOutlines) {
@@ -460,7 +508,7 @@ class OpenView extends Component {
         annos.forEach(anno => {
             const audioElement = document.createElement('audio')
             audioElement.volume = this.state.playSound ? 1 : 0
-            audioElement.loop = "true"
+            audioElement.loop = this.props.spatialization ? "true" : "false"
 
             const type = [...anno.children][0].tagName
             const tileSize = document.getElementById('adno-osd').clientWidth / 5
@@ -507,7 +555,7 @@ class OpenView extends Component {
                     anno.appendChild(audioElement)
 
                     setTimeout(() => {
-                        this.playSpatialSound(audioElement.cloneNode(true))
+                        this.playSound(audioElement.cloneNode(true), this.props.spatialization)
                     }, 1000)
                 }
             }

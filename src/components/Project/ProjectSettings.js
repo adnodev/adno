@@ -124,6 +124,34 @@ class ProjectSettings extends Component {
                             })} />
 
                         <label className="label">
+                            <span className="label-text">
+                                {this.props.t('project.settings.sound_enabled')}
+                            </span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-navigator"
+                            checked={this.state.settings.soundEnabled}
+                            onChange={() => this.setState({
+                                settings: {
+                                    ...this.state.settings,
+                                    soundEnabled: !this.state.settings.soundEnabled
+                                }
+                            })} />
+
+                        <label className="label">
+                            <span className="label-text">
+                                {this.props.t('project.settings.spatialization')}
+                            </span>
+                        </label>
+                        <input type="checkbox" className="toggle toggle-navigator"
+                            checked={this.state.settings.spatialization}
+                            onChange={() => this.setState({
+                                settings: {
+                                    ...this.state.settings,
+                                    spatialization: !this.state.settings.spatialization
+                                }
+                            })} />
+
+                        <label className="label">
                             <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
                         </label>
                         <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar} onChange={() => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })} />

@@ -80,7 +80,9 @@
                     "save": "Save",
                     "tags": "Only annotations including at least one of this tag will be displayed",
                     "show_outlines": "Display the outlines",
-                    "show_eyes": "Display icon inside shapes"
+                    "show_eyes": "Display icon inside shapes",
+                    "sound_enabled": "Audio annotation will be played",
+                    "spatialization": "The audio annotations will be played together with a spatialization effect"
                 }
             },
             "files": {
