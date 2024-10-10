@@ -33,7 +33,8 @@ class AdnoEmbed extends Component {
             selectedAnno: {},
             isLoaded: false,
             currentTrack: undefined,
-            playSound: true
+            soundMode: 'no_sound',
+            audioContexts: []
         };
     }
 
@@ -71,12 +72,10 @@ class AdnoEmbed extends Component {
             : false;
         const tags = query.get("tags") || []
         const showOutlines = query.get("show_outlines")
-            ? query.get("show_outlines") === "true"
-            : true;
+            ? query.get("show_outlines") === "true" : this.state.showOutlines;
         const showEyes = query.get("show_eyes")
-            ? query.get("show_eyes") === "true"
-            : false;
-        const soundMode = query.get("sound_mode") || "no_sound"
+            ? query.get("show_eyes") === "true" : this.state.showEyes;
+        const soundMode = query.get("sound_mode") || this.state.soundMode
 
         const settings = {
             delay,
@@ -144,10 +143,6 @@ class AdnoEmbed extends Component {
 
                     anno.appendChild(svgElement)
                 }
-
-                // [...anno.children].map(r => {
-                //     r.classList.add("a9s-annotation--hidden")
-                // })
             })
         } else {
             [...document.getElementsByClassName('eye')].forEach(r => r.remove())
@@ -212,6 +207,7 @@ class AdnoEmbed extends Component {
         // this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
 
         this.AdnoAnnotorious.on("clickAnnotation", (annotation) => {
+            console.log(this.state)
             if (this.state.isAnnotationsVisible) {
                 this.AdnoAnnotorious.fitBounds(annotation.id);
 
@@ -231,13 +227,13 @@ class AdnoEmbed extends Component {
                 setTimeout(() => {
                     this.freeMode()
 
-                    this.loadAudio()
+                    this.loadAudio(annos)
 
                     if (!this.state.showOutlines)
                         this.toggleOutlines()
                     else
                         this.toggleAnnotations()
-                    // this.toggleOutlines(this.state.showOutlines)
+
                 }, 200)
             })
     };
@@ -613,21 +609,47 @@ class AdnoEmbed extends Component {
         }
     };
 
-    loadAudio = () => {
+    loadAudio = (annosData) => {
         const annos = [...document.getElementsByClassName("a9s-annotation")]
 
         annos.forEach(anno => {
-            const id = anno.getAttribute("data-id")
-            const annotation = this.state.annos?.find(anno => anno.id === id);
+            const audioElement = document.createElement('audio')
+            audioElement.volume = this.state.soundMode !== 'no_sound' ? 1 : 0
+            audioElement.loop = this.props.soundMode === 'spatialization' ? true : false
 
+            const type = [...anno.children][0].tagName
+            const tileSize = document.getElementById('adno-embed').clientWidth / 5
+
+            let x, y = 0;
+            if (type === "ellipse" || type == "circle") {
+                x = anno.children[0].getAttribute("cx") - tileSize / 2;
+                y = anno.children[0].getAttribute("cy") - tileSize / 2
+
+            } else if (type === "rect") {
+                x = anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2
+                y = anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2
+
+
+            } else if (type === "path" || type === "polygon") {
+                const bbox = anno.getBBox();
+
+                const centerX = bbox.x + bbox.width / 2;
+                const centerY = bbox.y + bbox.height / 2;
+
+                x = centerX - tileSize / 2
+                y = centerY - tileSize / 2
+            }
+
+            audioElement.setAttribute('x', x / this.openSeadragon.viewport._contentSize.x)
+            audioElement.setAttribute('y', y / this.openSeadragon.viewport._contentSize.y)
+
+            const id = anno.getAttribute("data-id")
+            const annotation = annosData.find(anno => anno.id === id);
 
             if (annotation && annotation.body && Array.isArray(annotation.body)) {
                 const track = annotation.body.find(body => body.type === "SpecificResource")
 
                 if (track) {
-                    const audioElement = document.createElement('audio')
-                    audioElement.volume = this.state.playSound ? 1 : 0
-
                     const sourceElement = document.createElement('source')
                     sourceElement.src = track.source?.id
                     audioElement.appendChild(sourceElement)
@@ -637,9 +659,88 @@ class AdnoEmbed extends Component {
                     audioElement.appendChild(unimplemented)
 
                     anno.appendChild(audioElement)
+
+                    setTimeout(() => {
+                        this.playSound(audioElement.cloneNode(true), this.state.soundMode)
+                    }, 1000)
                 }
             }
 
+        })
+    }
+
+    applySound = soundMode => {
+        if (soundMode === 'spatialization') {
+            this.state.audioContexts.forEach(r => r.resume())
+        } else if (soundMode === 'no_spatialization' || soundMode === 'no_sound') {
+            this.state.audioContexts.forEach(r => r.suspend())
+        }
+        else {
+            if (this.state.currentTrack) {
+                this.state.currentTrack.currentTime = 0;
+                this.state.currentTrack.play()
+            }
+        }
+    }
+
+    playSound = (audioElement, soundMode) => {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const track = new MediaElementAudioSourceNode(audioCtx, {
+            mediaElement: audioElement,
+        });
+
+        const posX = 0;
+        const posY = window.innerHeight / 2;
+        const posZ = 300;
+
+        const panner = new PannerNode(audioCtx, {
+            panningModel: "HRTF",
+            distanceModel: "linear",
+            positionX: posX,
+            positionY: posY,
+            positionZ: posZ,
+            orientationX: 0.0,
+            orientationY: 0.0,
+            orientationZ: -1.0,
+            refDistance: 1,
+            maxDistance: 20_000,
+            rolloffFactor: 10,
+            coneInnerAngle: 40,
+            coneOuterAngle: 50,
+            coneOuterGain: 0.4,
+        })
+
+        track
+            .connect(panner)
+            .connect(audioCtx.destination)
+
+        const viewer = this.openSeadragon;
+
+        function updateSoundPosition(svgElement) {
+            const viewportCenter = viewer.viewport.getCenter(true);
+
+            const x = Number(svgElement.getAttribute('x'))
+            const y = Number(svgElement.getAttribute('y'))
+
+            panner.positionX.value = -((viewportCenter.x - x) * 200);
+            panner.positionY.value = -(((viewportCenter.y * 2) - y) * 200)
+
+            // console.log(svgElement, panner.positionX.value, panner.positionY.value)
+        }
+
+        viewer.addHandler('animation', () => updateSoundPosition(audioElement));
+        viewer.addHandler('pan', () => updateSoundPosition(audioElement));
+        viewer.addHandler('zoom', () => updateSoundPosition(audioElement));
+
+        audioElement.crossOrigin = "anonymous";
+        audioElement.play()
+
+        if (soundMode !== 'spatialization')
+            audioCtx.suspend()
+
+        this.setState({
+            audioContexts: [...this.state.audioContexts, audioCtx]
         })
     }
 
@@ -865,8 +966,6 @@ class AdnoEmbed extends Component {
     render() {
         const showAnnotationsButton = this.state.showOutlines || this.state.showEyes
 
-        console.log(this.state.playSound)
-
         if (this.state.isLoaded) {
             return (
                 <div id="adno-embed">
@@ -930,11 +1029,6 @@ class AdnoEmbed extends Component {
                             <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
                                     <FontAwesomeIcon icon={faExpand} size="lg" />
-                                </div>
-                            </button>
-                            <button id="toggle-sound" className="toolbarButton toolbaractive" onClick={() => this.toggleSound()}>
-                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.sound')}>
-                                    <FontAwesomeIcon icon={this.state.playSound ? faVolumeHigh : faVolumeOff} size="lg" />
                                 </div>
                             </button>
 

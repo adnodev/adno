@@ -431,14 +431,6 @@ class OpenView extends Component {
         }
     }
 
-    // toggleSound = incomingSound => {
-    //     const playSound = incomingSound !== undefined ? incomingSound : !this.state.playSound;
-
-    //     this.applySound(playSound)
-
-    //     this.setState({ playSound })
-    // }
-
     applySound = soundMode => {
         if (soundMode === 'spatialization') {
             this.state.audioContexts.forEach(r => r.resume())
