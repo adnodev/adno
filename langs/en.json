@@ -49,7 +49,7 @@
                 "add_title": "Add a title to your project",
                 "copy": "copy",
                 "cancel": "Cancel",
-		"choose": "Select an image",
+                "choose": "Select an image",
                 "choose_desc": "Choose the image you want to use for your project",
                 "choose_canva": "Use this picture for my project",
                 "back_home": "Cancel and go back to homepage",
@@ -81,8 +81,10 @@
                     "tags": "Only annotations including at least one of this tag will be displayed",
                     "show_outlines": "Display the outlines",
                     "show_eyes": "Display icon inside shapes",
-                    "sound_enabled": "Audio annotation will be played",
-                    "spatialization": "The audio annotations will be played together with a spatialization effect"
+                    "no_sound": "Audio annotation wont be played",
+                    "spatialization": "The audio annotations will be played together with a spatialization effect",
+                    "no_spatialization": "Audio annotations will be played individually",
+                    "annotation_sound": "Choose a mode for audio annotations"
                 }
             },
             "files": {
@@ -167,7 +169,7 @@
             },
             "navbar": {
                 "edit_mode": "Edit mode",
-		"view_mode": "View mode",
+                "view_mode": "View mode",
                 "back_home": "Back to home",
                 "download_project": "Download the project",
                 "edit_project": "Edit the project",

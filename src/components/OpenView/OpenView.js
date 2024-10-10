@@ -28,7 +28,7 @@ class OpenView extends Component {
             fullScreenEnabled: false,
             isAnnotationsVisible: true,
             currentTrack: undefined,
-            playSound: this.props.soundEnabled,
+            soundMode: this.props.soundMode,
             audioContexts: []
         }
     }
@@ -250,7 +250,7 @@ class OpenView extends Component {
 
             this.setState({ currentID: annotationIndex })
 
-            if (!this.props.spatialization) {
+            if (this.props.soundMode === 'no_spatialization') {
                 const { currentTrack } = this.state
 
                 if (currentTrack) {
@@ -266,8 +266,6 @@ class OpenView extends Component {
 
                     if (audioElement.length > 0) {
                         const source = audioElement[0]
-
-                        console.log(source)
 
                         source.play()
 
@@ -286,7 +284,7 @@ class OpenView extends Component {
         }
     }
 
-    playSound = (audioElement, spatialization) => {
+    playSound = (audioElement, soundMode) => {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         const track = new MediaElementAudioSourceNode(audioCtx, {
@@ -339,7 +337,7 @@ class OpenView extends Component {
         audioElement.crossOrigin = "anonymous";
         audioElement.play()
 
-        if (!this.state.playSound || !spatialization)
+        if (soundMode !== 'spatialization')
             audioCtx.suspend()
 
         this.setState({
@@ -433,27 +431,24 @@ class OpenView extends Component {
         }
     }
 
-    toggleSound = incomingSound => {
-        const playSound = incomingSound !== undefined ? incomingSound : !this.state.playSound;
+    // toggleSound = incomingSound => {
+    //     const playSound = incomingSound !== undefined ? incomingSound : !this.state.playSound;
 
-        this.applySound(playSound)
+    //     this.applySound(playSound)
 
-        this.setState({ playSound })
-    }
+    //     this.setState({ playSound })
+    // }
 
-    applySound = playSound => {
-        if (this.props.spatialization) {
-            if (playSound)
-                this.state.audioContexts.forEach(r => r.resume())
-            else
-                this.state.audioContexts.forEach(r => r.suspend())
-        } else {
+    applySound = soundMode => {
+        if (soundMode === 'spatialization') {
+            this.state.audioContexts.forEach(r => r.resume())
+        } else if (soundMode === 'no_spatialization' || soundMode === 'no_sound') {
+            this.state.audioContexts.forEach(r => r.suspend())
+        }
+        else {
             if (this.state.currentTrack) {
                 this.state.currentTrack.currentTime = 0;
-                if (playSound)
-                    this.state.currentTrack.play()
-                else
-                    this.state.currentTrack.pause()
+                this.state.currentTrack.play()
             }
         }
     }
@@ -473,15 +468,8 @@ class OpenView extends Component {
             setTimeout(this.freeMode, 1000)
         }
 
-        if (prevProps.spatialization !== this.props.spatialization) {
-            if (!this.props.spatialization) {
-                this.state.audioContexts.forEach(r => r.suspend())
-            }
-            this.setState({ spatialization: this.props.spatialization }, this.applySound)
-        }
-
-        if (prevProps.soundEnabled !== this.props.soundEnabled) {
-            this.setState({ playSound: this.props.soundEnabled }, () => this.applySound(this.state.playSound))
+        if (prevProps.soundMode !== this.props.soundMode) {
+            this.setState({ soundMode: this.props.soundMode }, () => this.applySound(this.state.soundMode))
         }
 
         if (prevProps.showOutlines !== this.props.showOutlines) {
@@ -507,8 +495,8 @@ class OpenView extends Component {
 
         annos.forEach(anno => {
             const audioElement = document.createElement('audio')
-            audioElement.volume = this.state.playSound ? 1 : 0
-            audioElement.loop = this.props.spatialization ? "true" : "false"
+            audioElement.volume = this.state.soundMode !== 'no_sound' ? 1 : 0
+            audioElement.loop = this.props.soundMode === 'spatialization' ? true : false
 
             const type = [...anno.children][0].tagName
             const tileSize = document.getElementById('adno-osd').clientWidth / 5
@@ -555,7 +543,7 @@ class OpenView extends Component {
                     anno.appendChild(audioElement)
 
                     setTimeout(() => {
-                        this.playSound(audioElement.cloneNode(true), this.props.spatialization)
+                        this.playSound(audioElement.cloneNode(true), this.props.soundMode)
                     }, 1000)
                 }
             }
@@ -659,11 +647,6 @@ class OpenView extends Component {
                         <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
                             <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
                                 <FontAwesomeIcon icon={faExpand} size="lg" />
-                            </div>
-                        </button>
-                        <button id="toggle-sound" className="toolbarButton toolbaractive" onClick={() => this.toggleSound()}>
-                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.sound')}>
-                                <FontAwesomeIcon icon={this.state.playSound ? faVolumeHigh : faVolumeOff} size="lg" />
                             </div>
                         </button>
                         <button id="help" className="toolbarButton toolbaractive">

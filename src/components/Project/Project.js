@@ -207,7 +207,7 @@ class Project extends Component {
                                         rotation={this.state.settings.rotation}
                                         timerDelay={this.state.settings.delay}
                                         showOutlines={this.state.settings.showOutlines}
-                                        soundEnabled={this.state.settings.soundEnabled}
+                                        soundMode={this.state.settings.soundMode}
                                         spatialization={this.state.settings.spatialization}
                                         showEyes={this.state.settings.showEyes}
                                         annos={viewerAnnotations}

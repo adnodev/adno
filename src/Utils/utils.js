@@ -323,7 +323,8 @@ export function defaultProjectSettings() {
     displayToolbar: true,
     tags: [],
     showOutlines: true,
-    showEyes: false
+    showEyes: false,
+    soundMode: 'no_sound'
   }
 }
 

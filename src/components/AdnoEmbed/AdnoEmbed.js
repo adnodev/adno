@@ -76,12 +76,7 @@ class AdnoEmbed extends Component {
         const showEyes = query.get("show_eyes")
             ? query.get("show_eyes") === "true"
             : false;
-        const soundEnabled = query.get("sound_enabled")
-            ? query.get("sound_enabled") === "true"
-            : false;
-        const spatialization = query.get("spatialization")
-            ? query.get("spatialization") === "true"
-            : false;
+        const soundMode = query.get("sound_mode") || "no_sound"
 
         const settings = {
             delay,
@@ -95,8 +90,7 @@ class AdnoEmbed extends Component {
             tags,
             showOutlines,
             showEyes,
-            soundEnabled,
-            spatialization
+            soundMode
         };
         // Update settings
         this.setState({ ...settings });
