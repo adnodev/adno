@@ -85,7 +85,7 @@ class Navbar extends Component {
 
                                         // Turn off autoplay
                                         if (this.props.autoplayID !== -1) {
-                                            clearInterval(this.props.autoplayID)
+                                            clearTimeout(this.props.autoplayID)
                                         }
 
                                         if (this.props.editMode) {

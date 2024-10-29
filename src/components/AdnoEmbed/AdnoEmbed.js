@@ -207,7 +207,6 @@ class AdnoEmbed extends Component {
         // this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
 
         this.AdnoAnnotorious.on("clickAnnotation", (annotation) => {
-            console.log(this.state)
             if (this.state.isAnnotationsVisible) {
                 this.AdnoAnnotorious.fitBounds(annotation.id);
 
@@ -424,29 +423,47 @@ class AdnoEmbed extends Component {
                 } else {
                     this.automateLoading();
                 }
-                // Call the function to go to the next annotation every "delay" seconds
-                let interID = setInterval(
-                    this.automateLoading,
-                    this.state.delay * 1000
-                );
-                this.setState({ timer: true, intervalID: interID });
+
+                const delay = this.state.delay * 1000;
+
+                const interID = setTimeout(() => this.automateLoading(delay), delay);
+                this.setState({
+                    timer: true,
+                    intervalID: interID
+                })
             }
         }
     };
-    automateLoading = () => {
-        let localCurrentID = this.state.currentID;
+    automateLoading = timeout => {
+        let newCurrentID = this.state.currentID;
 
-        if (this.state.currentID === -1) {
-            localCurrentID = 0;
-        } else if (this.state.currentID === this.state.annos.length - 1) {
-            localCurrentID = 0;
+        if (this.state.currentID === -1 || this.state.currentID === this.state.annos.length - 1) {
+            newCurrentID = 0;
         } else {
-            localCurrentID++;
+            newCurrentID++;
         }
 
-        this.setState({ currentID: localCurrentID });
+        this.setState({ currentID: newCurrentID });
 
-        this.changeAnno(this.state.annos[localCurrentID]);
+        this.changeAnno(this.state.annos[newCurrentID]);
+
+        if (timeout) {
+            const id = this.state.annos[newCurrentID].id;
+
+            const annotation = [...document.getElementsByClassName("a9s-annotation")]
+                .find(elt => elt.getAttribute("data-id") === id)
+
+            let delay = timeout;
+            if (annotation) {
+                const duration = annotation.getElementsByTagName("audio")[0].duration;
+
+                if (duration) {
+                    delay = duration * 1000 + 1500
+                }
+            }
+
+            setTimeout(() => this.automateLoading(delay), delay)
+        }
     };
 
     changeAnno = (annotation) => {
@@ -598,8 +615,6 @@ class AdnoEmbed extends Component {
             if (audioElement.length > 0) {
                 const source = audioElement[0]
 
-                console.log(source)
-
                 source.play()
 
                 this.setState({
@@ -669,11 +684,23 @@ class AdnoEmbed extends Component {
         })
     }
 
+    toggleAudioElementLoopAttribute = looping => {
+        [...document.getElementsByClassName("a9s-annotation")]
+            .forEach(annotation => {
+                const audioElement = annotation.getElementsByTagName("audio")[0];
+
+                if (audioElement)
+                    audioElement.loop = looping
+            });
+    }
+
     applySound = soundMode => {
         if (soundMode === 'spatialization') {
             this.state.audioContexts.forEach(r => r.resume())
+            this.toggleAudioElementLoopAttribute(true)
         } else if (soundMode === 'no_spatialization' || soundMode === 'no_sound') {
             this.state.audioContexts.forEach(r => r.suspend())
+            this.toggleAudioElementLoopAttribute(false)
         }
         else {
             if (this.state.currentTrack) {

@@ -223,20 +223,37 @@ class OpenView extends Component {
         removeEventListener("fullscreenchange", this.updateFullScreenEvent)
     }
 
-    automateLoading = () => {
-        let localCurrentID = this.state.currentID;
+    automateLoading = timeout => {
+        const { currentID } = this.state;
+        let newCurrentID = currentID;
 
-        if (this.state.currentID === -1) {
-            localCurrentID = 0
-        } else if (this.state.currentID === this.props.annos.length - 1) {
-            localCurrentID = 0
+        if (currentID === -1 || currentID === this.props.annos.length - 1) {
+            newCurrentID = 0
         } else {
-            localCurrentID++;
+            newCurrentID++;
         }
 
-        this.setState({ currentID: localCurrentID })
+        this.setState({ currentID: newCurrentID })
 
-        this.changeAnno(this.props.annos[localCurrentID])
+        this.changeAnno(this.props.annos[newCurrentID])
+
+        if (timeout) {
+            const id = this.props.annos[newCurrentID].id;
+
+            const annotation = [...document.getElementsByClassName("a9s-annotation")]
+                .find(elt => elt.getAttribute("data-id") === id)
+
+            let delay = timeout;
+            if (annotation) {
+                const duration = annotation.getElementsByTagName("audio")[0].duration;
+
+                if (duration) {
+                    delay = duration * 1000 + 1500
+                }
+            }
+
+            setTimeout(() => this.automateLoading(delay), delay)
+        }
     }
 
     changeAnno = (annotation) => {
@@ -362,11 +379,16 @@ class OpenView extends Component {
                     this.changeAnno(this.props.annos[0])
                 } else {
                     this.automateLoading()
-
                 }
+
+                const delay = this.props.timerDelay * 1000;
+
                 // Call the function to go to the next annotation every "timerDelay" seconds
-                let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
-                this.setState({ timer: true, intervalID: interID })
+                const interID = setTimeout(() => this.automateLoading(delay), delay);
+                this.setState({
+                    timer: true,
+                    intervalID: interID
+                })
                 this.props.updateAutoplayId(interID)
             }
         }
@@ -431,11 +453,23 @@ class OpenView extends Component {
         }
     }
 
+    toggleAudioElementLoopAttribute = looping => {
+        [...document.getElementsByClassName("a9s-annotation")]
+            .forEach(annotation => {
+                const audioElement = annotation.getElementsByTagName("audio")[0];
+
+                if (audioElement)
+                    audioElement.loop = looping
+            });
+    }
+
     applySound = soundMode => {
         if (soundMode === 'spatialization') {
-            this.state.audioContexts.forEach(r => r.resume())
+            this.state.audioContexts.forEach(r => r.resume());
+            this.toggleAudioElementLoopAttribute(true)
         } else if (soundMode === 'no_spatialization' || soundMode === 'no_sound') {
             this.state.audioContexts.forEach(r => r.suspend())
+            this.toggleAudioElementLoopAttribute(false)
         }
         else {
             if (this.state.currentTrack) {

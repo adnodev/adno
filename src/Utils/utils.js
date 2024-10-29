@@ -464,7 +464,9 @@ export async function enhancedFetch(url) {
       url
     }
   } catch (error) {
-    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+    if (error.name === 'TypeError' && (error.message.includes('Failed to fetch') || // handle Brave/Chrome CORS error
+      error.message.includes('NetworkError when attempting to fetch') || // handle firefox CORS error
+      error.message.includes('Load failed'))) { // handle safari CORS error
       console.log('CORS error: Could not fetch the image.')
 
       if (process.env.CORS_SERVER) {
