@@ -71,6 +71,9 @@
                 },
                 "settings": {
                     "delay": "Délai entre 2 annotations (en secondes)",
+		    "outline_width": "Épaisseur des annotations",
+		    "outline_color": "Couleur des contours des annotations",
+		    "outline_focus": "Couleur du contour de l'annotation courante",
                     "navigator": "Navigateur d'ensemble",
                     "fullscreen": "Afficher barre outils en mode plein écran",
                     "annos_nav": "Afficher la barre de navigation pour les annotations",

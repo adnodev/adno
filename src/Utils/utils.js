@@ -322,6 +322,9 @@ export function defaultProjectSettings() {
     rotation: false,
     displayToolbar: true,
     tags: [],
+    outlineWidth: "outline-1px",
+    outlineColor: "outline-white",
+    outlineColorFocus: "outline-focus-yellow",
     showOutlines: true,
     showEyes: false,
     soundMode: 'no_sound'

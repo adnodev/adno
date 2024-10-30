@@ -73,12 +73,19 @@ class OpenView extends Component {
             OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
             OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
+            const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
+
+            const annoFormatter = function () {
+                return annoStyles;
+            }
+
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
                 locale: 'auto',
                 drawOnSingleClick: true,
                 allowEmpty: true,
                 disableEditor: true,
-                readOnly: true
+                readOnly: true,
+                formatters: annoFormatter
             });
 
             this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
@@ -479,6 +486,15 @@ class OpenView extends Component {
         }
     }
 
+    reloadAnnotationsFromProps = () => {
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+        this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+        this.loadAudio()
+
+        setTimeout(this.freeMode, 1000)
+    }
+
     componentDidUpdate(prevProps, prevState) {
         // check when there is a new selected annotation from the sidebar
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
@@ -486,12 +502,17 @@ class OpenView extends Component {
         }
 
         if (prevProps.annos !== this.props.annos) {
-            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
-            this.AdnoAnnotorious.loadAnnotations(dataURI)
+            this.reloadAnnotationsFromProps()
+        }
 
-            this.loadAudio()
+        if (prevProps.outlineWidth !== this.props.outlineWidth ||
+            prevProps.outlineColor !== this.props.outlineColor ||
+            prevProps.outlineColorFocus !== this.props.outlineColorFocus
+        ) {
+            const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
+            this.AdnoAnnotorious.formatters = [() => annoStyles]
 
-            setTimeout(this.freeMode, 1000)
+            this.reloadAnnotationsFromProps()
         }
 
         if (prevProps.soundMode !== this.props.soundMode) {

@@ -59,13 +59,53 @@ ul {
 }
 
 #toolbar-container button.a9s-toolbar-btn {
-  margin: 0 4px 0 ;
-  padding: 4px;
-  width: 40px;
-  height: 40px;
+    margin: 0 4px 0 ;
+    padding: 4px;
+    width: 40px;
+    height: 40px;
 }
 
 footer{
     position: fixed;
     top: calc(100vh - 52px)
+}
+
+.a9s-annotationlayer .outline-1px .a9s-inner {
+    stroke-width: 1px;
+}
+
+.a9s-annotationlayer .outline-1px .a9s-outer {
+    stroke-width: 3px;
+}
+
+.a9s-annotationlayer .outline-2px .a9s-inner {
+    stroke-width: 2px;
+}
+
+.a9s-annotationlayer .outline-2px .a9s-outer {
+    stroke-width: 4px;
+}
+
+.a9s-annotationlayer .outline-3px .a9s-inner {
+    stroke-width: 3px;
+}
+
+.a9s-annotationlayer .outline-3px .a9s-outer {
+    stroke-width: 5px;
+}
+
+.a9s-annotationlayer .outline-5px .a9s-inner {
+    stroke-width: 5px;
+}
+
+.a9s-annotationlayer .outline-5px .a9s-outer {
+    stroke-width: 7px;
+}
+
+.a9s-annotationlayer .outline-8px .a9s-inner {
+    stroke-width: 8px;
+}
+
+.a9s-annotationlayer .outline-8px .a9s-outer {
+    stroke-width: 10px;
 }

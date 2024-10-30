@@ -216,6 +216,9 @@ class Project extends Component {
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
                                         updateAutoplayId={(id) => this.setState({ autoplayID: id })}
                                         changeShowToolbar={(newState) => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })}
+                                        outlineWidth={this.state.settings.outlineWidth}
+                                        outlineColor={this.state.settings.outlineColor}
+                                        outlineColorFocus={this.state.settings.outlineColorFocus}
                                     />
                             }
                         </div>

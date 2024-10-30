@@ -17,13 +17,16 @@
     z-index: 10000;
     top: 64px;
     left: 2%;
-    width: 300px;
-    height: 200px;
-    background-color: white;
-    color: cadetblue;
+    width: 24vw;
+    height: auto;
+    background: rgba(255, 255, 255, 0.94);
+    color: #71719d;
     border-radius: 2px;
     padding: 10px;
     overflow: auto;
+    resize: both;
+    min-width: 15vw;
+    max-height: calc(100% - 16vh);
     font-size: x-large;
 }
 
@@ -32,19 +35,18 @@
     z-index: 10000;
     top: 8%;
     left: 2%;
-    width: 20vw;
+    width: 24vw;
     height: auto;
-    background-color: white;
-    color: cadetblue;
+    background: rgba(255, 255, 255, 0.94);
+    color: #71719d;
     border-radius: 2px;
     padding: 10px;
     overflow: auto;
     resize: both;
     min-width: 15vw;
-    max-height: calc(100% - 10vh);
+    max-height: calc(100% - 16vh);
     font-size: x-large;
 }
-
 
 .adno-timer-osd{
     text-align: center;
