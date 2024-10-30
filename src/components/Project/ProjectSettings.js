@@ -49,6 +49,19 @@ class ProjectSettings extends Component {
     render() {
         const tags = this.getAllAnnotationsTags()
 
+        const soundsMode = [{
+            label: this.props.t('project.settings.no_sound'),
+            value: 'no_sound'
+        },
+        {
+            label: this.props.t('project.settings.no_spatialization'),
+            value: 'no_spatialization'
+        },
+        {
+            label: this.props.t('project.settings.spatialization'),
+            value: 'spatialization'
+        }]
+
         return (
             <div className="project-metadatas-backdrop">
                 <form className="project-metadatas-container" onSubmit={(e) => { this.updateProjectSettings(e) }}>
@@ -211,6 +224,20 @@ class ProjectSettings extends Component {
                                     showEyes: !this.state.settings.showEyes
                                 }
                             })} />
+
+                        <label className="label">
+                            <span className="label-text">{this.props.t('project.settings.annotation_sound')}</span>
+                        </label>
+                        <ReactSelect
+                            name="sound_mode"
+                            options={soundsMode}
+                            value={soundsMode.find(f => f.value === this.state.settings?.soundMode)}
+                            defaultValue={soundsMode.find(f => f.value === 'no_sound')}
+                            onChange={soundMode => this.setState({ settings: { ...this.state.settings, soundMode: soundMode?.value } })}
+                            placeholder={this.props.t('project.settings.annotation_sound')}
+                            className="basic-multi-select mb-2 custom-react-select"
+                            classNamePrefix="select"
+                        />
 
                         <label className="label">
                             <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>

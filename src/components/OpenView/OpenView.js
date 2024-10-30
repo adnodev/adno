@@ -5,7 +5,7 @@ import ReactHtmlParser from 'react-html-parser';
 // Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion, faVolumeOff, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 
 
 // Import utils
@@ -18,7 +18,6 @@ import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
 
-
 class OpenView extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +27,9 @@ class OpenView extends Component {
             intervalID: 0,
             fullScreenEnabled: false,
             isAnnotationsVisible: true,
+            currentTrack: undefined,
+            soundMode: this.props.soundMode,
+            audioContexts: []
         }
     }
 
@@ -108,6 +110,7 @@ class OpenView extends Component {
                 .then(() => {
                     setTimeout(() => {
                         this.freeMode()
+                        this.loadAudio()
                         this.toggleOutlines(this.props.showOutlines)
                     }, 200)
                 })
@@ -135,13 +138,14 @@ class OpenView extends Component {
         if (this.props.showEyes) {
             const annos = [...document.getElementsByClassName("a9s-annotation")]
 
-            annos.map(anno => {
+            annos.map((anno, i) => {
                 const svgElement = getEye()
 
                 const tileSize = document.getElementById('adno-osd').clientWidth / 5
 
                 svgElement.setAttribute('width', tileSize);
                 svgElement.setAttribute('height', tileSize);
+
 
                 svgElement.style.fill = "#000"
                 svgElement.style.stroke = "#000"
@@ -226,42 +230,75 @@ class OpenView extends Component {
         removeEventListener("fullscreenchange", this.updateFullScreenEvent)
     }
 
-    automateLoading = () => {
-        let localCurrentID = this.state.currentID;
+    automateLoading = timeout => {
+        const { currentID } = this.state;
+        let newCurrentID = currentID;
 
-        if (this.state.currentID === -1) {
-            localCurrentID = 0
-        } else if (this.state.currentID === this.props.annos.length - 1) {
-            localCurrentID = 0
+        if (currentID === -1 || currentID === this.props.annos.length - 1) {
+            newCurrentID = 0
         } else {
-            localCurrentID++;
+            newCurrentID++;
         }
 
-        this.setState({ currentID: localCurrentID })
+        this.setState({ currentID: newCurrentID })
 
-        this.changeAnno(this.props.annos[localCurrentID])
+        this.changeAnno(this.props.annos[newCurrentID])
+
+        if (timeout) {
+            const id = this.props.annos[newCurrentID].id;
+
+            const annotation = [...document.getElementsByClassName("a9s-annotation")]
+                .find(elt => elt.getAttribute("data-id") === id)
+
+            let delay = timeout;
+            if (annotation) {
+                const duration = annotation.getElementsByTagName("audio")[0].duration;
+
+                if (duration) {
+                    delay = duration * 1000 + 1500
+                }
+            }
+
+            setTimeout(() => this.automateLoading(delay), delay)
+        }
     }
 
     changeAnno = (annotation) => {
         if (annotation && annotation.id) {
             this.props.changeSelectedAnno(annotation)
 
-            // if (this.state.isAnnotationsVisible) {
             this.AdnoAnnotorious.selectAnnotation(annotation.id)
             this.AdnoAnnotorious.fitBounds(annotation.id)
-            // } else {
-            //     if (annotation.target && annotation.target.selector.value) {
-            //         var imgWithTiles = this.openSeadragon.world.getItemAt(0);
-            //         var xywh = annotation.target.selector.value.replace("xywh=pixel:", "").split(",")
-            //         var rect = new OpenSeadragon.Rect(parseFloat(xywh[0]), parseFloat(xywh[1]), parseFloat(xywh[2]), parseFloat(xywh[3]))
-            //         var imgRect = imgWithTiles.imageToViewportRectangle(rect);
-            //         this.openSeadragon.viewport.fitBounds(imgRect);
-            //     }
-            // }
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
 
             this.setState({ currentID: annotationIndex })
+
+            if (this.props.soundMode === 'no_spatialization') {
+                const { currentTrack } = this.state
+
+                if (currentTrack) {
+                    currentTrack.pause()
+                    currentTrack.currentTime = 0;
+                }
+
+                const annos = [...document.getElementsByClassName("a9s-annotation")]
+                const annoSvg = annos.find(anno => anno.getAttribute('data-id') === annotation.id)
+
+                if (annoSvg) {
+                    const audioElement = [...annoSvg.getElementsByTagName("audio")];
+
+                    if (audioElement.length > 0) {
+                        const source = audioElement[0]
+
+                        source.play()
+
+                        this.setState({
+                            currentTrack: source
+                        })
+                    }
+                }
+            }
 
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
                 document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
@@ -271,6 +308,66 @@ class OpenView extends Component {
         }
     }
 
+    playSound = (audioElement, soundMode) => {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const track = new MediaElementAudioSourceNode(audioCtx, {
+            mediaElement: audioElement,
+        });
+
+        const posX = 0;
+        const posY = window.innerHeight / 2;
+        const posZ = 300;
+
+        const panner = new PannerNode(audioCtx, {
+            panningModel: "HRTF",
+            distanceModel: "linear",
+            positionX: posX,
+            positionY: posY,
+            positionZ: posZ,
+            orientationX: 0.0,
+            orientationY: 0.0,
+            orientationZ: -1.0,
+            refDistance: 1,
+            maxDistance: 20_000,
+            rolloffFactor: 10,
+            coneInnerAngle: 40,
+            coneOuterAngle: 50,
+            coneOuterGain: 0.4,
+        })
+
+        track
+            .connect(panner)
+            .connect(audioCtx.destination)
+
+        const viewer = this.openSeadragon;
+
+        function updateSoundPosition(svgElement) {
+            const viewportCenter = viewer.viewport.getCenter(true);
+
+            const x = Number(svgElement.getAttribute('x'))
+            const y = Number(svgElement.getAttribute('y'))
+
+            panner.positionX.value = -((viewportCenter.x - x) * 200);
+            panner.positionY.value = -(((viewportCenter.y * 2) - y) * 200)
+
+            // console.log(svgElement, panner.positionX.value, panner.positionY.value)
+        }
+
+        viewer.addHandler('animation', () => updateSoundPosition(audioElement));
+        viewer.addHandler('pan', () => updateSoundPosition(audioElement));
+        viewer.addHandler('zoom', () => updateSoundPosition(audioElement));
+
+        audioElement.crossOrigin = "anonymous";
+        audioElement.play()
+
+        if (soundMode !== 'spatialization')
+            audioCtx.suspend()
+
+        this.setState({
+            audioContexts: [...this.state.audioContexts, audioCtx]
+        }, () => this.props.setAudioContexts(this.state.audioContexts))
+    }
 
     startTimer = () => {
         // Do not start the timer if there is no content to display
@@ -289,11 +386,16 @@ class OpenView extends Component {
                     this.changeAnno(this.props.annos[0])
                 } else {
                     this.automateLoading()
-
                 }
+
+                const delay = this.props.timerDelay * 1000;
+
                 // Call the function to go to the next annotation every "timerDelay" seconds
-                let interID = setInterval(this.automateLoading, this.props.timerDelay * 1000);
-                this.setState({ timer: true, intervalID: interID })
+                const interID = setTimeout(() => this.automateLoading(delay), delay);
+                this.setState({
+                    timer: true,
+                    intervalID: interID
+                })
                 this.props.updateAutoplayId(interID)
             }
         }
@@ -358,9 +460,37 @@ class OpenView extends Component {
         }
     }
 
+    toggleAudioElementLoopAttribute = looping => {
+        [...document.getElementsByClassName("a9s-annotation")]
+            .forEach(annotation => {
+                const audioElement = annotation.getElementsByTagName("audio")[0];
+
+                if (audioElement)
+                    audioElement.loop = looping
+            });
+    }
+
+    applySound = soundMode => {
+        if (soundMode === 'spatialization') {
+            this.state.audioContexts.forEach(r => r.resume());
+            this.toggleAudioElementLoopAttribute(true)
+        } else if (soundMode === 'no_spatialization' || soundMode === 'no_sound') {
+            this.state.audioContexts.forEach(r => r.suspend())
+            this.toggleAudioElementLoopAttribute(false)
+        }
+        else {
+            if (this.state.currentTrack) {
+                this.state.currentTrack.currentTime = 0;
+                this.state.currentTrack.play()
+            }
+        }
+    }
+
     reloadAnnotationsFromProps = () => {
         const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
         this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+        this.loadAudio()
 
         setTimeout(this.freeMode, 1000)
     }
@@ -385,6 +515,10 @@ class OpenView extends Component {
             this.reloadAnnotationsFromProps()
         }
 
+        if (prevProps.soundMode !== this.props.soundMode) {
+            this.setState({ soundMode: this.props.soundMode }, () => this.applySound(this.state.soundMode))
+        }
+
         if (prevProps.showOutlines !== this.props.showOutlines) {
             this.toggleOutlines(this.props.showOutlines)
         }
@@ -401,6 +535,67 @@ class OpenView extends Component {
             }
 
         }
+    }
+
+    loadAudio = () => {
+        const annos = [...document.getElementsByClassName("a9s-annotation")]
+
+        annos.forEach(anno => {
+            const audioElement = document.createElement('audio')
+            audioElement.volume = this.state.soundMode !== 'no_sound' ? 1 : 0
+            audioElement.loop = this.props.soundMode === 'spatialization' ? true : false
+
+            const type = [...anno.children][0].tagName
+            const tileSize = document.getElementById('adno-osd').clientWidth / 5
+
+            let x, y = 0;
+            if (type === "ellipse" || type == "circle") {
+                x = anno.children[0].getAttribute("cx") - tileSize / 2;
+                y = anno.children[0].getAttribute("cy") - tileSize / 2
+
+            } else if (type === "rect") {
+                x = anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2
+                y = anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2
+
+
+            } else if (type === "path" || type === "polygon") {
+                const bbox = anno.getBBox();
+
+                const centerX = bbox.x + bbox.width / 2;
+                const centerY = bbox.y + bbox.height / 2;
+
+                x = centerX - tileSize / 2
+                y = centerY - tileSize / 2
+            }
+
+            audioElement.setAttribute('x', x / this.openSeadragon.viewport._contentSize.x)
+            audioElement.setAttribute('y', y / this.openSeadragon.viewport._contentSize.y)
+
+
+            const id = anno.getAttribute("data-id")
+            const annotation = this.props.annos?.find(anno => anno.id === id);
+
+            if (annotation && annotation.body && Array.isArray(annotation.body)) {
+                const track = annotation.body.find(body => body.type === "SpecificResource")
+
+                if (track) {
+                    const sourceElement = document.createElement('source')
+                    sourceElement.src = track.source?.id
+                    audioElement.appendChild(sourceElement)
+
+                    const unimplemented = document.createElement("p")
+                    unimplemented.textContent = "Your browser doesn't support the HTML5 audio element"
+                    audioElement.appendChild(unimplemented)
+
+                    anno.appendChild(audioElement)
+
+                    setTimeout(() => {
+                        this.playSound(audioElement.cloneNode(true), this.props.soundMode)
+                    }, 1000)
+                }
+            }
+
+        })
     }
 
     toggleAnnotations = () => {
@@ -535,4 +730,4 @@ class OpenView extends Component {
     }
 }
 
-export default withTranslation()(withRouter(OpenView));
+export default withTranslation()(withRouter(OpenView))

@@ -14,9 +14,6 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
     if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-
-    // console.log("manageUrls", url)
-
     if (url.startsWith('http') || url.startsWith("https")) {
         return enhancedFetch(step === "decoreURIComponent" ? decodeURIComponent(url) : url)
             .then(rawReponse => {
@@ -24,9 +21,11 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
 
+                    console.log(contentType)
                     if (['application/json', 'text/html', 'text/plain', 'application/octet-stream'].find(c => contentType.includes(c))) {
                         response.text()
                             .then(data => {
+                                console.log(data)
                                 let manifest = JSON.parse(data)
 
                                 // If we detect an ADNO project, we import it to the user's projects

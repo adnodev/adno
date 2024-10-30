@@ -83,7 +83,11 @@
                     "save": "Enregistrer",
                     "tags": "Seules les annotations incluant le ou l'un des mots clés suivants seront affichées",
                     "show_outlines": "Afficher les contours",
-                    "show_eyes": "Afficher une icone à l'intérieur des formes"
+                    "show_eyes": "Afficher une icone à l'intérieur des formes",
+                    "no_sound": "Les annotations audio ne seront pas lues",
+                    "spatialization": "Les annotations audio seront lues avec un effet de spatialisation",
+                    "no_spatialization": "Les annotations audio seront lues individuellement",
+                    "annotation_sound": "Choisissez un mode pour les annotations audio"
                 }
             },
             "files": {
@@ -95,6 +99,8 @@
             "editor": {
                 "approve_changes": "Valider les modifications",
                 "md_add_tag": "Ajouter un mot clé",
+                "audio_track": "Piste audio (URL)",
+                "audio_creator": "Créateur de la piste audio (Crédit)",
                 "md_save": "Enregistrer",
                 "md_delete": "Supprimer",
                 "md_delete_confirm": "Confirmer la suppression",
