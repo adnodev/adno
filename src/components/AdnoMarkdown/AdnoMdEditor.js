@@ -89,18 +89,22 @@ class AdnoMdEditor extends Component {
         }
 
         const audioElement = document.getElementById('audioTag');
-        const format = AUDIO_TYPES.find(format => audioElement.canPlayType(format) === 'probably' ||
-            audioElement.canPlayType(format) === 'maybe')
 
-        const audioBody = {
-            type: 'SpecificResource',
-            purpose: 'linking',
-            source: {
-                id: this.state.audioTrack,
-                creator: this.state.audioCreator,
-                type: "Audio",
-                format
-            },
+        let audioBody;
+        if (audioElement) {
+            const format = AUDIO_TYPES.find(format => audioElement.canPlayType(format) === 'probably' ||
+                audioElement.canPlayType(format) === 'maybe')
+
+            audioBody = {
+                type: 'SpecificResource',
+                purpose: 'linking',
+                source: {
+                    id: this.state.audioTrack,
+                    creator: this.state.audioCreator,
+                    type: "Audio",
+                    format
+                },
+            }
         }
 
         let tags = this.state.selectedTags.map(tag => {
@@ -113,8 +117,12 @@ class AdnoMdEditor extends Component {
             )
         })
 
-        let newBody = [newTextBody, HTMLBody, ...tags, audioBody]
+        let newBody = [newTextBody, HTMLBody, ...tags]
         currentSelectedAnno.body = newBody;
+
+        if (audioBody) {
+            currentSelectedAnno.body = [...newBody, audioBody];
+        }
 
         if (annos.find(anno => anno.id === currentSelectedAnno.id)) {
             const idx = annos.findIndex(anno => anno.id === currentSelectedAnno.id);
