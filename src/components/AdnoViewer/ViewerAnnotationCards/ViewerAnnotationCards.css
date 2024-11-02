@@ -37,7 +37,8 @@
 }
 
 .selectedAnno{
-    border: 2px solid gold !important;
+    border: 2px solid #fde047 !important;
+    background-color: #fefce8 !important;
 }
 
 .btn-show-more{
