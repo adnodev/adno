@@ -18,8 +18,8 @@ import { buildTagsList } from "../../Utils/utils";
 
 const PARAMETERS_BY_TAB = {
     'viewer': ['showNavigator', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
-    'navigation': ['delay', 'startbyfirstnammo', 'rotation', 'showOutlines', 'showEyes', 'soundMode'],
-    'annotation': ['tags', 'outlineWidth', 'outlineColor', 'outlineColorsFocus'],
+    'navigation': ['delay', 'startbyfirstanno', 'rotation', 'showOutlines', 'showEyes', 'soundMode'],
+    'annotation': ['tags', 'outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
 
 class ProjectSettings extends Component {
