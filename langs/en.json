@@ -87,7 +87,10 @@
                     "no_sound": "Audio annotation wont be played",
                     "spatialization": "The audio annotations will be played together with a spatialization effect",
                     "no_spatialization": "Audio annotations will be played individually",
-                    "annotation_sound": "Choose a mode for audio annotations"
+                    "annotation_sound": "Choose a mode for audio annotations",
+                    "visualization": "Visualization",
+                    "navigation": "Navigation",
+                    "annotation": "Annotation"
                 }
             },
             "files": {

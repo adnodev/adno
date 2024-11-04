@@ -71,9 +71,9 @@
                 },
                 "settings": {
                     "delay": "Délai entre 2 annotations (en secondes)",
-		    "outline_width": "Épaisseur des annotations",
-		    "outline_color": "Couleur des contours des annotations",
-		    "outline_focus": "Couleur du contour de l'annotation courante",
+                    "outline_width": "Épaisseur des annotations",
+                    "outline_color": "Couleur des contours des annotations",
+                    "outline_focus": "Couleur du contour de l'annotation courante",
                     "navigator": "Navigateur d'ensemble",
                     "fullscreen": "Afficher barre outils en mode plein écran",
                     "annos_nav": "Afficher la barre de navigation pour les annotations",
@@ -87,7 +87,10 @@
                     "no_sound": "Les annotations audio ne seront pas lues",
                     "spatialization": "Les annotations audio seront lues avec un effet de spatialisation",
                     "no_spatialization": "Les annotations audio seront lues individuellement",
-                    "annotation_sound": "Choisissez un mode pour les annotations audio"
+                    "annotation_sound": "Choisissez un mode pour les annotations audio",
+                    "visualization": "Visualisation",
+                    "navigation": "Navigation",
+                    "annotation": "Annotation"
                 }
             },
             "files": {

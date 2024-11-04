@@ -71,12 +71,17 @@ class ProjectSettings extends Component {
 
         return (
             <div className="project-metadatas-backdrop">
-                <form className="project-metadatas-container" onSubmit={(e) => { this.updateProjectSettings(e) }}>
-                    <div className="flex justify-between mt-5 mb-8 items-center" style={{ width: '75%' }}>
-                        <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} />
-                        <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeSettings()}>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </button>
+                <form className="project-metadatas-container" onSubmit={(e) => { this.updateProjectSettings(e) }} style={{ position: 'relative' }}>
+                    <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeSettings()}
+                        style={{
+                            position: 'absolute',
+                            top: 12,
+                            right: 12
+                        }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                    <div className="flex justify-center mt-5 mb-8 items-center" style={{ width: '75%' }}>
+                        <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} translate={this.props.t} />
                     </div>
 
                     <div className="project-metadatas">
@@ -308,21 +313,21 @@ class ProjectSettings extends Component {
     }
 }
 
-function TabSelector({ tab, setTab }) {
+function TabSelector({ tab, setTab, translate }) {
 
     return <div className="flex">
         <button type="button"
             className="btn btn-outline"
             style={{ borderBottom: tab === 'viewer' ? '4px solid #000' : '1px solid', borderRadius: 0 }}
-            onClick={() => setTab('viewer')}>Viewer</button>
+            onClick={() => setTab('viewer')}>{translate('project.settings.visualization')}</button>
         <button type="button"
             className="btn btn-outline"
             style={{ borderBottom: tab === 'navigation' ? '4px solid #000' : '1px solid', borderLeft: 0, borderRight: 0, borderRadius: 0 }}
-            onClick={() => setTab('navigation')}>Navigation</button>
+            onClick={() => setTab('navigation')}>{translate('project.settings.navigation')}</button>
         <button type="button"
             className="btn btn-outline"
             style={{ borderBottom: tab === 'annotation' ? '4px solid #000' : '1px solid', borderRadius: 0 }}
-            onClick={() => setTab('annotation')}>Annotation</button>
+            onClick={() => setTab('annotation')}>{translate('project.settings.annotation')}</button>
     </div>
 }
 
