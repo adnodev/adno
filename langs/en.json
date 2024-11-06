@@ -90,7 +90,8 @@
                     "annotation_sound": "Choose a mode for audio annotations",
                     "visualization": "Visualization",
                     "navigation": "Navigation",
-                    "annotation": "Annotation"
+                    "annotation": "Annotation",
+                    "anno_bounds": "Are annotations visible ?"
                 }
             },
             "files": {
@@ -204,7 +205,13 @@
                 "wrong_file": "This file is not readable by Adno! Please try again with another file"
             },
             "footer": "Poitiers. This project was supported by the French Ministry of Culture",
-            "tags_infos": "Please press your key 'enter' between each tag to save them"
+            "tags_infos": "Please press your key 'enter' between each tag to save them",
+            "link": {
+                "url": "Add the URL to the IIIF ressources",
+                "h1": "URL Generator",
+                "preview": "URL preview",
+                "generate": "Copy URL"
+            }
         }
     }
 }

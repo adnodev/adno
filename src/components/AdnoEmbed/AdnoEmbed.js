@@ -76,7 +76,7 @@ class AdnoEmbed extends Component {
         const showEyes = query.get("show_eyes")
             ? query.get("show_eyes") === "true" : this.state.showEyes;
         const soundMode = query.get("sound_mode") || this.state.soundMode
-            ? query.get("show_eyes") === "true"
+            ? query.get("sound_mode") === "true"
             : false;
         const outlineWidth = query.has("outlineWidth")
             ? query.get("outlineWidth")
@@ -167,14 +167,14 @@ class AdnoEmbed extends Component {
         const query = new URLSearchParams(this.props.location.search);
 
         let urlParam = query.get("url")
-        if (urlParam) {
-            const rawURLParam = this.props.location.search
-                .split("?")
-                .slice(1)
-                .find(query => query.startsWith("url="));
+        // if (urlParam) {
+        //     const rawURLParam = this.props.location.search
+        //         .split("?")
+        //         .slice(1)
+        //         .find(query => query.startsWith("url="));
 
-            urlParam = rawURLParam.replace("url=", "")
-        }
+        //     urlParam = rawURLParam.replace("url=", "")
+        // }
 
         this.getAdnoProject(urlParam);
 

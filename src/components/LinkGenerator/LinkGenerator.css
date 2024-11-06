@@ -1,0 +1,18 @@
+.link-generator {
+    background: #eee;
+}
+
+.label-text {
+    color: initial !important;
+}
+
+pre {
+    background-color: initial !important;
+    border: initial !important;
+
+    padding-left: 2rem;
+    max-width: 32rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-indent: -2rem;
+}

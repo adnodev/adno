@@ -90,7 +90,8 @@
                     "annotation_sound": "Choisissez un mode pour les annotations audio",
                     "visualization": "Visualisation",
                     "navigation": "Navigation",
-                    "annotation": "Annotation"
+                    "annotation": "Annotation",
+                    "anno_bounds": "Voir les annotations ?"
                 }
             },
             "files": {
@@ -203,7 +204,13 @@
                 "wrong_file": "Ce fichier n'est pas lisible par ADNO ! Veuillez réessayer avec un autre fichier"
             },
             "footer": "Poitiers. Ce projet a été soutenu par le ministère français de la Culture",
-            "tags_infos": "Veuillez appuyer sur la touche 'entrée' pour valider chaque mot clé"
+            "tags_infos": "Veuillez appuyer sur la touche 'entrée' pour valider chaque mot clé",
+            "link": {
+                "url": "Saisissez l'URL vers les ressources IIIF",
+                "h1": "Generateur d'URL",
+                "preview": "Prévisualisation de l'URL",
+                "generate": "Copier URL"
+            }
         }
     }
 }
