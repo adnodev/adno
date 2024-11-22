@@ -42,7 +42,8 @@ class AdnoMdEditor extends Component {
             selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || [],
             audioTrack: this.getAudioBody(),
             audioCreator: this.getCreatorFromBody(),
-            markdown: []
+            markdown: [],
+            tab: 'editor'
         }
     }
 
@@ -211,53 +212,67 @@ class AdnoMdEditor extends Component {
     }
 
     render() {
+        const { tab } = this.state;
+
         return (
             <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
                 <div className="card-body">
-                    <div className="card-actions justify-end">
-                        <button className="btn btn-square btn-sm" onClick={() => this.props.closeMdEditor()}>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </button>
+                    <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeMdEditor()}
+                        style={{
+                            position: 'absolute',
+                            top: 12,
+                            right: 12
+                        }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                    <div className="flex justify-center mt-5 mb-8 items-center" style={{ width: '100%' }}>
+                        <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} translate={this.props.t} />
                     </div>
 
-                    <div id="editor"></div>
+                    <div id="editor" style={{ display: tab === 'editor' ? 'block' : 'none' }}></div>
 
-                    <div className="editor-tags">
-                        <TagsInput
-                            value={this.state.selectedTags}
-                            onChange={(tags) => this.setState({ selectedTags: tags })}
-                            placeHolder={this.props.t('editor.md_add_tag')}
-                        />
-                        <span>{this.props.t('tags_infos')}</span>
-                    </div>
-
-                    <label className="form-control w-full">
-                        <div className="label">
-                            <span className="label-text" style={{ color: '#000' }}>{this.props.t('editor.audio_track')}</span>
+                    {tab === 'tags' && <div style={{ height: '600px' }}>
+                        <div className="editor-tags">
+                            <TagsInput
+                                value={this.state.selectedTags}
+                                onChange={(tags) => this.setState({ selectedTags: tags })}
+                                placeHolder={this.props.t('editor.md_add_tag')}
+                            />
+                            <span>{this.props.t('tags_infos')}</span>
                         </div>
-                        <input type="text"
-                            className="input input-bordered w-full grow"
-                            id="track"
-                            onChange={e => this.setState({ audioTrack: e.target.value })}
-                            value={this.state.audioTrack} />
-                    </label>
+                    </div>}
 
-                    {this.state.audioTrack && <figure className="mt-2 flex" style={{
-                        justifyContent: 'flex-start'
-                    }}>
-                        <audio controls src={this.state.audioTrack} id="audioTag"></audio>
-                    </figure>}
+                    {tab === 'audio' &&
+                        <div style={{ height: '600px' }}>
+                            <label className="form-control w-full">
+                                <div className="label">
+                                    <span className="label-text" style={{ color: '#000' }}>{this.props.t('editor.audio_track')}</span>
+                                </div>
+                                <input type="text"
+                                    className="input input-bordered w-full grow"
+                                    id="track"
+                                    onChange={e => this.setState({ audioTrack: e.target.value })}
+                                    value={this.state.audioTrack} />
+                            </label>
 
-                    <label className="form-control w-full">
-                        <div className="label">
-                            <span className="label-text" style={{ color: '#000' }}>{this.props.t('editor.audio_creator')}</span>
+                            {this.state.audioTrack && <figure className="mt-2 flex" style={{
+                                justifyContent: 'flex-start'
+                            }}>
+                                <audio controls src={this.state.audioTrack} id="audioTag"></audio>
+                            </figure>}
+
+                            <label className="form-control w-full">
+                                <div className="label">
+                                    <span className="label-text" style={{ color: '#000' }}>{this.props.t('editor.audio_creator')}</span>
+                                </div>
+                                <input type="text"
+                                    className="input input-bordered w-full grow"
+                                    id="track"
+                                    onChange={e => this.setState({ audioCreator: e.target.value })}
+                                    value={this.state.audioCreator} />
+                            </label>
                         </div>
-                        <input type="text"
-                            className="input input-bordered w-full grow"
-                            id="track"
-                            onChange={e => this.setState({ audioCreator: e.target.value })}
-                            value={this.state.audioCreator} />
-                    </label>
+                    }
 
                     <div className="rich-card-editor-btns">
                         {!this.state.isDeleting && <button className="btn btn-error ml-1 mr-1" onClick={() => this.setState({ isDeleting: true })}> <FontAwesomeIcon icon={faTrash} /> &nbsp; {this.props.t('editor.md_delete')} </button>}
@@ -270,4 +285,23 @@ class AdnoMdEditor extends Component {
         )
     }
 }
+
+function TabSelector({ tab, setTab, translate }) {
+
+    return <div className="flex">
+        <button type="button"
+            className="btn btn-outline"
+            style={{ borderBottom: tab === 'editor' ? '4px solid #000' : '1px solid', borderRadius: 0 }}
+            onClick={() => setTab('editor')}>{translate('editor.tabs.editor')}</button>
+        <button type="button"
+            className="btn btn-outline"
+            style={{ borderBottom: tab === 'tags' ? '4px solid #000' : '1px solid', borderLeft: 0, borderRight: 0, borderRadius: 0 }}
+            onClick={() => setTab('tags')}>{translate('editor.tabs.tags')}</button>
+        <button type="button"
+            className="btn btn-outline"
+            style={{ borderBottom: tab === 'audio' ? '4px solid #000' : '1px solid', borderRadius: 0 }}
+            onClick={() => setTab('audio')}>{translate('editor.tabs.audio')}</button>
+    </div>
+}
+
 export default withTranslation()(AdnoMdEditor);

@@ -118,7 +118,12 @@
                 "rotate_left": "Rotate left",
                 "rotate_right": "Rotate right",
                 "flip": "Flip Horizontally",
-                "placeholder": "Enter text here"
+                "placeholder": "Enter text here",
+                "tabs": {
+                    "editor": "Editor",
+                    "tags": "Tags", 
+                    "audio": "Audio"
+                }
             },
             "visualizer": {
                 "expand": "Enter full screen",

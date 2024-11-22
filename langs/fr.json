@@ -117,7 +117,12 @@
                 "rotate_left": "Tourner vers la gauche",
                 "rotate_right": "Tourner vers la droite",
                 "flip": "Retourner horizontalemenent",
-                "placeholder": "Ajoutez votre texte ici"
+                "placeholder": "Ajoutez votre texte ici",
+                "tabs": {
+                    "editor": "Editeur",
+                    "tags": "Les mots clés", 
+                    "audio": "Audio"
+                }
             },
             "visualizer": {
                 "expand": "Mettre en plein écran",
