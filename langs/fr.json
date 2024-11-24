@@ -120,7 +120,7 @@
                 "placeholder": "Ajoutez votre texte ici",
                 "tabs": {
                     "editor": "Editeur",
-                    "tags": "Les mots clés", 
+                    "tags": "Mots clés", 
                     "audio": "Audio"
                 }
             },
