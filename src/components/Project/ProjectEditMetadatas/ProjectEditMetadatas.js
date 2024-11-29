@@ -83,6 +83,61 @@ class ProjectEditMetadatas extends Component {
                         </label>
                         <input type="text" placeholder={this.props.t('project.metadatas_plh.allocation_rights')} className="input input-bordered w-full max-w-xs" value={this.state.project.rights} onChange={(e) => this.setState({project: {...this.state.project, rights: e.target.value}})} />
 
+
+                        {
+                            this.props.selectedProject.manifest_url &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.manifest_url} disabled />
+                            </>
+                        }
+
+                        {
+                            this.props.selectedProject.img_url &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.img_url} disabled />
+                            </>
+                        }
+
+                        {this.props.selectedProject.creation_date &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.creation_date')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.creation_date} disabled />
+                            </>
+
+                        }
+
+                        {
+                            this.props.selectedProject.last_update && <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.last_update} disabled />
+                            </>
+                        }
+
+                        {
+                            this.props.selectedProject.id &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.identifier')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.id} disabled />
+                            </>
+                        }
+
+                        <label className="label">
+                            <span className="label-text">{this.props.t('project.metadatas.format')}</span>
+                        </label>
+                        <input type="text" className="input input-bordered w-full max-w-xs" value="Adno" disabled />
+
                         <div className="metadata-editor-btns">
                              <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} className="mr-2" />  Enregistrer </button>
                         </div>
