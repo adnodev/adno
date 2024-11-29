@@ -109,7 +109,7 @@ class ProjectEditMetadatas extends Component {
                                 <label className="label">
                                     <span className="label-text">{this.props.t('project.metadatas.creation_date')}</span>
                                 </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.creation_date} disabled />
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={new Date(this.props.selectedProject.creation_date).toLocaleString()} disabled />
                             </>
 
                         }
@@ -119,7 +119,7 @@ class ProjectEditMetadatas extends Component {
                                 <label className="label">
                                     <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>
                                 </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.last_update} disabled />
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={new Date(this.props.selectedProject.last_update).toLocaleString()} disabled />
                             </>
                         }
 

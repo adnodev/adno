@@ -284,7 +284,7 @@ export function duplicateProject(projectID, duplicate_name_copy) {
 }
 
 export function createDate() {
-  return new Date().toISOString().slice(0, 10);
+  return new Date().toISOString();
 }
 
 export function deleteProject(idProject) {
