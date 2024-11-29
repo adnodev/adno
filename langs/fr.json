@@ -183,7 +183,7 @@
                 "view_mode": "Mode lecture",
                 "back_home": "Retourner à l'accueil",
                 "download_project": "Télécharger le projet",
-                "edit_project": "Edit the project",
+                "edit_project": "Editer les métadonnées",
                 "show_metadatas": "Voir les métadonnées",
                 "share_project": "Sauvegarde et partage du projet",
                 "share_project_desc1": "Téléchargez d’abord le fichier du projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
