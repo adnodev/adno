@@ -19,67 +19,6 @@ class ProjectMetadatas extends Component {
 
                     <div className="project-metadatas">
                         {
-                            this.props.selectedProject.id &&
-                            <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.identifier')}</span>
-                                </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.id} disabled />
-                            </>
-                        }
-
-                        {
-                            this.props.selectedProject.manifest_url &&
-                            <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
-                                </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.manifest_url} disabled />
-                            </>
-                        }
-
-                        {
-                            this.props.selectedProject.img_url &&
-                            <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
-                                </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.img_url} disabled />
-                            </>
-                        }
-                        {this.props.selectedProject.creation_date &&
-                            <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.creation_date')}</span>
-                                </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.creation_date} disabled />
-                            </>
-
-                        }
-                        {
-                            this.props.selectedProject.last_update && <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>
-                                </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.last_update} disabled />
-                            </>
-                        }
-
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.metadatas.format')}</span>
-                        </label>
-                        <input type="text" className="input input-bordered w-full max-w-xs" value="Adno" disabled />
-
-                        {
-                            this.props.selectedProject.rights && <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.rights')}</span>
-                                </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.rights} disabled />
-                            </>
-                        }
-
-                        {
                             this.props.selectedProject.title &&
                             <>
                                 <label className="label">
@@ -118,6 +57,70 @@ class ProjectMetadatas extends Component {
                                 <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.editor} disabled />
                             </>
                         }
+
+                        {
+                            this.props.selectedProject.rights && <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.rights')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.rights} disabled />
+                            </>
+                        }
+
+                        {
+                            this.props.selectedProject.manifest_url &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.manifest_url} disabled />
+                            </>
+                        }
+
+                        {
+                            this.props.selectedProject.img_url &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.img_url} disabled />
+                            </>
+                        }
+
+                        {this.props.selectedProject.creation_date &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.creation_date')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.creation_date} disabled />
+                            </>
+
+                        }
+
+                        {
+                            this.props.selectedProject.last_update && <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.last_update} disabled />
+                            </>
+                        }
+
+                        {
+                            this.props.selectedProject.id &&
+                            <>
+                                <label className="label">
+                                    <span className="label-text">{this.props.t('project.metadatas.identifier')}</span>
+                                </label>
+                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.id} disabled />
+                            </>
+                        }
+
+                        <label className="label">
+                            <span className="label-text">{this.props.t('project.metadatas.format')}</span>
+                        </label>
+                        <input type="text" className="input input-bordered w-full max-w-xs" value="Adno" disabled />
+
                     </div>
                 </div>
             </div>

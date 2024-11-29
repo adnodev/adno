@@ -83,7 +83,6 @@ class ProjectEditMetadatas extends Component {
                         </label>
                         <input type="text" placeholder={this.props.t('project.metadatas_plh.allocation_rights')} className="input input-bordered w-full max-w-xs" value={this.state.project.rights} onChange={(e) => this.setState({project: {...this.state.project, rights: e.target.value}})} />
 
-
                         <div className="metadata-editor-btns">
                              <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} className="mr-2" />  Enregistrer </button>
                         </div>
