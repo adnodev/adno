@@ -32,30 +32,7 @@ class ProjectView extends Component {
             enhancedFetch(this.props.project.manifest_url)
                 .then(rep => rep.response.json())
                 .then(manifest => {
-                    if (manifest["@id"] && manifest["sizes"] && manifest["sizes"].length > 0) {
-
-                        let manifestHeight = manifest["sizes"].sort((a, b) => b.width - a.width)[0].height
-                        var manifestWidth = manifest["sizes"].sort((a, b) => b.width - a.width)[0].width
-
-                        this.setState({ imgWidth: manifest["sizes"].sort((a, b) => b.width - a.width)[0].width })
-                        this.setState({ imgSource: manifest["@id"] + "/full/" + manifestWidth + "," + manifestHeight + "/0/default.jpg" })
-                    } else if (manifest["@id"] && manifest["tiles"] && manifest["tiles"][0]) {
-                        this.setState({ imgWidth: manifest["tiles"][0].width })
-                        this.setState({ imgSource: manifest["@id"] + "/full/" + manifest["tiles"][0].width + ",/0/default.jpg" })
-                    } else if (manifest["id"] && manifest["tiles"]) {
-                        this.setState({ imgWidth: manifest["tiles"][0].width })
-                        this.setState({ imgSource: manifest["id"] + "/full/" + manifest["tiles"][0].width + ",/0/default.jpg" })
-                    } else if (manifest["@id"] && manifest["@context"] && manifest["@context"] === "http://library.stanford.edu/iiif/image-api/1.1/context.json") {
-                        this.setState({ imgWidth: 250 })
-                        this.setState({ imgSource: manifest["@id"] + "/full/,250/0/native.jpg" })
-                    } else if (this.props.project.manifest_url.indexOf("info.json") !== -1) {
-                        this.setState({ imgWidth: 250 })
-                        this.setState({ imgSource: this.props.project.manifest_url.replace("info.json", "") + "/full/,250/0/native.jpg" })
-                    }
-                    else if (manifest["@id"] && !manifest["tiles"]) {
-                        this.setState({ imgWidth: 250 })
-                        this.setState({ imgSource: manifest["@id"] + "/full/,250/0/native.jpg" })
-                    }
+                    this.loadSourceImage(manifest)
 
                     if (localStorage.getItem(this.props.project.id + "_annotations")) {
                         let nbAnnotations = JSON.parse(localStorage.getItem(this.props.project.id + "_annotations")).length
@@ -71,6 +48,94 @@ class ProjectView extends Component {
                 this.setState({ nbAnnotations })
             }
         }
+    }
+
+    loadSourceImage = manifest => {
+        const isVersion2 = manifest["@context"] && manifest["@context"].includes("2");
+
+        const id = isVersion2 ? manifest["@id"] : manifest["id"];
+
+        if (manifest["sizes"] && manifest["sizes"].length > 0) {
+            let sizes = manifest["sizes"]
+                .filter(a => a.width < 1300)
+                .sort((a, b) => b.width - a.width);
+
+            if (sizes.length <= 0)
+                sizes = manifest["sizes"]
+                    .sort((a, b) => b.width - a.width)
+
+            const largestSize = sizes[0];
+
+            const manifestWidth = largestSize.width;
+            const manifestHeight = largestSize.height;
+
+            this.setState({
+                imgWidth: manifestWidth,
+                imgSource: `${id}/full/${manifestWidth},${manifestHeight}/0/default.jpg`,
+            });
+        } else if (manifest["tiles"] && manifest["tiles"][0]) {
+            // For both versions: Handle "tiles" array
+            this.setState({
+                imgWidth: manifest["tiles"][0].width,
+                imgSource: `${id}/full/${manifest["tiles"][0].width},/0/default.jpg`,
+            });
+        } else if (manifest["height"] && manifest["width"] && id) {
+            // For both versions: Handle height and width directly in the manifest
+            this.setState({
+                imgWidth: manifest["width"],
+                imgSource: `${id}/full/${manifest["width"]},${manifest["height"]}/0/default.jpg`,
+            });
+        } else if (manifest["thumbnail"] && Array.isArray(manifest["thumbnail"]) && manifest["thumbnail"][0].id) {
+            // For v3: Handle "thumbnail" array with "id" field
+            this.setState({
+                imgWidth: 250, // Default thumbnail width
+                imgSource: manifest["thumbnail"][0].id,
+            });
+        } else if (isVersion2 && manifest.sequences && manifest.sequences[0] && manifest.sequences[0].canvases) {
+            // For v2: Handle "sequences" and "canvases"
+            const canvas = manifest.sequences[0].canvases[0]; // Assuming we use the first canvas
+            const imageAnnotation = canvas.images && canvas.images[0];
+            const imageResource = imageAnnotation && imageAnnotation.resource;
+            const imageService = imageResource && imageResource.service;
+
+            if (imageService && imageService["@id"]) {
+                const serviceId = imageService["@id"];
+                this.setState({
+                    imgWidth: 300, // Default width for fallback
+                    imgSource: `${serviceId}/full/300,/0/default.jpg`,
+                });
+            } else {
+                console.error("Image service information is missing in IIIF v2 manifest.");
+            }
+        } else if (manifest["@id"] && isVersion2) {
+            // For v2: Handle Image API 1.1 manifests with "@id"
+            this.setState({
+                imgWidth: 250,
+                imgSource: `${manifest["@id"]}/full/,250/0/native.jpg`,
+            });
+        } else if (manifest["@context"] === "http://library.stanford.edu/iiif/image-api/1.1/context.json") {
+            // For v2: Handle Image API 1.1 specifically
+            this.setState({
+                imgWidth: 250,
+                imgSource: `${manifest["@id"]}/full/,250/0/native.jpg`,
+            });
+        } else if (this.props.project.manifest_url && this.props.project.manifest_url.includes("info.json")) {
+            // Fallback: Use "info.json" URL
+            this.setState({
+                imgWidth: 250,
+                imgSource: this.props.project.manifest_url.replace("info.json", "") + "/full/,250/0/native.jpg",
+            });
+        } else if (id) {
+            // Final fallback: Handle missing tiles but with valid ID
+            this.setState({
+                imgWidth: 250,
+                imgSource: `${id}/full/,250/0/native.jpg`,
+            });
+        } else {
+            // If all else fails, log an error
+            console.error("Unable to retrieve source image. Manifest is missing required fields.");
+        }
+
     }
 
     deleteProj = (projID) => {
@@ -115,10 +180,13 @@ class ProjectView extends Component {
         return (
             <div className="card card-side bg-base-100 shadow-xl project-view-card">
                 <div className="project-card-img" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
-                    <img src={this.state.imgSource} onError={({ currentTarget }) => {
-                        currentTarget.onerror = null; // prevents looping
-                        currentTarget.src = "https://www.pngkey.com/png/detail/212-2124171_404-error-404-pagina-no-encontrada.png"
-                    }} className="img-fluid img-proj-view " alt={this.props.project.title} />
+                    <img
+                        src={this.state.imgSource}
+                        onError={({ currentTarget }) => {
+                            currentTarget.onerror = null; // prevents looping
+                            currentTarget.src = "https://www.pngkey.com/png/detail/212-2124171_404-error-404-pagina-no-encontrada.png"
+                        }}
+                        className="img-fluid img-proj-view " alt={this.props.project.title} />
 
 
                 </div>
