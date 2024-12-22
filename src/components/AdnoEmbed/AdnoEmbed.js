@@ -800,7 +800,9 @@ class AdnoEmbed extends Component {
                 const { response } = rawResponse
                 if (response.ok) {
                     const contentType = response.headers.get('Content-Type')
-                    if (['application/json', 'text/html', 'text/plain', 'application/octet-stream'].find(c => contentType.includes(c)) ||
+                    if (['application/json', 'text/html', 'text/plain', 'application/octet-stream',
+                        'application/vnd.api+json', 'application/ld+json', 'application/x-json-stream', 'text/json'
+                    ].find(c => contentType.includes(c)) ||
                         contentType.includes("application/json")) {
                         response.text()
                             .then(data => {

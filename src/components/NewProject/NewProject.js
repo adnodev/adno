@@ -42,77 +42,146 @@ class NewProject extends Component {
         enhancedFetch(manifest_url)
             .then(rep => rep.response.json())
             .then(manifestIIIF => {
-                if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
 
-                    // Get all canvases from the manifest
-                    manifestIIIF.sequences[0].canvases.forEach((canva, index) => {
+                const context = manifestIIIF['@context'];
 
-                        if (canva.images) {
-                            if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
-
-                                var originalImgLink = canva.images[0].resource.service["@id"] + "/full/300,/0/default.jpg"
-                                var manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
-
-                                canva = {
-                                    "thumbnail_link": originalImgLink,
-                                    "canva_url": manifestURL
-                                }
-
-                                this.setState({
-                                    manifestImages: [...this.state.manifestImages, canva],
-                                    currentIndex: 0,
-                                    nbCanvases: manifestIIIF.sequences[0].canvases.length,
-                                    isCanvaProject: true
-                                })
-
-                            } else if (canva.images[0].resource.default && canva.images[0].resource.default.service && canva.images[0].resource.default.service["@id"]) {
-
-                                var originalImgLink = canva.images[0].resource.default.service["@id"] + "/full/300,/0/default.jpg"
-                                let manifestURL = canva.images[0].resource.default.service["@id"] + "/info.json"
-
-                                canva = {
-                                    "thumbnail_link": originalImgLink,
-                                    "canva_url": manifestURL
-                                }
-
-                                this.setState({
-                                    manifestImages: [...this.state.manifestImages, canva],
-                                    currentIndex: 0,
-                                    nbCanvases: manifestIIIF.sequences[0].canvases.length,
-                                    isCanvaProject: true
-                                })
-
-                            } else {
-                                console.error("Resource not found ", index);
-                            }
-
-                        } else if (canva.thumbnail) {
-                            if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
-
-                                let imgLink = canva.thumbnail["@id"]
-                                let manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
-
-                                canva = {
-                                    "thumbnail_link": imgLink,
-                                    "canva_url": manifestURL
-                                }
-
-                                this.setState({
-                                    manifestImages: [...this.state.manifestImages, canva],
-                                    currentIndex: 0,
-                                    nbCanvases: manifestIIIF.sequences[0].canvases.length,
-                                    isCanvaProject: true
-                                })
-
-                            } else {
-                                console.error("Resource not found ", index);
-                            }
-                        } else {
-                            console.log("nothing found");
-                        }
-                    });
+                if (context === "http://iiif.io/api/presentation/3/context.json") {
+                    this.loadManifestV3(manifestIIIF)
+                } else {
+                    this.loadManifestV2(manifestIIIF)
                 }
             })
+    }
+
+    loadManifestV3 = manifestIIIF => {
+        // @id => id
+        // @type => type
+        // description => summary
+
+        if (manifestIIIF.items && manifestIIIF.items.length > 0) {
+            manifestIIIF.items.forEach((canva, index) => {
+                if (canva.items && canva.items.length > 0) {
+                    const annotation = canva.items[0];
+
+                    const resource = annotation.items[0].body
+
+                    if (resource) {
+                        console.log(resource)
+                        if (resource.service && resource.service[0] && resource.service[0].id) {
+                            const originalImgLink = `${resource.service[0].id}/full/300,/0/default.jpg`;
+                            const manifestURL = `${resource.service[0].id}/info.json`;
+
+                            const canvaData = {
+                                thumbnail_link: originalImgLink,
+                                canva_url: manifestURL,
+                            };
+
+                            this.setState((prevState) => ({
+                                manifestImages: [...prevState.manifestImages, canvaData],
+                                currentIndex: 0,
+                                nbCanvases: manifestIIIF.items.length,
+                                isCanvaProject: true,
+                            }));
+                        } else {
+                            console.error("Resource service ID not found for canvas ", index);
+                        }
+                    }
+                } else if (canva.thumbnail && canva.thumbnail[0] && canva.thumbnail[0].id) {
+                    const imgLink = canva.thumbnail[0].id;
+                    const manifestURL = canva.id ? `${canva.id}/info.json` : null;
+
+                    const canvaData = {
+                        thumbnail_link: imgLink,
+                        canva_url: manifestURL,
+                    };
+
+                    this.setState((prevState) => ({
+                        manifestImages: [...prevState.manifestImages, canvaData],
+                        currentIndex: 0,
+                        nbCanvases: manifestIIIF.items.length,
+                        isCanvaProject: true,
+                    }));
+                } else {
+                    console.log("No valid resource or thumbnail found for canvas ", index);
+                }
+            });
+        } else {
+            console.error("No canvases found in the manifest.");
+        }
+
+    }
+
+    loadManifestV2 = manifestIIIF => {
+        if (manifestIIIF.sequences && manifestIIIF.sequences[0] && manifestIIIF.sequences[0].canvases) {
+
+            // Get all canvases from the manifest
+            manifestIIIF.sequences[0].canvases.forEach((canva, index) => {
+
+                if (canva.images) {
+                    if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
+
+                        var originalImgLink = canva.images[0].resource.service["@id"] + "/full/300,/0/default.jpg"
+                        var manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
+
+                        canva = {
+                            "thumbnail_link": originalImgLink,
+                            "canva_url": manifestURL
+                        }
+
+                        this.setState({
+                            manifestImages: [...this.state.manifestImages, canva],
+                            currentIndex: 0,
+                            nbCanvases: manifestIIIF.sequences[0].canvases.length,
+                            isCanvaProject: true
+                        })
+
+                    } else if (canva.images[0].resource.default && canva.images[0].resource.default.service && canva.images[0].resource.default.service["@id"]) {
+
+                        var originalImgLink = canva.images[0].resource.default.service["@id"] + "/full/300,/0/default.jpg"
+                        let manifestURL = canva.images[0].resource.default.service["@id"] + "/info.json"
+
+                        canva = {
+                            "thumbnail_link": originalImgLink,
+                            "canva_url": manifestURL
+                        }
+
+                        this.setState({
+                            manifestImages: [...this.state.manifestImages, canva],
+                            currentIndex: 0,
+                            nbCanvases: manifestIIIF.sequences[0].canvases.length,
+                            isCanvaProject: true
+                        })
+
+                    } else {
+                        console.error("Resource not found ", index);
+                    }
+
+                } else if (canva.thumbnail) {
+                    if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
+
+                        let imgLink = canva.thumbnail["@id"]
+                        let manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
+
+                        canva = {
+                            "thumbnail_link": imgLink,
+                            "canva_url": manifestURL
+                        }
+
+                        this.setState({
+                            manifestImages: [...this.state.manifestImages, canva],
+                            currentIndex: 0,
+                            nbCanvases: manifestIIIF.sequences[0].canvases.length,
+                            isCanvaProject: true
+                        })
+
+                    } else {
+                        console.error("Resource not found ", index);
+                    }
+                } else {
+                    console.log("nothing found");
+                }
+            });
+        }
     }
 
 

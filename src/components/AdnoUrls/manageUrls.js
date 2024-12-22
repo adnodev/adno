@@ -22,7 +22,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                     const contentType = response.headers.get('Content-Type')
 
                     console.log(contentType)
-                    if (['application/json', 'text/html', 'text/plain', 'application/octet-stream'].find(c => contentType.includes(c))) {
+                    if (['application/vnd.api+json', 'application/ld+json', 'application/x-json-stream', 'text/json'].find(c => contentType.includes(c))) {
                         response.text()
                             .then(data => {
                                 console.log(data)
