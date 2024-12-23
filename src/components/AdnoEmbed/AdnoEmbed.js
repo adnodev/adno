@@ -13,6 +13,7 @@ import {
     faExpand,
     faRotateRight,
     faQuestion,
+    faCircleInfo,
     faVolumeHigh,
     faVolumeOff
 } from "@fortawesome/free-solid-svg-icons";
@@ -834,6 +835,20 @@ class AdnoEmbed extends Component {
 
                                         this.setState({ isLoaded: true })
 
+                                        this.setState({ title: imported_project.title })
+					if (imported_project.hasOwnProperty("description")) {
+						this.setState({ description: imported_project.description })
+					}
+					if (imported_project.hasOwnProperty("creator")) {
+						this.setState({ creator: imported_project.creator })
+					}
+					if (imported_project.hasOwnProperty("editor")) {
+						this.setState({ editor: imported_project.editor })
+					}
+					if (imported_project.hasOwnProperty("rights")) {
+						this.setState({ rights: imported_project.rights })
+					}
+
                                         const selectedTags = imported_project.adno_settings.tags || [];
 
                                         let annos = [...imported_project.first.items];
@@ -1074,12 +1089,68 @@ class AdnoEmbed extends Component {
                                 </div>
                             </button>
 
+			    <button id="info" className="toolbarButton toolbaractive">
+			        <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
+                                    style={{ display: 'block' }}>
+                                    <FontAwesomeIcon icon={faCircleInfo} size="lg" />
+                                </label>
+			    </button>
+
                             <button id="help" className="toolbarButton toolbaractive">
                                 <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
                                     style={{ display: 'block' }}>
                                     <FontAwesomeIcon icon={faQuestion} size="lg" />
                                 </label>
                             </button>
+
+			    <input type="checkbox" id="info-modal" className="modal-toggle" />
+			    <div className="modal">
+                                <div className="modal-box" style={{ "color": "initial" }}>
+                                    <div className="modal-action mt-0 justify-end">
+                                        <button className="btn btn-square btn-sm">
+                                            <label htmlFor="info-modal" className="cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            </label>
+                                        </button>
+                                    </div>
+                                    <h3 className="font-bold text-2xl py-4">{this.state.title}</h3>
+                                    {
+                                        this.state.description &&
+                                        <>
+                                            <p className="py-4">{this.state.description}</p>
+                                        </>
+                                    }
+                                    <dl class="divide-y">
+                                    {
+                                        this.state.creator &&
+                                        <>
+                                            <div class="flex py-2">
+                                                <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
+                                                <dd>{this.state.creator}</dd>
+                                            </div>
+                                        </>
+                                    }
+                                    {
+                                        this.state.editor &&
+                                        <>
+                                            <div class="flex py-2">
+                                                <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
+                                                <dd>{this.state.editor}</dd>
+                                            </div>
+                                        </>
+                                    }
+                                    {
+                                        this.state.rights &&
+                                        <>
+                                            <div class="flex py-2">
+                                                <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+                                                <dd>{this.state.rights}</dd>
+                                            </div>
+                                        </>
+                                    }
+                                    </dl>
+                                </div>
+                            </div>
 
                             <input type="checkbox" id="help-modal" className="modal-toggle" />
                             <div className="modal">
