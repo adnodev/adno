@@ -66,7 +66,6 @@ class NewProject extends Component {
                     const resource = annotation.items[0].body
 
                     if (resource) {
-                        console.log(resource)
                         if (resource.service && resource.service[0] && resource.service[0].id) {
                             const originalImgLink = `${resource.service[0].id}/full/300,/0/default.jpg`;
                             const manifestURL = `${resource.service[0].id}/info.json`;

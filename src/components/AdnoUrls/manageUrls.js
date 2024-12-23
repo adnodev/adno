@@ -21,11 +21,9 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
 
-                    console.log(contentType)
                     if (['application/vnd.api+json', 'application/ld+json', 'application/x-json-stream', 'text/json'].find(c => contentType.includes(c))) {
                         response.text()
                             .then(data => {
-                                console.log(data)
                                 let manifest = JSON.parse(data)
 
                                 // If we detect an ADNO project, we import it to the user's projects

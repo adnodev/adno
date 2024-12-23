@@ -24,8 +24,6 @@ function LinkGenerator({ t }) {
     const generateURL = () => {
         const params = new URL("https://fo.bar");
 
-        console.log(settings)
-
         appendBooleanParam(params, "delay", settings.delay)
         appendBooleanParam(params, "navigator", settings.showNavigator)
         appendBooleanParam(params, "toolbarsfs", settings.toolsbarOnFs)

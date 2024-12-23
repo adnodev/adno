@@ -37,7 +37,10 @@ class Project extends Component {
             settings: getProjectSettings(this.props.match.params.id),
             autoplayID: -1,
 
-            audioContexts: []
+            audioContexts: [],
+
+            past: [],
+            future: []
         }
     }
 
@@ -74,6 +77,28 @@ class Project extends Component {
         localStorage.setItem(this.state.selectedProject.id, JSON.stringify(project))
     }
 
+    handleChanges = (arr) => {
+        this.setState(prevState => {
+            const { past, future, ...state } = prevState
+            const newState = Object.entries(arr)
+                .reduce((acc, item) => {
+                    const [key, value] = item
+                    return {
+                        ...acc,
+                        [key]: value
+                    }
+                }, state);
+
+            const updatedPast = [...past, state].slice(-3)
+
+            return {
+                ...newState,
+                past: updatedPast,
+                future: []
+            }
+        })
+    }
+
     render() {
         const { annotations, settings } = this.state;
 
@@ -94,14 +119,58 @@ class Project extends Component {
                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                     showEditorSettings={() => this.setState({ showSettings: true })}
                     autoplayID={this.state.autoplayID}
+                    undoRedo={{
+                        undo: () => {
+                            this.setState((prevState) => {
+                                const { past, future, ...present } = prevState;
+
+                                if (past.length === 0) return null; // No undo available
+
+                                const previousState = past[past.length - 1];
+                                const updatedPast = past.slice(0, -1);
+
+                                return {
+                                    past: updatedPast,
+                                    future: [present, ...future],
+                                    ...previousState
+                                };
+                            });
+                        },
+                        redo: () => {
+                            this.setState((prevState) => {
+                                const { past, future, ...present } = prevState;
+
+                                if (future.length === 0) return null; // No redo available
+
+                                const nextState = future[0];
+                                const updatedFuture = future.slice(1);
+
+                                return {
+                                    past: [...past, present].slice(-3), // Add current state to past (limit to 3)
+                                    future: updatedFuture,
+                                    ...nextState
+                                };
+                            });
+                        },
+                        canUndo: this.state.past.length !== 0,
+                        canRedo: this.state.future.length !== 0,
+                    }}
                 />
 
                 {
                     this.state.showProjectMetadatas && this.props.editMode ?
-                        <ProjectEditMetadatas updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })} selectedProject={this.state.selectedProject} closeProjectMetadatas={() => this.setState({ showProjectMetadatas: false })} />
+                        <ProjectEditMetadatas
+                            updateProject={(updatedProject) => this.setState({
+                                selectedProject: updatedProject,
+                                showProjectMetadatas: false
+                            })}
+                            selectedProject={this.state.selectedProject}
+                            closeProjectMetadatas={() => this.setState({ showProjectMetadatas: false })} />
                         :
                         this.state.showProjectMetadatas && !this.props.editMode &&
-                        <ProjectMetadatas selectedProject={this.state.selectedProject} closeProjectMetadatas={() => this.setState({ showProjectMetadatas: false })} />
+                        <ProjectMetadatas
+                            selectedProject={this.state.selectedProject}
+                            closeProjectMetadatas={() => this.setState({ showProjectMetadatas: false })} />
                 }
 
                 {
@@ -116,10 +185,10 @@ class Project extends Component {
 
 
                 {
-                    this.state.updateAnnotation &&
+                    this.state.updateAnnotation && this.state.selectedAnnotation &&
                     <div className="text-rich">
                         <AdnoMdEditor
-                            updateAnnos={(annos) => this.setState({ annotations: annos })}
+                            updateAnnos={(annos) => this.handleChanges({ annotations: annos })}
                             closeMdEditor={() => this.setState({ updateAnnotation: false })}
                             selectedAnnotation={this.state.selectedAnnotation}
                             selectedProjectId={this.props.match.params.id}
@@ -148,9 +217,11 @@ class Project extends Component {
                                 <AnnotationCards
                                     updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                     selectedProject={this.state.selectedProject}
-                                    openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                                    openRichEditor={(annotation) => {
+                                        this.setState({ updateAnnotation: true, selectedAnnotation: annotation })
+                                    }}
                                     annotations={this.state.annotations}
-                                    updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
+                                    updateAnnos={(updated_annos) => this.handleChanges({ annotations: updated_annos })}
                                     selectedAnno={this.state.selectedAnnotation}
                                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                                 />
@@ -164,9 +235,11 @@ class Project extends Component {
                                     <AnnotationCards
                                         updateProject={(updatedProject) => this.setState({ selectedProject: updatedProject })}
                                         selectedProject={this.state.selectedProject}
-                                        openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                                        openRichEditor={(annotation) => {
+                                            this.setState({ updateAnnotation: true, selectedAnnotation: annotation })
+                                        }}
                                         annotations={this.state.annotations}
-                                        updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
+                                        updateAnnos={(updated_annos) => this.handleChanges({ annotations: updated_annos })}
                                         selectedAnno={this.state.selectedAnnotation}
                                         changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                                     />
@@ -178,7 +251,9 @@ class Project extends Component {
                                         selectedAnno={this.state.selectedAnnotation}
                                         changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                                         editingMode={this.props.editMode}
-                                        openFullAnnotationView={(annotation) => this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })}
+                                        openFullAnnotationView={(annotation) => {
+                                            this.setState({ showFullAnnotationView: true, selectedAnnotation: annotation })
+                                        }}
                                     />
                             }
                         </div>
@@ -191,9 +266,11 @@ class Project extends Component {
                                 this.props.editMode ?
                                     <AdnoEditor
                                         annotations={this.state.annotations}
-                                        updateAnnos={(updated_annos) => this.setState({ annotations: updated_annos })}
+                                        updateAnnos={(updated_annos) => this.handleChanges({ annotations: updated_annos })}
                                         selectedAnno={this.state.selectedAnnotation}
-                                        openRichEditor={(annotation) => this.setState({ updateAnnotation: true, selectedAnnotation: annotation })}
+                                        openRichEditor={(annotation) => {
+                                            this.setState({ updateAnnotation: true, selectedAnnotation: annotation })
+                                        }}
                                         changeSelectedAnno={(anno) => this.setState({ selectedAnnotation: anno })}
                                         rotation={this.state.settings.rotation}
                                     />

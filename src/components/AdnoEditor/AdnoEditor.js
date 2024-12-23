@@ -86,7 +86,7 @@ class AdnoEditor extends Component {
 
             // Event triggered by using saveSelected annotorious function
             this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                var annotations = [...this.props.annotations] || []
+                const annotations = [...this.props.annotations] || []
                 annotations.push(newAnnotation)
 
                 // Update the last update date for the selected project
@@ -140,15 +140,15 @@ class AdnoEditor extends Component {
     validateMove = () => {
         const selected_project = JSON.parse(localStorage.getItem(this.props.match.params.id))
 
-        var selected = this.state.selected;
+        const selected = this.state.selected;
 
-        var annotations = [...this.props.annotations]
-        var newAnnos = annotations.map(anno => {
+        const annotations = this.props.annotations.map(anno => JSON.parse(JSON.stringify(anno)))
+        const newAnnos = annotations.map(anno => {
             if (anno.id === selected.id) {
                 anno.target = selected.target
             }
             return anno;
-        })
+        });
 
         insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
         this.props.updateAnnos(newAnnos)

@@ -765,8 +765,6 @@ class AdnoEmbed extends Component {
 
             panner.positionX.value = -((viewportCenter.x - x) * 200);
             panner.positionY.value = -(((viewportCenter.y * 2) - y) * 200)
-
-            // console.log(svgElement, panner.positionX.value, panner.positionY.value)
         }
 
         viewer.addHandler('animation', () => updateSoundPosition(audioElement));

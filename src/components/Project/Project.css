@@ -193,6 +193,13 @@ input:checked+.slider:before {
     margin-right: 90px;
 }
 
+.undo-redo {
+    margin: auto;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
 .label-toggle {
     display: flex;
     justify-content: center;
