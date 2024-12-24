@@ -1,17 +1,7 @@
 {
     "fr": {
         "translation": {
-            "begin_msg": {
-                "1": "Pour commencer à utiliser",
-                "2": "veuillez renseigner l'URL d'un",
-                "3": "manifeste",
-                "4": "ou d'une",
-                "5": "image IIIF",
-                "6": "d'une",
-                "7": "image statique",
-                "8": "au format jpg ou png, ou encore d'un",
-                "9": "projet Adno"
-            },
+            "begin_msg": "Pour commencer à utiliser Adno, veuillez renseigner l'URL d'un manifeste ou d'une image IIIF d'une image statique au format jpg ou png, ou encore d'un projet Adno",
             "create_project": " Créer mon projet",
             "import": {
                 "import_project": "Importer un projet",
@@ -30,7 +20,7 @@
                 "last_update": "Dernière mise à jour le ",
                 "no_desc": "Aucune description disponible pour ce projet",
                 "no_creator": "Pas d'auteur indiqué",
-                "no_editor": " — Pas d'éditeur indiqué",
+                "no_editor": "Pas d'éditeur indiqué",
                 "preview": "Prévisualiser",
                 "edit": "Editer",
                 "delete": "Supprimer",
@@ -133,20 +123,20 @@
                 "previous_annotation": "Annotation précédente",
                 "next_annotation": "Annotation suivante",
                 "rotation": "Tourner de 90 degrés",
+		"info": "Informations",
                 "help": "Aide",
                 "help_title": "Raccourcis clavier",
-                "help_key": "— touche ",
-                "help_key_plural": "— touches ",
-                "help_or": " ou ",
-                "help_and": " et ",
-                "help_key_p": " pour démarrer automatiquement,",
-                "help_key_e": " pour activer le mode plein écran,",
-                "help_key_escape": " pour quitter le mode plein écran,",
-                "help_key_s": " pour afficher les contours des annotations,",
-                "help_key_t": " pour afficher les icones de navigation et de visualisation,",
-                "help_key_arrows": " flèches (gauche et droite) pour changer l'annotation courante.",
-                "help_doc": "Pour plus d'informations, consultez la ",
-                "help_doc_link": "documentation officielle de Adno",
+                "help_key": "touche ",
+                "help_key_plural": "touches ",
+                "help_or": "ou",
+                "help_and": "et",
+                "help_key_p": "pour démarrer automatiquement,",
+                "help_key_e": "pour activer le mode plein écran,",
+                "help_key_escape": "pour quitter le mode plein écran,",
+                "help_key_s": "pour afficher les contours des annotations,",
+                "help_key_t": "pour afficher les icones de navigation et de visualisation,",
+                "help_key_arrows": "flèches (gauche et droite) pour changer l'annotation courante.",
+                "help_doc": "Pour plus d'informations, consultez la documentation officielle de Adno.",
                 "close": "Fermer"
             },
             "modal": {
@@ -181,6 +171,8 @@
             "navbar": {
                 "edit_mode": "Mode édition",
                 "view_mode": "Mode lecture",
+                "undo": "Annuler la dernière action",
+                "redo": "Rétablir l'action annulée",
                 "back_home": "Retourner à l'accueil",
                 "download_project": "Télécharger le projet",
                 "edit_project": "Editer les métadonnées",
@@ -188,12 +180,10 @@
                 "share_project": "Sauvegarde et partage du projet",
                 "share_project_desc1": "Téléchargez d’abord le fichier du projet. Pour le partager, vous pouvez, soit le transmettre par mail, soit le déposer en ligne — sur un site web, un serveur de fichiers ou sur le système de fichier interplanétaire IPFS —, puis diffuser son URL ou son CID IPFS.",
                 "share_project_desc2": "Dès lors que votre projet Adno est en ligne, il est possible de le rendre visible dans une page web en insérant une balise iframe.",
-                "share_project_desc3": "Pour plus d'informations, rendez-vous sur la",
-                "share_project_desc4": "documentation officielle de Adno."
+                "share_project_desc3": "Pour plus d'informations, rendez-vous sur la documentation officielle de Adno."
             },
             "new_project": {
-                "add_infos_1": "Renseignez votre projet",
-                "add_infos_2": ""
+                "add_info": "Renseignez votre projet"
             },
             "errors": {
                 "error_found": "Erreur détectée",

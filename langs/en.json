@@ -1,17 +1,7 @@
 {
     "en": {
         "translation": {
-            "begin_msg": {
-                "1": "To start using",
-                "2": "please enter the URL of an",
-                "3": "IIIF Manifest",
-                "4": "or an",
-                "5": "IIIF picture",
-                "6": "a",
-                "7": "static picture",
-                "8": "in jpg or png format, or an",
-                "9": "Adno project"
-            },
+            "begin_msg": "To start using Adno, please enter the URL of an IIIF manifest or an IIIF image a static picture in jpg or png format, or an Adno project",
             "create_project": " Create a new project",
             "import": {
                 "import_project": "Import a project",
@@ -30,7 +20,7 @@
                 "last_update": "Last update on ",
                 "no_desc": "No description available for this project",
                 "no_creator": "No author indicated",
-                "no_editor": " — No editor indicated",
+                "no_editor": "No editor indicated",
                 "preview": "Preview",
                 "edit": "Edit",
                 "delete": "Delete",
@@ -47,7 +37,7 @@
                 "back": "Back",
                 "add_desc": "Add a little text to describe your project (optional)",
                 "add_title": "Add a title to your project",
-                "copy": "copy",
+                "copy": "Copy",
                 "cancel": "Cancel",
                 "choose": "Select an image",
                 "choose_desc": "Choose the image you want to use for your project",
@@ -134,20 +124,19 @@
                 "previous_annotation": "Go to previous annotation",
                 "next_annotation": "Go to next annotation",
                 "rotation": "Rotate of 90 degrees",
-                "help": "Help",
+                "info": "Information",
                 "help_title": "Keyboard shortcuts",
-                "help_key": "— key ",
-                "help_key_plural": "— keys ",
-                "help_or": " or ",
-                "help_and": " and ",
-                "help_key_p": " to start the autoplay,",
-                "help_key_e": " to toggle full screen,",
-                "help_key_escape": " to exit full screen mode,",
-                "help_key_s": " to toggle annotation bounds,",
-                "help_key_t": " to toggle the toolsbar,",
-                "help_key_arrows": " arrows (left and right) to change the current selected annotation.",
-                "help_doc": "For more information, please consult the  ",
-                "help_doc_link": "official documentation of Adno",
+                "help_key": "key",
+                "help_key_plural": "keys",
+                "help_or": "or",
+                "help_and": "and",
+                "help_key_p": "to start the autoplay,",
+                "help_key_e": "to toggle full screen,",
+                "help_key_escape": "to exit full screen mode,",
+                "help_key_s": "to toggle annotation bounds,",
+                "help_key_t": "to toggle the toolsbar,",
+                "help_key_arrows": "arrows (left and right) to change the current selected annotation.",
+                "help_doc": "For more information, please consult the official documentation of Adno",
                 "close": "Fermer"
             },
             "modal": {
@@ -182,6 +171,8 @@
             "navbar": {
                 "edit_mode": "Edit mode",
                 "view_mode": "View mode",
+                "undo": "Reverse the previous action",
+                "redo": "Reapply the undone action",
                 "back_home": "Back to home",
                 "download_project": "Download the project",
                 "edit_project": "Edit project metadata",
@@ -189,12 +180,10 @@
                 "share_project": "Save and share your project",
                 "share_project_desc1": "First, download your project file. To share it, you can either send it by e-mail, or place it online - on a website, a file server or on the IPFS interplanetary file system - and then share its URL or IPFS CID.",
                 "share_project_desc2": "Once your Adno project is online, you can make it visible on a web page by inserting an iframe tag. ",
-                "share_project_desc3": "For more information, visit the",
-                "share_project_desc4": "official Adno documentation"
+                "share_project_desc3": "For more information, visit the official Adno documentation."
             },
             "new_project": {
-                "add_infos_1": "Add information",
-                "add_infos_2": "to your project"
+                "add_info": "Add information to  your project"
             },
             "errors": {
                 "error_found": "An error have been found",

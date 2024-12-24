@@ -159,10 +159,11 @@
 
 .adno_description {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     line-height: 2rem;
     font-weight: 300;
-    margin-bottom: 30px;
+    width: 60%;
+    margin: 0 auto 30px;
 }
 
 .spin {

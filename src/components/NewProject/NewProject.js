@@ -442,7 +442,7 @@ class NewProject extends Component {
                 {
                     (!this.state.isCanvaProject || (this.state.isCanvaProject && this.state.selectedCanva)) &&
                     <>
-                        <h1 className="new-project-title">{this.props.t('new_project.add_infos_1')}<br></br> {this.props.t('new_project.add_infos_2')}</h1>
+                        <h1 className="new-project-title">{this.props.t('new_project.add_info')}</h1>
                         <form className="form-new-project" >
                             <label className="input-group new_project_input">
                                 <span className="new_project_span">{this.props.t('project.title')}</span>

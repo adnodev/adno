@@ -93,7 +93,7 @@ class Home extends Component {
                             <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
                         </div>
                     }
-                    <p className="adno_description"> {this.props.t('begin_msg.1')} <strong>Adno</strong>,<br /> {this.props.t('begin_msg.2')} <strong>{this.props.t('begin_msg.3')}</strong> {this.props.t('begin_msg.4')} <strong>{this.props.t('begin_msg.5')}</strong>,<br /> {this.props.t('begin_msg.6')} <strong>{this.props.t('begin_msg.7')}</strong>, {this.props.t('begin_msg.8')} <strong>{this.props.t('begin_msg.9')}</strong>.</p>
+                    <p className="adno_description">{this.props.t('begin_msg')}</p>
                     <div className="adno_home_selection">
                         <form id="myForm">
                             <div className="input-group mb-3 add_url">
