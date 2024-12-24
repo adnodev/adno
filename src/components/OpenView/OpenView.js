@@ -5,7 +5,7 @@ import ReactHtmlParser from 'react-html-parser';
 // Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion, faVolumeOff, faVolumeHigh, faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
 // Import utils
 import { checkIfProjectExists, getEye } from "../../Utils/utils";
