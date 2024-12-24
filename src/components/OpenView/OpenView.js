@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion, faVolumeOff, faVolumeHigh, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
-
 // Import utils
 import { checkIfProjectExists, getEye } from "../../Utils/utils";
 
@@ -696,6 +695,12 @@ class OpenView extends Component {
                                 <FontAwesomeIcon icon={faExpand} size="lg" />
                             </div>
                         </button>
+			<button id="info" className="toolbarButton toolbaractive">
+                            <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
+                                style={{ display: 'block' }}>
+                                <FontAwesomeIcon icon={faCircleInfo} size="lg" />
+                            </label>
+                        </button>
                         <button id="help" className="toolbarButton toolbaractive">
                             <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
                                 style={{ display: 'block' }}>
@@ -703,6 +708,55 @@ class OpenView extends Component {
                             </label>
                         </button>
 
+                        <input type="checkbox" id="info-modal" className="modal-toggle" />
+                        <div className="modal">
+                            <div className="modal-box" style={{ "color": "initial" }}>
+                                <div className="modal-action mt-0 justify-end">
+                                    <button className="btn btn-square btn-sm">
+                                        <label htmlFor="info-modal" className="cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </label>
+                                    </button>
+                                </div>
+                                <h3 className="font-bold text-2xl py-4">{this.props.selected_project.title}</h3>
+        			{
+                            	    this.props.selected_project.description &&
+                                    <>
+	                                <p className="py-4">{this.props.selected_project.description}</p>
+                                    </>
+                                }
+				<dl class="divide-y">
+				{
+                            	    this.props.selected_project.creator &&
+                                    <>
+				        <div class="flex py-2">
+					    <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
+					    <dd>{this.props.selected_project.creator}</dd>
+				        </div>
+                                    </>
+                                }
+				{
+                            	    this.props.selected_project.editor &&
+                                    <>
+				        <div class="flex py-2">
+					    <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
+					    <dd>{this.props.selected_project.editor}</dd>
+				        </div>
+                                    </>
+                                }
+				{
+                            	    this.props.selected_project.rights &&
+                                    <>
+				        <div class="flex py-2">
+					    <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+					    <dd>{this.props.selected_project.rights}</dd>
+				        </div>
+                                    </>
+                                }
+				</dl>
+                            </div>
+                        </div>
+ 
                         <input type="checkbox" id="help-modal" className="modal-toggle" />
                         <div className="modal">
                             <div className="modal-box" style={{ "color": "initial" }}>
@@ -713,7 +767,7 @@ class OpenView extends Component {
                                         </label>
                                     </button>
                                 </div>
-                                <h3 className="font-bold text-lg py-4">{this.props.t('visualizer.help_title')}</h3>
+                                <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
 				<ul class="list-disc">
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
