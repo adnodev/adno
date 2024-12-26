@@ -5,7 +5,7 @@
             "create_project": " Créer mon projet",
             "import": {
                 "import_project": "Importer un projet",
-                "import_now": "directement",
+                "import_now": "Utiliser le fichier d'un projet",
                 "validate": "Valider l'importation",
                 "cancel": "Annuler l'importation",
                 "adno_project": "Projet Adno détecté, voulez-vous l'importer ?",
@@ -88,7 +88,8 @@
                 "one_selected": "1 Fichier selectionné"
             },
             "buttons": {
-                "cancel": "Annuler"
+                "cancel": "Annuler",
+		"close": "Fermer"
             },
             "editor": {
                 "approve_changes": "Valider les modifications",
@@ -198,7 +199,6 @@
                 "no_iiif": "Projet non IIIF détecté, veuillez renseigner un projet IIIF",
                 "wrong_file": "Ce fichier n'est pas lisible par ADNO ! Veuillez réessayer avec un autre fichier"
             },
-            "footer": "Poitiers. Ce projet a été soutenu par le ministère français de la Culture",
             "tags_infos": "Veuillez appuyer sur la touche 'entrée' pour valider chaque mot clé",
             "link": {
                 "url": "Saisissez l'URL vers les ressources IIIF",

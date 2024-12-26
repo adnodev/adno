@@ -5,7 +5,7 @@
             "create_project": " Create a new project",
             "import": {
                 "import_project": "Import a project",
-                "import_now": "now",
+                "import_now": "Using a project file",
                 "validate": "Validate",
                 "cancel": "Cancel",
                 "adno_project": "Adno project found, would you like to import it ?",
@@ -198,7 +198,6 @@
                 "no_iiif": "Non-IIIF project detected, please fill in an IIIF project",
                 "wrong_file": "This file is not readable by Adno! Please try again with another file"
             },
-            "footer": "Poitiers. This project was supported by the French Ministry of Culture",
             "tags_infos": "Please press your key 'enter' between each tag to save them",
             "link": {
                 "url": "Add the URL to the IIIF ressources",

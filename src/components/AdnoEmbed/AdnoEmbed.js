@@ -1161,7 +1161,7 @@ class AdnoEmbed extends Component {
                                             </label>
                                         </button>
                                     </div>
-                                    <h3 className="font-bold text-lg py-4">{this.props.t('visualizer.help_title')}</h3>
+                                    <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
                                     <ul class="list-disc">
                                         <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
                                         <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>

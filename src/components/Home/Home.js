@@ -111,7 +111,7 @@ class Home extends Component {
                             </div>
                         </form>
                         <div className="import_container">
-                            <p className="adno_import_description mb-3"><strong>{this.props.t('import.import_project')}</strong> {this.props.t('import.import_now')} </p>
+                            <p className="adno_import_description mb-3">{this.props.t('import.import_now')}</p>
                             <ImportProject projects={this.state.projects} updateProjects={(updatedList) => this.setState({ projects: updatedList, adno_image_url: "" })} />
                         </div>
                     </div>
@@ -135,8 +135,8 @@ class Home extends Component {
                         <div>
                             {
                                 process.env.ADNO_FOOTER_TEXT ?
-                                    <p>{process.env.ADNO_FOOTER_TEXT} — <a href="https://adno.app/" target="_blank">adno.app</a></p>
-                                    : <p><a href="https://adno.app/" target="_blank">adno.app</a> - <a href="https://emf.fr/" target="_blank">Espace Mendès France</a>, {this.props.t('footer')}</p>
+                                    <p>{process.env.ADNO_FOOTER_TEXT}</p>
+                                    : <p><a href="https://adno.app/" target="_blank">adno.app</a></p>
                             }
                         </div>
                     </footer>
