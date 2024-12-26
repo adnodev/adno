@@ -93,7 +93,7 @@ ADNO_FOOTER_TEXT=YOUR FOOTER TEXT HERE
 GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
 
 # CORS SERVER
-CORS_SERVER=https://little-alert-chill.glitch.me
+CORS_SERVER=https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
 ```
 
 ## Build Adno
@@ -111,7 +111,7 @@ ADNO_FOOTER=TRUE
 GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
 
 # CORS SERVER
-CORS_SERVER=https://little-alert-chill.glitch.me
+CORS_SERVER=https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
 ```
 
 .env.ADNOLIGHT example :
@@ -127,7 +127,7 @@ ADNO_FOOTER=TRUE
 GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
 
 # CORS SERVER
-CORS_SERVER=https://little-alert-chill.glitch.me
+CORS_SERVER=https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
 ```
 
 Build both versions :
