@@ -86,221 +86,244 @@ class ProjectSettings extends Component {
 
                     <div className="project-metadatas">
                         {PARAMETERS_BY_TAB[this.state.tab].includes('tags') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.tags')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.tags')}</span>
+                                </div>
+				<ReactSelect
+				    isMulti
+                                    name="tags"
+                                    options={tags}
+                                    value={(this.state.settings?.tags || []).map(tag => ({ label: tag, value: tag }))}
+                                    onChange={newTags => this.setState({ settings: { ...this.state.settings, tags: newTags.map(tag => tag.value) } })}
+                                    placeholder={this.props.t('annotation.tags_list')}
+                                    noOptionsMessage={() => this.props.t('annotation.empty_tags_list')}
+                                    className="basic-multi-select mb-2 custom-react-select max-w-4xl"
+                                    classNamePrefix="select"
+                                />
                             </label>
-                            <ReactSelect
-                                isMulti
-                                name="tags"
-                                options={tags}
-                                value={(this.state.settings?.tags || []).map(tag => ({ label: tag, value: tag }))}
-                                onChange={newTags => this.setState({ settings: { ...this.state.settings, tags: newTags.map(tag => tag.value) } })}
-                                placeholder={this.props.t('annotation.tags_list')}
-                                noOptionsMessage={() => this.props.t('annotation.empty_tags_list')}
-                                className="basic-multi-select mb-2 custom-react-select"
-                                classNamePrefix="select"
-                            />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('delay') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.delay')}</span>
-                            </label>
-                            <input type="number" placeholder="2" className="input input-bordered w-full max-w-xs" value={this.state.settings.delay}
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.delay')}</span>
+                                </div>
+                                <input type="number" placeholder="2" className="input input-bordered w-60" value={this.state.settings.delay}
                                 onChange={(e) => this.setState({ settings: { ...this.state.settings, delay: e.target.value } })} />
+                            </label>
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineWidth') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.outline_width')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.outline_width')}</span>
+                                </div>
+                                <select size="5" className="input input-bordered h-fit w-full max-w-4xl font-mono outline-select" defaultValue={this.state.settings.outlineWidth}
+                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineWidth: e.target.value } })}>
+                                    <option value="outline-1px" className="outline-1px">1px</option>
+                                    <option value="outline-2px" className="outline-2px">2px</option>
+                                    <option value="outline-3px" className="outline-3px">3px</option>
+                                    <option value="outline-5px" className="outline-5px">5px</option>
+				    <option value="outline-8px" className="outline-8px">8px</option>
+				</select>
                             </label>
-                            <select size="5" className="input input-bordered h-fit w-full font-mono outline-select" defaultValue={this.state.settings.outlineWidth}
-                                onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineWidth: e.target.value } })}>
-                                <option value="outline-1px" className="outline-1px">1px</option>
-                                <option value="outline-2px" className="outline-2px">2px</option>
-                                <option value="outline-3px" className="outline-3px">3px</option>
-                                <option value="outline-5px" className="outline-5px">5px</option>
-                                <option value="outline-8px" className="outline-8px">8px</option>
-                            </select>
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineColor') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.outline_color')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.outline_color')}</span>
+                                </div>
+                                <div className="flex space-x-4 bg-gray-100 w-fit rounded-lg">
+                                    <input type="radio" name="color" value="outline-white"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-white checked:bg-white rounded-lg cursor-pointer"
+					checked={!this.state.settings.outlineColor || (this.state.settings.outlineColor === "outline-white")} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+			            />
+                                    <input type="radio" name="color" value="outline-red"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-red-500 checked:bg-red-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColor === "outline-red"}
+                                        onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+                                    />
+                                    <input type="radio" name="color" value="outline-orange"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-amber-500 checked:bg-amber-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColor === "outline-orange"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+                                    />
+                                    <input type="radio" name="color" value="outline-yellow"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-yellow-300 checked:bg-yellow-300 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColor === "outline-yellow"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+                                    />
+                                    <input type="radio" name="color" value="outline-green"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-lime-500 checked:bg-lime-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColor === "outline-green"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+                                    />
+                                    <input type="radio" name="color" value="outline-blue"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-blue-400 checked:bg-blue-400 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColor === "outline-blue"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+                                    />
+                                    <input type="radio" name="color" value="outline-violet"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-violet-500 checked:bg-violet-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColor === "outline-violet"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+                                    />
+                                    <input type="radio" name="color" value="outline-black"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-black checked:bg-black rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColor === "outline-black"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
+                                    />
+                                </div>
                             </label>
-                            <div className="m-2 flex space-x-4 bg-gray-100 w-fit p-4 rounded-lg">
-                                <input type="radio" name="color" value="outline-white"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-white checked:bg-white rounded-lg cursor-pointer"
-                                    checked={!this.state.settings.outlineColor || (this.state.settings.outlineColor === "outline-white")} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                                <input type="radio" name="color" value="outline-red"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-red-500 checked:bg-red-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColor === "outline-red"}
-                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                                <input type="radio" name="color" value="outline-orange"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-amber-500 checked:bg-amber-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColor === "outline-orange"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                                <input type="radio" name="color" value="outline-yellow"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-yellow-300 checked:bg-yellow-300 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColor === "outline-yellow"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                                <input type="radio" name="color" value="outline-green"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-lime-500 checked:bg-lime-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColor === "outline-green"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                                <input type="radio" name="color" value="outline-blue"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-blue-400 checked:bg-blue-400 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColor === "outline-blue"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                                <input type="radio" name="color" value="outline-violet"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-violet-500 checked:bg-violet-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColor === "outline-violet"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                                <input type="radio" name="color" value="outline-black"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-black checked:bg-black rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColor === "outline-black"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColor: e.target.value } })}
-                                />
-                            </div>
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineColorFocus') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.outline_focus')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.outline_focus')}</span>
+                                </div>
+                                <div className="flex space-x-4 bg-gray-100 w-fit rounded-lg">
+                                    <input type="radio" name="focus" value="outline-focus-white"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-white checked:bg-white rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColorFocus === "outline-focus-white"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                    <input type="radio" name="focus" value="outline-focus-red"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-red-500 checked:bg-red-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColorFocus === "outline-focus-red"}
+                                        onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                    <input type="radio" name="focus" value="outline-focus-orange"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-amber-500 checked:bg-amber-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColorFocus === "outline-focus-orange"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                    <input type="radio" name="focus" value="outline-focus-yellow"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-yellow-300 checked:bg-yellow-300 rounded-lg cursor-pointer"
+                                        checked={!this.state.settings.outlineColorFocus || (this.state.settings.outlineColorFocus === "outline-focus-yellow")} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                    <input type="radio" name="focus" value="outline-focus-green"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-lime-500 checked:bg-lime-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColorFocus === "outline-focus-green"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                    <input type="radio" name="focus" value="outline-focus-blue"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-blue-400 checked:bg-blue-400 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColorFocus === "outline-focus-blue"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                    <input type="radio" name="focus" value="outline-focus-violet"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-violet-500 checked:bg-violet-500 rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColorFocus === "outline-focus-violet"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                    <input type="radio" name="focus" value="outline-focus-black"
+                                        className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-black checked:bg-black rounded-lg cursor-pointer"
+                                        checked={this.state.settings.outlineColorFocus === "outline-focus-black"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
+                                    />
+                                </div>
                             </label>
-                            <div className="m-2 flex space-x-4 bg-gray-100 w-fit p-4 rounded-lg">
-                                <input type="radio" name="focus" value="outline-focus-white"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-white checked:bg-white rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColorFocus === "outline-focus-white"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                                <input type="radio" name="focus" value="outline-focus-red"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-red-500 checked:bg-red-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColorFocus === "outline-focus-red"}
-                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                                <input type="radio" name="focus" value="outline-focus-orange"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-amber-500 checked:bg-amber-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColorFocus === "outline-focus-orange"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                                <input type="radio" name="focus" value="outline-focus-yellow"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-yellow-300 checked:bg-yellow-300 rounded-lg cursor-pointer"
-                                    checked={!this.state.settings.outlineColorFocus || (this.state.settings.outlineColorFocus === "outline-focus-yellow")} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                                <input type="radio" name="focus" value="outline-focus-green"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio radio bg-lime-500 checked:bg-lime-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColorFocus === "outline-focus-green"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                                <input type="radio" name="focus" value="outline-focus-blue"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-blue-400 checked:bg-blue-400 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColorFocus === "outline-focus-blue"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                                <input type="radio" name="focus" value="outline-focus-violet"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-violet-500 checked:bg-violet-500 rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColorFocus === "outline-focus-violet"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                                <input type="radio" name="focus" value="outline-focus-black"
-                                    className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-black checked:bg-black rounded-lg cursor-pointer"
-                                    checked={this.state.settings.outlineColorFocus === "outline-focus-black"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
-                                />
-                            </div>
                         </>}
 
-
                         {PARAMETERS_BY_TAB[this.state.tab].includes('startbyfirstanno') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.begin_first_anno')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.begin_first_anno')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.startbyfirstanno}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno } })} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.startbyfirstanno}
-                                onChange={() => this.setState({ settings: { ...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno } })} />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showNavigator') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.navigator')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.navigator')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-navigator" checked={this.state.settings.showNavigator}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, showNavigator: !this.state.settings.showNavigator } })} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-navigator" checked={this.state.settings.showNavigator}
-                                onChange={() => this.setState({ settings: { ...this.state.settings, showNavigator: !this.state.settings.showNavigator } })} />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showOutlines') && <>
-                            <label className="label">
-                                <span className="label-text">
-                                    {this.props.t('project.settings.show_outlines')}
-                                </span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.show_outlines')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-navigator"
+                                    checked={this.state.settings.showOutlines}
+                                    onChange={() => this.setState({
+                                        settings: {
+                                            ...this.state.settings,
+                                            showOutlines: !this.state.settings.showOutlines
+                                        }
+                                    })} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-navigator"
-                                checked={this.state.settings.showOutlines}
-                                onChange={() => this.setState({
-                                    settings: {
-                                        ...this.state.settings,
-                                        showOutlines: !this.state.settings.showOutlines
-                                    }
-                                })} />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showEyes') && <>
-                            <label className="label">
-                                <span className="label-text">
-                                    {this.props.t('project.settings.show_eyes')}
-                                </span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.show_eyes')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-navigator"
+                                    checked={this.state.settings.showEyes}
+                                    onChange={() => this.setState({
+                                        settings: {
+                                            ...this.state.settings,
+                                            showEyes: !this.state.settings.showEyes
+                                        }
+				})} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-navigator"
-                                checked={this.state.settings.showEyes}
-                                onChange={() => this.setState({
-                                    settings: {
-                                        ...this.state.settings,
-                                        showEyes: !this.state.settings.showEyes
-                                    }
-                                })} />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('soundMode') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.annotation_sound')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.annotation_sound')}</span>
+                                </div>
+                                <ReactSelect
+                                    name="sound_mode"
+                                    options={soundsMode}
+                                    value={soundsMode.find(f => f.value === this.state.settings?.soundMode)}
+                                    defaultValue={soundsMode.find(f => f.value === 'no_sound')}
+                                    onChange={soundMode => this.setState({ settings: { ...this.state.settings, soundMode: soundMode?.value } })}
+                                    placeholder={this.props.t('project.settings.annotation_sound')}
+                                    className="basic-multi-select custom-react-select max-w-4xl"
+                                    classNamePrefix="select"
+                                />
                             </label>
-                            <ReactSelect
-                                name="sound_mode"
-                                options={soundsMode}
-                                value={soundsMode.find(f => f.value === this.state.settings?.soundMode)}
-                                defaultValue={soundsMode.find(f => f.value === 'no_sound')}
-                                onChange={soundMode => this.setState({ settings: { ...this.state.settings, soundMode: soundMode?.value } })}
-                                placeholder={this.props.t('project.settings.annotation_sound')}
-                                className="basic-multi-select mb-2 custom-react-select"
-                                classNamePrefix="select"
-                            />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('displayToolbar') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar}
-                                onChange={() => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })} />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('toolsbarOnFs') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.toolsbarOnFs}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs } })} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.toolsbarOnFs}
-                                onChange={() => this.setState({ settings: { ...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs } })} />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('sidebarEnabled') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.annos_nav')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.annos_nav')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.sidebarEnabled}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled } })} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.sidebarEnabled}
-                                onChange={() => this.setState({ settings: { ...this.state.settings, sidebarEnabled: !this.state.settings.sidebarEnabled } })} />
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('rotation') && <>
-                            <label className="label">
-                                <span className="label-text">{this.props.t('project.settings.enable_rota')}</span>
+			    <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.enable_rota')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.rotation}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, rotation: !this.state.settings.rotation } })} />
                             </label>
-                            <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.rotation}
-                                onChange={() => this.setState({ settings: { ...this.state.settings, rotation: !this.state.settings.rotation } })} />
                         </>}
                     </div>
 

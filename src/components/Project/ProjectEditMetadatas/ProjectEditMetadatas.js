@@ -54,88 +54,107 @@ class ProjectEditMetadatas extends Component {
 
                     <div className="project-metadatas">
 
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.title')}</span>
+                        <label className="form-control w-full">
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('project.title')}</span>
+                            </div>
+                            <input type="text" placeholder={this.props.t('project.metadatas_plh.title')} className="input input-bordered w-full max-w-4xl" value={this.state.project.title} onChange={(e) => this.setState({ project: { ...this.state.project, title: e.target.value } })} />
                         </label>
-                        <input type="text" placeholder={this.props.t('project.metadatas_plh.title')} className="input input-bordered w-full max-w-xs" value={this.state.project.title} onChange={(e) => this.setState({ project: { ...this.state.project, title: e.target.value } })} />
 
-
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.description')}</span>
+                        <label className="form-control w-full mt-4">
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('project.description')}</span>
+                            </div>
+                            <textarea placeholder={this.props.t('project.metadatas_plh.description')} className="textarea textarea-bordered h-24 textarea-lg w-full max-w-4xl" value={this.state.project.description} onChange={(e) => this.setState({ project: { ...this.state.project, description: e.target.value } })}></textarea>
                         </label>
-                        <input type="text" placeholder={this.props.t('project.metadatas_plh.description')} className="input input-bordered w-full max-w-xs" value={this.state.project.description} onChange={(e) => this.setState({ project: { ...this.state.project, description: e.target.value } })} />
 
-
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.author')}</span>
+                        <label className="form-control w-full mt-4">
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('project.author')}</span>
+                            </div>
+                            <input type="text" placeholder={this.props.t('project.metadatas_plh.author')} className="input input-bordered w-full max-w-4xl" value={this.state.project.creator} onChange={(e) => this.setState({ project: { ...this.state.project, creator: e.target.value } })} />
                         </label>
-                        <input type="text" placeholder={this.props.t('project.metadatas_plh.author')} className="input input-bordered w-full max-w-xs" value={this.state.project.creator} onChange={(e) => this.setState({ project: { ...this.state.project, creator: e.target.value } })} />
 
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.editor')}</span>
+                        <label className="form-control w-full mt-4">
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('project.editor')}</span>
+                            </div>
+                            <input type="text" placeholder={this.props.t('project.metadatas_plh.editor')} className="input input-bordered w-full max-w-4xl" value={this.state.project.editor} onChange={(e) => this.setState({ project: { ...this.state.project, editor: e.target.value } })} />
                         </label>
-                        <input type="text" placeholder={this.props.t('project.metadatas_plh.editor')} className="input input-bordered w-full max-w-xs" value={this.state.project.editor} onChange={(e) => this.setState({ project: { ...this.state.project, editor: e.target.value } })} />
 
-
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.metadatas.allocation_rights')}</span>
+                        <label className="form-control w-full mt-4">
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('project.metadatas.allocation_rights')}</span>
+                            </div>
+                            <input type="text" placeholder={this.props.t('project.metadatas_plh.allocation_rights')} className="input input-bordered w-full max-w-4xl" value={this.state.project.rights} onChange={(e) => this.setState({ project: { ...this.state.project, rights: e.target.value } })} />
                         </label>
-                        <input type="text" placeholder={this.props.t('project.metadatas_plh.allocation_rights')} className="input input-bordered w-full max-w-xs" value={this.state.project.rights} onChange={(e) => this.setState({ project: { ...this.state.project, rights: e.target.value } })} />
-
 
                         {
                             this.props.selectedProject.manifest_url &&
                             <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                <label className="form-control w-full mt-4">
+                                    <div className="label font-medium">
+                                        <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                    </div>
+                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={this.props.selectedProject.manifest_url} disabled />
                                 </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.manifest_url} disabled />
                             </>
                         }
 
                         {
                             this.props.selectedProject.img_url &&
                             <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                <label className="form-control w-full mt-4">
+                                    <div className="label font-medium">
+                                        <span className="label-text">{this.props.t('project.metadatas.source')}</span>
+                                    </div>
+                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={this.props.selectedProject.img_url} disabled />
                                 </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.img_url} disabled />
                             </>
                         }
 
                         {this.props.selectedProject.creation_date &&
                             <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.creation_date')}</span>
+                                <label className="form-control w-full mt-4">
+                                    <div className="label font-medium">
+                                        <span className="label-text">{this.props.t('project.metadatas.creation_date')}</span>
+                                    </div>
+                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={new Date(this.props.selectedProject.creation_date).toLocaleString()} disabled />
                                 </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={new Date(this.props.selectedProject.creation_date).toLocaleString()} disabled />
                             </>
 
                         }
 
                         {
-                            this.props.selectedProject.last_update && <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>
+                            this.props.selectedProject.last_update && 
+				<>
+                                <label className="form-control w-full mt-4">
+                                    <div className="label font-medium">
+                                        <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>
+                                    </div>
+                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={new Date(this.props.selectedProject.last_update).toLocaleString()} disabled />
                                 </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={new Date(this.props.selectedProject.last_update).toLocaleString()} disabled />
                             </>
                         }
 
                         {
                             this.props.selectedProject.id &&
                             <>
-                                <label className="label">
-                                    <span className="label-text">{this.props.t('project.metadatas.identifier')}</span>
+                                <label className="form-control w-full mt-4">
+                                    <div className="label font-medium">
+                                        <span className="label-text">{this.props.t('project.metadatas.identifier')}</span>
+                                    </div>
+                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={this.props.selectedProject.id} disabled />
                                 </label>
-                                <input type="text" className="input input-bordered w-full max-w-xs" value={this.props.selectedProject.id} disabled />
                             </>
                         }
 
-                        <label className="label">
-                            <span className="label-text">{this.props.t('project.metadatas.format')}</span>
+                        <label className="form-control w-full mt-4">
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('project.metadatas.format')}</span>
+                            </div>
+                            <input type="text" className="input input-bordered w-full max-w-4xl" value="Adno" disabled />
                         </label>
-                        <input type="text" className="input input-bordered w-full max-w-xs" value="Adno" disabled />
 
                         <div className="metadata-editor-btns">
                             <button type="submit" className="btn" ><FontAwesomeIcon icon={faSave} className="mr-2" />  Enregistrer </button>

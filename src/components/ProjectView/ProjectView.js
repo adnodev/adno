@@ -194,7 +194,7 @@ class ProjectView extends Component {
                     <div className="project-text">
                         <h2 className="card-title">{this.props.project.title}</h2>
                         <p className="card-text card-date"><small className="text-muted">{this.props.project.creator ? this.props.project.creator : this.props.t('project.no_creator')} — {this.props.project.editor ? this.props.project.editor : this.props.t('project.no_editor')}</small></p>
-                        <p className="card-text">{this.props.project.description ? this.props.project.description : this.props.t('project.no_desc')}</p>
+                        <p className="card-text line-clamp-3 mb-2">{this.props.project.description ? this.props.project.description : this.props.t('project.no_desc')}</p>
                         <p className="card-text card-date"><small className="text-muted">{this.props.t('project.created_on')} {new Date(this.props.project.creation_date).toLocaleDateString()} — {this.props.t('project.last_update')}  {new Date(this.props.project.last_update).toLocaleDateString()}</small></p>
                         <p className="card-text"><small className="text-muted"> <span className="badge badge-lg">{this.state.nbAnnotations} annotation{this.state.nbAnnotations > 1 && "s"}</span> </small></p>
                     </div>
