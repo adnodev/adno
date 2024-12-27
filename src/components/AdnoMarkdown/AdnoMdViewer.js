@@ -84,7 +84,7 @@ class AdnoMdViewer extends Component {
         return (
             <div className="anno-full-view">
                 <div className="text-rich">
-                    <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
+                    <div className="card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor">
                         <div className="card-body">
                             <div className="card-actions justify-end">
                                 <button className="btn btn-square btn-sm" onClick={() => this.props.closeFullView()}>

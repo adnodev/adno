@@ -215,7 +215,7 @@ class AdnoMdEditor extends Component {
         const { tab } = this.state;
 
         return (
-            <div className="card w-96 bg-base-100 shadow-xl rich-card-editor">
+            <div className="card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor">
                 <div className="card-body">
                     <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeMdEditor()}
                         style={{
@@ -238,14 +238,16 @@ class AdnoMdEditor extends Component {
                                 onChange={(tags) => this.setState({ selectedTags: tags })}
                                 placeHolder={this.props.t('editor.md_add_tag')}
                             />
-                            <span>{this.props.t('tags_infos')}</span>
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('tags_infos')}</span>
+                            </div>
                         </div>
                     </div>}
 
                     {tab === 'audio' &&
                         <div style={{ height: '600px' }}>
                             <label className="form-control w-full">
-                                <div className="label">
+                                <div className="label font-medium">
                                     <span className="label-text" style={{ color: '#000' }}>{this.props.t('editor.audio_track')}</span>
                                 </div>
                                 <input type="text"
@@ -261,8 +263,8 @@ class AdnoMdEditor extends Component {
                                 <audio controls src={this.state.audioTrack} id="audioTag"></audio>
                             </figure>}
 
-                            <label className="form-control w-full">
-                                <div className="label">
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
                                     <span className="label-text" style={{ color: '#000' }}>{this.props.t('editor.audio_creator')}</span>
                                 </div>
                                 <input type="text"
