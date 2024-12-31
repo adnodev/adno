@@ -66,7 +66,8 @@ class Navbar extends Component {
                     textOverflow: 'ellipsis',
                     display: 'block'
                 }}>{this.props.selectedProject.title}<br /> {(this.props.settings?.tags || []).map(tag => ` #${tag} `)} {this.props.selectedProject.creator && ` [ ${this.props.selectedProject.creator} ]`}</strong>
-
+               {
+		       this.props.editMode &&
                 <div className="undo-redo">
                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.undo')}>
                         <button type="button" className="btn btn-outline"
@@ -92,7 +93,7 @@ class Navbar extends Component {
                         </button>
                     </div>
                 </div>
-
+                }
                 {
                     process.env.ADNO_MODE === "FULL" &&
                     <div className="dl_toggle">
