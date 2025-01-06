@@ -835,18 +835,18 @@ class AdnoEmbed extends Component {
                                         this.setState({ isLoaded: true })
 
                                         this.setState({ title: imported_project.title })
-					if (imported_project.hasOwnProperty("description")) {
-						this.setState({ description: imported_project.description })
-					}
-					if (imported_project.hasOwnProperty("creator")) {
-						this.setState({ creator: imported_project.creator })
-					}
-					if (imported_project.hasOwnProperty("editor")) {
-						this.setState({ editor: imported_project.editor })
-					}
-					if (imported_project.hasOwnProperty("rights")) {
-						this.setState({ rights: imported_project.rights })
-					}
+                                        if (imported_project.hasOwnProperty("description")) {
+                                            this.setState({ description: imported_project.description })
+                                        }
+                                        if (imported_project.hasOwnProperty("creator")) {
+                                            this.setState({ creator: imported_project.creator })
+                                        }
+                                        if (imported_project.hasOwnProperty("editor")) {
+                                            this.setState({ editor: imported_project.editor })
+                                        }
+                                        if (imported_project.hasOwnProperty("rights")) {
+                                            this.setState({ rights: imported_project.rights })
+                                        }
 
                                         const selectedTags = imported_project.adno_settings.tags || [];
 
@@ -1088,12 +1088,12 @@ class AdnoEmbed extends Component {
                                 </div>
                             </button>
 
-			    <button id="info" className="toolbarButton toolbaractive">
-			        <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
+                            <button id="info" className="toolbarButton toolbaractive">
+                                <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
                                     style={{ display: 'block' }}>
                                     <FontAwesomeIcon icon={faCircleInfo} size="lg" />
                                 </label>
-			    </button>
+                            </button>
 
                             <button id="help" className="toolbarButton toolbaractive">
                                 <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
@@ -1102,8 +1102,8 @@ class AdnoEmbed extends Component {
                                 </label>
                             </button>
 
-			    <input type="checkbox" id="info-modal" className="modal-toggle" />
-			    <div className="modal">
+                            <input type="checkbox" id="info-modal" className="modal-toggle" />
+                            <div className="modal">
                                 <div className="modal-box" style={{ "color": "initial" }}>
                                     <div className="modal-action mt-0 justify-end">
                                         <button className="btn btn-square btn-sm">
@@ -1120,33 +1120,33 @@ class AdnoEmbed extends Component {
                                         </>
                                     }
                                     <dl class="divide-y">
-                                    {
-                                        this.state.creator &&
-                                        <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
-                                                <dd>{this.state.creator}</dd>
-                                            </div>
-                                        </>
-                                    }
-                                    {
-                                        this.state.editor &&
-                                        <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
-                                                <dd>{this.state.editor}</dd>
-                                            </div>
-                                        </>
-                                    }
-                                    {
-                                        this.state.rights &&
-                                        <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
-                                                <dd>{this.state.rights}</dd>
-                                            </div>
-                                        </>
-                                    }
+                                        {
+                                            this.state.creator &&
+                                            <>
+                                                <div class="flex py-2">
+                                                    <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
+                                                    <dd>{this.state.creator}</dd>
+                                                </div>
+                                            </>
+                                        }
+                                        {
+                                            this.state.editor &&
+                                            <>
+                                                <div class="flex py-2">
+                                                    <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
+                                                    <dd>{this.state.editor}</dd>
+                                                </div>
+                                            </>
+                                        }
+                                        {
+                                            this.state.rights &&
+                                            <>
+                                                <div class="flex py-2">
+                                                    <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+                                                    <dd>{this.state.rights}</dd>
+                                                </div>
+                                            </>
+                                        }
                                     </dl>
                                 </div>
                             </div>

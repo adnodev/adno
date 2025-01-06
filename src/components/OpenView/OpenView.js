@@ -695,7 +695,7 @@ class OpenView extends Component {
                                 <FontAwesomeIcon icon={faExpand} size="lg" />
                             </div>
                         </button>
-			<button id="info" className="toolbarButton toolbaractive">
+                        <button id="info" className="toolbarButton toolbaractive">
                             <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
                                 style={{ display: 'block' }}>
                                 <FontAwesomeIcon icon={faCircleInfo} size="lg" />
@@ -719,44 +719,44 @@ class OpenView extends Component {
                                     </button>
                                 </div>
                                 <h3 className="font-bold text-2xl py-4">{this.props.selected_project.title}</h3>
-        			{
-                            	    this.props.selected_project.description &&
+                                {
+                                    this.props.selected_project.description &&
                                     <>
-	                                <p className="py-4">{this.props.selected_project.description}</p>
+                                        <p className="py-4">{this.props.selected_project.description}</p>
                                     </>
                                 }
-				<dl class="divide-y">
-				{
-                            	    this.props.selected_project.creator &&
-                                    <>
-				        <div class="flex py-2">
-					    <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
-					    <dd>{this.props.selected_project.creator}</dd>
-				        </div>
-                                    </>
-                                }
-				{
-                            	    this.props.selected_project.editor &&
-                                    <>
-				        <div class="flex py-2">
-					    <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
-					    <dd>{this.props.selected_project.editor}</dd>
-				        </div>
-                                    </>
-                                }
-				{
-                            	    this.props.selected_project.rights &&
-                                    <>
-				        <div class="flex py-2">
-					    <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
-					    <dd>{this.props.selected_project.rights}</dd>
-				        </div>
-                                    </>
-                                }
-				</dl>
+                                <dl class="divide-y">
+                                    {
+                                        this.props.selected_project.creator &&
+                                        <>
+                                            <div class="flex py-2">
+                                                <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
+                                                <dd>{this.props.selected_project.creator}</dd>
+                                            </div>
+                                        </>
+                                    }
+                                    {
+                                        this.props.selected_project.editor &&
+                                        <>
+                                            <div class="flex py-2">
+                                                <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
+                                                <dd>{this.props.selected_project.editor}</dd>
+                                            </div>
+                                        </>
+                                    }
+                                    {
+                                        this.props.selected_project.rights &&
+                                        <>
+                                            <div class="flex py-2">
+                                                <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+                                                <dd>{this.props.selected_project.rights}</dd>
+                                            </div>
+                                        </>
+                                    }
+                                </dl>
                             </div>
                         </div>
- 
+
                         <input type="checkbox" id="help-modal" className="modal-toggle" />
                         <div className="modal">
                             <div className="modal-box" style={{ "color": "initial" }}>
@@ -768,7 +768,7 @@ class OpenView extends Component {
                                     </button>
                                 </div>
                                 <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
-				<ul class="list-disc">
+                                <ul class="list-disc">
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
                                     <li className="py-2">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</li>
