@@ -716,6 +716,18 @@ class AdnoEmbed extends Component {
         } else if (soundMode === 'no_spatialization' || soundMode === 'no_sound') {
             this.state.audioContexts.forEach(r => r.suspend())
             this.toggleAudioElementLoopAttribute(false)
+
+            if (soundMode === 'no_sound') {
+                [...document.getElementsByClassName("a9s-annotation")]
+                    .forEach(annotation => {
+                        const audioElement = annotation.getElementsByTagName("audio")[0];
+
+                        if (audioElement) {
+                            audioElement.currentTime = 0;
+                            audioElement.pause()
+                        }
+                    });
+            }
         }
         else {
             if (this.state.currentTrack) {
