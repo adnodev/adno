@@ -470,7 +470,7 @@ class AdnoEmbed extends Component {
 
             let delay = timeout;
             if (annotation) {
-                const duration = annotation.getElementsByTagName("audio")[0].duration;
+                const duration = annotation.getElementsByTagName("audio")[0]?.duration;
 
                 if (duration) {
                     delay = duration * 1000 + 1500

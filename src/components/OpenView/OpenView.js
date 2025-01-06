@@ -251,7 +251,7 @@ class OpenView extends Component {
 
             let delay = timeout;
             if (annotation) {
-                const duration = annotation.getElementsByTagName("audio")[0].duration;
+                const duration = annotation.getElementsByTagName("audio")[0]?.duration;
 
                 if (duration) {
                     delay = duration * 1000 + 1500
@@ -421,6 +421,7 @@ class OpenView extends Component {
             }
 
         }
+        this.resetFullscreenAnnotationScrolling()
     }
 
     nextAnno = () => {
@@ -437,7 +438,16 @@ class OpenView extends Component {
             this.setState({ currentID: localCurrentID })
 
             this.changeAnno(this.props.annos[localCurrentID])
+
+            this.resetFullscreenAnnotationScrolling()
         }
+    }
+
+    resetFullscreenAnnotationScrolling = () => {
+        const fullscreenAnnotation = document.getElementById('adno-osd-anno-fullscreen');
+
+        if (fullscreenAnnotation)
+            fullscreenAnnotation.scrollTop = 0;
     }
 
     toggleFullScreen = () => {
@@ -632,10 +642,11 @@ class OpenView extends Component {
 
     getAnnotationHTMLBody = (annotation) => {
         if (annotation && annotation.body) {
-            if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
+            if (Array.isArray(annotation.body) &&
+                annotation.body.find(annoBody => annoBody.type === "HTMLBody") &&
+                annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return (
-                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"}>
-
+                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"} id="adno-osd-anno-fullscreen">
                         {ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
                     </div>
                 )
@@ -652,7 +663,6 @@ class OpenView extends Component {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
                     this.getAnnotationHTMLBody(this.props.selectedAnno)
                 }
-
 
                 <div className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"}>
                     <div className={this.state.fullScreenEnabled && this.props.toolsbarOnFs ? "osd-buttons-bar" : this.state.fullScreenEnabled && !this.props.toolsbarOnFs ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
