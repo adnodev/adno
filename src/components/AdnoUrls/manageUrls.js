@@ -1,6 +1,11 @@
 import Swal from "sweetalert2"
 import { buildJsonProjectWithManifest, enhancedFetch, generateUUID, get_url_extension, insertInLS, migrateTextBody } from "../../Utils/utils";
 
+function isJsonContentType(contentType) {
+    const jsonPattern = /^(application\/(vnd\.api\+json|ld\+json|x-json-stream|json)(;.*)?|text\/json)$/i;
+    return jsonPattern.test(contentType.trim());
+}
+
 export async function manageUrls(props, url, translation, step = "decoreURIComponent") {
     const IPFS_GATEWAY = process.env.IPFS_GATEWAY
 
@@ -21,7 +26,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
 
-                    if (['application/vnd.api+json', 'application/ld+json', 'application/x-json-stream', 'text/json'].find(c => contentType.includes(c))) {
+                    if (isJsonContentType(contentType)) {
                         response.text()
                             .then(data => {
                                 let manifest = JSON.parse(data)
