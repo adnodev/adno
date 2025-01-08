@@ -300,11 +300,34 @@ class OpenView extends Component {
             }
 
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                    inline: "nearest"
+                });
+
                 this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
                 document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
+
+                this.updateCurrentAnnotationColors(annotation.id)
             }
         }
+    }
+
+    updateCurrentAnnotationColors = annotationId => {
+        const className = document.getElementById(`eye-${annotationId}`)?.parentElement?.className?.animVal;
+
+        const regex = /outline-([a-zA-Z]+)/g;
+        const matches = [...className.matchAll(regex)].map(match => match[1]);
+
+        const color = matches.filter(f => ['green', 'white', 'red', 'orange', 'yellow', 'blue', 'violet', 'black'].includes(f))[0]
+
+        const style = window.getComputedStyle(document.body)
+
+        document.documentElement.style.setProperty('--selected-anno-border-color',
+            style.getPropertyValue(`--outline-${color}`) || '#fde047')
+        document.documentElement.style.setProperty('--selected-anno-background-color',
+            `${style.getPropertyValue(`--outline-${color}`)}1c` || '#fefce8')
     }
 
     playSound = (audioElement, soundMode) => {
@@ -514,6 +537,7 @@ class OpenView extends Component {
         this.loadAudio()
 
         setTimeout(this.freeMode, 1000)
+        setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
     }
 
     componentDidUpdate(prevProps, prevState) {
