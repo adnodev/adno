@@ -19,9 +19,12 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import Editor from '@toast-ui/editor';
 
 import '@toast-ui/editor/dist/i18n/fr-fr';
+import '@toast-ui/editor/dist/i18n/es-es';
 
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
+
+const locale = navigator.language;
 
 const AUDIO_TYPES = [
     'audio/mpeg',
@@ -57,6 +60,7 @@ class AdnoMdEditor extends Component {
             usageStatistics: false,
             placeholder: this.props.t("editor.placeholder"),
             hideModeSwitch: false,
+            language: locale,
             toolbarItems: [[
                 "heading",
                 "italic",
