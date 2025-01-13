@@ -286,7 +286,6 @@ class NewProject extends Component {
 
                 try {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
-
                         let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
 
                         if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
@@ -318,8 +317,8 @@ class NewProject extends Component {
                         } else {
                             this.props.history.push("/project/" + projectID + "/view")
                         }
-
                     } else {
+                        console.log('second')
                         enhancedFetch(manifest_url)
                             .then(rawResponse => {
                                 const rep = rawResponse.response
@@ -359,38 +358,38 @@ class NewProject extends Component {
                                                 project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
                                             }
 
-                                            if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
+                                            // if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
 
-                                                // If projects in local storage don't exist create the array
-                                                var projects = []
-                                                projects.push(projectID)
+                                            //     // If projects in local storage don't exist create the array
+                                            //     const projects = []
+                                            //     projects.push(projectID)
 
 
-                                                // Création du projet dans le localStorage
-                                                insertInLS(projectID, JSON.stringify(project))
+                                            //     // Création du projet dans le localStorage
+                                            //     insertInLS(projectID, JSON.stringify(project))
 
-                                                // Insertion de l'ID du projet créé dans le tableau des projets
-                                                insertInLS("adno_projects", JSON.stringify(projects))
-                                            } else {
+                                            //     // Insertion de l'ID du projet créé dans le tableau des projets
+                                            //     insertInLS("adno_projects", JSON.stringify(projects))
+                                            // } else {
 
-                                                // Création du projet dans le localStorage
-                                                insertInLS(projectID, JSON.stringify(project))
+                                            //     // Création du projet dans le localStorage
+                                            //     insertInLS(projectID, JSON.stringify(project))
 
-                                                // Insertion de l'ID du projet créé dans le tableau des projets
-                                                projects = JSON.parse(localStorage.getItem("adno_projects"))
-                                                projects.push(projectID)
-                                                insertInLS("adno_projects", JSON.stringify(projects))
-                                            }
+                                            //     // Insertion de l'ID du projet créé dans le tableau des projets
+                                            //     projects = JSON.parse(localStorage.getItem("adno_projects"))
+                                            //     projects.push(projectID)
+                                            //     insertInLS("adno_projects", JSON.stringify(projects))
+                                            // }
 
-                                            localStorage.removeItem("adno_image_url")
+                                            // localStorage.removeItem("adno_image_url")
 
-                                            // Remove the current selected canva after creating the project
-                                            localStorage.removeItem("selected_canva")
-                                            if (process.env.ADNO_MODE === "FULL") {
-                                                this.props.history.push("/project/" + projectID + "/edit")
-                                            } else {
-                                                this.props.history.push("/project/" + projectID + "/view")
-                                            }
+                                            // // // Remove the current selected canva after creating the project
+                                            // localStorage.removeItem("selected_canva")
+                                            // if (process.env.ADNO_MODE === "FULL") {
+                                            //     this.props.history.push("/project/" + projectID + "/edit")
+                                            // } else {
+                                            //     this.props.history.push("/project/" + projectID + "/view")
+                                            // }
                                         } else {
                                             Swal.fire({
                                                 title: this.props.t('errors.no_iiif'),
