@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -673,7 +673,7 @@ class OpenView extends Component {
                 annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return (
                     <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"} id="adno-osd-anno-fullscreen">
-                        {ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
+                        {parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
                     </div>
                 )
             }

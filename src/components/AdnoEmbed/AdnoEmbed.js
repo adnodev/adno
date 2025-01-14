@@ -18,7 +18,7 @@ import {
     faVolumeOff,
     faExternalLink
 } from "@fortawesome/free-solid-svg-icons";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
@@ -312,7 +312,7 @@ class AdnoEmbed extends Component {
                         }
                     >
                         {this.hasAudio(annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
-                        {ReactHtmlParser(
+                        {parse(
                             annotation.body.find((annoBody) => annoBody.type === "HTMLBody")
                                 .value
                         )}

@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import Html Parser
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,12 +28,12 @@ class AnnotationCards extends Component {
     getAnnotationHTMLBody = (annotation) => {
         if (annotation && annotation.body) {
             if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
-                return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
+                return parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
             } else {
-                return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
+                return <span class="no-content">Ø {this.props.t('annotation.no_content')}</span>
             }
         } else {
-            return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
+            return <span class="no-content">Ø {this.props.t('annotation.no_content')}</span>
         }
     }
 
