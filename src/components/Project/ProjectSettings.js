@@ -17,8 +17,8 @@ import ReactSelect from 'react-select';
 import { buildTagsList } from "../../Utils/utils";
 
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
-    'navigation': ['delay', 'startbyfirstanno', 'rotation', 'showOutlines', 'showEyes', 'soundMode'],
+    'viewer': ['showNavigator', 'rotation', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
+    'navigation': ['delay', 'startbyfirstanno', 'showOutlines', 'showEyes', 'soundMode'],
     'annotation': ['tags', 'outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
 
