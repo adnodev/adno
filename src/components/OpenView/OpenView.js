@@ -315,21 +315,27 @@ class OpenView extends Component {
     }
 
     updateCurrentAnnotationColors = annotationId => {
-        const className = document.getElementById(`eye-${annotationId}`)?.parentElement?.className?.animVal;
+        try {
+            const eye = document.getElementById(`eye-${annotationId}`)?.parentElement?.className?.animVal;
+            const shape = [...document.getElementsByClassName('selected')][0]?.className?.animVal;
 
-        if (className) {
-            const regex = /outline-([a-zA-Z]+)/g;
-            const matches = [...className.matchAll(regex)].map(match => match[1]);
+            const className = eye ? eye : shape;
 
-            const color = matches.filter(f => ['green', 'white', 'red', 'orange', 'yellow', 'blue', 'violet', 'black'].includes(f))[0]
+            if (className) {
+                const regex = /outline-([a-zA-Z]+)/g;
+                const matches = [...className.matchAll(regex)].map(match => match[1]);
 
-            const style = window.getComputedStyle(document.body)
+                const color = matches.filter(f => ['green', 'white', 'red', 'orange', 'yellow', 'blue', 'violet', 'black'].includes(f))[0]
 
-            document.documentElement.style.setProperty('--selected-anno-border-color',
-                style.getPropertyValue(`--outline-${color}`) || '#fde047')
-            document.documentElement.style.setProperty('--selected-anno-background-color',
-                `${style.getPropertyValue(`--outline-${color}`)}1c` || '#fefce8')
-        }
+                const style = window.getComputedStyle(document.body)
+
+                document.documentElement.style.setProperty('--selected-anno-border-color',
+                    style.getPropertyValue(`--outline-${color}`) || '#fde047')
+                document.documentElement.style.setProperty('--selected-anno-background-color',
+                    `${style.getPropertyValue(`--outline-${color}`)}1c` || '#fefce8')
+            }
+
+        } catch (err) { }
     }
 
     playSound = (audioElement, soundMode) => {
