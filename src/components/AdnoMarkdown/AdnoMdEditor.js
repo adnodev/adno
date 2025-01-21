@@ -4,8 +4,7 @@ import { Component } from 'react';
 import { faCheckCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// Import tags input
-import { TagsInput } from 'react-tag-input-component';
+import Select from 'react-select/creatable';
 
 // Import Markdown editor
 import { insertInLS } from '../../Utils/utils';
@@ -42,12 +41,25 @@ class AdnoMdEditor extends Component {
         super(props);
         this.state = {
             isDeleting: false,
-            selectedTags: this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 && this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").reduce((a, b) => [...a, b.value], []) || [],
+            selectedTags: this.computeSelectedTags(),
             audioTrack: this.getAudioBody(),
             audioCreator: this.getCreatorFromBody(),
             markdown: [],
-            tab: 'editor'
+            tab: 'editor',
+            existingTags: this.computeExistingTags()
         }
+    }
+
+    computeSelectedTags = () => {
+        return (this.props.selectedAnnotation.body && this.props.selectedAnnotation.body.length > 0 &&
+            this.props.selectedAnnotation.body.filter(anno => anno.purpose === "tagging").map(i => i.value) || [])
+            .map(label => ({ label, value: label }))
+    }
+
+    computeExistingTags = () => {
+        return this.props.annotations.reduce((acc, anno) => [...acc,
+        ...anno.body?.filter(a => a.purpose === 'tagging').map(i => i.value)
+        ], []).map(label => ({ label, value: label }))
     }
 
     componentDidMount() {
@@ -112,11 +124,11 @@ class AdnoMdEditor extends Component {
             }
         }
 
-        let tags = this.state.selectedTags.map(tag => {
+        let tags = this.state.selectedTags.map(({ label }) => {
             return (
                 {
                     "type": "TextualBody",
-                    "value": tag,
+                    "value": label,
                     "purpose": "tagging"
                 }
             )
@@ -237,11 +249,22 @@ class AdnoMdEditor extends Component {
 
                     {tab === 'tags' && <div style={{ height: '600px' }}>
                         <div className="editor-tags">
-                            <TagsInput
+                            <Select
+                                isMulti
+                                name="tags"
+                                value={this.state.selectedTags}
+                                options={this.state.existingTags}
+                                onChange={selectedTags => this.setState({ selectedTags })}
+                                components={{ NoOptionsMessage: () => <NoOptionsMessage t={this.props.t} /> }}
+                                className="basic-multi-select"
+                                classNamePrefix="select"
+                                placeHolder={this.props.t('editor.md_add_tag')}
+                            />
+                            {/* <TagsInput
                                 value={this.state.selectedTags}
                                 onChange={(tags) => this.setState({ selectedTags: tags })}
                                 placeHolder={this.props.t('editor.md_add_tag')}
-                            />
+                            /> */}
                             <div className="label font-medium">
                                 <span className="label-text">{this.props.t('tags_infos')}</span>
                             </div>
@@ -309,5 +332,11 @@ function TabSelector({ tab, setTab, translate }) {
             onClick={() => setTab('audio')}>{translate('editor.tabs.audio')}</button>
     </div>
 }
+
+const NoOptionsMessage = ({ t }) => {
+    return (
+        <span className='flex items-center justify-center py-2'>{t('editor.empty_list')}</span>
+    );
+};
 
 export default withTranslation()(AdnoMdEditor);

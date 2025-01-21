@@ -89,7 +89,7 @@
             },
             "buttons": {
                 "cancel": "Annuler",
-		"close": "Fermer"
+                "close": "Fermer"
             },
             "editor": {
                 "approve_changes": "Valider les modifications",
@@ -111,9 +111,10 @@
                 "placeholder": "Ajoutez votre texte ici",
                 "tabs": {
                     "editor": "Editeur",
-                    "tags": "Mots clés", 
+                    "tags": "Mots clés",
                     "audio": "Audio"
-                }
+                },
+                "empty_list": "Aucune proposition"
             },
             "visualizer": {
                 "expand": "Mettre en plein écran",
@@ -124,7 +125,7 @@
                 "previous_annotation": "Annotation précédente",
                 "next_annotation": "Annotation suivante",
                 "rotation": "Tourner de 90 degrés",
-		"info": "Informations",
+                "info": "Informations",
                 "help": "Aide",
                 "help_title": "Raccourcis clavier",
                 "help_key": "touche ",
