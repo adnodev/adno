@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 // Import utils
-import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllProjectsFromLS, enhancedFetch } from "../../Utils/utils";
+import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllProjectsFromLS, enhancedFetch, insertInLS, migrateTextBody, buildJsonProjectWithManifest } from "../../Utils/utils";
 
 // Import CSS
 import "./ProjectView.css";
@@ -31,7 +31,11 @@ class ProjectView extends Component {
         if (this.props.project.manifest_url) {
             enhancedFetch(this.props.project.manifest_url)
                 .then(rep => rep.response.json())
-                .then(manifest => {
+                .then(async manifest => {
+                    if (manifest?.format === 'Adno') {
+                        await this.migrateAdnoProject(this.props.project.id, manifest)
+                    }
+
                     this.loadSourceImage(manifest)
 
                     if (localStorage.getItem(this.props.project.id + "_annotations")) {
@@ -48,6 +52,25 @@ class ProjectView extends Component {
                 this.setState({ nbAnnotations })
             }
         }
+    }
+
+    migrateAdnoProject = async (projectID, manifest) => {
+        try {
+            const title = manifest.title || manifest.label
+            const desc = manifest.description || manifest.subject
+
+            const project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
+
+            insertInLS(projectID, JSON.stringify(project))
+            insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
+
+            // Migrate annotations if there is only TextualBody and not HTMLBody
+            manifest.first.items?.forEach(annotation => {
+                if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+                    migrateTextBody(projectID, annotation)
+                }
+            })
+        } catch (err) { }
     }
 
     loadSourceImage = manifest => {
