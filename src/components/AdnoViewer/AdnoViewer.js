@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { checkIfProjectExists } from "../../Utils/utils";
 
 // Import libraries
-import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
+// import "/libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Imports CSS
 import "./AdnoViewer.css";
@@ -56,7 +56,7 @@ class AdnoViewer extends Component {
 
 
             try {
-                const dataURI = "data:application/json;base64," + btoa(JSON.stringify(newAnnos));
+                const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(newAnnos))));
 
                 // Create and display an annona storyboard 
                 document.getElementById("image_iiif").innerHTML = '<iiif-storyboard  styling="toggleoverlay: true; tts:false;" annotationurl="' + dataURI + '"></iiif-storyboard>';

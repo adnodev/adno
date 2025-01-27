@@ -60,7 +60,6 @@ class ProjectView extends Component {
             const desc = manifest.description || manifest.subject
 
             const project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
-
             insertInLS(projectID, JSON.stringify(project))
             insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
 
@@ -70,7 +69,9 @@ class ProjectView extends Component {
                     migrateTextBody(projectID, annotation)
                 }
             })
-        } catch (err) { }
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     loadSourceImage = manifest => {
@@ -200,6 +201,7 @@ class ProjectView extends Component {
     }
 
     render() {
+        // console.log(this.props.project.title, this.props.project.id)
         return (
             <div className="card card-side bg-base-100 shadow-xl project-view-card">
                 <div className="project-card-img" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
@@ -210,8 +212,6 @@ class ProjectView extends Component {
                             currentTarget.src = "https://www.pngkey.com/png/detail/212-2124171_404-error-404-pagina-no-encontrada.png"
                         }}
                         className="img-fluid img-proj-view " alt={this.props.project.title} />
-
-
                 </div>
                 <div className="project-card-body">
                     <div className="project-text">

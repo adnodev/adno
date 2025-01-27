@@ -10,8 +10,8 @@ import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRigh
 // Import utils
 import { checkIfProjectExists, getEye } from "../../Utils/utils";
 
-// Import OpenSeaDragon and Annotorious
-import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
+// // Import OpenSeaDragon and Annotorious
+// import "/libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Import CSS
 import "./OpenView.css";
@@ -779,12 +779,12 @@ class OpenView extends Component {
                                         <p className="py-4">{this.props.selected_project.description}</p>
                                     </>
                                 }
-                                <dl class="divide-y">
+                                <dl className="divide-y">
                                     {
                                         this.props.selected_project.creator &&
                                         <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
+                                            <div className="flex py-2">
+                                                <dt className="font-medium px-2">{this.props.t('project.author')} :</dt>
                                                 <dd>{this.props.selected_project.creator}</dd>
                                             </div>
                                         </>
@@ -792,8 +792,8 @@ class OpenView extends Component {
                                     {
                                         this.props.selected_project.editor &&
                                         <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
+                                            <div className="flex py-2">
+                                                <dt className="font-medium px-2">{this.props.t('project.editor')} :</dt>
                                                 <dd>{this.props.selected_project.editor}</dd>
                                             </div>
                                         </>
@@ -801,8 +801,8 @@ class OpenView extends Component {
                                     {
                                         this.props.selected_project.rights &&
                                         <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+                                            <div className="flex py-2">
+                                                <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
                                                 <dd>{this.props.selected_project.rights}</dd>
                                             </div>
                                         </>
@@ -822,7 +822,7 @@ class OpenView extends Component {
                                     </button>
                                 </div>
                                 <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
-                                <ul class="list-disc">
+                                <ul className="list-disc">
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
                                     <li className="py-2">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</li>

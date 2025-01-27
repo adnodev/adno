@@ -4,12 +4,12 @@
   "homepage": "https://dhbern.github.io/adno/",
   "description": "",
   "scripts": {
-    "start": "yarn install && yarn clean && parcel public/index.html",
-    "dev": "yarn install && yarn clean && parcel public/index.html",
-    "build-full": "sh -c 'NODE_ENV=ADNOFULL parcel build public/index.html --dist-dir adno-full --public-url ${PUBLIC_URL:-/}'",
-    "build-light": "sh -c 'NODE_ENV=ADNOLIGHT parcel build public/index.html --dist-dir adno-light --public-url ${PUBLIC_URL:-/}'",
+    "start": "yarn install && yarn clean && vite",
+    "dev": "yarn install && yarn clean && vite",
+    "build-full": "sh -c 'NODE_ENV=ADNOFULL vite build --outDir adno-full --base ${PUBLIC_URL:-/}'",
+    "build-light": "sh -c 'NODE_ENV=ADNOLIGHT vite build --outDir adno-light --base ${PUBLIC_URL:-/}'",
     "build": "yarn install && yarn clean && yarn build-full && yarn build-light",
-    "clean": "rimraf .parcel-cache && rimraf dist && rimraf adno-full && rimraf adno-light",
+    "clean": "rimraf dist && rimraf adno-full && rimraf adno-light",
     "clean-modules": "rm -r node_modules"
   },
   "keywords": [],
@@ -47,11 +47,13 @@
     "@parcel/transformer-posthtml": "^2.12.0",
     "@playwright/test": "^1.49.1",
     "@types/node": "^22.10.6",
+    "@vitejs/plugin-react": "^4.3.4",
     "buffer": "6.0.3",
     "events": "3.3.0",
     "parcel": "2.13.3",
     "path-browserify": "1.0.1",
     "process": "0.11.10",
-    "rimraf": "6.0.1"
+    "rimraf": "6.0.1",
+    "vite": "^6.0.11"
   }
 }

@@ -16,6 +16,7 @@ import { withTranslation } from "react-i18next";
 class OneCardView extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             fullView: false,
             url: "",
