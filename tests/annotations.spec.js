@@ -2,7 +2,7 @@
 // const { test, expect } = require('@playwright/test');
 
 // test('should create project and create an annotation', async ({ page }) => {
-//     await page.goto('http://localhost:1234/#/');
+//     await page.goto('http://localhost:5173/#/');
 //     await page.getByPlaceholder('https://iiif.emf.fr/iiif/3/').click();
 //     await page.getByPlaceholder('https://iiif.emf.fr/iiif/3/').fill('baas');
 //     await page.getByPlaceholder('https://iiif.emf.fr/iiif/3/').press('ControlOrMeta+a');

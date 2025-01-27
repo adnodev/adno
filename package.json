@@ -10,7 +10,8 @@
     "build-light": "sh -c 'NODE_ENV=ADNOLIGHT vite build --outDir adno-light --base ${PUBLIC_URL:-/}'",
     "build": "yarn install && yarn clean && yarn build-full && yarn build-light",
     "clean": "rimraf dist && rimraf adno-full && rimraf adno-light",
-    "clean-modules": "rm -r node_modules"
+    "clean-modules": "rm -r node_modules",
+    "test": "npm run dev & npx playwright test ; npx playwright show-report"
   },
   "keywords": [],
   "author": "",
