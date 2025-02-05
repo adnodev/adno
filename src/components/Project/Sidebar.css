@@ -21,11 +21,11 @@
 }
 
 .sidebar-opened-w-modal{
-  height: calc(100% - 88px);
+  height: calc(100% - 58px);
   width: 350px;
   position: fixed;
   z-index: 1;
-  top: 88px;
+  top: 58px;
   left: 0;
   background-color: #f0f0f0;
   transition: 1s;
