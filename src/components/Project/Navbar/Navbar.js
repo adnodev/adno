@@ -119,7 +119,7 @@ class Navbar extends Component {
                                 data-tip={this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}>
                                 <div className="cursor-pointer label-toggle">
                                     <input type="checkbox"
-                                        className={`toggle toggle-lg ${this.props.editMode ? 'toggle-success' : 'toggle-warning'}`} value={this.props.editMode}
+                                        className="toggle toggle-lg toggle-success" value={this.props.editMode}
                                         onChange={() => {
 
                                             // Turn off autoplay

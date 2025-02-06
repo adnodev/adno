@@ -9,6 +9,17 @@
     font-weight: 300;
 }
 
+.project .navbar .toggle-success {
+    border: var(--adno-second-color);
+    background: var(--adno-view-color);
+    /* width: 100%; */
+}
+
+.project .navbar .toggle-success:checked {
+    border: var(--adno-main-color);
+    background: var(--adno-edit-color);
+}
+
 /* .toggle-lg {
     width: 4rem !important;
 } */
