@@ -1,4 +1,4 @@
-import { faDownload, faFile, faFilePen, faGear, faHome, faUndo, faRedo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faFile, faFilePen, faGear, faHome, faUndo, faRedo, faExternalLink, faFileExport } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withTranslation } from "react-i18next";
@@ -19,6 +19,12 @@ class Navbar extends Component {
                 </Link>
                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.back_home')}>
                     <Link to={"/"} className="project-navbar-link" title={this.props.t('navbar.back_home')}> <FontAwesomeIcon icon={faHome} size="lg" /> </Link>
+                </div>
+
+                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.export_project_to_iiif')}>
+                    <button className="btn" onClick={this.props.exportIIIF}>
+                        Export IIIF
+                    </button>
                 </div>
 
                 {/* // Display a modal to download and share the current project */}
@@ -66,33 +72,33 @@ class Navbar extends Component {
                     textOverflow: 'ellipsis',
                     display: 'block'
                 }}>{this.props.selectedProject.title}<br /> {(this.props.settings?.tags || []).map(tag => ` #${tag} `)} {this.props.selectedProject.creator && ` [ ${this.props.selectedProject.creator} ]`}</strong>
-               {
-		       this.props.editMode &&
-                <div className="undo-redo">
-                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.undo')}>
-                        <button type="button" className="btn btn-outline"
-                            style={{
-                                borderTopRightRadius: 0,
-                                borderBottomRightRadius: 0
-                            }}
-                            disabled={!this.props.undoRedo?.canUndo}
-                            onClick={this.props.undoRedo?.undo}>
-                            <FontAwesomeIcon icon={faUndo} size="lg" color="#fff" />
-                        </button>
+                {
+                    this.props.editMode &&
+                    <div className="undo-redo">
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.undo')}>
+                            <button type="button" className="btn btn-outline"
+                                style={{
+                                    borderTopRightRadius: 0,
+                                    borderBottomRightRadius: 0
+                                }}
+                                disabled={!this.props.undoRedo?.canUndo}
+                                onClick={this.props.undoRedo?.undo}>
+                                <FontAwesomeIcon icon={faUndo} size="lg" color="#fff" />
+                            </button>
+                        </div>
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.redo')}>
+                            <button type="button" className="btn btn-outline"
+                                style={{
+                                    borderLeft: 'none',
+                                    borderTopLeftRadius: 0,
+                                    borderBottomLeftRadius: 0
+                                }}
+                                disabled={!this.props.undoRedo?.canRedo}
+                                onClick={this.props.undoRedo?.redo}>
+                                <FontAwesomeIcon icon={faRedo} size="lg" color="#fff" />
+                            </button>
+                        </div>
                     </div>
-                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.redo')}>
-                        <button type="button" className="btn btn-outline"
-                            style={{
-                                borderLeft: 'none',
-                                borderTopLeftRadius: 0,
-                                borderBottomLeftRadius: 0
-                            }}
-                            disabled={!this.props.undoRedo?.canRedo}
-                            onClick={this.props.undoRedo?.redo}>
-                            <FontAwesomeIcon icon={faRedo} size="lg" color="#fff" />
-                        </button>
-                    </div>
-                </div>
                 }
                 {
                     process.env.ADNO_MODE === "FULL" &&

@@ -176,6 +176,7 @@
                 "redo": "Reapply the undone action",
                 "back_home": "Back to home",
                 "download_project": "Download the project",
+                "export_project_to_iiif": "IIIF Export",
                 "edit_project": "Edit project metadata",
                 "show_metadatas": "Show metadata",
                 "share_project": "Save and share your project",
