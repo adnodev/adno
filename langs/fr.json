@@ -170,8 +170,8 @@
                 "empty_tags_list": "Les mots clés apparaitront ici"
             },
             "navbar": {
-                "edit_mode": "Mode édition",
-                "view_mode": "Mode lecture",
+                "edit_mode": "Edition",
+                "view_mode": "Lecture",
                 "undo": "Annuler la dernière action",
                 "redo": "Rétablir l'action annulée",
                 "back_home": "Retourner à l'accueil",

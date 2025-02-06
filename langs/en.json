@@ -169,8 +169,8 @@
                 "empty_tags_list": "The created tags will be displayed here."
             },
             "navbar": {
-                "edit_mode": "Edit mode",
-                "view_mode": "View mode",
+                "edit_mode": "Edit",
+                "view_mode": "View",
                 "undo": "Reverse the previous action",
                 "redo": "Reapply the undone action",
                 "back_home": "Back to home",

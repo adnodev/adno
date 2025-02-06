@@ -12,11 +12,12 @@ i18n
     .use(initReactI18next)
     .init({
         resources: { ...English, ...French, ...Spanish },
-        lng: locale === "fr" || locale === "fr-FR"
-            ? "fr"
-            : locale === "es" || locale === "es-ES"
-            ? "es"
-            : "en", 
+        // lng: locale === "fr" || locale === "fr-FR"
+        //     ? "fr"
+        //     : locale === "es" || locale === "es-ES"
+        //     ? "es"
+        //     : "en", 
+        lng: 'fr',
         fallbackLng: "en",
         interpolation: {
             escapeValue: false

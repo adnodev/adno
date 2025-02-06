@@ -63,7 +63,7 @@ class Navbar extends Component {
                 <div className="ms-auto flex items-center gap-2">
                     {/* // Display a modal to download and share the current project */}
                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.download_project')}>
-                        <button className="btn">
+                        <button className="btn navbar-button">
                             <label htmlFor="my-modal" style={{ "background": "none", "border": "none" }}>
                                 <FontAwesomeIcon icon={faDownload} size="xl" /> </label>
                         </button>
@@ -97,7 +97,7 @@ class Navbar extends Component {
                     <div className="tooltip tooltip-bottom z-50 ms-auto" data-tip={this.props.editMode ? this.props.t('navbar.edit_project') : this.props.t('navbar.show_metadatas')}>
                         <button
                             onClick={() => this.props.showProjectMetadatas()}
-                            className="btn"
+                            className="btn navbar-button"
                             title={this.props.editMode ? this.props.t('navbar.edit_project') : this.props.t('navbar.show_metadatas')}>
                             <FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="xl" />
                         </button>
@@ -109,7 +109,7 @@ class Navbar extends Component {
 
                             {
                                 !this.props.editMode &&
-                                <button onClick={() => this.props.showEditorSettings()} className="btn">
+                                <button onClick={() => this.props.showEditorSettings()} className="btn navbar-button">
                                     <FontAwesomeIcon icon={faGear} size="xl" />
                                 </button>
                             }
@@ -142,8 +142,8 @@ class Navbar extends Component {
                                     <label style={{
                                         right: this.props.editMode ? 0 : 'initial',
                                         left: this.props.editMode ? 'initial' : 0,
-                                        paddingLeft: this.props.editMode ? 0 : '.5rem',
-                                        paddingRight: !this.props.editMode ? 0 : '.5rem'
+                                        paddingLeft: this.props.editMode ? 0 : '1rem',
+                                        paddingRight: !this.props.editMode ? 0 : '1rem'
                                     }}>{this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}</label>
                                 </div>
                             </div>

@@ -5,6 +5,18 @@
     padding: 0 1rem;
 }
 
+.project .navbar-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: fit-content;
+    min-height: initial;
+    min-width: initial;
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
 .project .navbar h1 {
     font-weight: 300;
 }
