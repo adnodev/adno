@@ -17,7 +17,6 @@ i18n
             : locale === "es" || locale === "es-ES"
             ? "es"
             : "en", 
-        lng: 'fr',
         fallbackLng: "en",
         interpolation: {
             escapeValue: false
