@@ -1,16 +1,21 @@
-body {
-    --adno-main-color: #71719d;
-    --adno-second-color: #4b4b6d;
-    --adno-edit-color: #FF6633;
-    --adno-view-color: #33CC33;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --adno-main-color: #737373; /* Neutral 500 */
+    --adno-second-color: #404040; /* Neutral 700 */ 
+    --adno-background: #FAFAFA; /* Neutral 50 */
+    --adno-edit-color: #84CC16; /* Lime 500 */
+    --adno-view-color: #EF4444; /* Red 500 */
+}
+
 .debug {
     outline: 1px solid red;
+}
+
+.adno_title div {
+    display: none;
 }
 
 .adno-link{
@@ -32,8 +37,8 @@ html, body {
 }
 
 body {
-    background-color: #f4f4f4;
-    font-family: 'Open Sans', sans-serif;
+    background-color: var(--adno-background);;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
