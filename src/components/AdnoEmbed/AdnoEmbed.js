@@ -18,7 +18,7 @@ import {
     faVolumeOff,
     faExternalLink
 } from "@fortawesome/free-solid-svg-icons";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
 
@@ -312,7 +312,7 @@ class AdnoEmbed extends Component {
                         }
                     >
                         {this.hasAudio(annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
-                        {ReactHtmlParser(
+                        {parse(
                             annotation.body.find((annoBody) => annoBody.type === "HTMLBody")
                                 .value
                         )}
@@ -1131,12 +1131,12 @@ class AdnoEmbed extends Component {
                                             <p className="py-4">{this.state.description}</p>
                                         </>
                                     }
-                                    <dl class="divide-y">
+                                    <dl className="divide-y">
                                         {
                                             this.state.creator &&
                                             <>
-                                                <div class="flex py-2">
-                                                    <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
+                                                <div className="flex py-2">
+                                                    <dt className="font-medium px-2">{this.props.t('project.author')} :</dt>
                                                     <dd>{this.state.creator}</dd>
                                                 </div>
                                             </>
@@ -1144,8 +1144,8 @@ class AdnoEmbed extends Component {
                                         {
                                             this.state.editor &&
                                             <>
-                                                <div class="flex py-2">
-                                                    <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
+                                                <div className="flex py-2">
+                                                    <dt className="font-medium px-2">{this.props.t('project.editor')} :</dt>
                                                     <dd>{this.state.editor}</dd>
                                                 </div>
                                             </>
@@ -1153,8 +1153,8 @@ class AdnoEmbed extends Component {
                                         {
                                             this.state.rights &&
                                             <>
-                                                <div class="flex py-2">
-                                                    <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+                                                <div className="flex py-2">
+                                                    <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
                                                     <dd>{this.state.rights}</dd>
                                                 </div>
                                             </>
@@ -1174,7 +1174,7 @@ class AdnoEmbed extends Component {
                                         </button>
                                     </div>
                                     <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
-                                    <ul class="list-disc">
+                                    <ul className="list-disc">
                                         <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
                                         <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
                                         <li className="py-2">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</li>

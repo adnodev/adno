@@ -1,14 +1,14 @@
-.card-title iframe{
+.card-title iframe {
     max-width: 100%;
     max-height: 200px;
 }
 
-.card-title img{
+.card-title img {
     max-width: 100%;
     max-height: 200px;
 }
 
-.annotations_list{
+.annotations_list {
     width: 100%;
     flex-direction: column;
     display: flex;
@@ -17,7 +17,7 @@
     padding: 10px;
 }
 
-.adno-viewer-card{
+.adno-viewer-card {
     width: 90%;
     border: 2px solid #007bff;
     background-color: #fff;
@@ -26,33 +26,34 @@
     padding: 15px;
 }
 
-.adno-viewer-card:hover{
+.adno-viewer-card:hover {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 
-.adno-viewer-nb-annos{
+.adno-viewer-nb-annos {
     margin: 30px 0;
     text-align: center;
     color: white;
 }
 
-.selectedAnno{
-    border: 2px solid #fde047 !important;
-    background-color: #fefce8 !important;
+:root {
+    --selected-anno-border-color: #fde047;
+    --selected-anno-background-color: #fefce8;
 }
 
-.btn-show-more{
+.selectedAnno {
+    border: 2px solid var(--selected-anno-border-color);
+    background-color: var(--selected-anno-background-color);
+}
+
+.btn-show-more {
     gap: 10px;
 }
 
-.btn-line-one-card{
+.btn-line-one-card {
     display: flex;
     justify-content: left;
     align-items: center;
     gap: 10px;
     margin: 10px 0;
-}
-
-.no-content {
-    opacity: 0.5;
 }

@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { withRouter } from "react-router-dom";
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 
 // Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,8 +10,8 @@ import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRigh
 // Import utils
 import { checkIfProjectExists, getEye } from "../../Utils/utils";
 
-// Import OpenSeaDragon and Annotorious
-import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
+// // Import OpenSeaDragon and Annotorious
+// import "/libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Import CSS
 import "./OpenView.css";
@@ -300,11 +300,42 @@ class OpenView extends Component {
             }
 
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                    inline: "nearest"
+                });
+
                 this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
                 document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
+
+                this.updateCurrentAnnotationColors(annotation.id)
             }
         }
+    }
+
+    updateCurrentAnnotationColors = annotationId => {
+        try {
+            const eye = document.getElementById(`eye-${annotationId}`)?.parentElement?.className?.animVal;
+            const shape = [...document.getElementsByClassName('selected')][0]?.className?.animVal;
+
+            const className = eye ? eye : shape;
+
+            if (className) {
+                const regex = /outline-([a-zA-Z]+)/g;
+                const matches = [...className.matchAll(regex)].map(match => match[1]);
+
+                const color = matches.filter(f => ['green', 'white', 'red', 'orange', 'yellow', 'blue', 'violet', 'black'].includes(f))[0]
+
+                const style = window.getComputedStyle(document.body)
+
+                document.documentElement.style.setProperty('--selected-anno-border-color',
+                    style.getPropertyValue(`--outline-${color}`) || '#fde047')
+                document.documentElement.style.setProperty('--selected-anno-background-color',
+                    `${style.getPropertyValue(`--outline-${color}`)}1c` || '#fefce8')
+            }
+
+        } catch (err) { }
     }
 
     playSound = (audioElement, soundMode) => {
@@ -514,6 +545,7 @@ class OpenView extends Component {
         this.loadAudio()
 
         setTimeout(this.freeMode, 1000)
+        setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -647,7 +679,7 @@ class OpenView extends Component {
                 annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return (
                     <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"} id="adno-osd-anno-fullscreen">
-                        {ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
+                        {parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
                     </div>
                 )
             }
@@ -747,12 +779,12 @@ class OpenView extends Component {
                                         <p className="py-4">{this.props.selected_project.description}</p>
                                     </>
                                 }
-                                <dl class="divide-y">
+                                <dl className="divide-y">
                                     {
                                         this.props.selected_project.creator &&
                                         <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.author')} :</dt>
+                                            <div className="flex py-2">
+                                                <dt className="font-medium px-2">{this.props.t('project.author')} :</dt>
                                                 <dd>{this.props.selected_project.creator}</dd>
                                             </div>
                                         </>
@@ -760,8 +792,8 @@ class OpenView extends Component {
                                     {
                                         this.props.selected_project.editor &&
                                         <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.editor')} :</dt>
+                                            <div className="flex py-2">
+                                                <dt className="font-medium px-2">{this.props.t('project.editor')} :</dt>
                                                 <dd>{this.props.selected_project.editor}</dd>
                                             </div>
                                         </>
@@ -769,8 +801,8 @@ class OpenView extends Component {
                                     {
                                         this.props.selected_project.rights &&
                                         <>
-                                            <div class="flex py-2">
-                                                <dt class="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+                                            <div className="flex py-2">
+                                                <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
                                                 <dd>{this.props.selected_project.rights}</dd>
                                             </div>
                                         </>
@@ -790,7 +822,7 @@ class OpenView extends Component {
                                     </button>
                                 </div>
                                 <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
-                                <ul class="list-disc">
+                                <ul className="list-disc">
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
                                     <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
                                     <li className="py-2">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</li>

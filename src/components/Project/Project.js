@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { buildTagsList, checkIfProjectExists, getProjectSettings } from "../../Utils/utils";
 
 // Import libraries
-import "../../libraries/openseadragon/openseadragon-annotorious.min.js";
+// import "/libraries/openseadragon/openseadragon-annotorious.min.js";
 
 // Imports CSS
 import "./Project.css";

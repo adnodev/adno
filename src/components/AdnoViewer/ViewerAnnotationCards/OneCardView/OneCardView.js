@@ -4,7 +4,7 @@ import { Component } from "react";
 import { buildTagsList, generateUUID } from "../../../../Utils/utils";
 
 // Import Html Parser
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,10 +16,11 @@ import { withTranslation } from "react-i18next";
 class OneCardView extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             fullView: false,
             url: "",
-            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && ReactHtmlParser(this.props.annotation.body[0].value)
+            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && parse(this.props.annotation.body[0].value)
         }
     }
 
@@ -32,12 +33,12 @@ class OneCardView extends Component {
 
         if (annotation && annotation.body) {
             if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
-                return ReactHtmlParser(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
+                return parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
             } else {
-                return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
+                return <span class="no-content">Ø {this.props.t('annotation.no_content')}</span>
             }
         } else {
-            return ReactHtmlParser(`<span class="no-content">Ø ${this.props.t('annotation.no_content')}</span>`)
+            return <span class="no-content">Ø {this.props.t('annotation.no_content')}</span>
         }
     }
 

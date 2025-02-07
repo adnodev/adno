@@ -113,7 +113,8 @@
                     "editor": "Editor",
                     "tags": "Tags", 
                     "audio": "Audio"
-                }
+                },
+                "empty_list": "No options"
             },
             "visualizer": {
                 "expand": "Enter full screen",

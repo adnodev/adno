@@ -418,7 +418,7 @@ export function migrateTextBody(projectID, annotation) {
 }
 
 export function checkOldVersion(t) {
-  var projectsID = JSON.parse(localStorage.getItem("adno_projects"))
+  const projectsID = JSON.parse(localStorage.getItem("adno_projects"))
 
   projectsID?.forEach(projectID => {
     let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
@@ -453,7 +453,6 @@ export function checkOldVersion(t) {
       }
     })
   })
-
 }
 
 export async function enhancedFetch(url) {

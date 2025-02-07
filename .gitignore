@@ -140,3 +140,7 @@ adno-light/
 # ADNO CONF
 .env.ADNOFULL
 .env.ADNOLIGHT
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
