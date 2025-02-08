@@ -66,7 +66,7 @@
                     "outline_focus": "Couleur du contour de l'annotation courante",
                     "navigator": "Navigateur d'ensemble",
                     "fullscreen": "Afficher barre outils en mode plein écran",
-                    "annos_nav": "Afficher la barre de navigation pour les annotations",
+                    "annos_nav": "Afficher la liste des annotations latéralement",
                     "begin_first_anno": "Toujours commencer la lecture automatique à la première annotation",
                     "enable_rota": "Activer la rotation de l'image",
                     "toolsbar": "Afficher la barre d'outils",
@@ -171,8 +171,8 @@
                 "empty_tags_list": "Les mots clés apparaitront ici"
             },
             "navbar": {
-                "edit_mode": "Edition",
-                "view_mode": "Lecture",
+                "edit_mode": "édition",
+                "view_mode": "lecture",
                 "undo": "Annuler la dernière action",
                 "redo": "Rétablir l'action annulée",
                 "back_home": "Retourner à l'accueil",

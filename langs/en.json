@@ -66,7 +66,7 @@
                     "outline_focus": "Color of annotation outline with focus",
                     "navigator": "Annotations Map browser",
                     "fullscreen": "Show toolbar in full screen mode",
-                    "annos_nav": "Show navigation bar for annotations",
+                    "annos_nav": "Show list of annotations in sidebar",
                     "begin_first_anno": "Always start autoplay at first annotation",
                     "enable_rota": "Enable image rotation",
                     "toolsbar": "Enable toolsbar",

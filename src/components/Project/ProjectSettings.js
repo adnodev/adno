@@ -17,9 +17,9 @@ import ReactSelect from 'react-select/creatable';
 import { buildTagsList } from "../../Utils/utils";
 
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'rotation', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
-    'navigation': ['delay', 'startbyfirstanno', 'showOutlines', 'showEyes', 'soundMode'],
-    'annotation': ['tags', 'outlineWidth', 'outlineColor', 'outlineColorFocus'],
+    'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
+    'navigation': ['delay', 'startbyfirstanno', 'tags', 'soundMode'],
+    'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
 
 class ProjectSettings extends Component {

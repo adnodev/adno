@@ -152,7 +152,7 @@
         "preview": "Vista previa",
         "settings": {
           "anno_bounds": "¿Ver las anotaciones?",
-          "annos_nav": "Mostrar la barra de navegación para las anotaciones",
+          "annos_nav": "Mostrar la lista de anotaciones en la barra lateral",
           "annotation": "Anotación",
           "annotation_sound": "Elija un modo para las anotaciones de audio",
           "begin_first_anno": "Siempre comenzar la reproducción automática en la primera anotación",
