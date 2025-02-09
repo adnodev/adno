@@ -100,10 +100,6 @@ class Project extends Component {
         })
     }
 
-    exportIIIF = () => {
-        exportToIIIF(this.state)
-    }
-
     render() {
         const { annotations, settings } = this.state;
 
@@ -124,7 +120,7 @@ class Project extends Component {
                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                     showEditorSettings={() => this.setState({ showSettings: true })}
                     autoplayID={this.state.autoplayID}
-                    exportIIIF={this.exportIIIF}
+                    exportIIIF={() => exportToIIIF(this.state)}
                     undoRedo={{
                         undo: () => {
                             this.setState((prevState) => {
