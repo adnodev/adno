@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
       port: 1234,
     },
     esbuild: {
-      include: /\.js$/,
+      include: [/\.[jt]sx?$/],
       exclude: [],
       loader: 'jsx',
     },

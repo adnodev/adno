@@ -11,6 +11,17 @@ class Navbar extends Component {
         super(props);
     }
 
+    exportIIIF = () => {
+        this.props.exportIIIF()
+            .then(manifest => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(manifest, null, 4));
+                const elt = document.getElementById('downloadAnchorElem');
+                elt.setAttribute("href", dataStr);
+                elt.setAttribute("download", `${this.props.selectedProject.title}.json`);
+                elt.click();
+            })
+    }
+
     render() {
         return (
             <div className="navbar text-neutral-content">
@@ -21,38 +32,49 @@ class Navbar extends Component {
                     <Link to={"/"} className="project-navbar-link" title={this.props.t('navbar.back_home')}> <FontAwesomeIcon icon={faHome} size="lg" /> </Link>
                 </div>
 
-                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.export_project_to_iiif')}>
-                    <button className="btn" onClick={this.props.exportIIIF}>
-                        Export IIIF
-                    </button>
-                </div>
-
                 {/* // Display a modal to download and share the current project */}
                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.download_project')}>
-                    <label htmlFor="my-modal" style={{ "background": "none", "border": "none" }} className="btn project-navbar-link"><FontAwesomeIcon icon={faDownload} size="lg" /> </label>
+                    <label htmlFor="my-modal" style={{ "background": "none", "border": "none" }} className="btn project-navbar-link">
+                        <FontAwesomeIcon icon={faDownload} size="lg" /> </label>
                 </div>
 
                 <input type="checkbox" id="my-modal" className="modal-toggle" />
                 <div className="modal">
                     <div className="modal-box" style={{ "color": "initial" }}>
+                        <label className="btn btn-square btn-sm"
+                            htmlFor="my-modal"
+                            style={{
+                                position: 'absolute',
+                                top: 12,
+                                right: 12
+                            }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </label>
                         <h3 className="font-bold text-lg">{this.props.t('navbar.share_project')}</h3>
                         <p className="py-4">{this.props.t('navbar.share_project_desc1')}</p>
-                        <p className="py-4">{this.props.t('navbar.share_project_desc2')}</p>
-                        <p className="py-4">{this.props.t('navbar.share_project_desc3')} <a className="adno-link" href="https://adno.app/" target="_blank"><FontAwesomeIcon icon={faExternalLink} size="lg" /></a></p>
-                        <div className="modal-action">
-                            <label htmlFor="my-modal" className="btn">{this.props.t('buttons.cancel')}</label>
+                        <p className="pb-4">{this.props.t('navbar.share_project_desc2')}</p>
+                        <p className="pb-4">{this.props.t('navbar.share_project_desc3')}
+                            <a className="adno-link" href="https://adno.app/" target="_blank"><FontAwesomeIcon icon={faExternalLink} size="lg" /></a>
+                        </p>
+                        <p className="my-3 text-center font-bold">Exporter au format </p>
+                        <div className="flex gap-3 justify-center items-center">
                             <label className="btn btn-success">
-                                {
-                                    this.props.selectedProject && this.props.selectedProject.id &&
+                                {this.props.selectedProject &&
+                                    this.props.selectedProject.id &&
                                     <a id={"download_btn_" + this.props.selectedProject.id}
                                         href={createExportProjectJsonFile(this.props.selectedProject.id)}
                                         download={this.props.selectedProject.title + ".json"}
                                         title={this.props.t('navbar.download_project')}>
-                                        <FontAwesomeIcon icon={faDownload} size="lg" />
-                                    </a>
-                                }
+                                        Adno
+                                        {/* <FontAwesomeIcon icon={faDownload} size="lg" /> */}
+                                    </a>}
+                            </label>
+                            ou
+                            <label className="btn btn-success" onClick={this.exportIIIF}>
+                                {this.props.t('navbar.export_project_to_iiif')}
                             </label>
                         </div>
+                        <a id="downloadAnchorElem" className="hidden"></a>
                     </div>
                 </div>
 

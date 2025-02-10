@@ -18,12 +18,42 @@ export const exportToIIIF = async (state) => {
             return manifest
         })
 
+    console.log(Object.fromEntries(Object.entries(selectedProject)
+        .filter(([key, value]) => key !== 'settings' && ("" + value)?.length > 0)))
+
     const content = {
         "@context": "http://iiif.io/api/presentation/3/context.json",
         // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/manifest.json",
         "id": `${window.location.protocol}//${window.location.host}/manifest.json`,
         "type": "Manifest",
-        "adno": adnoSettings,
+        "metadata": [
+            {
+                "label": {
+                    "en": [
+                        "adno_settings"
+                    ]
+                },
+                "value": {
+                    "en": [
+                        adnoSettings
+                    ]
+                }
+            },
+            ...Object.entries(selectedProject)
+                .filter(([key, value]) => !['settings', 'id', 'manifest_url'].includes(key) && ("" + value)?.length > 0)
+                .map(([key, value]) => ({
+                    label: {
+                        en: [
+                            key
+                        ]
+                    },
+                    value: {
+                        en: [
+                            value
+                        ]
+                    }
+                }))
+        ],
         "label": {
             "en": [
                 selectedProject.description
@@ -39,6 +69,7 @@ export const exportToIIIF = async (state) => {
                 "type": "Canvas",
                 "height": manifest.height,
                 "width": manifest.width,
+                "items": [],
                 "annotations": [{
                     // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/page/p2/1",
                     "id": `${window.location.protocol}//${window.location.host}/page/p2/1`,
@@ -56,5 +87,5 @@ export const exportToIIIF = async (state) => {
         ]
     }
 
-    console.log(content)
+    return content
 }
