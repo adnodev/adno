@@ -26,6 +26,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                     const { response } = rawReponse
                     const contentType = response.headers.get('Content-Type')
 
+                    console.log(contentType)
                     if (isJsonContentType(contentType)) {
                         response.text()
                             .then(data => {
@@ -33,7 +34,10 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
 
                                 // If we detect an ADNO project, we import it to the user's projects
 
-                                if (manifest.format && manifest.format === "Adno") {
+                                if (manifest.metadata && manifest.metadata.find(meta => meta.label.en?.includes('adno_settings'))) {
+                                    readProjectFromIIIFFormat(manifest)
+                                }
+                                else if (manifest.format && manifest.format === "Adno") {
                                     Swal.fire({
                                         title: translation('modal.adno_proj_detected'),
                                         showCancelButton: true,
@@ -85,8 +89,6 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                                 props.history.push("/")
                                             }
                                         })
-
-
                                 } else {
                                     // Non-ADNO Format detected
                                     if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
@@ -141,4 +143,51 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     //             }
     //         })
     // })
+}
+
+function readProjectFromIIIFFormat(manifest) {
+    try {
+        const metadata = manifest.metadata.find(meta => meta.label.en?.includes('adno_settings'))
+        const settings = atob(metadata.value.en[0]);
+
+        const projectID = generateUUID();
+
+        const title = manifest.title || manifest.label
+        const desc = manifest.description || manifest.subject
+
+        let project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
+        project = {
+            ...project,
+            settings
+        }
+
+        insertInLS(projectID, JSON.stringify(project))
+
+        const projects = JSON.parse(localStorage.getItem("adno_projects"))
+        projects.push(projectID)
+        insertInLS("adno_projects", JSON.stringify(projects))
+
+        insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
+
+        manifest.first.items?.forEach(annotation => {
+            if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+                migrateTextBody(projectID, annotation)
+            }
+        })
+
+        Swal.fire({
+            title: translation('import.import_success'),
+            showCancelButton: false,
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            icon: 'success'
+        })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    props.history.push(`/project/${projectID}/edit`)
+                }
+            })
+    } catch (err) {
+        return Promise.reject(translation('errors.unable_access_file'))
+    }
 }
