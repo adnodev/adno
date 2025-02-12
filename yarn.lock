@@ -1303,12 +1303,12 @@
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
-"@playwright/test@^1.49.1":
-  version "1.49.1"
-  resolved "https://registry.npmjs.org/@playwright/test/-/test-1.49.1.tgz"
-  integrity sha512-Ky+BVzPz8pL6PQxHqNRW1k3mIyv933LML7HktS8uik0bUXNCdPhoS/kLihiO1tMf/egaJb4IutXd7UywvXEW+g==
+"@playwright/test@1.50.1":
+  version "1.50.1"
+  resolved "https://registry.npmjs.org/@playwright/test/-/test-1.50.1.tgz"
+  integrity sha512-Jii3aBg+CEDpgnuDxEp/h7BimHcUTDlpEtce89xEumlJ5ef2hqepZ+PWp1DDpYC/VO9fmWVI1IlEaoI5fK9FXQ==
   dependencies:
-    playwright "1.49.1"
+    playwright "1.50.1"
 
 "@rollup/rollup-android-arm-eabi@4.32.0":
   version "4.32.0"
@@ -1578,10 +1578,10 @@
   resolved "https://registry.npmjs.org/@types/ms/-/ms-0.7.34.tgz"
   integrity sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==
 
-"@types/node@^22.10.6":
-  version "22.10.6"
-  resolved "https://registry.npmjs.org/@types/node/-/node-22.10.6.tgz"
-  integrity sha512-qNiuwC4ZDAUNcY47xgaSuS92cjf8JbSUoaKS77bmLG1rU7MlATVSiw/IlrjtIyyskXBZ8KkNfjK/P5na7rgXbQ==
+"@types/node@22.13.1":
+  version "22.13.1"
+  resolved "https://registry.npmjs.org/@types/node/-/node-22.13.1.tgz"
+  integrity sha512-jK8uzQlrvXqEU91UxiK5J7pKHyzgnI1Qnl0QDHIgVGuolJhRb9EEl28Cj9b3rGR8B2lhFCtvIm5os8lFnO/1Ew==
   dependencies:
     undici-types "~6.20.0"
 
@@ -3013,7 +3013,7 @@ mz@^2.7.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nanoid@^3.3.7:
+nanoid@^3.3.7, nanoid@^3.3.8:
   version "3.3.8"
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.3.8.tgz"
   integrity sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==
@@ -3188,17 +3188,17 @@ pirates@^4.0.1:
   resolved "https://registry.npmjs.org/pirates/-/pirates-4.0.6.tgz"
   integrity sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==
 
-playwright-core@1.49.1:
-  version "1.49.1"
-  resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.49.1.tgz"
-  integrity sha512-BzmpVcs4kE2CH15rWfzpjzVGhWERJfmnXmniSyKeRZUs9Ws65m+RGIi7mjJK/euCegfn3i7jvqWeWyHe9y3Vgg==
+playwright-core@1.50.1:
+  version "1.50.1"
+  resolved "https://registry.npmjs.org/playwright-core/-/playwright-core-1.50.1.tgz"
+  integrity sha512-ra9fsNWayuYumt+NiM069M6OkcRb1FZSK8bgi66AtpFoWkg2+y0bJSNmkFrWhMbEBbVKC/EruAHH3g0zmtwGmQ==
 
-playwright@1.49.1:
-  version "1.49.1"
-  resolved "https://registry.npmjs.org/playwright/-/playwright-1.49.1.tgz"
-  integrity sha512-VYL8zLoNTBxVOrJBbDuRgDWa3i+mfQgDTrL8Ah9QXZ7ax4Dsj0MSq5bYgytRnDVVe+njoKnfsYkH3HzqVj5UZA==
+playwright@1.50.1:
+  version "1.50.1"
+  resolved "https://registry.npmjs.org/playwright/-/playwright-1.50.1.tgz"
+  integrity sha512-G8rwsOQJ63XG6BbKj2w5rHeavFjy5zynBA9zsJMMtBoe/Uf757oG12NXz6e6OirF7RCrTVAKFXbLmn1RbL7Qaw==
   dependencies:
-    playwright-core "1.49.1"
+    playwright-core "1.50.1"
   optionalDependencies:
     fsevents "2.3.2"
 
@@ -3251,12 +3251,21 @@ postcss-value-parser@^4.0.0, postcss-value-parser@^4.0.2, postcss-value-parser@^
   resolved "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   integrity sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==
 
-postcss@8.4.49, postcss@^8.4.47, postcss@^8.4.49:
+postcss@8.4.49, postcss@^8.4.47:
   version "8.4.49"
   resolved "https://registry.npmjs.org/postcss/-/postcss-8.4.49.tgz"
   integrity sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==
   dependencies:
     nanoid "^3.3.7"
+    picocolors "^1.1.1"
+    source-map-js "^1.2.1"
+
+postcss@^8.5.1:
+  version "8.5.2"
+  resolved "https://registry.npmjs.org/postcss/-/postcss-8.5.2.tgz"
+  integrity sha512-MjOadfU3Ys9KYoX0AdkBlFEF1Vx37uCCeN4ZHnmwm9FfpbsGWMZeBLMmmpY+6Ocqod7mkdZ0DT31OlbsFrLlkA==
+  dependencies:
+    nanoid "^3.3.8"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
@@ -3481,10 +3490,10 @@ react-router@5.2.0:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-select@^5.9.0:
-  version "5.9.0"
-  resolved "https://registry.npmjs.org/react-select/-/react-select-5.9.0.tgz"
-  integrity sha512-nwRKGanVHGjdccsnzhFte/PULziueZxGD8LL2WojON78Mvnq7LdAMEtu2frrwld1fr3geixg3iiMBIc/LLAZpw==
+react-select@5.10.0:
+  version "5.10.0"
+  resolved "https://registry.npmjs.org/react-select/-/react-select-5.10.0.tgz"
+  integrity sha512-k96gw+i6N3ExgDwPIg0lUPmexl1ygPe6u5BdQFNBhkpbwroIgCNXdubtIzHfThYXYYTubwOBafoMnn7ruEP1xA==
   dependencies:
     "@babel/runtime" "^7.12.0"
     "@emotion/cache" "^11.4.0"
@@ -3584,7 +3593,7 @@ rimraf@6.0.1:
     glob "^11.0.0"
     package-json-from-dist "^1.0.0"
 
-rollup@^4.23.0:
+rollup@^4.30.1:
   version "4.32.0"
   resolved "https://registry.npmjs.org/rollup/-/rollup-4.32.0.tgz"
   integrity sha512-JmrhfQR31Q4AuNBjjAX4s+a/Pu/Q8Q9iwjWBsjRH1q52SPFE2NqRMK6fUZKKnvKO6id+h7JIRf0oYsph53eATg==
@@ -3830,10 +3839,10 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-sweetalert2@11.15.3:
-  version "11.15.3"
-  resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.15.3.tgz"
-  integrity sha512-+0imNg+XYL8tKgx8hM0xoiXX3KfgxHDmiDc8nTJFO89fQEEhJlkecSdyYOZ3IhVMcUmoNte4fTIwWiugwkPU6w==
+sweetalert2@11.16.0:
+  version "11.16.0"
+  resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.16.0.tgz"
+  integrity sha512-4CGgNMpQHcwV+Gov0j4u3lDc/5lyl04NBsa1vW0Se9cqsrQoUimD6/Z5UyZiRP4kMbwQGyb7wsp0x3ytybti6w==
 
 tailwindcss@3.4.17, tailwindcss@^3:
   version "3.4.17"
@@ -4053,14 +4062,14 @@ vfile@^5.0.0:
     unist-util-stringify-position "^3.0.0"
     vfile-message "^3.0.0"
 
-vite@^6.0.11:
-  version "6.0.11"
-  resolved "https://registry.npmjs.org/vite/-/vite-6.0.11.tgz"
-  integrity sha512-4VL9mQPKoHy4+FE0NnRE/kbY51TOfaknxAjt3fJbGJxhIpBZiqVzlZDEesWWsuREXHwNdAoOFZ9MkPEVXczHwg==
+vite@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.npmjs.org/vite/-/vite-6.1.0.tgz"
+  integrity sha512-RjjMipCKVoR4hVfPY6GQTgveinjNuyLw+qruksLDvA5ktI1150VmcMBKmQaEWJhg/j6Uaf6dNCNA0AfdzUb/hQ==
   dependencies:
     esbuild "^0.24.2"
-    postcss "^8.4.49"
-    rollup "^4.23.0"
+    postcss "^8.5.1"
+    rollup "^4.30.1"
   optionalDependencies:
     fsevents "~2.3.3"
 

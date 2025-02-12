@@ -18,9 +18,6 @@ export const exportToIIIF = async (state) => {
             return manifest
         })
 
-    console.log(Object.fromEntries(Object.entries(selectedProject)
-        .filter(([key, value]) => key !== 'settings' && ("" + value)?.length > 0)))
-
     const content = {
         "@context": "http://iiif.io/api/presentation/3/context.json",
         // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/manifest.json",
@@ -69,7 +66,34 @@ export const exportToIIIF = async (state) => {
                 "type": "Canvas",
                 "height": manifest.height,
                 "width": manifest.width,
-                "items": [],
+                "items": [
+                    {
+                        "id": `${window.location.protocol}//${window.location.host}/annotation-page/p1`,
+                        "type": "AnnotationPage",
+                        "items": [
+                            {
+                                "id": `${window.location.protocol}//${window.location.host}/annotation/1`,
+                                "type": "Annotation",
+                                "motivation": "painting",
+                                "body": {
+                                    "id": selectedProject.manifest_url,
+                                    "type": "Image",
+                                    "format": "image/jpeg",
+                                    "service": [
+                                        {
+                                            "id": selectedProject.manifest_url,
+                                            "type": "ImageService3",
+                                            "profile": "level2"
+                                        }
+                                    ],
+                                    "height": manifest.height,
+                                    "width": manifest.width,
+                                },
+                                "target": `${window.location.protocol}//${window.location.host}/canvas/p1`
+                            }
+                        ]
+                    }
+                ],
                 "annotations": [{
                     // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/page/p2/1",
                     "id": `${window.location.protocol}//${window.location.host}/page/p2/1`,

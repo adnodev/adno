@@ -38,16 +38,16 @@
     "react-markdown": "8.0.5",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
-    "react-select": "^5.9.0",
-    "sweetalert2": "11.15.3",
+    "react-select": "5.10.0",
+    "sweetalert2": "11.16.0",
     "tailwindcss": "3.4.17",
     "turndown": "7.2.0",
     "wikidata-sdk": "8.1.0"
   },
   "devDependencies": {
     "@parcel/transformer-posthtml": "^2.12.0",
-    "@playwright/test": "^1.49.1",
-    "@types/node": "^22.10.6",
+    "@playwright/test": "1.50.1",
+    "@types/node": "22.13.1",
     "@vitejs/plugin-react": "^4.3.4",
     "buffer": "6.0.3",
     "events": "3.3.0",
@@ -55,6 +55,6 @@
     "path-browserify": "1.0.1",
     "process": "0.11.10",
     "rimraf": "6.0.1",
-    "vite": "^6.0.11"
+    "vite": "6.1.0"
   }
 }
