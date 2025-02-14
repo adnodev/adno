@@ -21,7 +21,7 @@ export const exportToIIIF = async (state) => {
     const content = {
         "@context": "http://iiif.io/api/presentation/3/context.json",
         // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/manifest.json",
-        "id": `${window.location.protocol}//${window.location.host}/manifest.json`,
+        "id": `https://example.com/manifest.json`,
         "type": "Manifest",
         "metadata": [
             {
@@ -61,52 +61,52 @@ export const exportToIIIF = async (state) => {
         },
         "items": [
             {
-                // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/canvas/p1",
-                "id": `${window.location.protocol}//${window.location.host}/canvas/p1`,
+                "id": `https://example.com/canvas-1`,
                 "type": "Canvas",
                 "height": manifest.height,
                 "width": manifest.width,
                 "items": [
                     {
-                        "id": `${window.location.protocol}//${window.location.host}/annotation-page/p1`,
+                        "id": `https://example.com/annotation-page/canvas-1/annopage-1`,
                         "type": "AnnotationPage",
                         "items": [
                             {
-                                "id": `${window.location.protocol}//${window.location.host}/annotation/1`,
+                                "id": `https://example.com/annotation/canvas-1/annopage-1/anno-1`,
                                 "type": "Annotation",
                                 "motivation": "painting",
                                 "body": {
-                                    "id": selectedProject.manifest_url,
+                                    "id": selectedProject.manifest_url.replace('/info.json', ''),
                                     "type": "Image",
                                     "format": "image/jpeg",
                                     "service": [
                                         {
-                                            "id": selectedProject.manifest_url,
+                                            "id": selectedProject.manifest_url.replace('/info.json', ''),
                                             "type": "ImageService3",
-                                            "profile": "level2"
+                                            "profile": "level1"
                                         }
                                     ],
                                     "height": manifest.height,
                                     "width": manifest.width,
                                 },
-                                "target": `${window.location.protocol}//${window.location.host}/canvas/p1`
-                            }
+                                "target": `https://example.com/canvas-1`
+                            },
                         ]
                     }
                 ],
-                "annotations": [{
-                    // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/page/p2/1",
-                    "id": `${window.location.protocol}//${window.location.host}/page/p2/1`,
-                    "type": "AnnotationPage",
-                    "items": annotations.map(annotation => ({
-                        // "id": "https://iiif.io/api/cookbook/recipe/0261-non-rectangular-commenting/annotation/p0002-svg",
-                        "id": `${window.location.protocol}//${window.location.host}/annotation/${annotation.id}`,
-                        "type": "Annotation",
-                        "motivation": "supplementing",
-                        "body": annotation.body,
-                        "target": annotation.target
-                    }))
-                }]
+                "annotations": [
+                    {
+                        "id": `https://example.com/canvas-1/annopage-2`,
+                        "type": "AnnotationPage",
+                        "items": annotations.map((annotation, idx) => ({
+                            "id": `https://example.com/canvas-1/annopage-2/anno-${idx}`,
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": annotation.body,
+                            "target": `https://example.com/canvas-1`,
+                            "selector": annotation.target.selector
+                        }))
+                    }
+                ]
             }
         ]
     }
