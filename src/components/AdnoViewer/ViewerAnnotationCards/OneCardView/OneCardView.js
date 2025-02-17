@@ -115,17 +115,16 @@ class OneCardView extends Component {
 
                 <div className="btn-line-one-card">
 
-                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more"
+                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more bg-white"
                         onClick={() => this.props.openFullAnnotationView(this.props.annotation)}>
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.read_more')}>
-                            {this.props.t('annotation.read_more')}{' '}
                             <FontAwesomeIcon icon={faPlusCircle} />
                         </div>
                     </button>}
 
                     <button type="button"
                         onClick={() => this.props.clickOnTarget(this.props.annotation)}
-                        className="btn btn-outline btn-sm btn-show-more">
+                        className="btn btn-outline btn-sm btn-show-more bg-white">
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.target')}>
                             <FontAwesomeIcon icon={faBullseye} />
                         </div>

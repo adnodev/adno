@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 // Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotateRight, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
 // Import utils
 import { checkIfProjectExists, getEye } from "../../Utils/utils";
@@ -740,7 +740,7 @@ class OpenView extends Component {
                             this.props.rotation &&
                             <button id="rotate" className="toolbarButton toolbaractive" onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}>
                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.rotation')}>
-                                    <FontAwesomeIcon icon={faRotateRight} size="lg" />
+                                    <FontAwesomeIcon icon={faRotate} size="lg" />
                                 </div>
                             </button>
                         }

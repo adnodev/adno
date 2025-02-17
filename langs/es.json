@@ -102,7 +102,9 @@
         "share_project_desc3": "Para más información, consulte la documentación oficial de Adno.",
         "show_metadatas": "Ver los metadatos",
         "undo": "Deshacer la última acción",
-        "view_mode": "Lectura"
+        "view_mode": "Lectura",
+        "edit_mode_help": "Modo edición",
+        "view_mode_help": "Modo lectura"
       },
       "new_project": {
         "add_info": "Complete su proyecto"

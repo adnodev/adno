@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-    --adno-main-color: #737373; /* Neutral 500 */
-    --adno-second-color: #404040; /* Neutral 700 */ 
+    --adno-main-color: #075985; /* Sky 800 */
+    --adno-second-color: #0284C7; /* Sky 600 */ 
     --adno-background: #FAFAFA; /* Neutral 50 */
-    --adno-edit-color: #84CC16; /* Lime 500 */
-    --adno-view-color: #EF4444; /* Red 500 */
+    --adno-edit-color: #F97316;  /* Orange 500 */
+    --adno-view-color: #84CC16; /* Lime 500 */
 }
 
 .debug {
@@ -38,7 +38,7 @@ html, body {
 
 body {
     background-color: var(--adno-background);;
-    font-family: 'Noto Sans', sans-serif;
+    font-family: 'Jost', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {

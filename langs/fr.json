@@ -173,6 +173,8 @@
             "navbar": {
                 "edit_mode": "édition",
                 "view_mode": "lecture",
+                "edit_mode_help": "Mode édition",
+                "view_mode_help": "Mode lecture",
                 "undo": "Annuler la dernière action",
                 "redo": "Rétablir l'action annulée",
                 "back_home": "Retourner à l'accueil",

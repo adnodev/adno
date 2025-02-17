@@ -1,4 +1,4 @@
-import { faDownload, faFile, faFilePen, faGear, faHome, faUndo, faRedo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { faDownload, faFile, faFilePen, faGear, faHome, faReply, faShare, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withTranslation } from "react-i18next";
@@ -42,7 +42,7 @@ class Navbar extends Component {
                                 }}
                                 disabled={!this.props.undoRedo?.canUndo}
                                 onClick={this.props.undoRedo?.undo}>
-                                <FontAwesomeIcon icon={faUndo} size="xl" color="#fff" />
+                                <FontAwesomeIcon icon={faReply} size="xl" color="#fff" />
                             </button>
                         </div>
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.redo')}>
@@ -54,7 +54,7 @@ class Navbar extends Component {
                                 }}
                                 disabled={!this.props.undoRedo?.canRedo}
                                 onClick={this.props.undoRedo?.redo}>
-                                <FontAwesomeIcon icon={faRedo} size="xl" color="#fff" />
+                                <FontAwesomeIcon icon={faShare} size="xl" color="#fff" />
                             </button>
                         </div>
                     </div>
@@ -116,7 +116,7 @@ class Navbar extends Component {
 
 
                             <div className="tooltip tooltip-bottom z-50"
-                                data-tip={this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}>
+                                data-tip={this.props.editMode ? this.props.t('navbar.edit_mode_help') : this.props.t('navbar.view_mode_help')}>
                                 <div className="cursor-pointer label-toggle">
                                     <input type="checkbox"
                                         className="toggle toggle-lg toggle-success" value={this.props.editMode}
