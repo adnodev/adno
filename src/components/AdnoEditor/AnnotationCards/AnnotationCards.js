@@ -30,10 +30,10 @@ class AnnotationCards extends Component {
             if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
                 return parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
             } else {
-                return <span class="no-content">Ø {this.props.t('annotation.no_content')}</span>
+                return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
             }
         } else {
-            return <span class="no-content">Ø {this.props.t('annotation.no_content')}</span>
+            return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
         }
     }
 

@@ -163,8 +163,13 @@ function readProjectFromIIIFFormat(props, manifest, translation) {
 
         const desc = manifest.description || manifest.subject
 
+        let manifestURL = manifest.items[0]?.items[0].items[0].body.id
+
+        if (!manifestURL.endsWith('/info.json'))
+            manifestURL = `${manifestURL}/info.json`
+
         const project = {
-            ...buildJsonProjectWithManifest(projectID, title, desc, manifest.items[0]?.items[0].items[0].body.id),
+            ...buildJsonProjectWithManifest(projectID, title, desc, manifestURL),
             settings
         }
         insertInLS(projectID, JSON.stringify(project))
@@ -173,27 +178,63 @@ function readProjectFromIIIFFormat(props, manifest, translation) {
         projects.push(projectID)
         insertInLS("adno_projects", JSON.stringify(projects))
 
-        insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.items[0]?.annotations[0].items.map(annotation => ({
-            "@context": "http://www.w3.org/ns/anno.jsonld",
-            body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
-            target: annotation.target,
-            id: annotation.id,
-            type: 'Annotation'
-        }))))
-        
-        // Swal.fire({
-        //     title: translation('import.import_success'),
-        //     showCancelButton: false,
-        //     showConfirmButton: true,
-        //     confirmButtonText: 'OK',
-        //     icon: 'success'
-        // })
-        //     .then((result) => {
-        //         if (result.isConfirmed) {
+        // insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.items[0]?.annotations[0].items.map(annotation => ({
+        //     "@context": "http://www.w3.org/ns/anno.jsonld",
+        //     body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
+        //     target: annotation.target,
+        //     id: annotation.id,
+        //     type: 'Annotation'
+        // }))))
+
+        const annotations = manifest.items[0]?.annotations[0].items.flatMap(annotation => {
+            // console.log(annotation)
+            if (annotation.body)
+                return {
+                    // "@context": "http://www.w3.org/ns/anno.jsonld",
+                    body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
+                    target: buildAnnotationTarget(annotation.target),
+                    id: annotation.id,
+                    type: 'Annotation'
+                }
+            else if (annotation.items) {
+                return annotation.items.map(item => ({
+                    ...item,
+                    body: Array.isArray(item.body) ? item.body : [item.body],
+                    target: buildAnnotationTarget(item.target),
+                }))
+            }
+        })
+
+        insertInLS(`${projectID}_annotations`, JSON.stringify(annotations))
+
         props.history.push(`/project/${projectID}/edit`)
-        //     }
-        // })
     } catch (err) {
+        console.log(err)
         return Promise.reject(translation('errors.unable_access_file'))
     }
+}
+
+function buildAnnotationTarget(target) {
+
+    if (typeof target === 'string') {
+        // "https://example.com/canvas-1#xywh=1415,406,334,626"
+        return {
+            type: "SpecificResource",
+            // source: "https://example.com/canvas-1",
+            selector: {
+                type: "FragmentSelector",
+                value: target.split('#')[1].replace('xywh=', 'xywh=pixel:'),
+                conformsTo: "http://www.w3.org/TR/media-frags/"
+            }
+        }
+    } else if (target?.selector?.type === 'FragmentSelector') {
+        return {
+            ...target,
+            selector: {
+                ...target.selector,
+                conformsTo: "http://www.w3.org/TR/media-frags/"
+            }
+        }
+    }
+    return target
 }
