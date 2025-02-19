@@ -175,12 +175,12 @@ function readProjectFromIIIFFormat(props, manifest, translation) {
 
         insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.items[0]?.annotations[0].items.map(annotation => ({
             "@context": "http://www.w3.org/ns/anno.jsonld",
-            body: annotation.body,
+            body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
             target: annotation.target,
-            id: `#${annotation.id.split('#')[1]}`,
+            id: annotation.id,
             type: 'Annotation'
         }))))
-
+        
         // Swal.fire({
         //     title: translation('import.import_success'),
         //     showCancelButton: false,
