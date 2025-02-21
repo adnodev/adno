@@ -11,7 +11,7 @@ import {
     faArrowRight,
     faArrowLeft,
     faExpand,
-    faRotateRight,
+    faRotate,
     faQuestion,
     faCircleInfo,
     faVolumeHigh,
@@ -1089,7 +1089,7 @@ class AdnoEmbed extends Component {
                                     className="toolbarButton toolbaractive"
                                     onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.rotation')}>
-                                        <FontAwesomeIcon icon={faRotateRight} size="lg" />
+                                        <FontAwesomeIcon icon={faRotate} size="lg" />
                                     </div>
                                 </button>
                             }

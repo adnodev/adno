@@ -108,12 +108,21 @@
     height: calc(100vh - 88px);
 }
 
+#toolbar-osd{
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    left: 10px;
+}
+
+
 #toolbar-container{
     position: absolute;
     z-index: 1;
     background: white;
-    right: 0px;
-    width: 300px;
+    top: 10px;
+    right: 10px;
+    width: auto;
     opacity: 0.8;
 }
 

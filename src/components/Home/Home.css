@@ -145,9 +145,13 @@
     color: var(--adno-main-color);
 }
 
+.home h1 {
+    font-weight: 400;
+}
+
 .adno_title h1 {
     font-size: 3.5rem;
-    font-weight: 300;
+    font-weight: 800;
 }
 
 .adno_home_selection {
@@ -159,8 +163,8 @@
 
 .adno_description {
     text-align: center;
-    font-size: 1.4rem;
-    line-height: 2rem;
+    font-size: 1.2rem;
+    line-height: 1.6rem;
     font-weight: 300;
     width: 60%;
     margin: 0 auto 30px;

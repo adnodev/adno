@@ -1,18 +1,24 @@
 .project .navbar {
     background: var(--adno-main-color);
+    min-height: initial;
+    height: 58px;
+    padding: 0 1rem;
 }
 
-.project .navbar .project-navbar-link {
-    margin-right: 30px;
+.project .navbar-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: fit-content;
+    min-height: initial;
+    min-width: initial;
+    width: 2.25rem;
+    height: 2.25rem;
 }
 
 .project .navbar h1 {
-    font-weight: 300;
-}
-
-.project .navbar .project-navbar-link svg {
-    width: 30px;
-    height: auto;
+    font-weight: 800;
 }
 
 .project .navbar .toggle-success {
@@ -191,13 +197,6 @@ input:checked+.slider:before {
     margin-top: 10px;
 }
 
-.dl_toggle {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    margin-right: 90px;
-}
-
 .undo-redo {
     margin: auto;
     flex: 1;
@@ -206,10 +205,24 @@ input:checked+.slider:before {
 }
 
 .label-toggle {
+    position: relative;
     display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin-left: 20px;
+}
+
+.label-toggle label {
+    position: absolute;
+    white-space: nowrap;
+    cursor: pointer;
+    pointer-events: none;
+    margin: auto;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-lg {
+    width: 8.25rem !important;
 }
 
 .right-card-closed {
@@ -222,20 +235,6 @@ input:checked+.slider:before {
 
 
 @media (min-width: 840px) and (max-width: 1440px) {
-    .label-toggle {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        margin-left: 10px;
-    }
-
-    .dl_toggle {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        margin-right: 30px;
-    }
-
     .adno-viewer-rightbar {
         top: 12vh;
         height: 470px !important;
@@ -262,20 +261,6 @@ input:checked+.slider:before {
         height: 750px !important;
         margin: auto;
         padding-bottom: 2%;
-    }
-
-    .dl_toggle {
-        margin-left: auto;
-        display: flex;
-        align-items: center;
-        margin-right: 35px;
-    }
-
-    .label-toggle {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        margin-left: 10px;
     }
 
     .right-card-opened {

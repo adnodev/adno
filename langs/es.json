@@ -93,7 +93,7 @@
       "navbar": {
         "back_home": "Volver a inicio",
         "download_project": "Descargar el proyecto",
-        "edit_mode": "Modo edición",
+        "edit_mode": "Edición",
         "edit_project": "Editar los metadatos",
         "redo": "Rehacer la acción deshecha",
         "share_project": "Guardar y compartir el proyecto",
@@ -102,8 +102,10 @@
         "share_project_desc3": "Para más información, consulte la documentación oficial de Adno.",
         "show_metadatas": "Ver los metadatos",
         "undo": "Deshacer la última acción",
-        "view_mode": "Modo lectura",
-        "export_project_to": "Exportar en formato"
+        "export_project_to": "Exportar en formato",
+        "view_mode": "Lectura",
+        "edit_mode_help": "Modo edición",
+        "view_mode_help": "Modo lectura"
       },
       "new_project": {
         "add_info": "Complete su proyecto"
@@ -153,7 +155,7 @@
         "preview": "Vista previa",
         "settings": {
           "anno_bounds": "¿Ver las anotaciones?",
-          "annos_nav": "Mostrar la barra de navegación para las anotaciones",
+          "annos_nav": "Mostrar la lista de anotaciones en la barra lateral",
           "annotation": "Anotación",
           "annotation_sound": "Elija un modo para las anotaciones de audio",
           "begin_first_anno": "Siempre comenzar la reproducción automática en la primera anotación",

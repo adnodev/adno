@@ -46,6 +46,10 @@
     background-color: var(--selected-anno-background-color);
 }
 
+.btn .tooltip {
+    text-transform: none;
+} 
+
 .btn-show-more {
     gap: 10px;
 }
