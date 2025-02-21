@@ -10,9 +10,11 @@ export default class ProjectsList extends Component {
         return (
             <div id="projects_list">
                 {
-                    this.props.projects.map(project => {
-                        return (<ProjectView key={project.id} project={project} updateProjectsList={(projects) => this.props.updateProjects(projects)} />)
-                    })
+                    this.props.projects
+                        .filter(p => p)
+                        .map(project => {
+                            return (<ProjectView key={project.id} project={project} updateProjectsList={(projects) => this.props.updateProjects(projects)} />)
+                        })
                 }
             </div>
         )

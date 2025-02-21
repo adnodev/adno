@@ -33,7 +33,10 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
 
                                 // If we detect an ADNO project, we import it to the user's projects
 
-                                if (manifest.format && manifest.format === "Adno") {
+                                if (manifest.metadata && manifest.metadata.find(meta => meta.label.en?.includes('adno_settings'))) {
+                                    readProjectFromIIIFFormat(props, manifest, translation)
+                                }
+                                else if (manifest.format && manifest.format === "Adno") {
                                     Swal.fire({
                                         title: translation('modal.adno_proj_detected'),
                                         showCancelButton: true,
@@ -85,8 +88,6 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                                 props.history.push("/")
                                             }
                                         })
-
-
                                 } else {
                                     // Non-ADNO Format detected
                                     if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
@@ -141,4 +142,99 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     //             }
     //         })
     // })
+}
+
+export function readProjectFromIIIFFormat(props, manifest, translation) {
+    try {
+        const metadata = manifest.metadata.find(meta => meta.label.en?.includes('adno_settings'))
+        const settings = JSON.parse(atob(metadata.value.en[0]));
+
+        const projectID = generateUUID();
+
+        let title = manifest.title
+
+        if (!title) {
+            if (typeof manifest.label === 'object' && manifest.label !== null) {
+                title = String(manifest.label.en[0] || manifest.label.fr[0])
+            } else {
+                title = String(manifest.label)
+            }
+        }
+
+        const desc = manifest.description || manifest.subject
+
+        let manifestURL = manifest.items[0]?.items[0].items[0].body.id
+
+        if (!manifestURL.endsWith('/info.json'))
+            manifestURL = `${manifestURL}/info.json`
+
+        const project = {
+            ...buildJsonProjectWithManifest(projectID, title, desc, manifestURL),
+            settings
+        }
+        insertInLS(projectID, JSON.stringify(project))
+
+        const projects = JSON.parse(localStorage.getItem("adno_projects"))
+        projects.push(projectID)
+        insertInLS("adno_projects", JSON.stringify(projects))
+
+        // insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.items[0]?.annotations[0].items.map(annotation => ({
+        //     "@context": "http://www.w3.org/ns/anno.jsonld",
+        //     body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
+        //     target: annotation.target,
+        //     id: annotation.id,
+        //     type: 'Annotation'
+        // }))))
+
+        const annotations = manifest.items[0]?.annotations[0].items.flatMap(annotation => {
+            // console.log(annotation)
+            if (annotation.body)
+                return {
+                    // "@context": "http://www.w3.org/ns/anno.jsonld",
+                    body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
+                    target: buildAnnotationTarget(annotation.target),
+                    id: annotation.id,
+                    type: 'Annotation'
+                }
+            else if (annotation.items) {
+                return annotation.items.map(item => ({
+                    ...item,
+                    body: Array.isArray(item.body) ? item.body : [item.body],
+                    target: buildAnnotationTarget(item.target),
+                }))
+            }
+        })
+
+        insertInLS(`${projectID}_annotations`, JSON.stringify(annotations))
+
+        props.history.push(`/project/${projectID}/edit`)
+    } catch (err) {
+        console.log(err)
+        return Promise.reject(translation('errors.unable_access_file'))
+    }
+}
+
+function buildAnnotationTarget(target) {
+
+    if (typeof target === 'string') {
+        // "https://example.com/canvas-1#xywh=1415,406,334,626"
+        return {
+            type: "SpecificResource",
+            // source: "https://example.com/canvas-1",
+            selector: {
+                type: "FragmentSelector",
+                value: target.split('#')[1].replace('xywh=', 'xywh=pixel:'),
+                conformsTo: "http://www.w3.org/TR/media-frags/"
+            }
+        }
+    } else if (target?.selector?.type === 'FragmentSelector') {
+        return {
+            ...target,
+            selector: {
+                ...target.selector,
+                conformsTo: "http://www.w3.org/TR/media-frags/"
+            }
+        }
+    }
+    return target
 }

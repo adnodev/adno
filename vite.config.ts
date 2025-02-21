@@ -9,8 +9,11 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
+    server: {
+      port: 1234,
+    },
     esbuild: {
-      include: /\.js$/,
+      include: [/\.[jt]sx?$/],
       exclude: [],
       loader: 'jsx',
     },
