@@ -24,18 +24,6 @@ export const exportToIIIF = async (state) => {
         "id": `https://example.com/manifest.json`,
         "type": "Manifest",
         "metadata": [
-            {
-                "label": {
-                    "en": [
-                        "adno_settings"
-                    ]
-                },
-                "value": {
-                    "en": [
-                        adnoSettings
-                    ]
-                }
-            },
             ...Object.entries(selectedProject)
                 .filter(([key, value]) => !['settings', 'id', 'manifest_url'].includes(key) && ("" + value)?.length > 0)
                 .map(([key, value]) => ({
@@ -49,7 +37,19 @@ export const exportToIIIF = async (state) => {
                             value
                         ]
                     }
-                }))
+                })),
+            {
+                "label": {
+                    "en": [
+                        "adno_settings"
+                    ]
+                },
+                "value": {
+                    "en": [
+                        adnoSettings
+                    ]
+                }
+            },
         ],
         "label": {
             "en": [
@@ -272,5 +272,5 @@ const formatSvgEllipseToPath = (text) => {
         const radiusX = Math.round(rx);
         const radiusY = Math.round(ry);
         return `<path d="M ${x - radiusX},${y} A ${radiusX},${radiusY} 0 1,0 ${x + radiusX},${y} A ${radiusX},${radiusY} 0 1,0 ${x - radiusX},${y} Z"`;
-    });
+    }).replace('></ellipse>', '/>');
 };

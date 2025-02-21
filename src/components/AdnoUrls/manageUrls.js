@@ -144,7 +144,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     // })
 }
 
-function readProjectFromIIIFFormat(props, manifest, translation) {
+export function readProjectFromIIIFFormat(props, manifest, translation) {
     try {
         const metadata = manifest.metadata.find(meta => meta.label.en?.includes('adno_settings'))
         const settings = JSON.parse(atob(metadata.value.en[0]));
