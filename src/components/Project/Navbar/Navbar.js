@@ -56,7 +56,7 @@ class Navbar extends Component {
                         <p className="pb-4">{this.props.t('navbar.share_project_desc3')}
                             <a className="adno-link" href="https://adno.app/" target="_blank"><FontAwesomeIcon icon={faExternalLink} size="lg" /></a>
                         </p>
-                        <p className="my-3 text-center font-bold">Exporter au format </p>
+                        <p className="my-3 text-center font-bold">{this.props.t('navbar.export_project_to')}</p>
                         <div className="flex gap-3 justify-center items-center">
                             <label className="btn btn-success">
                                 {this.props.selectedProject &&
@@ -71,7 +71,7 @@ class Navbar extends Component {
                             </label>
                             ou
                             <label className="btn btn-success" onClick={this.exportIIIF}>
-                                {this.props.t('navbar.export_project_to_iiif')}
+                                {this.props.t('navbar.export_project_to_iiif')}<span className="badge badge-md ms-2">BETA</span>
                             </label>
                         </div>
                         <a id="downloadAnchorElem" className="hidden"></a>
