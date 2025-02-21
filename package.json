@@ -1,7 +1,7 @@
 {
-  "name": "adno-react",
+  "name": "adno",
   "version": "1.0.0",
-  "homepage": "https://dhbern.github.io/adno/",
+  "homepage": "https://github.com/adnodev/adno",
   "description": "",
   "scripts": {
     "start": "yarn install && yarn clean && vite",
