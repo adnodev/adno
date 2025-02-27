@@ -13,8 +13,8 @@ class Navbar extends Component {
 
     render() {
         return (
-            <div className="navbar text-neutral-content">
-                <Link to={"/"} className="project-navbar-link project-page-title" title={this.props.t('navbar.back_home')}>
+            <div className="navbar bg-base-300 text-neutral-content">
+                <Link to={"/"} className="project-navbar-link text-neutral" title={this.props.t('navbar.back_home')}>
                     <h1>ADNO</h1>
                 </Link>
                 {/* <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.back_home')}>
@@ -22,7 +22,7 @@ class Navbar extends Component {
                 </div> */}
 
 
-                <strong className="ms-3" style={{
+                <strong className="ms-3 text-neutral" style={{
                     maxWidth: 400,
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
@@ -35,7 +35,7 @@ class Navbar extends Component {
                     this.props.editMode &&
                     <div className="undo-redo">
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.undo')}>
-                            <button type="button" className="btn btn-outline"
+                            <button type="button" className="btn btn-neutral"
                                 style={{
                                     borderTopRightRadius: 0,
                                     borderBottomRightRadius: 0
@@ -46,7 +46,7 @@ class Navbar extends Component {
                             </button>
                         </div>
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.redo')}>
-                            <button type="button" className="btn btn-outline"
+                            <button type="button" className="btn btn-neutral"
                                 style={{
                                     borderLeft: 'none',
                                     borderTopLeftRadius: 0,
@@ -63,7 +63,7 @@ class Navbar extends Component {
                 <div className="ms-auto flex items-center gap-2">
                     {/* // Display a modal to download and share the current project */}
                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('navbar.download_project')}>
-                        <button className="btn navbar-button">
+                        <button className="btn navbar-button btn-neutral">
                             <label htmlFor="my-modal" style={{ "background": "none", "border": "none" }}>
                                 <FontAwesomeIcon icon={faDownload} size="xl" /> </label>
                         </button>
@@ -97,7 +97,7 @@ class Navbar extends Component {
                     <div className="tooltip tooltip-bottom z-50 ms-auto" data-tip={this.props.editMode ? this.props.t('navbar.edit_project') : this.props.t('navbar.show_metadatas')}>
                         <button
                             onClick={() => this.props.showProjectMetadatas()}
-                            className="btn navbar-button"
+                            className="btn navbar-button btn-neutral"
                             title={this.props.editMode ? this.props.t('navbar.edit_project') : this.props.t('navbar.show_metadatas')}>
                             <FontAwesomeIcon icon={this.props.editMode ? faFilePen : faFile} size="xl" />
                         </button>
@@ -109,7 +109,7 @@ class Navbar extends Component {
 
                             {
                                 !this.props.editMode &&
-                                <button onClick={() => this.props.showEditorSettings()} className="btn navbar-button">
+                                <button onClick={() => this.props.showEditorSettings()} className="btn navbar-button btn-neutral">
                                     <FontAwesomeIcon icon={faGear} size="xl" />
                                 </button>
                             }

@@ -1,5 +1,5 @@
 .project .navbar {
-    background: var(--adno-main-color);
+    /* background: var(--adno-main-color); */
     min-height: initial;
     height: 58px;
     padding: 0 1rem;
@@ -15,6 +15,12 @@
     min-width: initial;
     width: 2.25rem;
     height: 2.25rem;
+    cursor: pointer;
+}
+
+
+.project .navbar-button * {
+    cursor: pointer;
 }
 
 .project .navbar h1 {
