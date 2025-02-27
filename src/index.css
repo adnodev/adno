@@ -6,8 +6,8 @@
     --adno-main-color: #075985; /* Sky 800 */
     --adno-second-color: #0284C7; /* Sky 600 */ 
     --adno-background: #FAFAFA; /* Neutral 50 */
-    --adno-edit-color: #850659;  /* Orange 500 */
-    --adno-view-color: #588506; /* Lime 500 */
+    --adno-edit-color: #DC143C;  /* Orange 500 */
+    --adno-view-color: #A3B18A; /* Lime 500 */
 }
 
 .debug {
