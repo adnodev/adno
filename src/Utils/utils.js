@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import edjsHTML from "editorjs-html";
 import TurndownService from "turndown"
-import { useTranslation } from "react-i18next";
+import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 
 // Function to insert something in the localStorage.
 // Will return an alert if the localStorage is full
@@ -80,11 +80,7 @@ export const get_url_extension = (url) => {
 }
 
 export const buildTagsList = (annotation) => {
-  var tags = Array.isArray(annotation.body) ? annotation.body.filter(anno_body => anno_body.purpose === "tagging") : []
-
-  return tags
-
-  // return tags && tags.length > 0 && tags.reduce((previousValue, currentValue) => previousValue + " " + currentValue.value, "[TAGS] ")
+  return Array.isArray(annotation.body) ? annotation.body.filter(anno_body => anno_body.purpose === "tagging") : []
 }
 
 export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {
@@ -177,7 +173,7 @@ export const createExportProjectJsonFile = (projectID) => {
 }
 
 
-export const importProjectJsonFile = (event, loadedProject, cancelImport, errorTitle) => {
+export const importProjectJsonFile = (event, loadedProject, cancelImport, errorTitle, props) => {
   event.preventDefault()
 
   let fr = new FileReader();
@@ -186,6 +182,10 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
 
   fr.onload = function (e) {
     let imported_project = JSON.parse(e.target.result)
+
+    if (imported_project.metadata && imported_project.metadata.find(meta => meta.label.en?.includes('adno_settings'))) {
+      return readProjectFromIIIFFormat(props, imported_project, props.t)
+    }
 
     if (imported_project.hasOwnProperty("@context")
       && imported_project.hasOwnProperty("date")

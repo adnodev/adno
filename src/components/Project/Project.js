@@ -22,6 +22,7 @@ import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnn
 import ProjectSettings from "./ProjectSettings";
 import AdnoMdEditor from "../AdnoMarkdown/AdnoMdEditor";
 import AdnoMdViewer from "../AdnoMarkdown/AdnoMdViewer";
+import { exportToIIIF } from "../../services/iiif/exporter";
 
 class Project extends Component {
     constructor(props) {
@@ -119,6 +120,7 @@ class Project extends Component {
                     changeSelectedAnno={(newSelectedAnno) => this.setState({ selectedAnnotation: newSelectedAnno })}
                     showEditorSettings={() => this.setState({ showSettings: true })}
                     autoplayID={this.state.autoplayID}
+                    exportIIIF={() => exportToIIIF(this.state)}
                     undoRedo={{
                         undo: () => {
                             this.setState((prevState) => {

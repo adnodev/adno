@@ -178,12 +178,14 @@
                 "redo": "Reapply the undone action",
                 "back_home": "Back to home",
                 "download_project": "Download the project",
+                "export_project_to_iiif": "IIIF",
                 "edit_project": "Edit project metadata",
                 "show_metadatas": "Show metadata",
                 "share_project": "Save and share your project",
                 "share_project_desc1": "First, download your project file. To share it, you can either send it by e-mail, or place it online - on a website, a file server or on the IPFS interplanetary file system - and then share its URL or IPFS CID.",
                 "share_project_desc2": "Once your Adno project is online, you can make it visible on a web page by inserting an iframe tag. ",
-                "share_project_desc3": "For more information, visit the official Adno documentation."
+                "share_project_desc3": "For more information, visit the official Adno documentation.",
+                "export_project_to": "Export as"
             },
             "new_project": {
                 "add_info": "Add information to  your project"
