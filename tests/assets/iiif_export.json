@@ -1,0 +1,256 @@
+{
+    "@context": "http://iiif.io/api/presentation/3/context.json",
+    "id": "https://example.com/manifest.json",
+    "type": "Manifest",
+    "metadata": [
+        {
+            "label": {
+                "en": [
+                    "title"
+                ]
+            },
+            "value": {
+                "en": [
+                    "second"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "description"
+                ]
+            },
+            "value": {
+                "en": [
+                    "une super desc"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "creation_date"
+                ]
+            },
+            "value": {
+                "en": [
+                    "2024-12-22T07:55:10.678Z"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "last_update"
+                ]
+            },
+            "value": {
+                "en": [
+                    "2025-02-18T17:22:48.175Z"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "creator"
+                ]
+            },
+            "value": {
+                "en": [
+                    "un super auteur"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "adno_settings"
+                ]
+            },
+            "value": {
+                "en": [
+                    "ewogICAgImRlbGF5IjogNSwKICAgICJzaG93TmF2aWdhdG9yIjogdHJ1ZSwKICAgICJ0b29sc2Jhck9uRnMiOiB0cnVlLAogICAgInNpZGViYXJFbmFibGVkIjogdHJ1ZSwKICAgICJzdGFydGJ5Zmlyc3Rhbm5vIjogZmFsc2UsCiAgICAicm90YXRpb24iOiBmYWxzZSwKICAgICJkaXNwbGF5VG9vbGJhciI6IHRydWUsCiAgICAidGFncyI6IFtdLAogICAgIm91dGxpbmVXaWR0aCI6ICJvdXRsaW5lLTFweCIsCiAgICAib3V0bGluZUNvbG9yIjogIm91dGxpbmUtYmx1ZSIsCiAgICAib3V0bGluZUNvbG9yRm9jdXMiOiAib3V0bGluZS1mb2N1cy12aW9sZXQiLAogICAgInNob3dPdXRsaW5lcyI6IHRydWUsCiAgICAic2hvd0V5ZXMiOiBmYWxzZSwKICAgICJzb3VuZE1vZGUiOiAibm9fc291bmQiCn0="
+                ]
+            }
+        }
+    ],
+    "label": {
+        "en": [
+            "une super desc"
+        ],
+        "fr": [
+            "une super desc"
+        ]
+    },
+    "items": [
+        {
+            "id": "https://example.com/canvas-1",
+            "type": "Canvas",
+            "height": 3479,
+            "width": 2406,
+            "items": [
+                {
+                    "id": "https://example.com/annotation-page/canvas-1/annopage-1",
+                    "type": "AnnotationPage",
+                    "items": [
+                        {
+                            "id": "https://example.com/annotation/canvas-1/annopage-1/anno-1",
+                            "type": "Annotation",
+                            "motivation": "painting",
+                            "body": {
+                                "id": "https://api.nakala.fr/iiif/10.34847/nkl.afe9u827/66f40bc26479ea498864a0dc6b4ecd9ddfa1314f",
+                                "type": "Image",
+                                "format": "image/jpeg",
+                                "service": [
+                                    {
+                                        "id": "https://api.nakala.fr/iiif/10.34847/nkl.afe9u827/66f40bc26479ea498864a0dc6b4ecd9ddfa1314f",
+                                        "type": "ImageService3",
+                                        "profile": "level1"
+                                    }
+                                ],
+                                "height": 3479,
+                                "width": 2406
+                            },
+                            "target": "https://example.com/canvas-1"
+                        }
+                    ]
+                }
+            ],
+            "annotations": [
+                {
+                    "id": "https://example.com/canvas-1/annopage-2",
+                    "type": "AnnotationPage",
+                    "items": [
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-0",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "ligne",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "<p>ligne</p>",
+                                    "purpose": "commenting"
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M1777.1116943359375 348 L1777.1116943359375 347 L1777.1116943359375 354 L1770.8731689453125 395 L1762.7967529296875 423 L1746.559814453125 466 L1728.63671875 511 L1713.2596435546875 555 L1699.0797119140625 590 L1687.6986083984375 618 L1670.0621337890625 650 L1661.243896484375 673 L1645.5970458984375 702 L1632.2601318359375 730 L1616.61328125 758 L1602.6524658203125 775 L1588.438720703125 795 L1575.658203125 807 L1562.877685546875 820 L1551.698974609375 831 L1542.8302001953125 840 L1531.533447265625 853 L1516.0888671875 869 L1497.7442626953125 887 L1484.508544921875 901 L1471.255859375 915 L1462.3870849609375 923 L1454.7154541015625 929 L1448.17333984375 932 L1441.63134765625 932 L1436.67431640625 933 L1431.481201171875 933 L1427.8729248046875 934 L1425.613525390625 935 L1425.613525390625 937 L1425.613525390625 938 L1425.613525390625 938\"></path></svg>"
+                                }
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-1",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "ellipse\n\n",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "<p>ellipse</p><p><br></p>",
+                                    "purpose": "commenting"
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 1269,491 A 142,50 0 1,0 1553,491 A 142,50 0 1,0 1269,491 Z\"/></svg>"
+                                }
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-2",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "point",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "<p>point</p>",
+                                    "purpose": "commenting"
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "FragmentSelector",
+                                    "value": "xywh=1085,388,10,10"
+                                }
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-3",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "polygon",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "<p>polygon</p>",
+                                    "purpose": "commenting"
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 712,1072 L 1087,1162 L 1004,1548 L 622,1518 L 426,1259 Z\" /></svg>"
+                                }
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-4",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "rectangle",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "<p>rectangle</p>",
+                                    "purpose": "commenting"
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "FragmentSelector",
+                                    "value": "xywh=1429,1516,746,747"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
