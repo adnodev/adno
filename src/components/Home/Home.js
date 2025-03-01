@@ -130,17 +130,17 @@ class Home extends Component {
                 </div>
 
                 {
-                    process.env.ADNO_FOOTER === "TRUE" &&
-                    <footer className="footer footer-center p-4 bg-base-300 text-base-content">
-                        <div>
-                            {
-                                process.env.ADNO_FOOTER_TEXT ?
-                                    <p>{process.env.ADNO_FOOTER_TEXT}</p>
-                                    : <p><a href="https://adno.app/" target="_blank">adno.app</a></p>
-                            }
-                        </div>
-                    </footer>
-                }
+                    process.env.ADNO_FOOTER === "TRUE" ?
+                        <footer className="footer footer-center bg-base-300 text-base-content p-2">
+                            {process.env.ADNO_FOOTER_TEXT ?
+                                <p>{process.env.ADNO_FOOTER_TEXT}</p>
+                                : <p><a href="https://adno.app/" target="_blank">adno.app</a></p>}
+                            <p>Version 1.0.0</p>
+                        </footer>
+
+                        : <footer className="footer footer-center bg-base-300 text-base-content">
+                            <p className="text-center py-2">Version 1.0.0</p>
+                        </footer>}
 
             </div>
 

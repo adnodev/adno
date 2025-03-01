@@ -72,7 +72,11 @@ ul {
 
 footer{
     position: fixed;
-    top: calc(100vh - 52px)
+    bottom: 0;
+}
+
+footer {
+    row-gap: inherit !important;
 }
 
 .a9s-annotationlayer .outline-1px .a9s-inner {

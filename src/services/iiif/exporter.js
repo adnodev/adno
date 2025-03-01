@@ -7,7 +7,6 @@ export const exportToIIIF = async (state) => {
         settings
     } = state
 
-
     const adnoSettings = btoa(JSON.stringify(settings, null, 4));
 
     const manifest = await enhancedFetch(selectedProject.manifest_url)

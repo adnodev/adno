@@ -71,11 +71,6 @@ function LinkGenerator({ t }) {
                         {generatedURL}
                     </pre>
                 </div>
-                {/* <button type="submit" className="btn" onClick={() => {
-                    console.log(generatedURL)
-                }}>
-                    {t('link.generate')}
-                </button> */}
                 <CopyButton value={generatedURL} />
             </div>
         </div>

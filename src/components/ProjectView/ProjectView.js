@@ -9,13 +9,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 // Import utils
-import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllProjectsFromLS, enhancedFetch, insertInLS, migrateTextBody, buildJsonProjectWithManifest } from "../../Utils/utils";
+import { deleteProject, createExportProjectJsonFile, duplicateProject, getAllProjectsFromLS, enhancedFetch, insertInLS, migrateTextBody, buildJsonProjectWithManifest, getProjectSettings } from "../../Utils/utils";
 
 // Import CSS
 import "./ProjectView.css";
 
 // Add Internationalization
 import { withTranslation } from "react-i18next";
+import { Exporter, ExporterModal } from "../Exporter/Exporter";
+import { exportToIIIF } from "../../services/iiif/exporter";
 
 class ProjectView extends Component {
     constructor(props) {
@@ -201,8 +203,20 @@ class ProjectView extends Component {
     }
 
     render() {
-        // console.log(this.props.project.title, this.props.project.id)
-        return (
+        const annotations = JSON.parse(localStorage.getItem(`${this.props.project.id}_annotations`)) || [];
+
+        const exportedProject = {
+            annotations,
+            selectedProject: this.props.project,
+            settings: getProjectSettings(this.props.project.id)
+        }
+
+        return <>
+            <ExporterModal
+                translate={this.props.t}
+                selectedProject={this.props.project}
+                exportIIIF={() => exportToIIIF(exportedProject)} />
+
             <div className="card card-side bg-base-100 shadow-xl project-view-card">
                 <div className="project-card-img" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
                     <img
@@ -232,10 +246,25 @@ class ProjectView extends Component {
                             </div>
                         }
                         <div className="tooltip" data-tip={this.props.t('project.duplicate')}>
-                            <button type="button" className="btn btn-md btn-outline" onClick={() => this.duplicate(this.props.project.id)}><FontAwesomeIcon icon={faCopy} /></button>
+                            <button type="button" className="btn btn-md btn-outline"
+                                onClick={() => this.duplicate(this.props.project.id)}><FontAwesomeIcon icon={faCopy} /></button>
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.download')}>
-                            <a id={"download_btn_" + this.props.project.id} href={createExportProjectJsonFile(this.props.project.id)} download={this.props.project.title + ".json"} className="btn btn-md btn-outline"> <FontAwesomeIcon icon={faDownload} />  </a>
+                            <Exporter
+                                translate={this.props.t}
+                                selectedProject={this.props.project}
+                                exportIIIF={() => exportToIIIF(exportedProject)}
+                                separatedModal
+                                btn={<>
+                                    <button type="button" className="btn btn-md btn-outline me-2" onClick={() => {
+                                        document.getElementById('my-modal').click()
+                                    }}>
+                                        <label htmlFor="my-modal" style={{ pointerEvents: 'none' }}>
+                                            <FontAwesomeIcon icon={faDownload} />
+                                        </label>
+                                    </button>
+                                </>}
+                            />
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.delete')}>
                             <button type="button" className="btn btn-md btn-outline btn-error" onClick={() => this.deleteProj(this.props.project.id)}>    <FontAwesomeIcon icon={faTrash} />  </button>
@@ -243,7 +272,7 @@ class ProjectView extends Component {
                     </div>
                 </div>
             </div>
-        )
+        </>
     }
 }
 

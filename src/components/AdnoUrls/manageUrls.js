@@ -187,7 +187,6 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
         // }))))
 
         const annotations = manifest.items[0]?.annotations[0].items.flatMap(annotation => {
-            // console.log(annotation)
             if (annotation.body)
                 return {
                     // "@context": "http://www.w3.org/ns/anno.jsonld",
