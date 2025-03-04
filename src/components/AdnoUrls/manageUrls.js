@@ -3,7 +3,7 @@ import { buildJsonProjectWithManifest, enhancedFetch, generateUUID, get_url_exte
 
 function isJsonContentType(contentType) {
     const jsonPattern = /^(application\/(vnd\.api\+json|ld\+json|x-json-stream|json)(;.*)?|text\/json)$/i;
-    return jsonPattern.test(contentType.trim());
+    return jsonPattern.test(contentType.trim()) || contentType === 'application/octet-stream';
 }
 
 export async function manageUrls(props, url, translation, step = "decoreURIComponent") {
