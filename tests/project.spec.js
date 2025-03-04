@@ -70,3 +70,9 @@ test('should import manifest v3', async ({ page }) => {
   await loadV3(page, 'https://iiif.emf.fr/iiif/3/SuomiNPP_earth_full.jp2/info.json');
   await loadV3(page, 'https://iiif.omnesviae.org/image/peutinger.tiff/info.json');
 })
+
+test('should import URL with encoded param', async ({ page }) => {
+  // await loadV3(page, 'https://nasa.emf.fr/iiif/3/iss072e574632%2Fiss072e574632/info.json');
+  await loadV3(page, 'https://iiif.mexina.fr/iiif/3/Lulu2%2FjExEpoyO89.JPG/info.json');
+})
+

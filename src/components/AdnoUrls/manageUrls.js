@@ -20,6 +20,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
     if (url.startsWith('http') || url.startsWith("https")) {
+        console.log('call with', step === "decoreURIComponent" ? decodeURIComponent(url) : url)
         return enhancedFetch(step === "decoreURIComponent" ? decodeURIComponent(url) : url)
             .then(rawReponse => {
                 if (rawReponse.response.ok) {
