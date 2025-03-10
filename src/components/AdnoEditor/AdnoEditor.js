@@ -33,17 +33,15 @@ class AdnoEditor extends Component {
         } else {
             let selected_project = JSON.parse(localStorage.getItem(this.props.match.params.id))
 
-            let tileSources;
+            let tileSources = {
+                type: 'image',
+                url: selected_project.img_url
+            }
 
             if (selected_project.manifest_url) {
                 tileSources = [
                     selected_project.manifest_url
                 ]
-            } else {
-                tileSources = {
-                    type: 'image',
-                    url: selected_project.img_url
-                }
             }
 
             OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
@@ -64,7 +62,7 @@ class AdnoEditor extends Component {
                 // Enable rotation
                 toolbar: "toolbar-osd",
                 showRotationControl: this.props.rotation,
-		showFullPageControl: false,
+                showFullPageControl: false,
             }), {
                 locale: 'auto',
                 drawOnSingleClick: true,
@@ -191,7 +189,7 @@ class AdnoEditor extends Component {
                 <div id="openseadragon1">
                     <div id="toolbar-container"></div>
                     <div id="toolbar-osd"></div>
-		</div>
+                </div>
                 {
                     this.state.isMovingItem &&
                     <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>

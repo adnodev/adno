@@ -23,7 +23,8 @@ class NewProject extends Component {
             nbCanvases: 0,
             selectedCanva: false,
             images: [],
-            isCanvaProject: false
+            isCanvaProject: false,
+            selectedImg: undefined
         }
     }
 
@@ -117,18 +118,30 @@ class NewProject extends Component {
             manifestIIIF.sequences[0].canvases.forEach((canva, index) => {
 
                 if (canva.images) {
-                    if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
+                    if ((canva.images[0].resource.service && canva.images[0].resource.service["@id"]) ||
+                        canva.images[0].resource["@id"]) {
 
-                        var originalImgLink = canva.images[0].resource.service["@id"] + "/full/300,/0/default.jpg"
-                        var manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
+                        const id = (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) ? canva.images[0].resource.service["@id"] :
+                            canva.images[0].resource["@id"];
 
-                        canva = {
-                            "thumbnail_link": originalImgLink,
-                            "canva_url": manifestURL
+                        const originalImgLink = id + "/full/300,/0/default.jpg"
+
+                        const manifestURL = id + "/info.json"
+
+                        let newCanva = {
+                            thumbnail_link: originalImgLink,
+                            canva_url: manifestURL
+                        }
+
+                        if (canva.images[0].resource["@id"]) {
+                            newCanva = {
+                                thumbnail_link: originalImgLink,
+                                img_url: canva.images[0].resource["@id"]
+                            }
                         }
 
                         this.setState({
-                            manifestImages: [...this.state.manifestImages, canva],
+                            manifestImages: [...this.state.manifestImages, newCanva],
                             currentIndex: 0,
                             nbCanvases: manifestIIIF.sequences[0].canvases.length,
                             isCanvaProject: true
@@ -236,7 +249,14 @@ class NewProject extends Component {
             if (selected_canva) {
 
                 const projectID = generateUUID()
-                let project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, selected_canva)
+                let project = buildJsonProjectWithManifest(projectID,
+                    document.getElementById("project_name").value,
+                    document.getElementById("project_desc").value, selected_canva)
+
+                if (this.state.selectedImg) {
+                    project.img_url = this.state.selectedImg
+                    project.manifest_url = undefined
+                }
 
                 if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
 
@@ -515,9 +535,13 @@ class NewProject extends Component {
                     this.state.manifestImages && this.state.nbCanvases > 0 && this.state.currentIndex !== -1 && !this.state.selectedCanva &&
                     <button className="btn btn-success my-2" onClick={() => {
                         this.setState({ selectedCanva: true, isCanvaProject: true })
-                        localStorage.setItem("selected_canva", this.state.manifestImages[this.state.currentIndex].canva_url)
-                    }
-                    }>{this.props.t('project.choose_canva')}</button>
+
+                        const canva = this.state.manifestImages[this.state.currentIndex]
+                        if (canva.img_url)
+                            this.setState({ selectedImg: canva.img_url })
+
+                        localStorage.setItem("selected_canva", canva.canva_url)
+                    }}>{this.props.t('project.choose_canva')}</button>
                 }
 
 

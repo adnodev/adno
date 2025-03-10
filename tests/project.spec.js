@@ -76,3 +76,16 @@ test('should import URL with encoded param', async ({ page }) => {
   await loadV3(page, 'https://iiif.mexina.fr/iiif/3/Lulu2%2FjExEpoyO89.JPG/info.json');
 })
 
+test('shoud load resource with nested service field', async ({ page }) => {
+  // await page.goto('http://localhost:1234/#/');
+  // await page.getByRole('textbox', { name: 'https://iiif.emf.fr/iiif/3/' }).click();
+  await loadImageProjectFromURL(page, 'https://apicollections.parismusees.paris.fr/iiif/320144731/manifest')
+  // await page.getByRole('textbox', { name: 'https://iiif.emf.fr/iiif/3/' }).fill('https://apicollections.parismusees.paris.fr/iiif/320144731/manifest');
+  // await page.getByRole('button', { name: 'Create my own project' }).click();
+  // await page.getByRole('button', { name: 'Use this picture for my' }).click();
+  // await page.getByRole('textbox', { name: 'Title' }).click();
+  // await page.getByRole('textbox', { name: 'Title' }).fill('Musee');
+  // await page.getByRole('button', { name: 'Create my new project' }).click();
+  // await expect(page.locator('.a9s-annotationlayer')).toBeVisible();
+})
+

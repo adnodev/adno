@@ -942,9 +942,10 @@ class AdnoEmbed extends Component {
                                                 imported_project.sequences[0].canvases &&
                                                 imported_project.sequences[0].canvases.length > 0
                                             ) {
-                                                var resultLink =
-                                                    imported_project.sequences[0].canvases[0].images[0]
-                                                        .resource.service["@id"] + "/info.json";
+                                                const image = imported_project.sequences[0].canvases[0].images[0]
+                                                var resultLink = (image.resource.service ? image.resource.service["@id"] :
+                                                    image.resource["@id"]
+                                                ) + "/info.json";
                                             } else if (imported_project.logo["@id"]) {
                                                 var resultLink =
                                                     imported_project.logo["@id"].split("/")[0] + "//";
