@@ -133,7 +133,7 @@ class NewProject extends Component {
                             canva_url: manifestURL
                         }
 
-                        if (canva.images[0].resource["@id"]) {
+                        if (!(canva.images[0].resource.service && canva.images[0].resource.service["@id"]) && canva.images[0].resource["@id"]) {
                             newCanva = {
                                 thumbnail_link: originalImgLink,
                                 img_url: canva.images[0].resource["@id"]
@@ -246,8 +246,10 @@ class NewProject extends Component {
             const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
             var selected_canva = localStorage.getItem("selected_canva")
-            if (selected_canva) {
 
+            console.log(selected_canva)
+
+            if (selected_canva) {
                 const projectID = generateUUID()
                 let project = buildJsonProjectWithManifest(projectID,
                     document.getElementById("project_name").value,
@@ -540,7 +542,7 @@ class NewProject extends Component {
                         if (canva.img_url)
                             this.setState({ selectedImg: canva.img_url })
 
-                        localStorage.setItem("selected_canva", canva.canva_url)
+                        localStorage.setItem("selected_canva", canva.img_url ? canva.img_url : canva.canva_url)
                     }}>{this.props.t('project.choose_canva')}</button>
                 }
 
