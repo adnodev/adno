@@ -111,12 +111,20 @@ class OpenView extends Component {
                         this.freeMode()
                         this.loadAudio()
                         this.toggleOutlines(this.props.showOutlines)
+
+                        this.automaticStart()
                     }, 200)
                 })
         }
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
         addEventListener('keydown', this.keyPressedEvents)
+    }
+
+    automaticStart = () => {
+        if (this.props.shouldAutoPlayAnnotations) {
+            this.startTimer()
+        }
     }
 
     toggleOutlines = showOutlines => {
@@ -258,7 +266,10 @@ class OpenView extends Component {
                 }
             }
 
-            setTimeout(() => this.automateLoading(delay), delay)
+            const interID = setTimeout(() => this.automateLoading(delay), delay);
+            this.setState({
+                intervalID: interID
+            })
         }
     }
 
@@ -399,35 +410,31 @@ class OpenView extends Component {
         }, () => this.props.setAudioContexts(this.state.audioContexts))
     }
 
+    clearTimer = () => {
+        this.setState({ timer: false })
+        clearInterval(this.state.intervalID)
+    }
+
     startTimer = () => {
         // Do not start the timer if there is no content to display
         if (this.props.annos.length > 0) {
+            if (this.props.startbyfirstanno) {
+                this.setState({ currentID: -1 })
 
-            // Check if the timer is already started, clear the auto scroll between annotations
-            if (this.state.timer) {
-                this.setState({ timer: false })
-
-                clearInterval(this.state.intervalID)
+                this.changeAnno(this.props.annos[0])
             } else {
-
-                if (this.props.startbyfirstanno) {
-                    this.setState({ currentID: -1 })
-
-                    this.changeAnno(this.props.annos[0])
-                } else {
-                    this.automateLoading()
-                }
-
-                const delay = this.props.timerDelay * 1000;
-
-                // Call the function to go to the next annotation every "timerDelay" seconds
-                const interID = setTimeout(() => this.automateLoading(delay), delay);
-                this.setState({
-                    timer: true,
-                    intervalID: interID
-                })
-                this.props.updateAutoplayId(interID)
+                this.automateLoading()
             }
+
+            const delay = this.props.timerDelay * 1000;
+
+            // Call the function to go to the next annotation every "timerDelay" seconds
+            const interID = setTimeout(() => this.automateLoading(delay), delay);
+            this.setState({
+                timer: true,
+                intervalID: interID
+            })
+            this.props.updateAutoplayId(interID)
         }
     }
 
@@ -701,7 +708,7 @@ class OpenView extends Component {
 
                         {
                             this.props.annos.length > 0 &&
-                            <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}>
+                            <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.state.timer ? this.clearTimer() : this.startTimer()}>
                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t(`visualizer.${this.state.timer ? 'pause' : 'play'}`)}>
                                     <FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" />
                                 </div>

@@ -18,7 +18,7 @@ import { buildTagsList } from "../../Utils/utils";
 
 const PARAMETERS_BY_TAB = {
     'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
-    'navigation': ['delay', 'startbyfirstanno', 'tags', 'soundMode'],
+    'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
     'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
 
@@ -224,6 +224,16 @@ class ProjectSettings extends Component {
                                 </div>
                                 <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.startbyfirstanno}
                                     onChange={() => this.setState({ settings: { ...this.state.settings, startbyfirstanno: !this.state.settings.startbyfirstanno } })} />
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('shouldAutoPlayAnnotations') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.should_auto_play_annotations')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.shouldAutoPlayAnnotations}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, shouldAutoPlayAnnotations: !this.state.settings.shouldAutoPlayAnnotations } })} />
                             </label>
                         </>}
 

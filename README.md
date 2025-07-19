@@ -144,6 +144,7 @@ Available settings for the embed :
 - navigator value = `true` or `false`
 - toolbarsfs value = `true` or `false`
 - startfirst value = `true` or `false`
+- should_auto_play_annotations value = `true` or `false`
 - rotation value = `true` or `false`
 - toolbar value = `true` or `false`
 - anno_bounds value = `true` or `false`

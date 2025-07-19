@@ -159,6 +159,7 @@
           "annotation": "Anotación",
           "annotation_sound": "Elija un modo para las anotaciones de audio",
           "begin_first_anno": "Siempre comenzar la reproducción automática en la primera anotación",
+          "should_auto_play_annotations": "Inicia la reproducción de las anotaciones automáticamente al cargar la presentación",
           "delay": "Plazo entre 2 anotaciones (en segundos)",
           "enable_rota": "Activar la rotación de la imagen",
           "fullscreen": "Mostrar barra de herramientas en modo pantalla completa",

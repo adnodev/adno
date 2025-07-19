@@ -30,6 +30,7 @@ function LinkGenerator({ t }) {
         appendBooleanParam(params, "anno_bounds", settings.annoBounds)
 
         appendBooleanParam(params, "startbyfirstanno", settings.startbyfirstanno)
+        appendBooleanParam(params, "should_auto_play_annotations", settings.shouldAutoPlayAnnotations)
         appendBooleanParam(params, "rotation", settings.rotation)
         appendBooleanParam(params, "outlineWidth", settings.outlineWidth)
         appendBooleanParam(params, "outlineColor", settings.outlineColor)

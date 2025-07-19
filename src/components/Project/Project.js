@@ -280,6 +280,7 @@ class Project extends Component {
                                     <OpenView
                                         setAudioContexts={audioContexts => this.setState({ audioContexts })}
                                         startbyfirstanno={this.state.settings.startbyfirstanno}
+                                        shouldAutoPlayAnnotations={this.state.settings.shouldAutoPlayAnnotations}
                                         showNavigator={this.state.settings.showNavigator}
                                         toolsbarOnFs={this.state.settings.toolsbarOnFs}
                                         showToolbar={this.state.settings.displayToolbar}

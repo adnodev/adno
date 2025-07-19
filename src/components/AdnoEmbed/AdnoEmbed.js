@@ -36,7 +36,8 @@ class AdnoEmbed extends Component {
             isLoaded: false,
             currentTrack: undefined,
             soundMode: 'no_sound',
-            audioContexts: []
+            audioContexts: [],
+            hasInteracted: false
         };
     }
 
@@ -62,6 +63,9 @@ class AdnoEmbed extends Component {
             : true;
         const startbyfirstanno = query.get("startfirst")
             ? query.get("startfirst") === "true"
+            : (query.get("startbyfirstanno") ? query.get('startbyfirstanno') === "true" : false);
+        const shouldAutoPlayAnnotations = query.get("should_auto_play_annotations")
+            ? query.get("should_auto_play_annotations") === "true"
             : false;
         const rotation = query.get("rotation")
             ? query.get("rotation") === "true"
@@ -96,6 +100,7 @@ class AdnoEmbed extends Component {
             toolsbarOnFs,
             sidebarEnabled: true,
             startbyfirstanno,
+            shouldAutoPlayAnnotations,
             rotation,
             isAnnotationsVisible,
             showToolbar,
@@ -106,10 +111,20 @@ class AdnoEmbed extends Component {
             outlineWidth,
             outlineColor,
             outlineColorFocus
-        };
+        }
+
         // Update settings
         this.setState({ ...settings });
     };
+
+    componentDidUpdate() {
+        if (!this.state.hasInteracted && this.state.shouldAutoPlayAnnotations && this.state.annos.length > 0) {
+            this.setState({
+                hasInteracted: true
+            })
+            this.startTimer()
+        }
+    }
 
     freeMode = () => {
         if (this.state.showEyes) {
@@ -178,7 +193,7 @@ class AdnoEmbed extends Component {
         //     urlParam = rawURLParam.replace("url=", "")
         // }
 
-        this.getAdnoProject(urlParam);
+        this.getAdnoProject(urlParam)
 
         // Accessibility shortcuts
         addEventListener("fullscreenchange", this.updateFullScreenEvent);
@@ -422,31 +437,29 @@ class AdnoEmbed extends Component {
         }
     };
 
+    clearTimer = () => {
+        this.setState({ timer: false });
+        clearInterval(this.state.intervalID)
+    }
+
     startTimer = () => {
         // Do not start the timer if there is no content to display
         if (this.state.annos.length > 0) {
-            // Check if the timer is already started, clear the auto scroll between annotations
-            if (this.state.timer) {
-                this.setState({ timer: false });
+            if (this.state.startbyfirstanno) {
+                this.setState({ currentID: -1 });
 
-                clearInterval(this.state.intervalID);
+                this.changeAnno(this.state.annos[0]);
             } else {
-                if (this.state.startbyfirstanno) {
-                    this.setState({ currentID: -1 });
-
-                    this.changeAnno(this.state.annos[0]);
-                } else {
-                    this.automateLoading();
-                }
-
-                const delay = this.state.delay * 1000;
-
-                const interID = setTimeout(() => this.automateLoading(delay), delay);
-                this.setState({
-                    timer: true,
-                    intervalID: interID
-                })
+                this.automateLoading();
             }
+
+            const delay = this.state.delay * 1000;
+
+            const interID = setTimeout(() => this.automateLoading(delay), delay);
+            this.setState({
+                timer: true,
+                intervalID: interID
+            })
         }
     };
     automateLoading = timeout => {
@@ -477,7 +490,10 @@ class AdnoEmbed extends Component {
                 }
             }
 
-            setTimeout(() => this.automateLoading(delay), delay)
+            const interID = setTimeout(() => this.automateLoading(delay), delay);
+            this.setState({
+                intervalID: interID
+            })
         }
     };
 
@@ -807,7 +823,7 @@ class AdnoEmbed extends Component {
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
-        enhancedFetch(decodeURIComponent(url))
+        return enhancedFetch(decodeURIComponent(url))
             .then(rawResponse => {
                 const { response } = rawResponse
                 if (response.ok) {
@@ -1049,7 +1065,7 @@ class AdnoEmbed extends Component {
 
                             {
                                 this.state.annos.length > 0 &&
-                                <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.startTimer()}>
+                                <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.state.timer ? this.clearTimer() : this.startTimer()}>
                                     <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t(`visualizer.${this.state.timer ? 'pause' : 'play'}`)}>
                                         <FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" />
                                     </div>

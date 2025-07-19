@@ -319,6 +319,7 @@ export function defaultProjectSettings() {
     toolsbarOnFs: true,
     sidebarEnabled: true,
     startbyfirstanno: false,
+    shouldAutoPlayAnnotations: false,
     rotation: false,
     displayToolbar: true,
     tags: [],

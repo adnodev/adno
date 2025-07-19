@@ -68,6 +68,7 @@
                     "fullscreen": "Afficher barre outils en mode plein écran",
                     "annos_nav": "Afficher la liste des annotations latéralement",
                     "begin_first_anno": "Toujours commencer la lecture automatique à la première annotation",
+                    "should_auto_play_annotations": "Démarre la lecture des annotations automatiquement au chargement de la présentation",
                     "enable_rota": "Activer la rotation de l'image",
                     "toolsbar": "Afficher la barre d'outils",
                     "save": "Enregistrer",

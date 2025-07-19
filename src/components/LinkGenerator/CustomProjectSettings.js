@@ -150,6 +150,13 @@ function CustomProjectSettings({ t, settings, setSettings }) {
             onChange={() => setSettings({ ...settings, startbyfirstanno: !settings.startbyfirstanno })} />
 
 
+        <label className="label">
+            <span className="label-text">{t('project.settings.should_auto_play_annotations')}</span>
+        </label>
+        <input type="checkbox" className="toggle toggle-toolsbar" checked={settings.shouldAutoPlayAnnotations}
+            onChange={() => setSettings({ ...settings, shouldAutoPlayAnnotations: !settings.shouldAutoPlayAnnotations })} />
+
+
         <label className="label" >
             <span className="label-text">{t('project.settings.navigator')}</span>
         </label>

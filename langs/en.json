@@ -68,6 +68,7 @@
                     "fullscreen": "Show toolbar in full screen mode",
                     "annos_nav": "Show list of annotations in sidebar",
                     "begin_first_anno": "Always start autoplay at first annotation",
+                    "should_auto_play_annotations": "Starts annotation playback automatically when the presentation is loaded",
                     "enable_rota": "Enable image rotation",
                     "toolsbar": "Enable toolsbar",
                     "save": "Save",
