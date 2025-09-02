@@ -1,6 +1,6 @@
 #adno-embed {
     width: 100vw;
-    height: calc(100vh - 48px);
+    height: calc(100vh);
 }
 
 .adno-embed-anno-fullscreen{
