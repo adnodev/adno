@@ -55,35 +55,32 @@ class AdnoEmbed extends Component {
             }
         }
 
-        const showNavigator = query.get("navigator")
-            ? query.get("navigator") === "true"
-            : true;
-        const toolsbarOnFs = query.get("toolbarsfs")
-            ? query.get("toolbarsfs") === "true"
-            : true;
-        const startbyfirstanno = query.get("startfirst")
+        const checkQueryParamValue = (name, stateField, defaultValue) => {
+            return query.has(name) ? query.get(name)
+                : this.state[stateField] ? this.state[stateField] : defaultValue;
+        }
+
+        const showNavigator = checkQueryParamValue("navigator", "showNavigator", true)
+        const displayToolbar = checkQueryParamValue("displayToolbar", "displayToolbar", this.state.displayToolbar)
+        const toolsbarOnFs = checkQueryParamValue("toolbarsfs", "toolsbarOnFs", true)
+
+        const startbyfirstanno = query.has("startfirst")
             ? query.get("startfirst") === "true"
             : (query.get("startbyfirstanno") ? query.get('startbyfirstanno') === "true" : false);
-        const shouldAutoPlayAnnotations = query.get("should_auto_play_annotations")
-            ? query.get("should_auto_play_annotations") === "true"
-            : false;
-        const rotation = query.get("rotation")
-            ? query.get("rotation") === "true"
-            : false;
-        const showToolbar = query.get("toolbar")
-            ? query.get("toolbar") === "true"
-            : true;
-        const isAnnotationsVisible = query.get("anno_bounds")
-            ? query.get("anno_bounds") === "true"
-            : false;
-        const tags = query.get("tags") || []
-        const showOutlines = query.get("show_outlines")
-            ? query.get("show_outlines") === "true" : this.state.showOutlines;
-        const showEyes = query.get("show_eyes")
-            ? query.get("show_eyes") === "true" : this.state.showEyes;
-        const soundMode = query.get("sound_mode") || this.state.soundMode
-            ? query.get("sound_mode") === "true"
-            : false;
+
+        const shouldAutoPlayAnnotations = checkQueryParamValue("should_auto_play_annotations", "shouldAutoStart", false)
+        const rotation = checkQueryParamValue("rotation", "rotation", false)
+
+        const showToolbar = checkQueryParamValue("toolbar", "toolbar", true)
+        const isAnnotationsVisible = checkQueryParamValue("anno_bounds", "anno_bounds", false)
+
+        const tags = query.get("tags") || this.state.tags
+        const showOutlines = checkQueryParamValue("show_outlines", "showOutlines", this.state.showOutlines)
+
+        const showEyes = checkQueryParamValue("show_eyes", "showEyes", this.state.showEyes)
+
+        const soundMode = checkQueryParamValue("sound_mode", "soundMode", false)
+
         const outlineWidth = query.has("outlineWidth")
             ? query.get("outlineWidth")
             : this.state.outlineWidth ? this.state.outlineWidth : "outline-1px";
@@ -103,7 +100,7 @@ class AdnoEmbed extends Component {
             shouldAutoPlayAnnotations,
             rotation,
             isAnnotationsVisible,
-            showToolbar,
+            showToolbar: displayToolbar !== undefined ? displayToolbar : showToolbar,
             tags,
             showOutlines,
             showEyes,
@@ -260,8 +257,8 @@ class AdnoEmbed extends Component {
 
                     if (!this.state.showOutlines)
                         this.toggleOutlines()
-                    else
-                        this.toggleAnnotations()
+                    // else
+                    //     this.toggleAnnotations()
 
                 }, 200)
             })
@@ -276,7 +273,11 @@ class AdnoEmbed extends Component {
                 })
             else
                 [...anno.children].forEach(r => {
-                    r.classList.add("a9s-annotation--hidden")
+                    if (r.classList.contains("eye")) {
+                        if (!this.state.showEyes)
+                            r.classList.add("a9s-annotation--hidden")
+                    } else
+                        r.classList.add("a9s-annotation--hidden")
                 })
         })
     }
