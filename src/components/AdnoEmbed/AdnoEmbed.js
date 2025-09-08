@@ -56,8 +56,15 @@ class AdnoEmbed extends Component {
         }
 
         const checkQueryParamValue = (name, stateField, defaultValue) => {
-            return query.has(name) ? query.get(name)
+            const value = query.has(name) ? query.get(name)
                 : this.state[stateField] ? this.state[stateField] : defaultValue;
+
+            if (value === 'false')
+                return false
+            if (value === 'true')
+                return true
+
+            return value
         }
 
         const showNavigator = checkQueryParamValue("navigator", "showNavigator", true)
@@ -1052,6 +1059,8 @@ class AdnoEmbed extends Component {
     render() {
         const showAnnotationsButton = this.state.showOutlines || this.state.showEyes
 
+        console.log(this.state.fullScreenEnabled, this.state.toolsbarOnFs, this.state.showToolbar)
+
         if (this.state.isLoaded) {
             return (
                 <div id="adno-embed">
@@ -1061,7 +1070,7 @@ class AdnoEmbed extends Component {
                         this.getAnnotationHTMLBody(this.state.selectedAnno)
                     }
 
-                    <div className={this.state.showToolbar ? "toolbar-on" : "toolbar-off"}>
+                    <div className={(this.state.fullScreenEnabled ? this.state.toolsbarOnFs : this.state.showToolbar) ? "toolbar-on" : "toolbar-off"}>
                         <div className={"osd-buttons-bar"}>
 
                             {
