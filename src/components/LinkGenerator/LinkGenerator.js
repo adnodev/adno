@@ -37,6 +37,7 @@ function LinkGenerator({ t }) {
         appendBooleanParam(params, "outlineColorFocus", settings.outlineColorFocus)
         appendBooleanParam(params, "show_outlines", settings.showOutlines)
         appendBooleanParam(params, "show_eyes", settings.showEyes)
+        appendBooleanParam(params, "toolbar", settings.displayToolbar)
 
         if (settings.soundMode !== 'no_sound')
             appendBooleanParam(params, "sound_mode", settings.soundMode)

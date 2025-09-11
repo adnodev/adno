@@ -68,7 +68,7 @@ class AdnoEmbed extends Component {
         }
 
         const showNavigator = checkQueryParamValue("navigator", "showNavigator", true)
-        const displayToolbar = checkQueryParamValue("displayToolbar", "displayToolbar", this.state.displayToolbar)
+        const displayToolbar = checkQueryParamValue("toolbar", "displayToolbar", this.state.displayToolbar)
         const toolsbarOnFs = checkQueryParamValue("toolbarsfs", "toolsbarOnFs", true)
 
         const startbyfirstanno = query.has("startfirst")
@@ -78,7 +78,6 @@ class AdnoEmbed extends Component {
         const shouldAutoPlayAnnotations = checkQueryParamValue("should_auto_play_annotations", "shouldAutoStart", false)
         const rotation = checkQueryParamValue("rotation", "rotation", false)
 
-        const showToolbar = checkQueryParamValue("toolbar", "toolbar", true)
         const isAnnotationsVisible = checkQueryParamValue("anno_bounds", "anno_bounds", false)
 
         const tags = query.get("tags") || this.state.tags
@@ -107,7 +106,7 @@ class AdnoEmbed extends Component {
             shouldAutoPlayAnnotations,
             rotation,
             isAnnotationsVisible,
-            showToolbar: displayToolbar !== undefined ? displayToolbar : showToolbar,
+            showToolbar: displayToolbar,
             tags,
             showOutlines,
             showEyes,

@@ -142,7 +142,7 @@ Available settings for the embed :
 
 - delay with `min = 1` and `max = 20` (seconds)
 - navigator value = `true` or `false`
-- displayToolbar value = `true` or `false`
+- toolbar value = `true` or `false`
 - toolbarsfs value = `true` or `false`
 - startfirst value = `true` or `false`
 - should_auto_play_annotations value = `true` or `false`
