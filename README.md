@@ -140,7 +140,7 @@ Run **yarn build** in your terminal, it will run both commands **build-full** an
 
 Available settings for the embed :
 
-- delay with `min = 1` and `max = 20` (seconds)
+- delay with `min = 1` and `max = 20` (default 3 seconds)
 - navigator value = `true` or `false`
 - toolbar value = `true` or `false`
 - toolbarsfs value = `true` or `false`

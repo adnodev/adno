@@ -56,7 +56,11 @@ class AdnoEmbed extends Component {
             return value
         }
 
-        const delay = checkQueryParamValue("delay", "delay", 3)
+        let delay = checkQueryParamValue("delay", "delay", 3)
+
+        if (delay < 1 || delay > 20)
+            delay = 3
+
         const showNavigator = checkQueryParamValue("navigator", "showNavigator", true)
         const displayToolbar = checkQueryParamValue("toolbar", "displayToolbar", this.state.displayToolbar)
         const toolsbarOnFs = checkQueryParamValue("toolbarsfs", "toolsbarOnFs", true)
