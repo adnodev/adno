@@ -147,7 +147,6 @@ Available settings for the embed :
 - startfirst value = `true` or `false`
 - should_auto_play_annotations value = `true` or `false`
 - rotation value = `true` or `false`
-- toolbar value = `true` or `false`
 - anno_bounds value = `true` or `false`
 - show_outlines value = `true` or `false`
 - show_eyes value = `true` or `false`
