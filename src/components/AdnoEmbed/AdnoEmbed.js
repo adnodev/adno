@@ -44,17 +44,6 @@ class AdnoEmbed extends Component {
     overrideSettings = () => {
         const query = new URLSearchParams(this.props.location.search);
 
-        // Add default delay of 3 seconds
-        var delay = 3;
-
-        // Check if the user setted a delay in the url settings
-        if (query.get("delay")) {
-            const timerDelay = Number.parseInt(query.get("delay"));
-            if (delay >= 1 && delay <= 20) {
-                delay = timerDelay;
-            }
-        }
-
         const checkQueryParamValue = (name, stateField, defaultValue) => {
             const value = query.has(name) ? query.get(name)
                 : this.state[stateField] ? this.state[stateField] : defaultValue;
@@ -67,6 +56,7 @@ class AdnoEmbed extends Component {
             return value
         }
 
+        const delay = checkQueryParamValue("delay", "delay", 3)
         const showNavigator = checkQueryParamValue("navigator", "showNavigator", true)
         const displayToolbar = checkQueryParamValue("toolbar", "displayToolbar", this.state.displayToolbar)
         const toolsbarOnFs = checkQueryParamValue("toolbarsfs", "toolsbarOnFs", true)
