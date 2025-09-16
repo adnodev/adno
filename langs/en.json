@@ -16,6 +16,7 @@
                 "nothing": "Nothing to show, create your first project to start using Adno"
             },
             "project": {
+                "advanced": "Advanced",
                 "created_on": "Created on ",
                 "last_update": "Last update on ",
                 "no_desc": "No description available for this project",

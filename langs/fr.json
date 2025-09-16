@@ -16,6 +16,7 @@
                 "nothing": "Aucun projet disponible pour le moment"
             },
             "project": {
+                "advanced": "Avancé",
                 "created_on": "Créé le ",
                 "last_update": "Dernière mise à jour le ",
                 "no_desc": "Aucune description disponible pour ce projet",

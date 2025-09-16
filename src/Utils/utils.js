@@ -311,6 +311,26 @@ export function getAllProjectsFromLS() {
   return projects;
 }
 
+export function diffProjectSettings(a, b) {
+  const diff = {};
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+
+  for (const key of keys) {
+    const valA = a[key];
+    const valB = b[key];
+
+    if (Array.isArray(valA) && Array.isArray(valB)) {
+      if (JSON.stringify(valA) !== JSON.stringify(valB)) {
+        diff[key] = valB
+      }
+    } else if (valA !== valB) {
+      diff[key] = valB
+    }
+  }
+
+  return diff;
+}
+
 // Set default settings for any ADNO project
 export function defaultProjectSettings() {
   return {

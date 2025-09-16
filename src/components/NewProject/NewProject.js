@@ -1,8 +1,9 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
+import ProjectSettings from "../Project/ProjectSettings";
 
 // Import utils
-import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID, enhancedFetch } from "../../Utils/utils";
+import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID, enhancedFetch, defaultProjectSettings, diffProjectSettings } from "../../Utils/utils";
 
 // Import popup alerts
 import Swal from "sweetalert2";
@@ -24,7 +25,9 @@ class NewProject extends Component {
             selectedCanva: false,
             images: [],
             isCanvaProject: false,
-            selectedImg: undefined
+            selectedImg: undefined,
+            showSettings: false,
+            settings: defaultProjectSettings()
         }
     }
 
@@ -247,13 +250,13 @@ class NewProject extends Component {
 
             var selected_canva = localStorage.getItem("selected_canva")
 
-            console.log(selected_canva)
-
             if (selected_canva) {
                 const projectID = generateUUID()
                 let project = buildJsonProjectWithManifest(projectID,
                     document.getElementById("project_name").value,
                     document.getElementById("project_desc").value, selected_canva)
+
+                project.settings = this.state.settings
 
                 if (this.state.selectedImg) {
                     project.img_url = this.state.selectedImg
@@ -310,6 +313,7 @@ class NewProject extends Component {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
 
                         let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
+                        project.settings = this.state.settings
 
                         if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
 
@@ -376,9 +380,11 @@ class NewProject extends Component {
                                                 }
 
                                                 project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, resultLink)
+                                                project.settings = this.state.settings
 
                                             } else {
                                                 project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
+                                                project.settings = this.state.settings
                                             }
 
                                             if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
@@ -458,8 +464,17 @@ class NewProject extends Component {
     }
 
     render() {
+
+        const overloadedSettings = diffProjectSettings(this.state.settings, defaultProjectSettings())
+
         return (
             <div className="new-project">
+                {this.state.showSettings && <ProjectSettings
+                    settings={this.state.settings}
+                    updateSettings={settings => this.setState({ settings })}
+                    closeSettings={() => this.setState({ showSettings: false })}
+                    annotations={[]}
+                />}
 
                 {
                     (!this.state.isCanvaProject || (this.state.isCanvaProject && this.state.selectedCanva)) &&
@@ -477,6 +492,14 @@ class NewProject extends Component {
                             <label className="input-group new_project_input">
                                 <span className="new_project_span">{this.props.t('project.manifest_url')}</span>
                                 <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
+                            </label>
+                            <label className="input-group new_project_input mb-1">
+                                <span className="new_project_span">{this.props.t('project.advanced')}</span>
+                                <div className="w-full">
+                                    <button className="btn rounded-l-none" onClick={() => {
+                                        this.setState({ showSettings: true })
+                                    }}>Options {Object.keys(overloadedSettings).length > 0 ? `(${Object.keys(overloadedSettings).length})` : ''}</button>
+                                </div>
                             </label>
                             <div className="new_project_btns">
                                 <button id="valider_creation" type="submit" className="btn" onClick={(e) => this.createProj(e)}>{this.props.t('project.create')}</button>
@@ -549,7 +572,10 @@ class NewProject extends Component {
 
                 {
                     this.state.isCanvaProject && !this.state.selectedCanva &&
-                    <button id="cancel_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>{this.props.t('project.back_home')}</button>
+                    <button id="cancel_creation" type="submit" className="btn"
+                        onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>
+                        {this.props.t('project.back_home')}
+                    </button>
                 }
 
             </div>
