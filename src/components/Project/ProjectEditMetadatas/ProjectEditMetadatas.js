@@ -26,17 +26,22 @@ class ProjectEditMetadatas extends Component {
     }
 
     updateProjectMetadatas = (e) => {
-        e.preventDefault()
+        if (e)
+            e.preventDefault()
 
-        this.props.updateProject(this.state.project)
-        insertInLS(this.state.project.id, JSON.stringify(this.state.project))
+        if (this.props.newProject) {
+            this.props.updateProject(this.state.project)
+        } else {
+            this.props.updateProject(this.state.project)
+            insertInLS(this.state.project.id, JSON.stringify(this.state.project))
 
-        Swal.fire({
-            title: this.props.t('modal.project_edit_success'),
-            showCancelButton: false,
-            confirmButtonText: 'Ok',
-            icon: 'success',
-        })
+            Swal.fire({
+                title: this.props.t('modal.project_edit_success'),
+                showCancelButton: false,
+                confirmButtonText: 'Ok',
+                icon: 'success',
+            })
+        }
     }
 
     render() {
@@ -46,7 +51,12 @@ class ProjectEditMetadatas extends Component {
 
 
                     <div className="card-actions justify-end closeBtnMetadatas">
-                        <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeProjectMetadatas()}>
+                        <button type="button" className="btn btn-square btn-sm" onClick={() => {
+                            if (this.props.newProject)
+                                this.updateProjectMetadatas()
+                            else
+                                this.props.closeProjectMetadatas()
+                        }}>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
@@ -126,8 +136,8 @@ class ProjectEditMetadatas extends Component {
                         }
 
                         {
-                            this.props.selectedProject.last_update && 
-				<>
+                            this.props.selectedProject.last_update &&
+                            <>
                                 <label className="form-control w-full mt-4">
                                     <div className="label font-medium">
                                         <span className="label-text">{this.props.t('project.metadatas.last_update')}</span>

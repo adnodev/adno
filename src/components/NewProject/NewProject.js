@@ -13,6 +13,7 @@ import "./NewProject.css"
 
 // Add translation
 import { withTranslation } from "react-i18next";
+import ProjectEditMetadatas from "../Project/ProjectEditMetadatas/ProjectEditMetadatas";
 
 class NewProject extends Component {
     constructor(props) {
@@ -27,6 +28,8 @@ class NewProject extends Component {
             isCanvaProject: false,
             selectedImg: undefined,
             showSettings: false,
+            showMetadatas: false,
+            metadatas: {},
             settings: defaultProjectSettings()
         }
     }
@@ -256,6 +259,10 @@ class NewProject extends Component {
                     document.getElementById("project_name").value,
                     document.getElementById("project_desc").value, selected_canva)
 
+                project = {
+                    ...project,
+                    ...this.state.metadatas
+                }
                 project.settings = this.state.settings
 
                 if (this.state.selectedImg) {
@@ -313,6 +320,10 @@ class NewProject extends Component {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
 
                         let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
+                        project = {
+                            ...project,
+                            ...this.state.metadatas
+                        }
                         project.settings = this.state.settings
 
                         if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
@@ -380,10 +391,18 @@ class NewProject extends Component {
                                                 }
 
                                                 project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, resultLink)
+                                                project = {
+                                                    ...project,
+                                                    ...this.state.metadatas
+                                                }
                                                 project.settings = this.state.settings
 
                                             } else {
                                                 project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
+                                                project = {
+                                                    ...project,
+                                                    ...this.state.metadatas
+                                                }
                                                 project.settings = this.state.settings
                                             }
 
@@ -476,6 +495,17 @@ class NewProject extends Component {
                     annotations={[]}
                 />}
 
+                {this.state.showMetadatas && <ProjectEditMetadatas
+                    newProject
+                    updateProject={(metadatas) => {
+                        this.setState({
+                            metadatas,
+                            showMetadatas: false
+                        })
+                    }}
+                    selectedProject={this.state.metadatas}
+                    closeProjectMetadatas={() => this.setState({ showMetadatas: false })} />}
+
                 {
                     (!this.state.isCanvaProject || (this.state.isCanvaProject && this.state.selectedCanva)) &&
                     <>
@@ -493,12 +523,15 @@ class NewProject extends Component {
                                 <span className="new_project_span">{this.props.t('project.manifest_url')}</span>
                                 <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
                             </label>
-                            <label className="input-group new_project_input mb-1">
+                            <label className="input-group new_project_input mb-3">
                                 <span className="new_project_span">{this.props.t('project.advanced')}</span>
                                 <div className="w-full">
-                                    <button className="btn rounded-l-none" onClick={() => {
+                                    <button className="btn btn-outline ms-2" onClick={() => {
                                         this.setState({ showSettings: true })
                                     }}>Options {Object.keys(overloadedSettings).length > 0 ? `(${Object.keys(overloadedSettings).length})` : ''}</button>
+                                    <button className="btn btn-outline ms-2" onClick={() => {
+                                        this.setState({ showMetadatas: true })
+                                    }}>{this.props.t('navbar.show_metadatas')}</button>
                                 </div>
                             </label>
                             <div className="new_project_btns">
@@ -507,7 +540,7 @@ class NewProject extends Component {
 
                                 {
                                     this.state.isCanvaProject && this.state.selectedCanva &&
-                                    <button id="annuler_creation" type="submit" className="btn" onClick={() => {
+                                    <button id="annuler_creation" type="submit" className="btn btn-outline" onClick={() => {
                                         this.setState({ selectedCanva: false, isCanvaProject: true })
                                         localStorage.removeItem("selected_canva")
                                     }}>{this.props.t('project.back')}</button>
