@@ -30,7 +30,9 @@ class NewProject extends Component {
             showSettings: false,
             showMetadatas: false,
             metadatas: {},
-            settings: defaultProjectSettings()
+            settings: defaultProjectSettings(),
+            projectName: "",
+            projectDesc: ""
         }
     }
 
@@ -239,7 +241,7 @@ class NewProject extends Component {
     createProj = async (e) => {
         e.preventDefault()
 
-        if (document.getElementById("project_name").value === "") {
+        if (this.state.projetcName === "") {
             Swal.fire({
                 title: this.props.t('errors.no_title'),
                 showCancelButton: true,
@@ -256,8 +258,8 @@ class NewProject extends Component {
             if (selected_canva) {
                 const projectID = generateUUID()
                 let project = buildJsonProjectWithManifest(projectID,
-                    document.getElementById("project_name").value,
-                    document.getElementById("project_desc").value, selected_canva)
+                    this.state.projetcName,
+                    this.state.projectDesc, selected_canva)
 
                 project = {
                     ...project,
@@ -319,7 +321,7 @@ class NewProject extends Component {
                 try {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
 
-                        let project = buildJsonProjectWithImg(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
+                        let project = buildJsonProjectWithImg(projectID, this.state.projetcName, this.state.projectDesc, manifest_url)
                         project = {
                             ...project,
                             ...this.state.metadatas
@@ -390,7 +392,7 @@ class NewProject extends Component {
                                                     })
                                                 }
 
-                                                project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, resultLink)
+                                                project = buildJsonProjectWithManifest(projectID, projectName, projectDesc, resultLink)
                                                 project = {
                                                     ...project,
                                                     ...this.state.metadatas
@@ -398,7 +400,7 @@ class NewProject extends Component {
                                                 project.settings = this.state.settings
 
                                             } else {
-                                                project = buildJsonProjectWithManifest(projectID, document.getElementById("project_name").value, document.getElementById("project_desc").value, manifest_url)
+                                                project = buildJsonProjectWithManifest(projectID, projectName, projectDesc, manifest_url)
                                                 project = {
                                                     ...project,
                                                     ...this.state.metadatas
@@ -482,9 +484,30 @@ class NewProject extends Component {
         }
     }
 
-    render() {
+    handleProjectName = e => {
+        this.setState({
+            projectName: e.target.value,
+            metadatas: {
+                ...this.state.metadatas,
+                title: e.target.value
+            }
+        })
+    }
 
+    handleProjectDescription = e => {
+        this.setState({
+            projectDesc: e.target.value,
+            metadatas: {
+                ...this.state.metadatas,
+                description: e.target.value
+            }
+        })
+    }
+
+    render() {
         const overloadedSettings = diffProjectSettings(this.state.settings, defaultProjectSettings())
+
+        console.log(this.state)
 
         return (
             <div className="new-project">
@@ -500,7 +523,9 @@ class NewProject extends Component {
                     updateProject={(metadatas) => {
                         this.setState({
                             metadatas,
-                            showMetadatas: false
+                            showMetadatas: false,
+                            projectName: metadatas.title || "",
+                            projectDesc: metadatas.description || "",
                         })
                     }}
                     selectedProject={this.state.metadatas}
@@ -513,17 +538,27 @@ class NewProject extends Component {
                         <form className="form-new-project" >
                             <label className="input-group new_project_input">
                                 <span className="new_project_span">{this.props.t('project.title')}</span>
-                                <input id="project_name" className="input input-bordered w-full" type="text" placeholder={this.props.t('project.add_title')} />
+                                <input
+                                    onChange={this.handleProjectName}
+                                    value={this.state.projectName}
+                                    className="input input-bordered w-full"
+                                    type="text"
+                                    placeholder={this.props.t('project.add_title')} />
                             </label>
                             <label className="input-group new_project_input">
                                 <span className="new_project_span">{this.props.t('project.description')}</span>
-                                <input id="project_desc" className="input input-bordered w-full" type="text" placeholder={this.props.t('project.add_desc')} />
+                                <input
+                                    onChange={this.handleProjectDescription}
+                                    value={this.state.projectDesc}
+                                    className="input input-bordered w-full"
+                                    type="text"
+                                    placeholder={this.props.t('project.add_desc')} />
                             </label>
                             <label className="input-group new_project_input">
                                 <span className="new_project_span">{this.props.t('project.manifest_url')}</span>
                                 <input id="manifest_url" className="input input-bordered w-full" value={localStorage.getItem("adno_image_url")} type="text" disabled={true} />
                             </label>
-                            <label className="input-group new_project_input mb-3">
+                            <div className="input-group new_project_input mb-3">
                                 <span className="new_project_span">{this.props.t('project.advanced')}</span>
                                 <div className="w-full">
                                     <button className="btn btn-outline ms-2" onClick={() => {
@@ -531,9 +566,9 @@ class NewProject extends Component {
                                     }}>Options {Object.keys(overloadedSettings).length > 0 ? `(${Object.keys(overloadedSettings).length})` : ''}</button>
                                     <button className="btn btn-outline ms-2" onClick={() => {
                                         this.setState({ showMetadatas: true })
-                                    }}>{this.props.t('navbar.show_metadatas')}</button>
+                                    }}>{this.props.t('navbar.all_metadata')}</button>
                                 </div>
-                            </label>
+                            </div>
                             <div className="new_project_btns">
                                 <button id="valider_creation" type="submit" className="btn" onClick={(e) => this.createProj(e)}>{this.props.t('project.create')}</button>
 
