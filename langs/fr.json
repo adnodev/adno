@@ -75,6 +75,7 @@
                     "save": "Enregistrer",
                     "tags": "Seules les annotations incluant le ou l'un des mots clés suivants seront affichées",
                     "show_outlines": "Afficher les contours",
+                    "show_current_annotation": "Afficher seulement les contours de l'annotation courante",
                     "show_eyes": "Afficher une icone à l'intérieur des formes",
                     "no_sound": "Les annotations audio ne seront pas lues",
                     "spatialization": "Les annotations audio seront lues avec un effet de spatialisation",

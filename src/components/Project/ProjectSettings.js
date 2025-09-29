@@ -17,7 +17,7 @@ import ReactSelect from 'react-select/creatable';
 import { buildTagsList } from "../../Utils/utils";
 
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
+    'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
     'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
     'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
@@ -258,6 +258,22 @@ class ProjectSettings extends Component {
                                         settings: {
                                             ...this.state.settings,
                                             showOutlines: !this.state.settings.showOutlines
+                                        }
+                                    })} />
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('showCurrentAnnotation') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.show_current_annotation')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-navigator"
+                                    checked={this.state.settings.showCurrentAnnotation}
+                                    onChange={() => this.setState({
+                                        settings: {
+                                            ...this.state.settings,
+                                            showCurrentAnnotation: !this.state.settings.showCurrentAnnotation
                                         }
                                     })} />
                             </label>
