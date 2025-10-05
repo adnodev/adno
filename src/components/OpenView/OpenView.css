@@ -1,18 +1,18 @@
-#adno-osd{
+#adno-osd {
     width: 100%;
     height: calc(100vh - 136px);
 }
 
-.osd-buttons-bar{
+.osd-buttons-bar {
     width: 100%;
     display: flex;
 }
 
-.osd-buttons-bar-hidden{
+.osd-buttons-bar-hidden {
     display: none;
 }
 
-.adno-osd-anno-fullscreen{
+.adno-osd-anno-fullscreen {
     position: absolute;
     z-index: 10000;
     top: 64px;
@@ -30,7 +30,7 @@
     font-size: x-large;
 }
 
-.adno-osd-anno-fullscreen-tb-opened{
+.adno-osd-anno-fullscreen-tb-opened {
     position: absolute;
     z-index: 10000;
     top: 8%;
@@ -48,15 +48,15 @@
     font-size: x-large;
 }
 
-.adno-timer-osd{
+.adno-timer-osd {
     text-align: center;
 }
 
-.toolbar-on{
+.toolbar-on {
     display: block;
 }
 
-.toolbar-off{
+.toolbar-off {
     display: none;
 }
 

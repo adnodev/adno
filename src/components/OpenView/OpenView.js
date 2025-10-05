@@ -132,11 +132,13 @@ class OpenView extends Component {
         annos.forEach(anno => {
             if (showOutlines)
                 [...anno.children].forEach(r => {
-                    r.classList.remove("a9s-annotation--hidden")
+                    if (!r.classList.contains("eye"))
+                        r.classList.remove("a9s-annotation--hidden")
                 })
             else
                 [...anno.children].forEach(r => {
-                    r.classList.add("a9s-annotation--hidden")
+                    if (!r.classList.contains("eye"))
+                        r.classList.add("a9s-annotation--hidden")
                 })
         })
     }
@@ -251,6 +253,8 @@ class OpenView extends Component {
 
         this.changeAnno(this.props.annos[newCurrentID])
 
+        this.showOnlyCurrentAnnotation(this.props.annos[newCurrentID].id)
+
         if (timeout) {
             const id = this.props.annos[newCurrentID].id;
 
@@ -269,6 +273,36 @@ class OpenView extends Component {
             const interID = setTimeout(() => this.automateLoading(delay), delay);
             this.setState({
                 intervalID: interID
+            })
+        }
+    }
+
+    cancelShowOnlyAnnotation = () => {
+        this.toggleAnnotations(this.state.isAnnotationsVisible)
+    }
+
+    showOnlyCurrentAnnotation = annotationId => {
+        const showOutlinesOrEyes = (this.props.showOutlines || this.props.showEyes) && this.props.isAnnotationsVisible
+
+        if (showOutlinesOrEyes && this.props.showCurrentAnnotation) {
+            const annos = [...document.getElementsByClassName("a9s-annotation")]
+
+            // HIDE ALL ANNOS AND EYES
+            annos.forEach(anno => {
+                const id = anno.getAttribute('data-id')
+                const eye = document.getElementById(`eye-${id}`);
+
+                [...anno.children].forEach(r => r.classList.add("a9s-annotation--hidden"))
+            })
+
+            const currentAnnotation = annos.find(anno => anno.getAttribute('data-id') === annotationId)
+
+            Array.from(currentAnnotation.children).forEach(r => {
+                const isEye = r.classList.contains('eye')
+                const showChild = isEye ? this.props.showEyes : this.props.showOutlines
+
+                if (showChild)
+                    r.classList.remove("a9s-annotation--hidden")
             })
         }
     }
@@ -413,6 +447,8 @@ class OpenView extends Component {
     clearTimer = () => {
         this.setState({ timer: false })
         clearInterval(this.state.intervalID)
+
+        this.cancelShowOnlyAnnotation()
     }
 
     startTimer = () => {
@@ -453,6 +489,8 @@ class OpenView extends Component {
 
             this.changeAnno(this.props.annos[localCurrentID])
 
+            this.showOnlyCurrentAnnotation(this.props.annos[localCurrentID].id)
+
 
             if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
                 document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
@@ -476,6 +514,8 @@ class OpenView extends Component {
             this.setState({ currentID: localCurrentID })
 
             this.changeAnno(this.props.annos[localCurrentID])
+
+            this.showOnlyCurrentAnnotation(this.props.annos[localCurrentID].id)
 
             this.resetFullscreenAnnotationScrolling()
         }
@@ -658,14 +698,25 @@ class OpenView extends Component {
         })
     }
 
-    toggleAnnotations = () => {
+    toggleAnnotations = (visible) => {
         const annos = [...document.getElementsByClassName("a9s-annotation")]
         annos.forEach(anno => {
             [...anno.children].forEach(r => {
-                if (this.props.showOutlines) {
-                    r.classList.toggle("a9s-annotation--hidden")
-                } else if (r.classList.contains("eye")) {
-                    r.classList.toggle("a9s-annotation--hidden")
+                if (visible) {
+                    const isEye = r.classList.contains('eye')
+                    const showChild = isEye ? this.props.showEyes : this.props.showOutlines
+
+                    if (isEye)
+                        r.classList.remove('eye-selected')
+
+                    if (showChild) {
+                        r.classList.remove("a9s-annotation--hidden")
+                    } else {
+                        r.classList.add("a9s-annotation--hidden")
+                    }
+
+                } else {
+                    r.classList.add("a9s-annotation--hidden")
                 }
             })
         })
@@ -673,9 +724,7 @@ class OpenView extends Component {
 
 
     toggleAnnotationsLayer = () => {
-        // this.AdnoAnnotorious.setVisible(!this.state.isAnnotationsVisible)
-
-        this.toggleAnnotations()
+        this.toggleAnnotations(!this.state.isAnnotationsVisible)
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 

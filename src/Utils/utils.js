@@ -348,7 +348,8 @@ export function defaultProjectSettings() {
     outlineColorFocus: "outline-focus-yellow",
     showOutlines: true,
     showEyes: false,
-    soundMode: 'no_sound'
+    soundMode: 'no_sound',
+    showCurrentAnnotation: false
   }
 }
 

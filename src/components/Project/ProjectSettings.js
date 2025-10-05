@@ -17,7 +17,7 @@ import ReactSelect from 'react-select/creatable';
 import { buildTagsList } from "../../Utils/utils";
 
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar'],
+    'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
     'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
     'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
@@ -84,7 +84,7 @@ class ProjectSettings extends Component {
                         <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} translate={this.props.t} />
                     </div>
 
-                    <div className="project-metadatas">
+                    <div className={`project-metadatas ${this.state.tab === 'viewer' ? 'propject-metadatas--grid' : ''}`}>
                         {PARAMETERS_BY_TAB[this.state.tab].includes('tags') && <>
                             <label className="form-control w-full mt-4">
                                 <div className="label font-medium">
@@ -247,6 +247,16 @@ class ProjectSettings extends Component {
                             </label>
                         </>}
 
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('displayToolbar') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })} />
+                            </label>
+                        </>}
+
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showOutlines') && <>
                             <label className="form-control w-full mt-4">
                                 <div className="label font-medium">
@@ -258,6 +268,32 @@ class ProjectSettings extends Component {
                                         settings: {
                                             ...this.state.settings,
                                             showOutlines: !this.state.settings.showOutlines
+                                        }
+                                    })} />
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('toolsbarOnFs') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.toolsbarOnFs}
+                                    onChange={() => this.setState({ settings: { ...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs } })} />
+                            </label>
+                        </>}
+                        
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('showCurrentAnnotation') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.show_only_current_annotation')}</span>
+                                </div>
+                                <input type="checkbox" className="toggle toggle-navigator"
+                                    checked={this.state.settings.showCurrentAnnotation}
+                                    onChange={() => this.setState({
+                                        settings: {
+                                            ...this.state.settings,
+                                            showCurrentAnnotation: !this.state.settings.showCurrentAnnotation
                                         }
                                     })} />
                             </label>
@@ -297,25 +333,6 @@ class ProjectSettings extends Component {
                             </label>
                         </>}
 
-                        {PARAMETERS_BY_TAB[this.state.tab].includes('displayToolbar') && <>
-                            <label className="form-control w-full mt-4">
-                                <div className="label font-medium">
-                                    <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
-                                </div>
-                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.displayToolbar}
-                                    onChange={() => this.setState({ settings: { ...this.state.settings, displayToolbar: !this.state.settings.displayToolbar } })} />
-                            </label>
-                        </>}
-
-                        {PARAMETERS_BY_TAB[this.state.tab].includes('toolsbarOnFs') && <>
-                            <label className="form-control w-full mt-4">
-                                <div className="label font-medium">
-                                    <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
-                                </div>
-                                <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.toolsbarOnFs}
-                                    onChange={() => this.setState({ settings: { ...this.state.settings, toolsbarOnFs: !this.state.settings.toolsbarOnFs } })} />
-                            </label>
-                        </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('sidebarEnabled') && <>
                             <label className="form-control w-full mt-4">

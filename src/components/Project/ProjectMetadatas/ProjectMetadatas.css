@@ -1,4 +1,4 @@
-.project-metadatas-backdrop{
+.project-metadatas-backdrop {
     width: 100vw;
     height: 100vh;
     z-index: 100000000000;
@@ -12,7 +12,7 @@
     left: 0;
 }
 
-.project-metadatas-container{
+.project-metadatas-container {
     width: 90vw;
     height: 80vh;
     background-color: #fff;
@@ -23,29 +23,44 @@
     display: flex;
 }
 
-.project-metadatas{
+.project-metadatas {
     width: 75%;
     height: 85%;
     overflow: auto;
 }
 
-.project-metadatas > input{
+.propject-metadatas--grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.propject-metadatas--grid label {
+    margin: 0;
+    display: inherit;
+}
+
+.propject-metadatas--grid label>div:first-child {
+    padding: 0;
+}
+
+.project-metadatas>input {
     width: 100%;
     max-width: 100%;
 }
 
-.project-metadatas > label > span {
+.project-metadatas>label>span {
     color: black;
     margin: 10px 0;
 }
 
-.closeBtnMetadatas{
+.closeBtnMetadatas {
     width: 80vw;
     margin-top: 10px;
 }
 
 @media screen and (max-width: 1340px) {
-    .project-metadatas{
+    .project-metadatas {
         width: 90%;
     }
 }

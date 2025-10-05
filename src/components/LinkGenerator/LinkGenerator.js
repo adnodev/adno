@@ -36,6 +36,7 @@ function LinkGenerator({ t }) {
         appendBooleanParam(params, "outlineColor", settings.outlineColor)
         appendBooleanParam(params, "outlineColorFocus", settings.outlineColorFocus)
         appendBooleanParam(params, "show_outlines", settings.showOutlines)
+        appendBooleanParam(params, "show_only_current_annotation", settings.showCurrentAnnotation)
         appendBooleanParam(params, "show_eyes", settings.showEyes)
         appendBooleanParam(params, "toolbar", settings.displayToolbar)
 
