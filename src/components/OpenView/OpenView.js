@@ -251,6 +251,8 @@ class OpenView extends Component {
 
         this.changeAnno(this.props.annos[newCurrentID])
 
+        this.showOnlyAnnotation(this.props.annos[newCurrentID].id)
+
         if (timeout) {
             const id = this.props.annos[newCurrentID].id;
 
@@ -269,6 +271,49 @@ class OpenView extends Component {
             const interID = setTimeout(() => this.automateLoading(delay), delay);
             this.setState({
                 intervalID: interID
+            })
+        }
+    }
+
+    cancelShowOnlyAnnotation = () => {
+        if (this.props.showCurrentAnnotation && this.props.showOnlyAnnotation) {
+            const annos = [...document.getElementsByClassName("a9s-annotation")]
+            annos.forEach(anno => {
+                const id = anno.getAttribute('data-id')
+                const eye = document.getElementById(`eye-${id}`);
+
+                [...anno.children].forEach(r => {
+                    r.classList.remove("a9s-annotation--hidden")
+                })
+
+                eye.style.display = 'inherit';
+            })
+        }
+    }
+
+    showOnlyAnnotation = annotationId => {
+        if (this.props.showCurrentAnnotation && (this.props.showOutlines || this.props.showEyes)) {
+            const annos = [...document.getElementsByClassName("a9s-annotation")]
+            annos.forEach(anno => {
+                const id = anno.getAttribute('data-id')
+                const eye = document.getElementById(`eye-${id}`)
+
+                if (id === annotationId) {
+                    [...anno.children].forEach(r => {
+                        if (this.props.showOutlines)
+                            r.classList.remove("a9s-annotation--hidden")
+                    })
+                    if (eye)
+                        eye.style.display = 'inherit';
+                }
+                else {
+                    [...anno.children].forEach(r => {
+                        if (this.props.showOutlines)
+                            r.classList.add("a9s-annotation--hidden")
+                    })
+                    if (eye)
+                        eye.style.display = 'none';
+                }
             })
         }
     }
@@ -413,6 +458,8 @@ class OpenView extends Component {
     clearTimer = () => {
         this.setState({ timer: false })
         clearInterval(this.state.intervalID)
+
+        this.cancelShowOnlyAnnotation()
     }
 
     startTimer = () => {
@@ -453,6 +500,8 @@ class OpenView extends Component {
 
             this.changeAnno(this.props.annos[localCurrentID])
 
+            this.showOnlyAnnotation(this.props.annos[localCurrentID].id)
+
 
             if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
                 document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
@@ -476,6 +525,8 @@ class OpenView extends Component {
             this.setState({ currentID: localCurrentID })
 
             this.changeAnno(this.props.annos[localCurrentID])
+
+            this.showOnlyAnnotation(this.props.annos[localCurrentID].id)
 
             this.resetFullscreenAnnotationScrolling()
         }
