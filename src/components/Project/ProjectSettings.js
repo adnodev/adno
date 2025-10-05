@@ -286,7 +286,7 @@ class ProjectSettings extends Component {
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showCurrentAnnotation') && <>
                             <label className="form-control w-full mt-4">
                                 <div className="label font-medium">
-                                    <span className="label-text">{this.props.t('project.settings.show_current_annotation')}</span>
+                                    <span className="label-text">{this.props.t('project.settings.show_only_current_annotation')}</span>
                                 </div>
                                 <input type="checkbox" className="toggle toggle-navigator"
                                     checked={this.state.settings.showCurrentAnnotation}

@@ -151,6 +151,7 @@ Available settings for the embed :
 - show_outlines value = `true` or `false`
 - show_eyes value = `true` or `false`
 - sound_mode value = `no_sound` or `spatialization` or `no_spatialization`
+- show_only_current_annotation = `true` or `false` (default false)
 
 Example : https://w.adno.app/#/embed?url=https://static.emf.fr/adno/annotations.json&delay=1&rotation=false&anno_bounds=true&show_outlines=true
 

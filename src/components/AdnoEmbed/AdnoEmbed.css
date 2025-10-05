@@ -3,7 +3,17 @@
     height: calc(100vh);
 }
 
-.adno-embed-anno-fullscreen{
+.osd-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 10000;
+}
+
+
+.adno-embed-anno-fullscreen {
     position: absolute;
     z-index: 10000;
     top: 64px;

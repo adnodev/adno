@@ -174,7 +174,7 @@
           "save": "Guardar",
           "show_eyes": "Mostrar un icono dentro de las formas",
           "show_outlines": "Mostrar los contornos",
-          "show_current_annotation": "Mostrar solo los contornos de la anotación actual",
+          "show_only_current_annotation": "Mostrar solo los contornos de la anotación actual",
           "spatialization": "Las anotaciones de audio se reproducirán con un efecto de espacialización",
           "tags": "Solo se mostrarán las anotaciones que incluyan la o una de las siguientes palabras clave",
           "toolsbar": "Mostrar la barra de herramientas",

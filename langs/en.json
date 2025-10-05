@@ -75,7 +75,7 @@
                     "save": "Save",
                     "tags": "Only annotations including at least one of this tag will be displayed",
                     "show_outlines": "Display the outlines",
-                    "show_current_annotation": "Show only the outlines of the current annotation",
+                    "show_only_current_annotation": "Show only the outlines of the current annotation",
                     "show_eyes": "Display icon inside shapes",
                     "no_sound": "Audio annotation wont be played",
                     "spatialization": "The audio annotations will be played together with a spatialization effect",

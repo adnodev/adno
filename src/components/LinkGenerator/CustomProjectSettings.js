@@ -177,7 +177,7 @@ function CustomProjectSettings({ t, settings, setSettings }) {
 
         <label className="label">
             <span className="label-text">
-                {t('project.settings.show_current_annotation')}
+                {t('project.settings.show_only_current_annotation')}
             </span>
         </label>
         <input type="checkbox" className="toggle toggle-navigator"
