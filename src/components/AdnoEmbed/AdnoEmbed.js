@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
 import { enhancedFetch, getEye, get_url_extension } from "../../Utils/utils";
+import { InfinitySpin } from 'react-loader-spinner'
 import {
     faMagnifyingGlassMinus,
     faPlay,
@@ -183,14 +184,7 @@ class AdnoEmbed extends Component {
         const query = new URLSearchParams(this.props.location.search);
 
         let urlParam = query.get("url")
-        // if (urlParam) {
-        //     const rawURLParam = this.props.location.search
-        //         .split("?")
-        //         .slice(1)
-        //         .find(query => query.startsWith("url="));
 
-        //     urlParam = rawURLParam.replace("url=", "")
-        // }
 
         this.getAdnoProject(urlParam)
 
@@ -744,6 +738,38 @@ class AdnoEmbed extends Component {
         })
     }
 
+    extractIIIFv3Annotations = (manifest) => {
+        const annotations = [];
+
+        if (manifest.items && manifest.items.length > 0) {
+            manifest.items.forEach(canvas => {
+                if (canvas.annotations && canvas.annotations.length > 0) {
+                    canvas.annotations.forEach(annoPage => {
+                        if (annoPage.items && annoPage.items.length > 0) {
+                            annoPage.items.forEach(anno => {
+                                if (anno.motivation === "commenting") {
+                                    // Fix the selector to include conformsTo
+                                    if (anno.target && anno.target.selector && anno.target.selector.type === "FragmentSelector") {
+                                        anno.target.selector.conformsTo = "http://www.w3.org/TR/media-frags/";
+                                    }
+                                    annotations.push(anno);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        return annotations;
+    }
+
+    getMetadataFromIIIF = (metadata, name) => {
+        const value = metadata.find(meta => meta?.label?.en?.includes(name))?.value?.en || []
+
+        return value[0]
+    }
+
     getAdnoProject = (url) => {
         const IPFS_GATEWAY = process.env.IPFS_GATEWAY;
 
@@ -880,51 +906,58 @@ class AdnoEmbed extends Component {
                                     ) {
                                         this.overrideSettings();
 
-                                        if (
-                                            imported_project["@type"] &&
-                                            imported_project["@type"] === "sc:Manifest"
-                                        ) {
-                                            // type manifest
+                                        let resultLink = null;
 
-                                            if (
-                                                imported_project.sequences[0].canvases &&
-                                                imported_project.sequences[0].canvases.length > 0
-                                            ) {
-                                                const image = imported_project.sequences[0].canvases[0].images[0]
-                                                var resultLink = (image.resource.service ? image.resource.service["@id"] :
-                                                    image.resource["@id"]
-                                                ) + "/info.json";
-                                            } else if (imported_project.logo["@id"]) {
-                                                var resultLink =
-                                                    imported_project.logo["@id"].split("/")[0] + "//";
+                                        if (imported_project.items && imported_project.items.length > 0) {
+                                            const canvas = imported_project.items[0];
 
-                                                for (
-                                                    let index = 1;
-                                                    index <
-                                                    imported_project.logo["@id"].split("/").length - 4;
-                                                    index++
-                                                ) {
-                                                    resultLink +=
-                                                        imported_project.logo["@id"].split("/")[index] + "/";
+                                            // Extract painting annotation (the image)
+                                            if (canvas.items && canvas.items.length > 0) {
+                                                const paintingPage = canvas.items[0];
+                                                if (paintingPage.items && paintingPage.items.length > 0) {
+                                                    const paintingAnno = paintingPage.items[0];
+                                                    if (paintingAnno.body) {
+                                                        if (paintingAnno.body.service && paintingAnno.body.service.length > 0) {
+                                                            resultLink = paintingAnno.body.service[0].id + "/info.json";
+                                                        } else if (paintingAnno.body.id) {
+                                                            resultLink = paintingAnno.body.id;
+                                                        }
+                                                    }
                                                 }
-
-                                                resultLink += "/info.json";
-                                            } else {
-                                                Swal.fire({
-                                                    title: this.props.t("errors.unable_reading_manifest"),
-                                                    showCancelButton: true,
-                                                    showConfirmButton: false,
-                                                    cancelButtonText: "OK",
-                                                    icon: "warning",
-                                                });
                                             }
-                                        } else {
-                                            resultLink = url;
                                         }
 
-                                        if (resultLink) {
-                                            var annos = [];
+                                        let annos = this.extractIIIFv3Annotations(imported_project);
 
+                                        const optSettings = this.getMetadataFromIIIF(imported_project.metadata, "adno_settings")
+
+                                        let adnoSettings = {}
+                                        if (optSettings) {
+                                            try {
+                                                adnoSettings = JSON.parse(atob(optSettings))
+                                            } catch (err) {
+                                                console.log(err)
+                                            }
+                                        }
+
+                                        const title = this.getMetadataFromIIIF(imported_project.metadata, 'title')
+                                        const description = this.getMetadataFromIIIF(imported_project.metadata, 'description')
+                                        const creator = this.getMetadataFromIIIF(imported_project.metadata, 'creator')
+                                        const editor = this.getMetadataFromIIIF(imported_project.metadata, 'editor')
+                                        const rights = this.getMetadataFromIIIF(imported_project.metadata, 'rights')
+
+
+                                        const selectedTags = adnoSettings?.tags || [];
+
+                                        if (selectedTags.length > 0)
+                                            annos = annos
+                                                .map(annotation => ({
+                                                    ...annotation,
+                                                    tags: buildTagsList(annotation).map(tag => tag.value)
+                                                }))
+                                                .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
+
+                                        if (resultLink) {
                                             const GRANTED_IMG_EXTENSIONS =
                                                 process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
 
@@ -937,11 +970,27 @@ class AdnoEmbed extends Component {
                                                 }
                                                 : [resultLink];
 
-                                            this.setState({ isLoaded: true });
-
-                                            // Add annotations to the state
-                                            this.setState({ annos });
-                                            this.displayViewer(tileSources, annos);
+                                            this.setState({
+                                                ...adnoSettings,
+                                                annos,
+                                                title,
+                                                description,
+                                                creator,
+                                                editor,
+                                                rights,
+                                                isLoaded: true
+                                            }, () => {
+                                                this.overrideSettings()
+                                                this.displayViewer(tileSources, annos);
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: this.props.t("errors.unable_reading_manifest"),
+                                                showCancelButton: true,
+                                                showConfirmButton: false,
+                                                cancelButtonText: "OK",
+                                                icon: "warning",
+                                            });
                                         }
                                     } else {
                                         console.log("projet non adno INVALIDE");
@@ -983,169 +1032,171 @@ class AdnoEmbed extends Component {
     render() {
         const showAnnotationsButton = this.state.showOutlines || this.state.showEyes
 
-        console.log(this.state.showToolbar)
+        if (!this.state.isLoaded)
+            return <div className="loader">
+                <InfinitySpin
+                    width='200'
+                    height="200"
+                    color="black"
+                />
+            </div>
 
-        if (this.state.isLoaded) {
-            return (
-                <div id="adno-embed">
+        return (
+            <div id="adno-embed">
 
-                    {
-                        this.state.selectedAnno && this.state.selectedAnno.body &&
-                        this.getAnnotationHTMLBody(this.state.selectedAnno)
-                    }
+                {
+                    this.state.selectedAnno && this.state.selectedAnno.body &&
+                    this.getAnnotationHTMLBody(this.state.selectedAnno)
+                }
 
-                    <div className={(this.state.fullScreenEnabled ? this.state.toolsbarOnFs : this.state.showToolbar) ? "toolbar-on" : "toolbar-off"}>
-                        <div className="osd-bar">
-                            <div className="osd-buttons-bar">
+                <div className={(this.state.fullScreenEnabled ? this.state.toolsbarOnFs : this.state.showToolbar) ? "toolbar-on" : "toolbar-off"}>
+                    <div className="osd-bar">
+                        <div className="osd-buttons-bar">
 
-                                {
-                                    this.state.annos.length > 0 &&
-                                    <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.state.timer ? this.clearTimer() : this.startTimer()}>
-                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t(`visualizer.${this.state.timer ? 'pause' : 'play'}`)}>
-                                            <FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" />
-                                        </div>
-                                    </button>
-                                }
-
-                                <button id="home-button" className="toolbarButton toolbaractive">
-                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_zoom')}>
-                                        <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" />
+                            {
+                                this.state.annos.length > 0 &&
+                                <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.state.timer ? this.clearTimer() : this.startTimer()}>
+                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t(`visualizer.${this.state.timer ? 'pause' : 'play'}`)}>
+                                        <FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" />
                                     </div>
                                 </button>
+                            }
 
-                                {
-                                    this.state.annos.length > 0 &&
-                                    <>
-                                        {showAnnotationsButton && <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
-                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
-                                                <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
-                                            </div>
-                                        </button>}
+                            <button id="home-button" className="toolbarButton toolbaractive">
+                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_zoom')}>
+                                    <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" />
+                                </div>
+                            </button>
 
-                                        <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
-                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>
-                                                <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                                            </div>
-                                        </button>
-                                        <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}>
-                                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.next_annotation')}>
-                                                <FontAwesomeIcon icon={faArrowRight} size="lg" />
-                                            </div>
-                                        </button>
-                                    </>
-                                }
+                            {
+                                this.state.annos.length > 0 &&
+                                <>
+                                    {showAnnotationsButton && <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
+                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
+                                            <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
+                                        </div>
+                                    </button>}
 
-                                {
-                                    this.state.rotation &&
-                                    <button id="rotate"
-                                        className="toolbarButton toolbaractive"
-                                        onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}>
-                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.rotation')}>
-                                            <FontAwesomeIcon icon={faRotate} size="lg" />
+                                    <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
+                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>
+                                            <FontAwesomeIcon icon={faArrowLeft} size="lg" />
                                         </div>
                                     </button>
-                                }
+                                    <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}>
+                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.next_annotation')}>
+                                            <FontAwesomeIcon icon={faArrowRight} size="lg" />
+                                        </div>
+                                    </button>
+                                </>
+                            }
 
-                                <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
-                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
-                                        <FontAwesomeIcon icon={faExpand} size="lg" />
+                            {
+                                this.state.rotation &&
+                                <button id="rotate"
+                                    className="toolbarButton toolbaractive"
+                                    onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}>
+                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.rotation')}>
+                                        <FontAwesomeIcon icon={faRotate} size="lg" />
                                     </div>
                                 </button>
+                            }
 
-                                <button id="info" className="toolbarButton toolbaractive">
-                                    <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
-                                        style={{ display: 'block' }}>
-                                        <FontAwesomeIcon icon={faCircleInfo} size="lg" />
-                                    </label>
-                                </button>
+                            <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
+                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
+                                    <FontAwesomeIcon icon={faExpand} size="lg" />
+                                </div>
+                            </button>
 
-                                <button id="help" className="toolbarButton toolbaractive">
-                                    <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
-                                        style={{ display: 'block' }}>
-                                        <FontAwesomeIcon icon={faQuestion} size="lg" />
-                                    </label>
-                                </button>
+                            <button id="info" className="toolbarButton toolbaractive">
+                                <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
+                                    style={{ display: 'block' }}>
+                                    <FontAwesomeIcon icon={faCircleInfo} size="lg" />
+                                </label>
+                            </button>
 
-                                <input type="checkbox" id="info-modal" className="modal-toggle" />
-                                <div className="modal">
-                                    <div className="modal-box" style={{ "color": "initial" }}>
-                                        <div className="modal-action mt-0 justify-end">
-                                            <button className="btn btn-square btn-sm">
-                                                <label htmlFor="info-modal" className="cursor-pointer">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                </label>
-                                            </button>
-                                        </div>
-                                        <h3 className="font-bold text-2xl py-4">{this.state.title}</h3>
+                            <button id="help" className="toolbarButton toolbaractive">
+                                <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
+                                    style={{ display: 'block' }}>
+                                    <FontAwesomeIcon icon={faQuestion} size="lg" />
+                                </label>
+                            </button>
+
+                            <input type="checkbox" id="info-modal" className="modal-toggle" />
+                            <div className="modal">
+                                <div className="modal-box" style={{ "color": "initial" }}>
+                                    <div className="modal-action mt-0 justify-end">
+                                        <button className="btn btn-square btn-sm">
+                                            <label htmlFor="info-modal" className="cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            </label>
+                                        </button>
+                                    </div>
+                                    <h3 className="font-bold text-2xl py-4">{this.state.title}</h3>
+                                    {
+                                        this.state.description &&
+                                        <>
+                                            <p className="py-4">{this.state.description}</p>
+                                        </>
+                                    }
+                                    <dl className="divide-y">
                                         {
-                                            this.state.description &&
+                                            this.state.creator &&
                                             <>
-                                                <p className="py-4">{this.state.description}</p>
+                                                <div className="flex py-2">
+                                                    <dt className="font-medium px-2">{this.props.t('project.author')} :</dt>
+                                                    <dd>{this.state.creator}</dd>
+                                                </div>
                                             </>
                                         }
-                                        <dl className="divide-y">
-                                            {
-                                                this.state.creator &&
-                                                <>
-                                                    <div className="flex py-2">
-                                                        <dt className="font-medium px-2">{this.props.t('project.author')} :</dt>
-                                                        <dd>{this.state.creator}</dd>
-                                                    </div>
-                                                </>
-                                            }
-                                            {
-                                                this.state.editor &&
-                                                <>
-                                                    <div className="flex py-2">
-                                                        <dt className="font-medium px-2">{this.props.t('project.editor')} :</dt>
-                                                        <dd>{this.state.editor}</dd>
-                                                    </div>
-                                                </>
-                                            }
-                                            {
-                                                this.state.rights &&
-                                                <>
-                                                    <div className="flex py-2">
-                                                        <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
-                                                        <dd>{this.state.rights}</dd>
-                                                    </div>
-                                                </>
-                                            }
-                                        </dl>
-                                    </div>
+                                        {
+                                            this.state.editor &&
+                                            <>
+                                                <div className="flex py-2">
+                                                    <dt className="font-medium px-2">{this.props.t('project.editor')} :</dt>
+                                                    <dd>{this.state.editor}</dd>
+                                                </div>
+                                            </>
+                                        }
+                                        {
+                                            this.state.rights &&
+                                            <>
+                                                <div className="flex py-2">
+                                                    <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
+                                                    <dd>{this.state.rights}</dd>
+                                                </div>
+                                            </>
+                                        }
+                                    </dl>
                                 </div>
+                            </div>
 
-                                <input type="checkbox" id="help-modal" className="modal-toggle" />
-                                <div className="modal">
-                                    <div className="modal-box" style={{ "color": "initial" }}>
-                                        <div className="modal-action mt-0 justify-end">
-                                            <button className="btn btn-square btn-sm">
-                                                <label htmlFor="help-modal" className="cursor-pointer">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                </label>
-                                            </button>
-                                        </div>
-                                        <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
-                                        <ul className="list-disc">
-                                            <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
-                                            <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
-                                            <li className="py-2">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</li>
-                                            <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>S</code> {this.props.t('visualizer.help_or')} <code>s</code>{this.props.t('visualizer.help_key_s')}</li>
-                                            <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>T</code>{this.props.t('visualizer.help_or')} <code>t</code> {this.props.t('visualizer.help_key_t')}</li>
-                                            <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>←</code> {this.props.t('visualizer.help_and')} <code>→</code> {this.props.t('visualizer.help_key_arrows')}</li>
-                                        </ul>
-                                        <p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank"><FontAwesomeIcon icon={faExternalLink} size="lg" /></a></p>
+                            <input type="checkbox" id="help-modal" className="modal-toggle" />
+                            <div className="modal">
+                                <div className="modal-box" style={{ "color": "initial" }}>
+                                    <div className="modal-action mt-0 justify-end">
+                                        <button className="btn btn-square btn-sm">
+                                            <label htmlFor="help-modal" className="cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                            </label>
+                                        </button>
                                     </div>
+                                    <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
+                                    <ul className="list-disc">
+                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
+                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
+                                        <li className="py-2">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</li>
+                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>S</code> {this.props.t('visualizer.help_or')} <code>s</code>{this.props.t('visualizer.help_key_s')}</li>
+                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>T</code>{this.props.t('visualizer.help_or')} <code>t</code> {this.props.t('visualizer.help_key_t')}</li>
+                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>←</code> {this.props.t('visualizer.help_and')} <code>→</code> {this.props.t('visualizer.help_key_arrows')}</li>
+                                    </ul>
+                                    <p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank"><FontAwesomeIcon icon={faExternalLink} size="lg" /></a></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            )
-        } else {
-            return null;
-        }
-
+            </div>
+        )
     }
 }
 
