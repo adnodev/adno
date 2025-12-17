@@ -27,6 +27,7 @@ class ProjectView extends Component {
             imgSource: "",
             imgWidth: 0
         }
+        this.modalRef = React.createRef()
     }
 
     componentDidMount() {
@@ -215,7 +216,8 @@ class ProjectView extends Component {
             <ExporterModal
                 translate={this.props.t}
                 selectedProject={this.props.project}
-                exportIIIF={() => exportToIIIF(exportedProject)} />
+                exportIIIF={() => exportToIIIF(exportedProject)}
+                ref={this.modalRef} />
 
             <div className="card card-side bg-base-100 shadow-xl project-view-card">
                 <div className="project-card-img" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
@@ -257,9 +259,9 @@ class ProjectView extends Component {
                                 separatedModal
                                 btn={<>
                                     <button type="button" className="btn btn-md btn-outline me-2" onClick={() => {
-                                        document.getElementById('my-modal').click()
+                                        this.modalRef.current?.click()
                                     }}>
-                                        <label htmlFor="my-modal" style={{ pointerEvents: 'none' }}>
+                                        <label htmlFor="#" style={{ pointerEvents: 'none' }}>
                                             <FontAwesomeIcon icon={faDownload} />
                                         </label>
                                     </button>
