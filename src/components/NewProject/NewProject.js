@@ -392,7 +392,7 @@ class NewProject extends Component {
                                                     })
                                                 }
 
-                                                project = buildJsonProjectWithManifest(projectID, projectName, projectDesc, resultLink)
+                                                project = buildJsonProjectWithManifest(projectID, this.state.projectName, this.state.projectDesc, resultLink)
                                                 project = {
                                                     ...project,
                                                     ...this.state.metadatas
@@ -400,7 +400,7 @@ class NewProject extends Component {
                                                 project.settings = this.state.settings
 
                                             } else {
-                                                project = buildJsonProjectWithManifest(projectID, projectName, projectDesc, manifest_url)
+                                                project = buildJsonProjectWithManifest(projectID, this.state.projectName, this.state.projectDesc, manifest_url)
                                                 project = {
                                                     ...project,
                                                     ...this.state.metadatas

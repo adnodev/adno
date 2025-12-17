@@ -542,7 +542,7 @@ class AdnoEmbed extends Component {
     };
 
     changeAnno = (annotation) => {
-        if (annotation && annotation.id) {
+        if (annotation && annotation.id && this.AdnoAnnotorious) {
             this.setState({ selectedAnno: annotation });
 
             this.AdnoAnnotorious.selectAnnotation(annotation.id);

@@ -83,7 +83,7 @@ export function Exporter({ translate, selectedProject, separatedModal, btn, ...p
     const ref = useRef()
 
     const exportIIIF = () => {
-        props.exportIIIF()
+        return props.exportIIIF()
             .then(manifest => generateInputFilesView(manifest, selectedProject))
     }
 
