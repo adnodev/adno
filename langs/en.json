@@ -1,13 +1,13 @@
 {
     "begin_msg": "To start using Adno, please enter the URL of an IIIF manifest or an IIIF image a static picture in jpg or png format, or an Adno project",
-    "create_project": " Create a new project",
+    "create_project": "Create a new project",
     "import": {
         "import_project": "Import a project",
         "import_now": "Using a project file",
         "validate": "Validate",
         "cancel": "Cancel",
         "adno_project": "Adno project found, would you like to import it ?",
-        "import_success": "Project imported successfully !"
+        "import_success": "Project imported successfully"
     },
     "projects": {
         "all": "Your existing projects",
