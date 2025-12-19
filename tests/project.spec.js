@@ -77,15 +77,36 @@ test('should import URL with encoded param', async ({ page }) => {
 })
 
 test('shoud load resource with nested service field', async ({ page }) => {
-  // await page.goto('http://localhost:1234/#/');
-  // await page.getByRole('textbox', { name: 'https://iiif.emf.fr/iiif/3/' }).click();
   await loadImageProjectFromURL(page, 'https://apicollections.parismusees.paris.fr/iiif/320144731/manifest')
-  // await page.getByRole('textbox', { name: 'https://iiif.emf.fr/iiif/3/' }).fill('https://apicollections.parismusees.paris.fr/iiif/320144731/manifest');
-  // await page.getByRole('button', { name: 'Create my own project' }).click();
-  // await page.getByRole('button', { name: 'Use this picture for my' }).click();
-  // await page.getByRole('textbox', { name: 'Title' }).click();
-  // await page.getByRole('textbox', { name: 'Title' }).fill('Musee');
-  // await page.getByRole('button', { name: 'Create my new project' }).click();
-  // await expect(page.locator('.a9s-annotationlayer')).toBeVisible();
 })
 
+
+async function testIIIF(page, url) {
+  await page.goto(url);
+  await expect(page.getByRole('img')).toBeVisible();
+  await expect(page.locator('.openseadragon-container')).toBeVisible({ timeout: 10000 });
+  await page.waitForTimeout(3000);
+
+  const viewer = page.locator('.openseadragon-container').first();
+  await viewer.hover();
+
+  // Screenshot before zoom
+  const before = await page.screenshot();
+
+  // Scroll to zoom
+  await page.mouse.wheel(0, -500); // Zoom in
+  await page.waitForTimeout(1000);
+
+  // Screenshot after zoom
+  const after = await page.screenshot();
+
+  expect(before).not.toEqual(after);
+}
+
+test('embed view works - ponts et sentiers', async ({ page }) => {
+  await testIIIF(page, "http://localhost:1234/#/embed?url=https://ponts-et-sentiers.emf.fr/files/original/5cfedc4610ce4fd2ecccffbc0f45f02d05529357.json")
+})
+
+test('embed view works - horae-pictavenses', async ({ page }) => {
+  await testIIIF(page, "http://localhost:1234/#/embed?url=https://horae-pictavenses.fr/iiif/2/8477/info.json")
+})

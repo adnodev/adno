@@ -25,6 +25,7 @@ import { withTranslation } from "react-i18next";
 
 // Import Style
 import "./AdnoEmbed.css";
+import { extractIIIFContent } from "./IIIFHelper";
 
 class AdnoEmbed extends Component {
     constructor(props) {
@@ -738,38 +739,6 @@ class AdnoEmbed extends Component {
         })
     }
 
-    extractIIIFv3Annotations = (manifest) => {
-        const annotations = [];
-
-        if (manifest.items && manifest.items.length > 0) {
-            manifest.items.forEach(canvas => {
-                if (canvas.annotations && canvas.annotations.length > 0) {
-                    canvas.annotations.forEach(annoPage => {
-                        if (annoPage.items && annoPage.items.length > 0) {
-                            annoPage.items.forEach(anno => {
-                                if (anno.motivation === "commenting") {
-                                    // Fix the selector to include conformsTo
-                                    if (anno.target && anno.target.selector && anno.target.selector.type === "FragmentSelector") {
-                                        anno.target.selector.conformsTo = "http://www.w3.org/TR/media-frags/";
-                                    }
-                                    annotations.push(anno);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-
-        return annotations;
-    }
-
-    getMetadataFromIIIF = (metadata, name) => {
-        const value = metadata.find(meta => meta?.label?.en?.includes(name))?.value?.en || []
-
-        return value[0]
-    }
-
     getAdnoProject = (url) => {
         const IPFS_GATEWAY = process.env.IPFS_GATEWAY;
 
@@ -904,94 +873,100 @@ class AdnoEmbed extends Component {
                                         (imported_project.hasOwnProperty("context") ||
                                             imported_project.hasOwnProperty("@context"))
                                     ) {
-                                        this.overrideSettings();
+                                        extractIIIFContent(imported_project, {
+                                            overrideSettings: this.overrideSettings,
+                                            setState: (opts, callback) => this.setState({ ...opts }, callback),
+                                            displayViewer: this.displayViewer,
+                                            props: this.props
+                                        })
+                                        // this.overrideSettings();
 
-                                        let resultLink = null;
+                                        // let resultLink = null;
 
-                                        if (imported_project.items && imported_project.items.length > 0) {
-                                            const canvas = imported_project.items[0];
+                                        // if (imported_project.items && imported_project.items.length > 0) {
+                                        //     const canvas = imported_project.items[0];
 
-                                            // Extract painting annotation (the image)
-                                            if (canvas.items && canvas.items.length > 0) {
-                                                const paintingPage = canvas.items[0];
-                                                if (paintingPage.items && paintingPage.items.length > 0) {
-                                                    const paintingAnno = paintingPage.items[0];
-                                                    if (paintingAnno.body) {
-                                                        if (paintingAnno.body.service && paintingAnno.body.service.length > 0) {
-                                                            resultLink = paintingAnno.body.service[0].id + "/info.json";
-                                                        } else if (paintingAnno.body.id) {
-                                                            resultLink = paintingAnno.body.id;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        //     // Extract painting annotation (the image)
+                                        //     if (canvas.items && canvas.items.length > 0) {
+                                        //         const paintingPage = canvas.items[0];
+                                        //         if (paintingPage.items && paintingPage.items.length > 0) {
+                                        //             const paintingAnno = paintingPage.items[0];
+                                        //             if (paintingAnno.body) {
+                                        //                 if (paintingAnno.body.service && paintingAnno.body.service.length > 0) {
+                                        //                     resultLink = paintingAnno.body.service[0].id + "/info.json";
+                                        //                 } else if (paintingAnno.body.id) {
+                                        //                     resultLink = paintingAnno.body.id;
+                                        //                 }
+                                        //             }
+                                        //         }
+                                        //     }
+                                        // }
 
-                                        let annos = this.extractIIIFv3Annotations(imported_project);
+                                        // let annos = this.extractIIIFv3Annotations(imported_project);
 
-                                        const optSettings = this.getMetadataFromIIIF(imported_project.metadata, "adno_settings")
+                                        // const optSettings = this.getMetadataFromIIIF(imported_project.metadata, "adno_settings")
 
-                                        let adnoSettings = {}
-                                        if (optSettings) {
-                                            try {
-                                                adnoSettings = JSON.parse(atob(optSettings))
-                                            } catch (err) {
-                                                console.log(err)
-                                            }
-                                        }
+                                        // let adnoSettings = {}
+                                        // if (optSettings) {
+                                        //     try {
+                                        //         adnoSettings = JSON.parse(atob(optSettings))
+                                        //     } catch (err) {
+                                        //         console.log(err)
+                                        //     }
+                                        // }
 
-                                        const title = this.getMetadataFromIIIF(imported_project.metadata, 'title')
-                                        const description = this.getMetadataFromIIIF(imported_project.metadata, 'description')
-                                        const creator = this.getMetadataFromIIIF(imported_project.metadata, 'creator')
-                                        const editor = this.getMetadataFromIIIF(imported_project.metadata, 'editor')
-                                        const rights = this.getMetadataFromIIIF(imported_project.metadata, 'rights')
+                                        // const title = this.getMetadataFromIIIF(imported_project.metadata, 'title')
+                                        // const description = this.getMetadataFromIIIF(imported_project.metadata, 'description')
+                                        // const creator = this.getMetadataFromIIIF(imported_project.metadata, 'creator')
+                                        // const editor = this.getMetadataFromIIIF(imported_project.metadata, 'editor')
+                                        // const rights = this.getMetadataFromIIIF(imported_project.metadata, 'rights')
 
 
-                                        const selectedTags = adnoSettings?.tags || [];
+                                        // const selectedTags = adnoSettings?.tags || [];
 
-                                        if (selectedTags.length > 0)
-                                            annos = annos
-                                                .map(annotation => ({
-                                                    ...annotation,
-                                                    tags: buildTagsList(annotation).map(tag => tag.value)
-                                                }))
-                                                .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
+                                        // if (selectedTags.length > 0)
+                                        //     annos = annos
+                                        //         .map(annotation => ({
+                                        //             ...annotation,
+                                        //             tags: buildTagsList(annotation).map(tag => tag.value)
+                                        //         }))
+                                        //         .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
 
-                                        if (resultLink) {
-                                            const GRANTED_IMG_EXTENSIONS =
-                                                process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
+                                        // if (resultLink) {
+                                        //     const GRANTED_IMG_EXTENSIONS =
+                                        //         process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
 
-                                            const tileSources = GRANTED_IMG_EXTENSIONS.includes(
-                                                get_url_extension(resultLink)
-                                            )
-                                                ? {
-                                                    type: "image",
-                                                    url: resultLink,
-                                                }
-                                                : [resultLink];
+                                        //     const tileSources = GRANTED_IMG_EXTENSIONS.includes(
+                                        //         get_url_extension(resultLink)
+                                        //     )
+                                        //         ? {
+                                        //             type: "image",
+                                        //             url: resultLink,
+                                        //         }
+                                        //         : [resultLink];
 
-                                            this.setState({
-                                                ...adnoSettings,
-                                                annos,
-                                                title,
-                                                description,
-                                                creator,
-                                                editor,
-                                                rights,
-                                                isLoaded: true
-                                            }, () => {
-                                                this.overrideSettings()
-                                                this.displayViewer(tileSources, annos);
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                title: this.props.t("errors.unable_reading_manifest"),
-                                                showCancelButton: true,
-                                                showConfirmButton: false,
-                                                cancelButtonText: "OK",
-                                                icon: "warning",
-                                            });
-                                        }
+                                        //     this.setState({
+                                        //         ...adnoSettings,
+                                        //         annos,
+                                        //         title,
+                                        //         description,
+                                        //         creator,
+                                        //         editor,
+                                        //         rights,
+                                        //         isLoaded: true
+                                        //     }, () => {
+                                        //         this.overrideSettings()
+                                        //         this.displayViewer(tileSources, annos);
+                                        //     });
+                                        // } else {
+                                        //     Swal.fire({
+                                        //         title: this.props.t("errors.unable_reading_manifest"),
+                                        //         showCancelButton: true,
+                                        //         showConfirmButton: false,
+                                        //         cancelButtonText: "OK",
+                                        //         icon: "warning",
+                                        //     });
+                                        // }
                                     } else {
                                         console.log("projet non adno INVALIDE");
                                     }
