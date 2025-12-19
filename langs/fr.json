@@ -1,13 +1,13 @@
 {
     "begin_msg": "Pour commencer à utiliser Adno, veuillez renseigner l'URL d'un manifeste ou d'une image IIIF d'une image statique au format jpg ou png, ou encore d'un projet Adno",
-    "create_project": " Créer mon projet",
+    "create_project": " Créer un nouveau projet",
     "import": {
         "import_project": "Importer un projet",
         "import_now": "Utiliser le fichier d'un projet",
         "validate": "Valider l'importation",
         "cancel": "Annuler l'importation",
-        "adno_project": "Projet Adno détecté, voulez-vous l'importer ?",
-        "import_success": "Projet importé avec succès"
+        "adno_project": "Projet Adno détecté, voulez-vous l'importer ?",
+        "import_success": "Projet importé avec succès !"
     },
     "projects": {
         "all": "Vos projets existants",
@@ -129,8 +129,9 @@
         "info": "Informations",
         "help": "Aide",
         "help_title": "Raccourcis clavier",
-        "help_key": "touche ",
-        "help_key_plural": "touches ",
+        "help_key_0": "touche",
+        "help_key_1": "touches",
+        "help_key_2": "",
         "help_or": "ou",
         "help_and": "et",
         "help_key_p": "pour démarrer automatiquement,",
@@ -169,7 +170,7 @@
         "switch_up": "Remonter l'annotation",
         "delete": "Supprimer l'annotation",
         "tags_list": "Filter les annotations comportant les mots clés",
-        "empty_tags_list": "Les mots clés apparaitront ici"
+        "empty_tags_list": "Les mots clés apparaitront ici."
     },
     "navbar": {
         "edit_mode": "édition",
@@ -196,7 +197,7 @@
     "errors": {
         "error_found": "Erreur détectée",
         "unable_reading_file": "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
-        "unable_access_file": "Impossible d'accéder à ce fichier !",
+        "unable_access_file": "Impossible d'accéder à ce fichier ! Ré-essayer ou sélectionner un autre fichier",
         "manifest_picture_not_found": "Erreur - Le manifeste ou l'image que vous avez entré est introuvable",
         "wrong_url": "L'URL renseignée n'est pas valide ! Indiquez un lien vers un manifeste ou une image IIIF, une image JPG, PNG, ou encore un fichier d'un projet Adno",
         "no_url": "Aucune URL n'a été fournie",
