@@ -1,6 +1,6 @@
 {
     "begin_msg": "Pour commencer à utiliser Adno, veuillez renseigner l'URL d'un manifeste ou d'une image IIIF d'une image statique au format jpg ou png, ou encore d'un projet Adno",
-    "create_project": " Créer un nouveau projet",
+    "create_project": "Créer un nouveau projet",
     "import": {
         "import_project": "Importer un projet",
         "import_now": "Utiliser le fichier d'un projet",
@@ -131,7 +131,7 @@
         "help_title": "Raccourcis clavier",
         "help_key_0": "touche",
         "help_key_1": "touches",
-        "help_key_2": "",
+        "help_key_2": "touches",
         "help_or": "ou",
         "help_and": "et",
         "help_key_p": "pour démarrer automatiquement,",
