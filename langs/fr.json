@@ -121,7 +121,7 @@
         "expand": "Mettre en plein écran",
         "pause": "Mettre en pause",
         "play": "Lancer",
-        "reset_zoom": "Dézoomer",
+        "reset_zoom": "Zoomer",
         "toggle_annotations": "Afficher/masquer les annotations",
         "previous_annotation": "Annotation précédente",
         "next_annotation": "Annotation suivante",
@@ -140,14 +140,14 @@
         "help_key_s": "pour afficher les contours des annotations,",
         "help_key_t": "pour afficher les icones de navigation et de visualisation,",
         "help_key_arrows": "flèches (gauche et droite) pour changer l'annotation courante.",
-        "help_doc": "Pour plus d'informations, consultez la documentation officielle de Adno.",
+        "help_doc": "Pour plus d'informations, consultez la documentation officielle de Adno",
         "close": "Fermer"
     },
     "modal": {
-        "delete_project": "Voulez-vous vraiment supprimer ce projet ?",
+        "delete_project": "Voulez-vous vraiment supprimer ce projet ?",
         "confirm_delete": "Supprimer mon projet",
         "cancel": "Annuler",
-        "projects_list_up_to_date": "La liste des projets a bien été mise à jour !",
+        "projects_list_up_to_date": "La liste des projets a bien été mise à jour",
         "duplicate_project": "Voulez-vous vraiment dupliquer ce projet ?",
         "confirm_duplication": "Dupliquer mon projet",
         "annotation_moved": "Annotation déplacée avec succès",
@@ -159,7 +159,7 @@
         "adno_proj_detected": "Projet Adno détecté, voulez-vous l'importer ?",
         "old_version": "Un ou plusieurs projets ont été fait avec une version obsolète d’Adno",
         "update_old_version": "Mettre à jour vers la dernière version",
-        "version_updated": "Félicitations, vos projets Adno sont à jour !"
+        "version_updated": "Félicitations, vos projets Adno sont à jour"
     },
     "annotation": {
         "no_content": "aucun contenu",
@@ -196,7 +196,7 @@
     },
     "errors": {
         "error_found": "Erreur détectée",
-        "unable_reading_file": "Impossible de lire ce fichier, veuillez renseigner un fichier ayant un des formats suivant : png, jpg, json",
+        "unable_reading_file": "Impossible de lire cette sorte de fichier !",
         "unable_access_file": "Impossible d'accéder à ce fichier ! Ré-essayer ou sélectionner un autre fichier",
         "manifest_picture_not_found": "Erreur - Le manifeste ou l'image que vous avez entré est introuvable",
         "wrong_url": "L'URL renseignée n'est pas valide ! Indiquez un lien vers un manifeste ou une image IIIF, une image JPG, PNG, ou encore un fichier d'un projet Adno",
