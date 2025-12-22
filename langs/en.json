@@ -7,7 +7,7 @@
         "validate": "Validate",
         "cancel": "Cancel",
         "adno_project": "Adno project found, would you like to import it ?",
-        "import_success": "Project imported successfully"
+        "import_success": "Project imported successfully!"
     },
     "projects": {
         "all": "Your existing projects",
@@ -139,10 +139,10 @@
         "help_key_t": "to toggle the toolsbar,",
         "help_key_arrows": "arrows (left and right) to change the current selected annotation.",
         "help_doc": "For more information, please consult the official documentation of Adno",
-        "close": "Fermer"
+        "close": "Close"
     },
     "modal": {
-        "delete_project": "Would you really want to delete this project ?",
+        "delete_project": "Would you really want to delete this project?",
         "confirm_delete": "Yes, delete my project",
         "cancel": "Cancel",
         "projects_list_up_to_date": "Projects list have been updated",
@@ -185,7 +185,7 @@
         "all_metadata": "All metadata",
         "share_project": "Save and share your project",
         "share_project_desc1": "First, download your project file. To share it, you can either send it by e-mail, or place it online - on a website, a file server or on the IPFS interplanetary file system - and then share its URL or IPFS CID.",
-        "share_project_desc2": "Once your Adno project is online, you can make it visible on a web page by inserting an iframe tag. ",
+        "share_project_desc2": "Once your Adno project is online, you can make it visible on a web page by inserting an iframe tag.",
         "share_project_desc3": "For more information, visit the official Adno documentation.",
         "export_project_to": "Export as"
     },
@@ -194,8 +194,8 @@
     },
     "errors": {
         "error_found": "An error have been found",
-        "unable_reading_file": "Unable to read this type of file !",
-        "unable_access_file": "Unable to reach this file ! Please try again or select another file",
+        "unable_reading_file": "Unable to read this type of file!",
+        "unable_access_file": "Unable to reach this file! Please try again or select another file",
         "manifest_picture_not_found": "The manifest or the picture you have entered has not been found",
         "wrong_url": "The URL you have entered is not valid",
         "no_url": "No URL was provided",
