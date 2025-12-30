@@ -4,7 +4,8 @@ Adno is a web application for viewing, editing and sharing narratives and pathwa
 
 Adno has 2 available versions : a [Full version](https://w.adno.app) including the Editor and Viewer and the [Light](https://r.adno.app) one including only the Viewer.
 
-# Table of Contents
+## Table of Contents
+
 1. [How to start](#how-to-start-with-adno-)
 2. [Host Adno](#host-adno-with-github-pages)
 3. [IIIF EXAMPLES](#iiif-pictures-examples)
@@ -12,6 +13,7 @@ Adno has 2 available versions : a [Full version](https://w.adno.app) including t
 5. [Developpers section](#for-developpers)
 6. [Keyboard shortcuts](#shortcuts-for-the-viewer)
 7. [IPFS support](#ipfs-support)
+8. [Translation](#translation)
 
 ## How to start with Adno ?
 
@@ -70,7 +72,7 @@ If you want to contribute to Adno here are few steps to start
     * run **yarn build-full** to build full-version and **yarn build-light** to build the light version.
   * In case of errors try to remove node_modules folder, .parcel-cache and yarn.lock file and reinstall module with **yarn install** command.
 
-## Customize your own Adno
+### Customize your own Adno
 
 Create a .env file and insert the following properties as you wish :
 
@@ -96,7 +98,7 @@ GRANTED_IMG_EXTENSIONS=jpg,png,JPG,PNG
 CORS_SERVER=https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
 ```
 
-## Build Adno
+### Build Adno
 
 .env.ADNOFULL example :
 
@@ -136,7 +138,7 @@ Warning : this action requires .env.ADNOFULL and .env.ADNOLIGHT files !
 
 Run **yarn build** in your terminal, it will run both commands **build-full** and **build-light**
 
-# Adno embedded in your website
+## Adno embedded in your website
 
 Available settings for the embed :
 
@@ -162,7 +164,7 @@ A little example with an iframe that you can insert in your own projects :
 
 ```
 
-# SHORTCUTS FOR THE VIEWER
+## Shortcuts for the viewer 
 
 - Key 'P' to start the autoplay
 - Key 'E' to toggle FullScreen
@@ -170,7 +172,7 @@ A little example with an iframe that you can insert in your own projects :
 - Key 'T' to toggle the toolsbar
 - Arrows (left and right) to change the current selected annotation
 
-# IPFS SUPPORT
+## IPFS support
 
 Add the following environment variable to use an IPFS gateway
 
@@ -178,3 +180,7 @@ Add the following environment variable to use an IPFS gateway
 # IPFS SUPPORT
 IPFS_GATEWAY=https://ipfs.io/ipfs/
 ```
+
+## Translation
+
+If Adno is not available in the language of your choice, you can contribute by adding a new language and proposing translations on the Adno section of the [Weblate platform](https://hosted.weblate.org/projects/adno/). In the same way, you can propose changes and corrections to existing translations.
