@@ -12,13 +12,14 @@ import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong, faVolumeHigh } fr
 import Swal from "sweetalert2";
 
 // Import Utils 
-import { buildTagsList, generateUUID, insertInLS } from "../../../Utils/utils";
+import { buildTagsList, generateUUID } from "../../../Utils/utils";
 
 //Imports CSS
 import "./AnnotationCards.css";
 
 // Add translations
 import { withTranslation } from "react-i18next";
+import { projectDB } from "../../../services/db";
 
 class AnnotationCards extends Component {
     constructor(props) {
@@ -56,9 +57,10 @@ class AnnotationCards extends Component {
         annos[index - 1] = annos[index]
         annos[index] = annoToSwitch
 
-        insertInLS(`${this.props.match.params.id}_annotations`, JSON.stringify(annos))
-
-        this.props.updateAnnos(annos)
+        projectDB.updateAnnotations(this.props.match.params.id, annos)
+            .then(() => {
+                this.props.updateAnnos(annos)
+            })
     }
 
     // Function to move an annotation down one place
@@ -70,9 +72,10 @@ class AnnotationCards extends Component {
         annos[index + 1] = annos[index]
         annos[index] = annoToSwitch
 
-        insertInLS(`${this.props.match.params.id}_annotations`, JSON.stringify(annos))
-
-        this.props.updateAnnos(annos)
+        projectDB.updateAnnotations(this.props.match.params.id, annos)
+            .then(() => {
+                this.props.updateAnnos(annos)
+            })
     }
 
     // Function to delete an annotation
@@ -86,16 +89,16 @@ class AnnotationCards extends Component {
             icon: 'warning',
         }).then((result) => {
             if (result.isConfirmed) {
-                var annos = this.props.annotations;
+                const annotations = this.props.annotations.filter(annotation => annotation.id != annotationID);
 
-                // Update the localStorage without the removed item
-                insertInLS(`${this.props.match.params.id}_annotations`, JSON.stringify(annos.filter(annotation => annotation.id != annotationID)))
-
-                Swal.fire(this.props.t('modal.del_annotation_confirmation'), '', 'success')
-                    .then((result) => {
-                        if (result.isConfirmed) {
-                            this.props.updateAnnos(annos.filter(annotation => annotation.id != annotationID))
-                        }
+                projectDB.updateAnnotations(this.props.match.params.id, annotations)
+                    .then(() => {
+                        Swal.fire(this.props.t('modal.del_annotation_confirmation'), '', 'success')
+                            .then((result) => {
+                                if (result.isConfirmed) {
+                                    this.props.updateAnnos(annotations)
+                                }
+                            })
                     })
             }
         })

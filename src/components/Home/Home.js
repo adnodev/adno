@@ -9,12 +9,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // Import utils
-import { checkOldVersion, getAllProjectsFromLS } from "../../Utils/utils";
+import { checkOldVersion } from "../../Utils/utils";
 import { manageUrls } from "../AdnoUrls/manageUrls";
 
 // Import components
 import ImportProject from "../ImportProject/ImportProject";
 import ProjectsList from "../ProjectsList/ProjectsList";
+
+import { projectDB } from '../../services/db'
 
 // Import CSS
 import "./Home.css";
@@ -33,12 +35,13 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        // Get projects from localStorage
-        var projects = getAllProjectsFromLS()
-
-        this.setState({ projects })
-
         checkOldVersion(this.props.t)
+            .then(() => {
+                projectDB.getAll()
+                    .then(projects => {
+                        this.setState({ projects })
+                    })
+            })
     }
 
     createNewProject = (e) => {

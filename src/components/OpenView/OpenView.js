@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
 // Import utils
-import { checkIfProjectExists, getEye } from "../../Utils/utils";
+import { getEye } from "../../Utils/utils";
 
 // // Import OpenSeaDragon and Annotorious
 // import "/libraries/openseadragon/openseadragon-annotorious.min.js";
@@ -16,6 +16,7 @@ import { checkIfProjectExists, getEye } from "../../Utils/utils";
 // Import CSS
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
+import { projectDB } from "../../services/db";
 
 class OpenView extends Component {
     constructor(props) {
@@ -32,11 +33,12 @@ class OpenView extends Component {
         }
     }
 
-    componentDidMount() {
-        // First of all, verify if the UUID match to an real project in the localStorage
-        // If not, then redirect the user to the HomePage
-        if (!this.props.match.params.id || !checkIfProjectExists(this.props.match.params.id)) {
+    async componentDidMount() {
+        const project = await projectDB.exists(this.props.match.params.id)
+
+        if (!project) {
             this.props.history.push("/")
+            return
         } else {
             let tileSources;
 
@@ -627,7 +629,7 @@ class OpenView extends Component {
             setTimeout(this.freeMode, 1000)
 
         // Check if the user toggled the navigator on/off
-        if (this.props.showNavigator !== prevProps.showNavigator) {
+        if (this.props.showNavigator !== prevProps.showNavigator && this.openSeadragon.navigator) {
             if (this.props.showNavigator) {
                 document.getElementById(this.openSeadragon.navigator.id).style.display = 'block';
             } else {

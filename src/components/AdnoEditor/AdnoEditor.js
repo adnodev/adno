@@ -8,14 +8,12 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 // Import SweetAlert
 import Swal from "sweetalert2";
 
-// Import utils
-import { checkIfProjectExists, createDate, insertInLS } from "../../Utils/utils";
-
 // Import CSS
 import "./AdnoEditor.css";
 
 // Add translations
 import { withTranslation } from "react-i18next";
+import { projectDB } from "../../services/db";
 
 class AdnoEditor extends Component {
     constructor(props) {
@@ -26,103 +24,99 @@ class AdnoEditor extends Component {
     }
 
     componentDidMount() {
-        // First of all, verify if the url ID param matches to an real project in the localStorage
-        // If not, then redirect the user to the HomePage
-        if (!this.props.match.params.id || !checkIfProjectExists(this.props.match.params.id)) {
-            this.props.history.push("/")
-        } else {
-            let selected_project = JSON.parse(localStorage.getItem(this.props.match.params.id))
+        const id = this.props.match.params.id
 
-            let tileSources = {
-                type: 'image',
-                url: selected_project.img_url
-            }
+        projectDB.exists(id)
+            .then(async optProject => {
+                if (!optProject)
+                    this.props.history.push("/")
+                else {
+                    let selected_project = { ...optProject }
+                    let tileSources = {
+                        type: 'image',
+                        url: selected_project.img_url
+                    }
 
-            if (selected_project.manifest_url) {
-                tileSources = [
-                    selected_project.manifest_url
-                ]
-            }
+                    if (selected_project.manifest_url) {
+                        tileSources = [
+                            selected_project.manifest_url
+                        ]
+                    }
 
-            OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
-            OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
-            OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
-            OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
-            OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
-            OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
-            OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
-            OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
-            OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
-
-
-            this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
-                id: 'openseadragon1',
-                tileSources: tileSources,
-                prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
-                // Enable rotation
-                toolbar: "toolbar-osd",
-                showRotationControl: this.props.rotation,
-                showFullPageControl: false,
-            }), {
-                locale: 'auto',
-                drawOnSingleClick: true,
-                allowEmpty: true,
-                disableEditor: true
-            });
+                    OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
+                    OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
+                    OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
+                    OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
+                    OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
+                    OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
+                    OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
+                    OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
+                    OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
 
-            // Find annotations from the localStorage in JSON format
-            // var annos = localStorage.getItem(`${selected_project.id}_annotations`)
-            const annos = this.props.annotations
+                    this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
+                        id: 'openseadragon1',
+                        tileSources: tileSources,
+                        prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
+                        // Enable rotation
+                        toolbar: "toolbar-osd",
+                        showRotationControl: this.props.rotation,
+                        showFullPageControl: false,
+                    }), {
+                        locale: 'auto',
+                        drawOnSingleClick: true,
+                        allowEmpty: true,
+                        disableEditor: true
+                    });
 
-            // Generate dataURI and load annotations into Annotorious
-            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
-            this.AdnoAnnotorious.loadAnnotations(dataURI)
+                    const annos = this.props.annotations
 
-            Annotorious.SelectorPack(this.AdnoAnnotorious);
-            Annotorious.BetterPolygon(this.AdnoAnnotorious);
-            Annotorious.Toolbar(this.AdnoAnnotorious, document.getElementById('toolbar-container'));
+                    // Generate dataURI and load annotations into Annotorious
+                    const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
+                    this.AdnoAnnotorious.loadAnnotations(dataURI)
+
+                    Annotorious.SelectorPack(this.AdnoAnnotorious);
+                    Annotorious.BetterPolygon(this.AdnoAnnotorious);
+                    Annotorious.Toolbar(this.AdnoAnnotorious, document.getElementById('toolbar-container'));
 
 
-            // Event triggered by using saveSelected annotorious function
-            this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                const annotations = [...this.props.annotations] || []
-                annotations.push(newAnnotation)
+                    // Event triggered by using saveSelected annotorious function
+                    this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
+                        const annotations = [...this.props.annotations] || []
+                        annotations.push(newAnnotation)
 
-                // Update the last update date for the selected project
-                selected_project.last_update = createDate()
-                insertInLS(selected_project.id, JSON.stringify(selected_project))
 
-                // Update annotations linked to the selected project in the localStorage
-                insertInLS(`${selected_project.id}_annotations`, JSON.stringify(annotations))
+                        projectDB.updateAnnotations(selected_project.id, annotations)
+                            .then(() => {
+                                this.props.updateAnnos(annotations)
 
-                this.props.updateAnnos(annotations)
+                                this.props.openRichEditor(newAnnotation)
+                            })
+                    });
 
-                this.props.openRichEditor(newAnnotation)
-            });
+                    // Event triggered when drawing a new shape
+                    this.AdnoAnnotorious.on('createSelection', (annotation) => {
+                        this.AdnoAnnotorious.saveSelected()
+                    })
 
-            // Event triggered when drawing a new shape
-            this.AdnoAnnotorious.on('createSelection', (annotation) => {
-                this.AdnoAnnotorious.saveSelected()
+                    // Event triggered when user click on an annotation
+                    this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
+                        document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                        this.props.openRichEditor(annotation)
+                    })
+
+
+                    // Event triggered when resizing an annotation shape
+                    this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
+                        this.setState({ isMovingItem: true })
+
+                        const selected = this.state.selected ? { ...this.state.selected } : this.AdnoAnnotorious.getSelected();
+                        selected.target = newTarget
+
+                        this.setState({ selected })
+                    });
+                }
             })
-
-            // Event triggered when user click on an annotation
-            this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-                document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-                this.props.openRichEditor(annotation)
-            })
-
-
-            // Event triggered when resizing an annotation shape
-            this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
-                this.setState({ isMovingItem: true })
-
-                const selected = this.state.selected ? { ...this.state.selected } : this.AdnoAnnotorious.getSelected();
-                selected.target = newTarget
-
-                this.setState({ selected })
-            });
-        }
     }
 
     changeAnno = (annotation) => {
@@ -138,7 +132,7 @@ class AdnoEditor extends Component {
     }
 
     validateMove = () => {
-        const selected_project = JSON.parse(localStorage.getItem(this.props.match.params.id))
+        const projectId = this.props.match.params.id
 
         const selected = this.state.selected;
 
@@ -150,18 +144,20 @@ class AdnoEditor extends Component {
             return anno;
         });
 
-        insertInLS(`${selected_project.id}_annotations`, JSON.stringify(newAnnos))
-        this.props.updateAnnos(newAnnos)
+        projectDB.updateAnnotations(projectId, newAnnos)
+            .then(() => {
+                this.props.updateAnnos(newAnnos)
 
-        this.setState({ isMovingItem: false })
+                this.setState({ isMovingItem: false })
 
-        Swal.fire({
-            title: this.props.t('modal.annotation_moved'),
-            showCancelButton: false,
-            showConfirmButton: true,
-            confirmButtonText: 'OK',
-            icon: 'success'
-        })
+                Swal.fire({
+                    title: this.props.t('modal.annotation_moved'),
+                    showCancelButton: false,
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    icon: 'success'
+                })
+            })
     }
 
     componentDidUpdate(prevProps) {

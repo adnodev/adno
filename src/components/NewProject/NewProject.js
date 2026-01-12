@@ -2,8 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 import ProjectSettings from "../Project/ProjectSettings";
 
-// Import utils
-import { insertInLS, buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID, enhancedFetch, defaultProjectSettings, diffProjectSettings } from "../../Utils/utils";
+import { buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID, enhancedFetch, defaultProjectSettings, diffProjectSettings } from "../../Utils/utils";
 
 // Import popup alerts
 import Swal from "sweetalert2";
@@ -14,6 +13,7 @@ import "./NewProject.css"
 // Add translation
 import { withTranslation } from "react-i18next";
 import ProjectEditMetadatas from "../Project/ProjectEditMetadatas/ProjectEditMetadatas";
+import { projectDB } from "../../services/db";
 
 class NewProject extends Component {
     constructor(props) {
@@ -37,8 +37,9 @@ class NewProject extends Component {
     }
 
     componentDidMount() {
-        // Checking if there is an url inserted in the localStorage
-        if (!localStorage.getItem("adno_image_url")) {
+        const manifest_url = localStorage.getItem("adno_image_url")
+
+        if (!manifest_url) {
             this.props.history.push("/")
         }
 
@@ -46,7 +47,6 @@ class NewProject extends Component {
             this.setState({ selectedCanva: true, isCanvaProject: true })
         }
 
-        var manifest_url = localStorage.getItem("adno_image_url")
 
         enhancedFetch(manifest_url)
             .then(rep => rep.response.json())
@@ -272,51 +272,20 @@ class NewProject extends Component {
                     project.manifest_url = undefined
                 }
 
-                if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
+                projectDB.add(projectID, project)
+                    .then(() => {
+                        localStorage.removeItem("selected_canva")
+                        localStorage.removeItem("adno_image_url")
 
-                    // If projects in local storage don't exist create the array
-                    var projects = []
-                    projects.push(projectID)
+                        const isFullAdno = process.env.ADNO_MODE === "FULL"
 
-                    // Création du projet dans le localStorage
-                    insertInLS(projectID, JSON.stringify(project))
-
-                    // Insertion de l'ID du projet créé dans le tableau des projets
-                    insertInLS("adno_projects", JSON.stringify(projects))
-                } else {
-
-                    // Création du projet dans le localStorage
-                    insertInLS(projectID, JSON.stringify(project))
-
-                    // Insertion de l'ID du projet créé dans le tableau des projets
-                    projects = JSON.parse(localStorage.getItem("adno_projects"))
-                    projects.push(projectID)
-                    insertInLS("adno_projects", JSON.stringify(projects))
-                }
-
-
-                if (process.env.ADNO_MODE === "FULL") {
-                    this.props.history.push("/project/" + projectID + "/edit")
-                } else {
-                    this.props.history.push("/project/" + projectID + "/view")
-                }
-
-                localStorage.removeItem("selected_canva")
-                localStorage.removeItem("adno_image_url")
+                        this.props.history.push(`/project/${projectID}/${isFullAdno ? 'edit' : 'view'}`)
+                    })
             } else {
-
-                var manifest_url = localStorage.getItem("adno_image_url")
+                const manifest_url = localStorage.getItem("adno_image_url")
                 const isIpfsUrl = manifest_url.startsWith(process.env.IPFS_GATEWAY);
 
-                // let isUrlManifest = "";
-
-                // if the url is not an image file (.jpg, .jpeg or .png) it should be a manifest
-                // if (!isIpfsUrl && !GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url))) {
-                //     isUrlManifest = await this.isManifest(manifest_url)
-                // }
-
-                var projectID = generateUUID()
-
+                const projectID = generateUUID()
 
                 try {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
@@ -328,35 +297,14 @@ class NewProject extends Component {
                         }
                         project.settings = this.state.settings
 
-                        if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
+                        projectDB.add(projectID, project)
+                            .then(() => {
+                                localStorage.removeItem("adno_image_url")
 
-                            // If projects in local storage don't exist create the array
-                            var projects = []
-                            projects.push(projectID)
+                                const isFullAdno = process.env.ADNO_MODE === "FULL"
 
-                            // Création du projet dans le localStorage
-                            insertInLS(projectID, JSON.stringify(project))
-
-                            // Insertion de l'ID du projet créé dans le tableau des projets
-                            insertInLS("adno_projects", JSON.stringify(projects))
-                        } else {
-
-                            // Création du projet dans le localStorage
-                            insertInLS(projectID, JSON.stringify(project))
-
-                            // Insertion de l'ID du projet créé dans le tableau des projets
-                            projects = JSON.parse(localStorage.getItem("adno_projects"))
-                            projects.push(projectID)
-                            insertInLS("adno_projects", JSON.stringify(projects))
-                        }
-
-                        localStorage.removeItem("adno_image_url")
-
-                        if (process.env.ADNO_MODE === "FULL") {
-                            this.props.history.push("/project/" + projectID + "/edit")
-                        } else {
-                            this.props.history.push("/project/" + projectID + "/view")
-                        }
+                                this.props.history.push(`/project/${projectID}/${isFullAdno ? 'edit' : 'view'}`)
+                            })
 
                     } else {
                         enhancedFetch(manifest_url)
@@ -408,38 +356,15 @@ class NewProject extends Component {
                                                 project.settings = this.state.settings
                                             }
 
-                                            if (localStorage.getItem("adno_projects") === undefined || localStorage.getItem("adno_projects") === null) {
+                                            projectDB.add(projectID, project)
+                                                .then(() => {
+                                                    localStorage.removeItem("adno_image_url")
+                                                    localStorage.removeItem("selected_canva")
 
-                                                // If projects in local storage don't exist create the array
-                                                var projects = []
-                                                projects.push(projectID)
+                                                    const isFullAdno = process.env.ADNO_MODE === "FULL"
 
-
-                                                // Création du projet dans le localStorage
-                                                insertInLS(projectID, JSON.stringify(project))
-
-                                                // Insertion de l'ID du projet créé dans le tableau des projets
-                                                insertInLS("adno_projects", JSON.stringify(projects))
-                                            } else {
-
-                                                // Création du projet dans le localStorage
-                                                insertInLS(projectID, JSON.stringify(project))
-
-                                                // Insertion de l'ID du projet créé dans le tableau des projets
-                                                projects = JSON.parse(localStorage.getItem("adno_projects"))
-                                                projects.push(projectID)
-                                                insertInLS("adno_projects", JSON.stringify(projects))
-                                            }
-
-                                            localStorage.removeItem("adno_image_url")
-
-                                            // Remove the current selected canva after creating the project
-                                            localStorage.removeItem("selected_canva")
-                                            if (process.env.ADNO_MODE === "FULL") {
-                                                this.props.history.push("/project/" + projectID + "/edit")
-                                            } else {
-                                                this.props.history.push("/project/" + projectID + "/view")
-                                            }
+                                                    this.props.history.push(`/project/${projectID}/${isFullAdno ? 'edit' : 'view'}`)
+                                                })
                                         } else {
                                             Swal.fire({
                                                 title: this.props.t('errors.no_iiif'),
@@ -506,8 +431,6 @@ class NewProject extends Component {
 
     render() {
         const overloadedSettings = diffProjectSettings(this.state.settings, defaultProjectSettings())
-
-        console.log(this.state)
 
         return (
             <div className="new-project">

@@ -2,19 +2,7 @@ import Swal from "sweetalert2";
 import edjsHTML from "editorjs-html";
 import TurndownService from "turndown"
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
-
-// Function to insert something in the localStorage.
-// Will return an alert if the localStorage is full
-export function insertInLS(itemName, itemValue) {
-  try {
-    localStorage.setItem(itemName, itemValue);
-  } catch (e) {
-    console.log("err name ", e.name);
-    if (e.name === 'QuotaExceededError') {
-      alert('Quota exceeded!');
-    }
-  }
-}
+import { projectDB } from "../services/db";
 
 // Function to generate a random UUID such as b9930ecc-6a18-43f5-8a09-93eb6262f590
 export function generateUUID() {
@@ -49,11 +37,6 @@ export function findInfoJsonFromManifest(url) {
 
       return resultLink;
     })
-}
-
-
-export const checkIfProjectExists = (id) => {
-  return localStorage.getItem(id) ? true : false;
 }
 
 export const stripHtml = (html) => {
@@ -137,15 +120,11 @@ export const buildProjectAdnoFormat = (title, description, manifest) => {
   )
 }
 
-export const createExportProjectJsonFile = (projectID) => {
+export const createExportProjectJsonFile = async (projectID) => {
 
-  // Get project from localStorage
-  var project = JSON.parse(localStorage.getItem(projectID))
+  const project = await projectDB.get(projectID)
 
-  // Then, get all annotations
-  var annotations = JSON.parse(localStorage.getItem(projectID + "_annotations"))
-
-  var finalProject =
+  const finalProject =
   {
 
     "@context": "http://www.w3.org/ns/anno.jsonld",
@@ -160,14 +139,14 @@ export const createExportProjectJsonFile = (projectID) => {
     "modified": project.last_update,
     "source": project.manifest_url ? project.manifest_url : project.img_url,
     "format": "Adno",
-    "total": annotations && annotations.length ? annotations.length : 0,
+    "total": project.annotations && project.annotations.length ? project.annotations.length : 0,
     "first": {
       "id": "page1",
       "type": "AnnotationPage",
       "startIndex": 0,
-      "items": annotations && annotations.length > 0 ? annotations : [],
+      "items": project.annotations && project.annotations.length > 0 ? project.annotations : [],
     },
-    "adno_settings": getProjectSettings(project.id) || defaultProjectSettings()
+    "adno_settings": project.settings || defaultProjectSettings()
   }
   return URL.createObjectURL(new Blob([JSON.stringify(finalProject)], { type: "text/plain" }));
 }
@@ -201,9 +180,6 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
       imported_project.modified = createDate()
       imported_project.id = generateUUID()
 
-      let projects = JSON.parse(localStorage.getItem("adno_projects"))
-      projects.push(imported_project.id)
-
       let proj = {
         "id": imported_project.id,
         "title": imported_project.title || imported_project.label,
@@ -225,20 +201,26 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
         proj.manifest_url = imported_project.source
       }
 
-      let annos = imported_project.total !== 0 ? imported_project.first.items : []
+      const annotations = (imported_project.total !== 0 ? imported_project.first.items : [])
+        .map(annotation => {
+          if (annotation.body.find(annoBody => annoBody.type === "TextualBody") &&
+            !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+            return migrateTextBody(proj.id, annotation)
+          }
+          return annotation
+        })
 
-      insertInLS("adno_projects", JSON.stringify(projects))
-      insertInLS(proj.id + "_annotations", JSON.stringify(annos))
-      insertInLS(proj.id, JSON.stringify(proj))
-
-
-      annos?.forEach(annotation => {
-        if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-          migrateTextBody(proj.id, annotation)
+      projectDB.add(
+        imported_project.id,
+        {
+          id: imported_project.id,
+          ...proj,
+          annotations
         }
-      })
-
-      window.location.reload()
+      )
+        .then(() => {
+          window.location.reload()
+        })
 
     } else {
       Swal.fire({
@@ -262,53 +244,8 @@ export function checkProjectAttributes(imported_project) {
   return imported_project.hasOwnProperty('id') && imported_project.hasOwnProperty('title') && imported_project.hasOwnProperty('description') && imported_project.hasOwnProperty('creation_date') && imported_project.hasOwnProperty('last_update') && imported_project.hasOwnProperty('manifest_url')
 }
 
-export function duplicateProject(projectID, duplicate_name_copy) {
-  const project = JSON.parse(localStorage.getItem(projectID))
-  const project_annos = JSON.parse(localStorage.getItem(`${projectID}_annotations`)) || []
-
-  const target = {};
-
-  Object.assign(target, project);
-
-  target.title = `${target.title} (${duplicate_name_copy})`
-  target.id = generateUUID()
-  target.last_update = createDate()
-  target.creation_date = createDate()
-
-  insertInLS(target.id, JSON.stringify(target))
-  insertInLS(`${target.id}_annotations`, JSON.stringify(project_annos))
-
-  var projects = JSON.parse(localStorage.getItem("adno_projects"))
-  projects.push(target.id)
-  insertInLS("adno_projects", JSON.stringify(projects))
-}
-
 export function createDate() {
   return new Date().toISOString();
-}
-
-export function deleteProject(idProject) {
-  // First, remove all the annotations linked to the selected projet
-  localStorage.removeItem(idProject + "_annotations")
-
-  // Then , delete the projet 
-  localStorage.removeItem(idProject)
-
-  // Finaly, remove the project id from the adno projects list
-  let projects = JSON.parse(localStorage.getItem("adno_projects"))
-
-  let newProjectsList = projects.filter(id_p => id_p !== idProject)
-
-  insertInLS("adno_projects", JSON.stringify(newProjectsList))
-}
-
-export function getAllProjectsFromLS() {
-  var projects = []
-  var allProjectsID = JSON.parse(localStorage.getItem("adno_projects"))
-  allProjectsID && allProjectsID.length > 0 && allProjectsID.map(projectID => {
-    projects.push(JSON.parse(localStorage.getItem(projectID)))
-  })
-  return projects;
 }
 
 export function diffProjectSettings(a, b) {
@@ -353,76 +290,65 @@ export function defaultProjectSettings() {
   }
 }
 
-
-// Get all the settings linked to a project
-// By default settings is an empty object
-export function getProjectSettings(projectID) {
-  return localStorage.getItem(projectID) && JSON.parse(localStorage.getItem(projectID)).settings ? JSON.parse(localStorage.getItem(projectID)).settings : defaultProjectSettings()
-}
-
-export function migrateAnnotations(projectID) {
+export async function migrateAnnotations(projectID) {
 
   const edjsParser = edjsHTML();
   const turndownService = new TurndownService()
 
   try {
-    const annotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
+    const annotations = await projectDB.getAnnotations(projectID)
 
-    annotations.forEach(anno => {
+    return projectDB.updateAnnotations(projectID, annotations.map(anno => {
+      let newBody = anno.body.filter(anno_body => anno_body.type !== "AdnoHtmlBody" &&
+        anno_body.type !== "AdnoRichText" &&
+        !(anno_body.type === "TextualBody" &&
+          anno_body.purpose === "commenting"))
 
-      let newBody = anno.body.filter(anno_body => anno_body.type !== "AdnoHtmlBody" && anno_body.type !== "AdnoRichText" && !(anno_body.type === "TextualBody" && anno_body.purpose === "commenting"))
+      if (anno.body.length > 0 && anno.body.find(anno_body => anno_body.type === "AdnoRichText")) {
+        const annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value
 
-      if (anno.body.length > 0) {
+        let htmlBody = ""
+        let allMarkdown = ""
 
-        if (anno.body.find(anno_body => anno_body.type === "AdnoRichText")) {
+        annoRichText.forEach(block => {
+          var blockHTML = edjsParser.parseBlock(block);
+
+          htmlBody += blockHTML;
+
+          var markdown = turndownService.turndown(blockHTML)
+
+          // add markdown and a line break
+          allMarkdown += markdown + "\n";
+        })
 
 
-          let annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value
-
-          let htmlBody = ""
-          let allMarkdown = ""
-
-          annoRichText.forEach(block => {
-            var blockHTML = edjsParser.parseBlock(block);
-
-            htmlBody += blockHTML;
-
-            var markdown = turndownService.turndown(blockHTML)
-
-            // add markdown and a line break
-            allMarkdown += markdown + "\n";
+        newBody.push(
+          {
+            "type": "TextualBody",
+            "value": allMarkdown,
+            "purpose": "commenting"
+          },
+          {
+            "type": "HTMLBody",
+            "value": htmlBody,
+            "purpose": "commenting"
           })
 
-
-          newBody.push(
-            {
-              "type": "TextualBody",
-              "value": allMarkdown,
-              "purpose": "commenting"
-            },
-            {
-              "type": "HTMLBody",
-              "value": htmlBody,
-              "purpose": "commenting"
-            })
-
-          // Update the localstorage
-
-          annotations.filter(annotation => annotation.id === anno.id)[0].body = newBody
-
-          insertInLS(`${projectID}_annotations`, JSON.stringify(annotations))
-
+        return {
+          ...anno,
+          body: newBody
         }
       }
 
-    })
+      return anno
+    }))
 
   } catch (error) {
     console.error("Erreur détectée ", error);
   }
 }
 
-export function migrateTextBody(projectID, annotation) {
+export function migrateTextBody(annotation) {
 
   const newBody = annotation.body
 
@@ -431,25 +357,23 @@ export function migrateTextBody(projectID, annotation) {
     "value": `<p>${annotation.body.filter(annobody => annobody.type === "TextualBody")[0].value}</p>`,
     "purpose": "commenting"
   })
-
-  // Update the localstorage
-  let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
-  projectAnnotations.filter(anno => anno.id === annotation.id)[0].body = newBody
-
-  insertInLS(`${projectID}_annotations`, JSON.stringify(projectAnnotations))
+  
+  return annotation
 }
 
-export function checkOldVersion(t) {
-  const projectsID = JSON.parse(localStorage.getItem("adno_projects"))
+export async function checkOldVersion(t) {
+  const projects = await projectDB.getAll();
 
-  projectsID?.forEach(projectID => {
-    let projectAnnotations = JSON.parse(localStorage.getItem(`${projectID}_annotations`))
+  for (const project of projects) {
+    const projectAnnotations = JSON.parse(localStorage.getItem(`${project.id}_annotations`));
 
-    projectAnnotations?.forEach(annotation => {
+    if (!projectAnnotations) continue;
+
+    for (const anno of projectAnnotations) {
+      let annotation = { ...anno }
       if (annotation.body && annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-        migrateTextBody(projectID, annotation)
+        annotation = migrateTextBody(project.id, annotation);
       }
-
 
       if (annotation.body && annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
         Swal.fire({
@@ -458,23 +382,18 @@ export function checkOldVersion(t) {
           showConfirmButton: true,
           confirmButtonText: t('modal.update_old_version'),
           icon: 'warning',
-        }).then((result) => {
+        }).then(async (result) => {
           if (result.isConfirmed) {
-
-            projectsID.forEach(projectID => {
-              migrateAnnotations(projectID)
-            })
-
-            Swal.fire(t('modal.version_updated'), '', 'success')
-
-
+            for (const proj of projects) {
+              migrateAnnotations(proj.id);
+            }
+            Swal.fire(t('modal.version_updated'), '', 'success');
           }
-        })
-
-        return
+        });
+        return;
       }
-    })
-  })
+    }
+  }
 }
 
 export async function enhancedFetch(url) {

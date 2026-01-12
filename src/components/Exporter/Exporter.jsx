@@ -1,7 +1,7 @@
 import { faDownload, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { createExportProjectJsonFile } from "../../Utils/utils";
 import { forwardRef, useEffect, useRef } from "react";
+import { DownloadLink } from "./DownloadLink";
 
 export const ExporterModal = forwardRef(({ translate, selectedProject, exportIIIF }, ref) => {
 
@@ -48,12 +48,8 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
                     <label className="btn btn-success">
                         {selectedProject &&
                             selectedProject.id &&
-                            <a id={"download_btn_" + selectedProject.id}
-                                href={createExportProjectJsonFile(selectedProject.id)}
-                                download={selectedProject.title + ".json"}
-                                title={translate('navbar.download_project')}>
-                                Adno
-                            </a>}
+                            <DownloadLink selectedProject={selectedProject} translate={translate} />
+                        }
                     </label>
                     ou
                     <label className="btn btn-success" onClick={() => {

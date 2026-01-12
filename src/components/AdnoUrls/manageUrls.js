@@ -1,5 +1,6 @@
 import Swal from "sweetalert2"
-import { buildJsonProjectWithManifest, enhancedFetch, generateUUID, get_url_extension, insertInLS, migrateTextBody } from "../../Utils/utils";
+import { buildJsonProjectWithManifest, enhancedFetch, generateUUID, migrateTextBody } from "../../Utils/utils";
+import { projectDB } from "../../services/db";
 
 function isJsonContentType(contentType) {
     const jsonPattern = /^(application\/(vnd\.api\+json|ld\+json|x-json-stream|json)(;.*)?|text\/json)$/i;
@@ -55,36 +56,31 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
 
                                                 let project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
 
-                                                // Création du projet dans le localStorage
-                                                insertInLS(projectID, JSON.stringify(project))
-
-                                                // Insertion de l'ID du projet créé dans le tableau des projets
-                                                let projects = JSON.parse(localStorage.getItem("adno_projects"))
-                                                projects.push(projectID)
-                                                insertInLS("adno_projects", JSON.stringify(projects))
-
-
-                                                insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.first.items))
-
-                                                // Migrate annotations if there is only TextualBody and not HTMLBody
-                                                manifest.first.items?.forEach(annotation => {
-                                                    if (annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-                                                        migrateTextBody(projectID, annotation)
-                                                    }
-                                                })
-
-                                                Swal.fire({
-                                                    title: translation('import.import_success'),
-                                                    showCancelButton: false,
-                                                    showConfirmButton: true,
-                                                    confirmButtonText: 'OK',
-                                                    icon: 'success'
-                                                })
-                                                    .then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            props.history.push(`/project/${projectID}/edit`)
+                                                projectDB.add(projectID, {
+                                                    id: projectID,
+                                                    ...project,
+                                                    annotations: manifest.first.items.map(annotation => {
+                                                        if (annotation.body.find(annoBody => annoBody.type === "TextualBody") &&
+                                                            !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
+                                                            return migrateTextBody(projectID, annotation)
                                                         }
+                                                        return annotation
                                                     })
+                                                }).then(() => {
+
+                                                    Swal.fire({
+                                                        title: translation('import.import_success'),
+                                                        showCancelButton: false,
+                                                        showConfirmButton: true,
+                                                        confirmButtonText: 'OK',
+                                                        icon: 'success'
+                                                    })
+                                                        .then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                props.history.push(`/project/${projectID}/edit`)
+                                                            }
+                                                        })
+                                                })
                                             } else if (result.isDismissed) {
                                                 props.history.push("/")
                                             }
@@ -92,7 +88,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                 } else {
                                     // Non-ADNO Format detected
                                     if ((manifest.hasOwnProperty("@context") || manifest.hasOwnProperty("context")) && (manifest.hasOwnProperty("@id") || manifest.hasOwnProperty("id"))) {
-                                        insertInLS("adno_image_url", rawReponse.url)
+                                        localStorage.setItem("adno_image_url", rawReponse.url)
                                         localStorage.removeItem("selected_canva")
                                         props.history.push("/new")
                                     } else {
@@ -118,7 +114,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                 }
                             })
                     } else {
-                        insertInLS("adno_image_url", rawReponse.url)
+                        localStorage.setItem("adno_image_url", rawReponse.url)
                         localStorage.removeItem("selected_canva")
                         props.history.push("/new")
                     }
@@ -173,19 +169,6 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
             ...buildJsonProjectWithManifest(projectID, title, desc, manifestURL),
             settings
         }
-        insertInLS(projectID, JSON.stringify(project))
-
-        const projects = JSON.parse(localStorage.getItem("adno_projects"))
-        projects.push(projectID)
-        insertInLS("adno_projects", JSON.stringify(projects))
-
-        // insertInLS(`${projectID}_annotations`, JSON.stringify(manifest.items[0]?.annotations[0].items.map(annotation => ({
-        //     "@context": "http://www.w3.org/ns/anno.jsonld",
-        //     body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
-        //     target: annotation.target,
-        //     id: annotation.id,
-        //     type: 'Annotation'
-        // }))))
 
         const annotations = manifest.items[0]?.annotations[0].items.flatMap(annotation => {
             if (annotation.body)
@@ -205,9 +188,15 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
             }
         })
 
-        insertInLS(`${projectID}_annotations`, JSON.stringify(annotations))
-
-        props.history.push(`/project/${projectID}/edit`)
+        projectDB.update(
+            projectID,
+            {
+                ...project,
+                annotations
+            })
+            .then(() => {
+                props.history.push(`/project/${projectID}/edit`)
+            })
     } catch (err) {
         console.log(err)
         return Promise.reject(translation('errors.unable_access_file'))

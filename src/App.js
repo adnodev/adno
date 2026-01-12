@@ -5,7 +5,6 @@ import {
 
 // Import utils
 import history from "./Utils/history";
-import { insertInLS } from "./Utils/utils";
 
 // Import React components
 import Home from "./components/Home/Home";
@@ -24,14 +23,6 @@ export default class App extends Component {
         super(props);
         this.state = {
             isProjects: false
-        }
-    }
-
-    componentDidMount() {
-        // When the app load, check if it already exists some projects
-        // If not then create the key "adno_projects" with empty array as value
-        if (!localStorage.getItem("adno_projects")) {
-            insertInLS("adno_projects", JSON.stringify([]))
         }
     }
 
