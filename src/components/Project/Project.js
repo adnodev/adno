@@ -127,8 +127,6 @@ const Project = ({ editMode }) => {
         })
         : annotations;
 
-    console.log(state)
-
     return (
         <div className="project">
             <Navbar

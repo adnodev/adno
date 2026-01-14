@@ -35,7 +35,6 @@ class ProjectDB {
   }
 
   async add(projectId, project) {
-    console.log('add', projectId, project)
     await this.init();
     const tx = this.db.transaction([this.storeName], 'readwrite');
     await tx.objectStore(this.storeName).add({
@@ -122,7 +121,7 @@ class ProjectDB {
     return !!projectIdsJson;
   }
 
-  async migrateFromLocalStorage(removeAfter = true) {
+  async migrateFromLocalStorage() {
     await this.init();
     const projectIdsJson = localStorage.getItem('adno_projects');
     if (!projectIdsJson) return { migrated: 0, errors: [] };
@@ -146,20 +145,9 @@ class ProjectDB {
 
         await this.add(project.id, project);
         migrated++;
-
-        if (removeAfter) {
-          localStorage.removeItem(id);
-          if (annotationsJson) {
-            localStorage.removeItem(`${id}_annotations`);
-          }
-        }
       } catch (error) {
         errors.push({ id, error: error.message });
       }
-    }
-
-    if (removeAfter && errors.length === 0) {
-      localStorage.removeItem('adno_projects');
     }
 
     return { migrated, errors };

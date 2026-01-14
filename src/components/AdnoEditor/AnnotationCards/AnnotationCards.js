@@ -12,7 +12,7 @@ import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong, faVolumeHigh } fr
 import Swal from "sweetalert2";
 
 // Import Utils 
-import { buildTagsList, generateUUID } from "../../../Utils/utils";
+import { buildTagsList } from "../../../Utils/utils";
 
 //Imports CSS
 import "./AnnotationCards.css";
@@ -50,9 +50,9 @@ class AnnotationCards extends Component {
     // Function to move an annotation up one place
     annoSwitchUp = (index) => {
 
-        var annos = this.props.annotations;
+        const annos = this.props.annotations;
 
-        var annoToSwitch = annos[index - 1]
+        const annoToSwitch = annos[index - 1]
 
         annos[index - 1] = annos[index]
         annos[index] = annoToSwitch
@@ -65,9 +65,9 @@ class AnnotationCards extends Component {
 
     // Function to move an annotation down one place
     annoSwitchDown = (index) => {
-        var annos = this.props.annotations;
+        const annos = this.props.annotations;
 
-        var annoToSwitch = annos[index + 1]
+        const annoToSwitch = annos[index + 1]
 
         annos[index + 1] = annos[index]
         annos[index] = annoToSwitch
@@ -126,9 +126,9 @@ class AnnotationCards extends Component {
 
                                         <div className="card-tags-list">
                                             {
-                                                annotation.tags.map(tag => {
+                                                annotation.tags.map((tag, idx) => {
                                                     return (
-                                                        <div key={generateUUID()} className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
+                                                        <div key={`${tag}-${idx}`} className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
                                                             {tag}
                                                         </div>
                                                     )

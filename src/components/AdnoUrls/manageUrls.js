@@ -1,6 +1,8 @@
 import Swal from "sweetalert2"
-import { buildJsonProjectWithManifest, enhancedFetch, generateUUID, migrateTextBody } from "../../Utils/utils";
+import { buildJsonProjectWithManifest, enhancedFetch, migrateTextBody } from "../../Utils/utils";
 import { projectDB } from "../../services/db";
+import { v7 } from 'uuid'
+
 
 function isJsonContentType(contentType) {
     const jsonPattern = /^(application\/(vnd\.api\+json|ld\+json|x-json-stream|json)(;.*)?|text\/json)$/i;
@@ -49,7 +51,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                     })
                                         .then((result) => {
                                             if (result.isConfirmed) {
-                                                let projectID = generateUUID();
+                                                let projectID = v7()
 
                                                 let title = manifest.title || manifest.label
                                                 let desc = manifest.description || manifest.subject
@@ -146,7 +148,7 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
         const metadata = manifest.metadata.find(meta => meta.label.en?.includes('adno_settings'))
         const settings = JSON.parse(atob(metadata.value.en[0]));
 
-        const projectID = generateUUID();
+        const projectID = v7()
 
         let title = manifest.title
 

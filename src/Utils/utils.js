@@ -3,17 +3,7 @@ import edjsHTML from "editorjs-html";
 import TurndownService from "turndown"
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
-
-// Function to generate a random UUID such as b9930ecc-6a18-43f5-8a09-93eb6262f590
-export function generateUUID() {
-  var dt = new Date().getTime();
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (dt + Math.random() * 16) % 16 | 0;
-    dt = Math.floor(dt / 16);
-    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-  });
-  return uuid;
-}
+import { v7 } from "uuid";
 
 export function findInfoJsonFromManifest(url) {
   return fetch(url)
@@ -98,7 +88,7 @@ export const buildProjectAdnoFormat = (title, description, manifest) => {
   return (
     {
       "@context": "http://www.w3.org/ns/anno.jsonld",
-      "id": generateUUID(),
+      "id": v7(),
       "type": "AnnotationCollection",
       "title": title,
       "description": description,
@@ -178,7 +168,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
 
       // Generate a new ID and new last_update
       imported_project.modified = createDate()
-      imported_project.id = generateUUID()
+      imported_project.id = v7()
 
       let proj = {
         "id": imported_project.id,
@@ -357,7 +347,7 @@ export function migrateTextBody(annotation) {
     "value": `<p>${annotation.body.filter(annobody => annobody.type === "TextualBody")[0].value}</p>`,
     "purpose": "commenting"
   })
-  
+
   return annotation
 }
 

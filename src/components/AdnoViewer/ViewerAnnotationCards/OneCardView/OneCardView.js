@@ -1,7 +1,7 @@
 import { Component } from "react";
 
 // Import Utils
-import { buildTagsList, generateUUID } from "../../../../Utils/utils";
+import { buildTagsList } from "../../../../Utils/utils";
 
 // Import Html Parser
 import parse from 'html-react-parser';
@@ -98,9 +98,9 @@ class OneCardView extends Component {
 
                 <div className="card-tags-list">
                     {
-                        buildTagsList(this.props.annotation).map(tag => {
+                        buildTagsList(this.props.annotation).map((tag, idx) => {
                             return (
-                                <div key={generateUUID()} className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
+                                <div key={`${tag}${idx}`} className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
                                     {tag.value}
                                 </div>
                             )

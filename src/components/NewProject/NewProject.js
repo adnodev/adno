@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 import ProjectSettings from "../Project/ProjectSettings";
 
-import { buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, generateUUID, enhancedFetch, defaultProjectSettings, diffProjectSettings } from "../../Utils/utils";
+import { buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, enhancedFetch, defaultProjectSettings, diffProjectSettings } from "../../Utils/utils";
 
 // Import popup alerts
 import Swal from "sweetalert2";
@@ -14,6 +14,7 @@ import "./NewProject.css"
 import { withTranslation } from "react-i18next";
 import ProjectEditMetadatas from "../Project/ProjectEditMetadatas/ProjectEditMetadatas";
 import { projectDB } from "../../services/db";
+import { v7 } from "uuid";
 
 class NewProject extends Component {
     constructor(props) {
@@ -157,8 +158,8 @@ class NewProject extends Component {
 
                     } else if (canva.images[0].resource.default && canva.images[0].resource.default.service && canva.images[0].resource.default.service["@id"]) {
 
-                        var originalImgLink = canva.images[0].resource.default.service["@id"] + "/full/300,/0/default.jpg"
-                        let manifestURL = canva.images[0].resource.default.service["@id"] + "/info.json"
+                        const originalImgLink = canva.images[0].resource.default.service["@id"] + "/full/300,/0/default.jpg"
+                        const manifestURL = canva.images[0].resource.default.service["@id"] + "/info.json"
 
                         canva = {
                             "thumbnail_link": originalImgLink,
@@ -179,8 +180,8 @@ class NewProject extends Component {
                 } else if (canva.thumbnail) {
                     if (canva.images[0].resource.service && canva.images[0].resource.service["@id"]) {
 
-                        let imgLink = canva.thumbnail["@id"]
-                        let manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
+                        const imgLink = canva.thumbnail["@id"]
+                        const manifestURL = canva.images[0].resource.service["@id"] + "/info.json"
 
                         canva = {
                             "thumbnail_link": imgLink,
@@ -253,10 +254,10 @@ class NewProject extends Component {
             this.setState({ isLoading: true })
             const GRANTED_IMG_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS.split(",")
 
-            var selected_canva = localStorage.getItem("selected_canva")
+            const selected_canva = localStorage.getItem("selected_canva")
 
             if (selected_canva) {
-                const projectID = generateUUID()
+                const projectID = v7()
                 let project = buildJsonProjectWithManifest(projectID,
                     this.state.projetcName,
                     this.state.projectDesc, selected_canva)
@@ -285,7 +286,7 @@ class NewProject extends Component {
                 const manifest_url = localStorage.getItem("adno_image_url")
                 const isIpfsUrl = manifest_url.startsWith(process.env.IPFS_GATEWAY);
 
-                const projectID = generateUUID()
+                const projectID = v7()
 
                 try {
                     if (GRANTED_IMG_EXTENSIONS.includes(get_url_extension(manifest_url)) || isIpfsUrl) {
@@ -319,11 +320,11 @@ class NewProject extends Component {
 
                                             if (manifest["@type"] && manifest["@type"] === "sc:Manifest") {
                                                 // type manifest
-
+                                                let resultLink;
                                                 if (manifest.sequences[0].canvases && manifest.sequences[0].canvases.length > 0) {
-                                                    var resultLink = manifest.sequences[0].canvases[0].images[0].resource.service["@id"] + "/info.json"
+                                                    resultLink = manifest.sequences[0].canvases[0].images[0].resource.service["@id"] + "/info.json"
                                                 } else if (manifest.logo["@id"]) {
-                                                    var resultLink = manifest.logo["@id"].split("/")[0] + "//"
+                                                    resultLink = manifest.logo["@id"].split("/")[0] + "//"
 
                                                     for (let index = 1; index < manifest.logo["@id"].split("/").length - 4; index++) {
                                                         resultLink += manifest.logo["@id"].split("/")[index] + "/";
@@ -432,6 +433,8 @@ class NewProject extends Component {
     render() {
         const overloadedSettings = diffProjectSettings(this.state.settings, defaultProjectSettings())
 
+        console.log(this.state)
+
         return (
             <div className="new-project">
                 {this.state.showSettings && <ProjectSettings
@@ -485,6 +488,7 @@ class NewProject extends Component {
                                 <span className="new_project_span">{this.props.t('project.advanced')}</span>
                                 <div className="w-full">
                                     <button className="btn btn-outline ms-2" onClick={() => {
+                                        console.log('click the options')
                                         this.setState({ showSettings: true })
                                     }}>Options {Object.keys(overloadedSettings).length > 0 ? `(${Object.keys(overloadedSettings).length})` : ''}</button>
                                     <button className="btn btn-outline ms-2" onClick={() => {

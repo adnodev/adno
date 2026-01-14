@@ -42,15 +42,15 @@ class OpenView extends Component {
         } else {
             let tileSources;
 
-            if (this.props.selected_project.manifest_url) {
+            if (project.manifest_url) {
                 tileSources = [
-                    this.props.selected_project.manifest_url
+                    project.manifest_url
                 ]
 
             } else {
                 tileSources = {
                     type: 'image',
-                    url: this.props.selected_project.img_url
+                    url: project.img_url
                 }
             }
 
@@ -76,9 +76,7 @@ class OpenView extends Component {
 
             const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
 
-            const annoFormatter = function () {
-                return annoStyles;
-            }
+            const annoFormatter = () => annoStyles;
 
             this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
                 locale: 'auto',
@@ -589,12 +587,14 @@ class OpenView extends Component {
 
     reloadAnnotationsFromProps = () => {
         const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
-        this.AdnoAnnotorious.loadAnnotations(dataURI)
+        if (this.AdnoAnnotorious) {
+            this.AdnoAnnotorious.loadAnnotations(dataURI)
 
-        this.loadAudio()
+            this.loadAudio()
 
-        setTimeout(this.freeMode, 1000)
-        setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
+            setTimeout(this.freeMode, 1000)
+            setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -629,7 +629,7 @@ class OpenView extends Component {
             setTimeout(this.freeMode, 1000)
 
         // Check if the user toggled the navigator on/off
-        if (this.props.showNavigator !== prevProps.showNavigator && this.openSeadragon.navigator) {
+        if (this.props.showNavigator !== prevProps.showNavigator && this.openSeadragon?.navigator) {
             if (this.props.showNavigator) {
                 document.getElementById(this.openSeadragon.navigator.id).style.display = 'block';
             } else {
