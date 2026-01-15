@@ -1,6 +1,4 @@
 import Swal from "sweetalert2";
-import edjsHTML from "editorjs-html";
-import TurndownService from "turndown"
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
 import { v7 } from "uuid";
@@ -195,7 +193,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
         .map(annotation => {
           if (annotation.body.find(annoBody => annoBody.type === "TextualBody") &&
             !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-            return migrateTextBody(proj.id, annotation)
+            return migrateTextBody(annotation)
           }
           return annotation
         })
@@ -280,110 +278,16 @@ export function defaultProjectSettings() {
   }
 }
 
-export async function migrateAnnotations(projectID) {
-
-  const edjsParser = edjsHTML();
-  const turndownService = new TurndownService()
-
-  try {
-    const annotations = await projectDB.getAnnotations(projectID)
-
-    return projectDB.updateAnnotations(projectID, annotations.map(anno => {
-      let newBody = anno.body.filter(anno_body => anno_body.type !== "AdnoHtmlBody" &&
-        anno_body.type !== "AdnoRichText" &&
-        !(anno_body.type === "TextualBody" &&
-          anno_body.purpose === "commenting"))
-
-      if (anno.body.length > 0 && anno.body.find(anno_body => anno_body.type === "AdnoRichText")) {
-        const annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value
-
-        let htmlBody = ""
-        let allMarkdown = ""
-
-        annoRichText.forEach(block => {
-          var blockHTML = edjsParser.parseBlock(block);
-
-          htmlBody += blockHTML;
-
-          var markdown = turndownService.turndown(blockHTML)
-
-          // add markdown and a line break
-          allMarkdown += markdown + "\n";
-        })
-
-
-        newBody.push(
-          {
-            "type": "TextualBody",
-            "value": allMarkdown,
-            "purpose": "commenting"
-          },
-          {
-            "type": "HTMLBody",
-            "value": htmlBody,
-            "purpose": "commenting"
-          })
-
-        return {
-          ...anno,
-          body: newBody
-        }
-      }
-
-      return anno
-    }))
-
-  } catch (error) {
-    console.error("Erreur détectée ", error);
-  }
-}
-
 export function migrateTextBody(annotation) {
-
-  const newBody = annotation.body
-
-  newBody.push({
-    "type": "HTMLBody",
-    "value": `<p>${annotation.body.filter(annobody => annobody.type === "TextualBody")[0].value}</p>`,
-    "purpose": "commenting"
-  })
-
-  return annotation
-}
-
-export async function checkOldVersion(t) {
-  const projects = await projectDB.getAll();
-
-  for (const project of projects) {
-    const projectAnnotations = JSON.parse(localStorage.getItem(`${project.id}_annotations`));
-
-    if (!projectAnnotations) continue;
-
-    for (const anno of projectAnnotations) {
-      let annotation = { ...anno }
-      if (annotation.body && annotation.body.find(annoBody => annoBody.type === "TextualBody") && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-        annotation = migrateTextBody(project.id, annotation);
-      }
-
-      if (annotation.body && annotation.body.find(annoBody => annoBody.type === "AdnoRichText")) {
-        Swal.fire({
-          title: t('modal.old_version'),
-          showCancelButton: false,
-          showConfirmButton: true,
-          confirmButtonText: t('modal.update_old_version'),
-          icon: 'warning',
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            for (const proj of projects) {
-              migrateAnnotations(proj.id);
-            }
-            Swal.fire(t('modal.version_updated'), '', 'success');
-          }
-        });
-        return;
-      }
-    }
+  const textBody = annotation.body.find(annobody => annobody.type === "TextualBody");
+  if (textBody) {
+    annotation.body.push({
+      "type": "HTMLBody",
+      "value": `<p>${textBody.value}</p>`,
+      "purpose": "commenting"
+    });
   }
+  return annotation;
 }
 
 export async function enhancedFetch(url) {

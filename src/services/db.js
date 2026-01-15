@@ -1,3 +1,5 @@
+import edjsHTML from "editorjs-html";
+import TurndownService from "turndown";
 
 class ProjectDB {
   constructor() {
@@ -14,7 +16,6 @@ class ProjectDB {
       request.onsuccess = async () => {
         this.db = request.result;
 
-        // Auto-migrate if needed
         if (await this.needsMigration()) {
           await this.migrateFromLocalStorage(true);
         }
@@ -118,11 +119,67 @@ class ProjectDB {
 
   async needsMigration() {
     const projectIdsJson = localStorage.getItem('adno_projects');
-    return !!projectIdsJson;
+    if (!projectIdsJson) return false;
+
+    const existingProjects = await this.getAll();
+    return existingProjects.length === 0;
+  }
+
+  migrateAnnotationBody(anno) {
+    const edjsParser = edjsHTML();
+    const turndownService = new TurndownService();
+
+    let newBody = anno.body.filter(anno_body =>
+      anno_body.type !== "AdnoHtmlBody" &&
+      anno_body.type !== "AdnoRichText" &&
+      !(anno_body.type === "TextualBody" && anno_body.purpose === "commenting")
+    );
+
+    if (anno.body.find(anno_body => anno_body.type === "AdnoRichText")) {
+      const annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value;
+
+      let htmlBody = "";
+      let allMarkdown = "";
+
+      annoRichText.forEach(block => {
+        const blockHTML = edjsParser.parseBlock(block);
+        htmlBody += blockHTML;
+        const markdown = turndownService.turndown(blockHTML);
+        allMarkdown += markdown + "\n";
+      });
+
+      newBody.push(
+        {
+          "type": "TextualBody",
+          "value": allMarkdown,
+          "purpose": "commenting"
+        },
+        {
+          "type": "HTMLBody",
+          "value": htmlBody,
+          "purpose": "commenting"
+        }
+      );
+
+      return { ...anno, body: newBody };
+    }
+
+    if (anno.body.find(anno_body => anno_body.type === "TextualBody") &&
+        !anno.body.find(anno_body => anno_body.type === "HTMLBody")) {
+      const textValue = anno.body.find(annobody => annobody.type === "TextualBody").value;
+      anno.body.push({
+        "type": "HTMLBody",
+        "value": `<p>${textValue}</p>`,
+        "purpose": "commenting"
+      });
+    }
+
+    return anno;
   }
 
   async migrateFromLocalStorage() {
     await this.init();
+    console.log("migrateFromLocalStorage")
     const projectIdsJson = localStorage.getItem('adno_projects');
     if (!projectIdsJson) return { migrated: 0, errors: [] };
 
@@ -137,10 +194,10 @@ class ProjectDB {
 
         const project = JSON.parse(projectJson);
 
-        // Get annotations if they exist
         const annotationsJson = localStorage.getItem(`${id}_annotations`);
         if (annotationsJson) {
-          project.annotations = JSON.parse(annotationsJson);
+          const annotations = JSON.parse(annotationsJson);
+          project.annotations = annotations.map(anno => this.migrateAnnotationBody(anno));
         }
 
         await this.add(project.id, project);

@@ -10,9 +10,6 @@ import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRigh
 // Import utils
 import { getEye } from "../../Utils/utils";
 
-// // Import OpenSeaDragon and Annotorious
-// import "/libraries/openseadragon/openseadragon-annotorious.min.js";
-
 // Import CSS
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";

@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Swal from "sweetalert2";
 
 // Import utils
-import { checkOldVersion } from "../../Utils/utils";
 import { manageUrls } from "../AdnoUrls/manageUrls";
 
 // Import components
@@ -35,12 +34,9 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        checkOldVersion(this.props.t)
-            .then(() => {
-                projectDB.getAll()
-                    .then(projects => {
-                        this.setState({ projects })
-                    })
+        projectDB.getAll()
+            .then(projects => {
+                this.setState({ projects })
             })
     }
 

@@ -4,9 +4,6 @@ import { withRouter } from "react-router-dom";
 // Import SweetAlert
 import Swal from "sweetalert2";
 
-// Import libraries
-// import "/libraries/openseadragon/openseadragon-annotorious.min.js";
-
 // Imports CSS
 import "./AdnoViewer.css";
 import { projectDB } from "../../services/db";
