@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
 import { exportToIIIF } from "../../services/iiif/exporter";
+import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
 
 // Import Components
@@ -25,7 +26,7 @@ const Project = ({ editMode }) => {
 
     const [state, setState] = useState({
         annotations: [],
-        selectedProject: {},
+        selectedProject: undefined,
         sidebarOpened: true,
         updateAnnotation: false,
         showProjectMetadatas: false,
@@ -126,6 +127,15 @@ const Project = ({ editMode }) => {
             return annotationTags.find(tag => settingsTags.includes(tag));
         })
         : annotations;
+
+    if (!state.selectedProject)
+        return <div className="loader">
+            <InfinitySpin
+                width='200'
+                height="200"
+                color="black"
+            />
+        </div>
 
     return (
         <div className="project">
@@ -237,6 +247,7 @@ const Project = ({ editMode }) => {
                     <div className="card">
                         {editMode ? (
                             <AdnoEditor
+                                selectedProject={state.selectedProject}
                                 annotations={annotations}
                                 updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                                 selectedAnno={selectedAnnotation}
@@ -265,7 +276,7 @@ const Project = ({ editMode }) => {
                                 showEyes={settings.showEyes}
                                 annos={viewerAnnotations}
                                 selectedAnno={selectedAnnotation}
-                                selected_project={state.selectedProject}
+                                selectedProject={state.selectedProject}
                                 changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
                                 updateAutoplayId={(id) => setState(prev => ({ ...prev, autoplayID: id }))}
                                 changeShowToolbar={() => setState(prev => ({

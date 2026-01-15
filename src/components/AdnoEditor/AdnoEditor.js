@@ -24,99 +24,91 @@ class AdnoEditor extends Component {
     }
 
     componentDidMount() {
-        const id = this.props.match.params.id
+        const selectedProject = this.props.selectedProject;
 
-        projectDB.exists(id)
-            .then(async optProject => {
-                if (!optProject)
-                    this.props.history.push("/")
-                else {
-                    let selected_project = { ...optProject }
-                    let tileSources = {
-                        type: 'image',
-                        url: selected_project.img_url
-                    }
+        if (!selectedProject || !selectedProject.id) {
+            return;
+        }
 
-                    if (selected_project.manifest_url) {
-                        tileSources = [
-                            selected_project.manifest_url
-                        ]
-                    }
+        let tileSources = {
+            type: 'image',
+            url: selectedProject.img_url
+        }
 
-                    OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
-                    OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
-                    OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
-                    OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
-                    OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
-                    OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
-                    OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
-                    OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
-                    OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
+        if (selectedProject.manifest_url) {
+            tileSources = [
+                selectedProject.manifest_url
+            ]
+        }
 
+        OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
+        OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
+        OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
+        OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
+        OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
+        OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
+        OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
+        OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
+        OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
-                    this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
-                        id: 'openseadragon1',
-                        tileSources: tileSources,
-                        prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
-                        // Enable rotation
-                        toolbar: "toolbar-osd",
-                        showRotationControl: this.props.rotation,
-                        showFullPageControl: false,
-                    }), {
-                        locale: 'auto',
-                        drawOnSingleClick: true,
-                        allowEmpty: true,
-                        disableEditor: true
-                    });
+        this.AdnoAnnotorious = OpenSeadragon.Annotorious(OpenSeadragon({
+            id: 'openseadragon1',
+            tileSources: tileSources,
+            prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
+            // Enable rotation
+            toolbar: "toolbar-osd",
+            showRotationControl: this.props.rotation,
+            showFullPageControl: false,
+        }), {
+            locale: 'auto',
+            drawOnSingleClick: true,
+            allowEmpty: true,
+            disableEditor: true
+        });
 
-                    const annos = this.props.annotations
+        const annos = this.props.annotations
 
-                    // Generate dataURI and load annotations into Annotorious
-                    const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
-                    this.AdnoAnnotorious.loadAnnotations(dataURI)
+        // Generate dataURI and load annotations into Annotorious
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
+        this.AdnoAnnotorious.loadAnnotations(dataURI)
 
-                    Annotorious.SelectorPack(this.AdnoAnnotorious);
-                    Annotorious.BetterPolygon(this.AdnoAnnotorious);
-                    Annotorious.Toolbar(this.AdnoAnnotorious, document.getElementById('toolbar-container'));
+        Annotorious.SelectorPack(this.AdnoAnnotorious);
+        Annotorious.BetterPolygon(this.AdnoAnnotorious);
+        Annotorious.Toolbar(this.AdnoAnnotorious, document.getElementById('toolbar-container'));
 
+        // Event triggered by using saveSelected annotorious function
+        this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
+            const annotations = [...this.props.annotations] || []
+            annotations.push(newAnnotation)
 
-                    // Event triggered by using saveSelected annotorious function
-                    this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-                        const annotations = [...this.props.annotations] || []
-                        annotations.push(newAnnotation)
+            projectDB.updateAnnotations(selectedProject.id, annotations)
+                .then(() => {
+                    this.props.updateAnnos(annotations)
 
+                    this.props.openRichEditor(newAnnotation)
+                })
+        });
 
-                        projectDB.updateAnnotations(selected_project.id, annotations)
-                            .then(() => {
-                                this.props.updateAnnos(annotations)
+        // Event triggered when drawing a new shape
+        this.AdnoAnnotorious.on('createSelection', (annotation) => {
+            this.AdnoAnnotorious.saveSelected()
+        })
 
-                                this.props.openRichEditor(newAnnotation)
-                            })
-                    });
+        // Event triggered when user click on an annotation
+        this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
+            document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            this.props.openRichEditor(annotation)
+        })
 
-                    // Event triggered when drawing a new shape
-                    this.AdnoAnnotorious.on('createSelection', (annotation) => {
-                        this.AdnoAnnotorious.saveSelected()
-                    })
+        // Event triggered when resizing an annotation shape
+        this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
+            this.setState({ isMovingItem: true })
 
-                    // Event triggered when user click on an annotation
-                    this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-                        document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-                        this.props.openRichEditor(annotation)
-                    })
+            const selected = this.state.selected ? { ...this.state.selected } : this.AdnoAnnotorious.getSelected();
+            selected.target = newTarget
 
-
-                    // Event triggered when resizing an annotation shape
-                    this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
-                        this.setState({ isMovingItem: true })
-
-                        const selected = this.state.selected ? { ...this.state.selected } : this.AdnoAnnotorious.getSelected();
-                        selected.target = newTarget
-
-                        this.setState({ selected })
-                    });
-                }
-            })
+            this.setState({ selected })
+        });
     }
 
     changeAnno = (annotation) => {
