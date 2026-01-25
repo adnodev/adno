@@ -23,7 +23,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
 
     if (url.startsWith('http') || url.startsWith("https")) {
-        console.log('call with', step === "decoreURIComponent" ? decodeURIComponent(url) : url)
+        // console.log('call with', step === "decoreURIComponent" ? decodeURIComponent(url) : url)
         return enhancedFetch(step === "decoreURIComponent" ? decodeURIComponent(url) : url)
             .then(rawReponse => {
                 if (rawReponse.response.ok) {
@@ -153,10 +153,17 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
         let title = manifest.title
 
         if (!title) {
-            if (typeof manifest.label === 'object' && manifest.label !== null) {
+            if (typeof manifest.label === 'object' && manifest.label !== null && 
+                (manifest.label.en[0] || manifest.label.fr[0])
+            ) {
                 title = String(manifest.label.en[0] || manifest.label.fr[0])
             } else {
-                title = String(manifest.label)
+                const titleFromMetadata = manifest.metadata.find(meta => meta.label.en?.includes('title'))
+                if (titleFromMetadata) {
+                    title = titleFromMetadata.value.en[0]
+                } else {
+                    title = String(manifest.label)
+                }
             }
         }
 
@@ -190,7 +197,7 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
             }
         })
 
-        projectDB.update(
+        projectDB.add(
             projectID,
             {
                 ...project,

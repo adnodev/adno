@@ -54,7 +54,6 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
                     ou
                     <label className="btn btn-success" onClick={() => {
                         exportIIIF()
-                            .then(manifest => generateInputFilesView(manifest, selectedProject))
                     }
                     }>
                         {translate('navbar.export_project_to_iiif')}<span className="badge badge-md ms-2">BETA</span>
