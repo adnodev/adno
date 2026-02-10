@@ -21,7 +21,7 @@ class AdnoMdViewer extends Component {
     }
 
     applyWikiContent = async (wbk, line) => {
-        var finalBody = this.state.annos
+        let finalBody = this.state.annos
 
         if (line.match("https?:\/\/www.wikidata.org\/wiki\/[a-zA-Z0-9]*")) {
 
@@ -68,7 +68,7 @@ class AdnoMdViewer extends Component {
         })
 
         if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
-            var annoMdBody = this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
+            const annoMdBody = this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
 
             const allLines = annoMdBody.split("\n")
 

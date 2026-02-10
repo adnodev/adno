@@ -10,11 +10,9 @@ import { withTranslation } from "react-i18next";
 // Import SweetAlert
 import Swal from "sweetalert2";
 
-// Import Utils
-import { insertInLS } from "../../../Utils/utils";
-
 // Import CSS
 import "./ProjectEditMetadatas.css"
+import { projectDB } from "../../../services/db";
 
 class ProjectEditMetadatas extends Component {
     constructor(props) {
@@ -29,11 +27,10 @@ class ProjectEditMetadatas extends Component {
         if (e)
             e.preventDefault()
 
-        if (this.props.newProject) {
-            this.props.updateProject(this.state.project)
-        } else {
-            this.props.updateProject(this.state.project)
-            insertInLS(this.state.project.id, JSON.stringify(this.state.project))
+        this.props.updateProject(this.state.project)
+
+        if (!this.props.newProject) {
+            projectDB.update(this.state.project.id, this.state.project)
 
             Swal.fire({
                 title: this.props.t('modal.project_edit_success'),

@@ -16,14 +16,6 @@ class AdnoUrls extends Component {
         const query = new URLSearchParams(this.props.location.search);
 
         let manifestURL = query.get("url")
-        // if (manifestURL) {
-        //     const rawURLParam = this.props.location.search
-        //         .split("?")
-        //         .slice(1)
-        //         .find(query => query.startsWith("url="));
-
-        //     manifestURL = rawURLParam.replace("url=", "")
-        // }
 
         if (manifestURL) {
             manageUrls(this.props, manifestURL, this.props.t)

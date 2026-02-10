@@ -3,10 +3,6 @@ import {
     HashRouter, Route, Switch
 } from "react-router-dom";
 
-// Import utils
-import history from "./Utils/history";
-import { insertInLS } from "./Utils/utils";
-
 // Import React components
 import Home from "./components/Home/Home";
 import AdnoUrls from "./components/AdnoUrls/AdnoUrls";
@@ -18,20 +14,15 @@ import Project from "./components/Project/Project";
 import "./index.css"
 import AdnoEmbed from "./components/AdnoEmbed/AdnoEmbed";
 import LinkGenerator from "./components/LinkGenerator/LinkGenerator";
+import { createBrowserHistory } from "history";
+
+const history = createBrowserHistory();
 
 export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isProjects: false
-        }
-    }
-
-    componentDidMount() {
-        // When the app load, check if it already exists some projects
-        // If not then create the key "adno_projects" with empty array as value
-        if (!localStorage.getItem("adno_projects")) {
-            insertInLS("adno_projects", JSON.stringify([]))
         }
     }
 

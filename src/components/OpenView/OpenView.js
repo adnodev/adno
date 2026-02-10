@@ -8,10 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 
 // Import utils
-import { checkIfProjectExists, getEye } from "../../Utils/utils";
-
-// // Import OpenSeaDragon and Annotorious
-// import "/libraries/openseadragon/openseadragon-annotorious.min.js";
+import { getEye } from "../../Utils/utils";
 
 // Import CSS
 import "./OpenView.css";
@@ -33,89 +30,87 @@ class OpenView extends Component {
     }
 
     componentDidMount() {
-        // First of all, verify if the UUID match to an real project in the localStorage
-        // If not, then redirect the user to the HomePage
-        if (!this.props.match.params.id || !checkIfProjectExists(this.props.match.params.id)) {
-            this.props.history.push("/")
-        } else {
-            let tileSources;
+        const project = this.props.selectedProject;
 
-            if (this.props.selected_project.manifest_url) {
-                tileSources = [
-                    this.props.selected_project.manifest_url
-                ]
-
-            } else {
-                tileSources = {
-                    type: 'image',
-                    url: this.props.selected_project.img_url
-                }
-            }
-
-            this.openSeadragon = OpenSeadragon({
-                id: 'adno-osd',
-                homeButton: "home-button",
-                showNavigator: this.props.showNavigator,
-                tileSources: tileSources,
-                prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-                crossOriginPolicy: 'Anonymous',
-                ajaxWithCredentials: false
-            })
-
-            OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
-            OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
-            OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
-            OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
-            OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
-            OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
-            OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
-            OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
-            OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
-
-            const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
-
-            const annoFormatter = function () {
-                return annoStyles;
-            }
-
-            this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
-                locale: 'auto',
-                drawOnSingleClick: true,
-                allowEmpty: true,
-                disableEditor: true,
-                readOnly: true,
-                formatters: annoFormatter
-            });
-
-            this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
-                if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                    document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-
-                    this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
-                    document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
-                }
-
-                this.AdnoAnnotorious.fitBounds(annotation.id)
-
-                let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-
-                this.setState({ currentID: annotationIndex })
-                this.props.changeSelectedAnno(annotation)
-            });
-
-            // Generate dataURI and load annotations into Annotorious
-            const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
-            this.AdnoAnnotorious.loadAnnotations(dataURI)
-                .then(() => {
-                    setTimeout(() => {
-                        this.freeMode()
-                        this.loadAudio()
-                        this.toggleOutlines(this.props.showOutlines)
-
-                        this.automaticStart()
-                    }, 200)
-                })
+        if (!project) {
+            return;
         }
+
+        let tileSources;
+
+        if (project.manifest_url) {
+            tileSources = [
+                project.manifest_url
+            ]
+
+        } else {
+            tileSources = {
+                type: 'image',
+                url: project.img_url
+            }
+        }
+
+        this.openSeadragon = OpenSeadragon({
+            id: 'adno-osd',
+            homeButton: "home-button",
+            showNavigator: this.props.showNavigator,
+            tileSources: tileSources,
+            prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
+            crossOriginPolicy: 'Anonymous',
+            ajaxWithCredentials: false
+        })
+
+        OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
+        OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
+        OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
+        OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
+        OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
+        OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
+        OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
+        OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
+        OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
+
+        const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
+
+        const annoFormatter = () => annoStyles;
+
+        this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
+            locale: 'auto',
+            drawOnSingleClick: true,
+            allowEmpty: true,
+            disableEditor: true,
+            readOnly: true,
+            formatters: annoFormatter
+        });
+
+        this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
+            if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
+                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+                this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+                document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
+            }
+
+            this.AdnoAnnotorious.fitBounds(annotation.id)
+
+            let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
+
+            this.setState({ currentID: annotationIndex })
+            this.props.changeSelectedAnno(annotation)
+        });
+
+        // Generate dataURI and load annotations into Annotorious
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+        this.AdnoAnnotorious.loadAnnotations(dataURI)
+            .then(() => {
+                setTimeout(() => {
+                    this.freeMode()
+                    this.loadAudio()
+                    this.toggleOutlines(this.props.showOutlines)
+
+                    this.automaticStart()
+                }, 200)
+            })
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
         addEventListener('keydown', this.keyPressedEvents)
@@ -587,53 +582,57 @@ class OpenView extends Component {
 
     reloadAnnotationsFromProps = () => {
         const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
-        this.AdnoAnnotorious.loadAnnotations(dataURI)
+        if (this.AdnoAnnotorious) {
+            this.AdnoAnnotorious.loadAnnotations(dataURI)
 
-        this.loadAudio()
+            this.loadAudio()
 
-        setTimeout(this.freeMode, 1000)
-        setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
+            setTimeout(this.freeMode, 1000)
+            setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // check when there is a new selected annotation from the sidebar
-        if (prevProps.selectedAnno !== this.props.selectedAnno) {
-            this.changeAnno(this.props.selectedAnno)
-        }
 
-        if (prevProps.annos !== this.props.annos) {
-            this.reloadAnnotationsFromProps()
-        }
-
-        if (prevProps.outlineWidth !== this.props.outlineWidth ||
-            prevProps.outlineColor !== this.props.outlineColor ||
-            prevProps.outlineColorFocus !== this.props.outlineColorFocus
-        ) {
-            const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
-            this.AdnoAnnotorious.formatters = [() => annoStyles]
-
-            this.reloadAnnotationsFromProps()
-        }
-
-        if (prevProps.soundMode !== this.props.soundMode) {
-            this.setState({ soundMode: this.props.soundMode }, () => this.applySound(this.state.soundMode))
-        }
-
-        if (prevProps.showOutlines !== this.props.showOutlines) {
-            this.toggleOutlines(this.props.showOutlines)
-        }
-
-        if (prevProps.showEyes !== this.props.showEyes)
-            setTimeout(this.freeMode, 1000)
-
-        // Check if the user toggled the navigator on/off
-        if (this.props.showNavigator !== prevProps.showNavigator) {
-            if (this.props.showNavigator) {
-                document.getElementById(this.openSeadragon.navigator.id).style.display = 'block';
-            } else {
-                document.getElementById(this.openSeadragon.navigator.id).style.display = 'none';
+        if (this.AdnoAnnotorious) {
+            if (prevProps.selectedAnno !== this.props.selectedAnno) {
+                this.changeAnno(this.props.selectedAnno)
             }
 
+            if (prevProps.annos !== this.props.annos) {
+                this.reloadAnnotationsFromProps()
+            }
+
+            if (prevProps.outlineWidth !== this.props.outlineWidth ||
+                prevProps.outlineColor !== this.props.outlineColor ||
+                prevProps.outlineColorFocus !== this.props.outlineColorFocus
+            ) {
+                const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
+                this.AdnoAnnotorious.formatters = [() => annoStyles]
+
+                this.reloadAnnotationsFromProps()
+            }
+
+            if (prevProps.soundMode !== this.props.soundMode) {
+                this.setState({ soundMode: this.props.soundMode }, () => this.applySound(this.state.soundMode))
+            }
+
+            if (prevProps.showOutlines !== this.props.showOutlines) {
+                this.toggleOutlines(this.props.showOutlines)
+            }
+
+            if (prevProps.showEyes !== this.props.showEyes)
+                setTimeout(this.freeMode, 1000)
+
+            // Check if the user toggled the navigator on/off
+            if (this.props.showNavigator !== prevProps.showNavigator && this.openSeadragon?.navigator) {
+                if (this.props.showNavigator) {
+                    document.getElementById(this.openSeadragon.navigator.id).style.display = 'block';
+                } else {
+                    document.getElementById(this.openSeadragon.navigator.id).style.display = 'none';
+                }
+
+            }
         }
     }
 
@@ -828,38 +827,38 @@ class OpenView extends Component {
                                         </label>
                                     </button>
                                 </div>
-                                <h3 className="font-bold text-2xl py-4">{this.props.selected_project.title}</h3>
+                                <h3 className="font-bold text-2xl py-4">{this.props.selectedProject.title}</h3>
                                 {
-                                    this.props.selected_project.description &&
+                                    this.props.selectedProject.description &&
                                     <>
-                                        <p className="py-4">{this.props.selected_project.description}</p>
+                                        <p className="py-4">{this.props.selectedProject.description}</p>
                                     </>
                                 }
                                 <dl className="divide-y">
                                     {
-                                        this.props.selected_project.creator &&
+                                        this.props.selectedProject.creator &&
                                         <>
                                             <div className="flex py-2">
                                                 <dt className="font-medium px-2">{this.props.t('project.author')} :</dt>
-                                                <dd>{this.props.selected_project.creator}</dd>
+                                                <dd>{this.props.selectedProject.creator}</dd>
                                             </div>
                                         </>
                                     }
                                     {
-                                        this.props.selected_project.editor &&
+                                        this.props.selectedProject.editor &&
                                         <>
                                             <div className="flex py-2">
                                                 <dt className="font-medium px-2">{this.props.t('project.editor')} :</dt>
-                                                <dd>{this.props.selected_project.editor}</dd>
+                                                <dd>{this.props.selectedProject.editor}</dd>
                                             </div>
                                         </>
                                     }
                                     {
-                                        this.props.selected_project.rights &&
+                                        this.props.selectedProject.rights &&
                                         <>
                                             <div className="flex py-2">
                                                 <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
-                                                <dd>{this.props.selected_project.rights}</dd>
+                                                <dd>{this.props.selectedProject.rights}</dd>
                                             </div>
                                         </>
                                     }
