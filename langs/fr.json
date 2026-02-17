@@ -1,5 +1,5 @@
 {
-    "begin_msg": "Pour commencer à utiliser Adno, veuillez renseigner l'URL d'un manifeste ou d'une image IIIF d'une image statique au format jpg ou png, ou encore d'un projet Adno",
+    "begin_msg": "Pour commencer à utiliser Adno, veuillez renseigner l'URL d'un manifeste IIIF ou d'une image IIIF d'une image statique au format jpg ou png, ou encore d'un projet Adno",
     "create_project": "Créer un nouveau projet",
     "import": {
         "import_project": "Importer un projet",
@@ -11,7 +11,7 @@
     },
     "projects": {
         "all": "Vos projets existants",
-        "nothing": "Aucun projet disponible pour le moment"
+        "nothing": "Aucun projet à afficher, créez votre premier projet pour commencer à utiliser Adno"
     },
     "project": {
         "advanced": "Avancé",
