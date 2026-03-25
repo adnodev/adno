@@ -278,9 +278,7 @@ class NewProject extends Component {
                         localStorage.removeItem("selected_canva")
                         localStorage.removeItem("adno_image_url")
 
-                        const isFullAdno = process.env.ADNO_MODE === "FULL"
-
-                        this.props.history.push(`/project/${projectID}/${isFullAdno ? 'edit' : 'view'}`)
+                        this.props.history.push(`/project/${projectID}/edit`)
                     })
             } else {
                 const manifest_url = localStorage.getItem("adno_image_url")
@@ -301,10 +299,7 @@ class NewProject extends Component {
                         projectDB.add(projectID, project)
                             .then(() => {
                                 localStorage.removeItem("adno_image_url")
-
-                                const isFullAdno = process.env.ADNO_MODE === "FULL"
-
-                                this.props.history.push(`/project/${projectID}/${isFullAdno ? 'edit' : 'view'}`)
+                                this.props.history.push(`/project/${projectID}/edit`)
                             })
 
                     } else {
@@ -362,9 +357,7 @@ class NewProject extends Component {
                                                     localStorage.removeItem("adno_image_url")
                                                     localStorage.removeItem("selected_canva")
 
-                                                    const isFullAdno = process.env.ADNO_MODE === "FULL"
-
-                                                    this.props.history.push(`/project/${projectID}/${isFullAdno ? 'edit' : 'view'}`)
+                                                    this.props.history.push(`/project/${projectID}/edit`)
                                                 })
                                         } else {
                                             Swal.fire({

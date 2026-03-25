@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     build: {
-      outDir: '../adno-full',
+      outDir: '../dist',
       emptyOutDir: true,
     },
     define: {

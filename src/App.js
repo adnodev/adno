@@ -58,12 +58,9 @@ export default class App extends Component {
                         <NewProject />
                     </Route>
 
-                    {
-                        process.env.ADNO_MODE === "FULL" &&
-                        <Route exact path="/project/:id/edit">
-                            <Project editMode={true} />
-                        </Route>
-                    }
+                    <Route exact path="/project/:id/edit">
+                        <Project editMode={true} />
+                    </Route>
 
                     <Route exact path="/project/:id/view">
                         <Project editMode={false} />

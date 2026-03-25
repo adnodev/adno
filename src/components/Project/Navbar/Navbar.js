@@ -75,52 +75,45 @@ class Navbar extends Component {
                         </button>
                     </div>
 
-                    {
-                        process.env.ADNO_MODE === "FULL" &&
-                        <>
 
-                            {
-                                !this.props.editMode &&
-                                <button onClick={() => this.props.showEditorSettings()} className="btn navbar-button">
-                                    <FontAwesomeIcon icon={faGear} size="xl" />
-                                </button>
-                            }
+                    {!this.props.editMode &&
+                        <button onClick={() => this.props.showEditorSettings()} className="btn navbar-button">
+                            <FontAwesomeIcon icon={faGear} size="xl" />
+                        </button>}
 
 
-                            <div className="tooltip tooltip-bottom z-50"
-                                data-tip={this.props.editMode ? this.props.t('navbar.edit_mode_help') : this.props.t('navbar.view_mode_help')}>
-                                <div className="cursor-pointer label-toggle">
-                                    <input type="checkbox"
-                                        className="toggle toggle-lg toggle-success" value={this.props.editMode}
-                                        onChange={() => {
+                    <div className="tooltip tooltip-bottom z-50"
+                        data-tip={this.props.editMode ? this.props.t('navbar.edit_mode_help') : this.props.t('navbar.view_mode_help')}>
+                        <div className="cursor-pointer label-toggle">
+                            <input type="checkbox"
+                                className="toggle toggle-lg toggle-success" value={this.props.editMode}
+                                onChange={() => {
 
-                                            // Turn off autoplay
-                                            if (this.props.autoplayID !== -1) {
-                                                clearTimeout(this.props.autoplayID)
-                                            }
+                                    // Turn off autoplay
+                                    if (this.props.autoplayID !== -1) {
+                                        clearTimeout(this.props.autoplayID)
+                                    }
 
-                                            if (this.props.editMode) {
-                                                // Unselect current annotation when switching page
-                                                this.props.changeSelectedAnno(undefined)
-                                                this.props.history.push(`/project/${this.props.match.params.id}/view`)
-                                            } else {
-                                                // Unselect current annotation when switching page
-                                                this.props.changeSelectedAnno(undefined)
-                                                this.props.history.push(`/project/${this.props.match.params.id}/edit`)
-                                            }
-                                        }
-                                        }
-                                        checked={this.props.editMode} />
-                                    <label style={{
-                                        right: this.props.editMode ? 0 : 'initial',
-                                        left: this.props.editMode ? 'initial' : 0,
-                                        paddingLeft: this.props.editMode ? 0 : '1rem',
-                                        paddingRight: !this.props.editMode ? 0 : '1rem'
-                                    }}>{this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}</label>
-                                </div>
-                            </div>
-                        </>
-                    }
+                                    if (this.props.editMode) {
+                                        // Unselect current annotation when switching page
+                                        this.props.changeSelectedAnno(undefined)
+                                        this.props.history.push(`/project/${this.props.match.params.id}/view`)
+                                    } else {
+                                        // Unselect current annotation when switching page
+                                        this.props.changeSelectedAnno(undefined)
+                                        this.props.history.push(`/project/${this.props.match.params.id}/edit`)
+                                    }
+                                }
+                                }
+                                checked={this.props.editMode} />
+                            <label style={{
+                                right: this.props.editMode ? 0 : 'initial',
+                                left: this.props.editMode ? 'initial' : 0,
+                                paddingLeft: this.props.editMode ? 0 : '1rem',
+                                paddingRight: !this.props.editMode ? 0 : '1rem'
+                            }}>{this.props.editMode ? this.props.t('navbar.edit_mode') : this.props.t('navbar.view_mode')}</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

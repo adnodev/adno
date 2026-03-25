@@ -248,12 +248,9 @@ class ProjectView extends Component {
                         <div className="tooltip" data-tip={this.props.t('project.preview')}>
                             <button type="button" className="btn btn-md" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}> <FontAwesomeIcon icon={faEye} />   </button>
                         </div>
-                        {
-                            process.env.ADNO_MODE === "FULL" &&
-                            <div className="tooltip" data-tip={this.props.t('project.edit')}>
-                                <button type="button" className="btn btn-md" onClick={() => this.props.history.push(`/project/${this.props.project.id}/edit`)}> <FontAwesomeIcon icon={faPenToSquare} /> </button>
-                            </div>
-                        }
+                        <div className="tooltip" data-tip={this.props.t('project.edit')}>
+                            <button type="button" className="btn btn-md" onClick={() => this.props.history.push(`/project/${this.props.project.id}/edit`)}> <FontAwesomeIcon icon={faPenToSquare} /> </button>
+                        </div>
                         <div className="tooltip" data-tip={this.props.t('project.duplicate')}>
                             <button type="button" className="btn btn-md btn-outline"
                                 onClick={() => this.duplicate(this.props.project.id)}><FontAwesomeIcon icon={faCopy} /></button>

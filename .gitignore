@@ -132,14 +132,12 @@ out
 
 # Remove BUILDS
 dist
-adno-full
-adno-light/
+build
 
 .DS_Store
 
 # ADNO CONF
-.env.ADNOFULL
-.env.ADNOLIGHT
+.env
 /test-results/
 /playwright-report/
 /blob-report/

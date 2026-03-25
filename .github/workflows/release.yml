@@ -1,0 +1,67 @@
+name: ADNO Release & Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version à builder (ex: 1.4.2)"
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: build_app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+
+      - name: Update version in package.json
+        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate build
+        env:
+          GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
+          PUBLIC_URL: "/${{ github.event.repository.name }}"
+        run: npm run build
+
+      - name: Zip build output
+        run: zip -r adno.${{ github.event.inputs.version }}.zip dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          name: ADNO v${{ github.event.inputs.version }}
+          files: adno.${{ github.event.inputs.version }}.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "dist/"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
