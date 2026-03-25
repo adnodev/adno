@@ -68,7 +68,7 @@ If you want to contribute to Adno here are few steps to start
   * Start the project with the following command : **npm start**
     * Create a .env file and put the version you would like (examples below)
     * run **npm build**
-  * In case of errors try to remove `node_modules` folder, `.parcel-cache` and `package-lock.json` file and reinstall module with **npm install** command.
+  * In case of errors try to remove `node_modules` folder and `package-lock.json` file and reinstall module with **npm install** command.
 
 ### Customize your own Adno
 
