@@ -47,6 +47,9 @@ jobs:
           echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
 
       - name: Build project
+        env:
+            GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
+            PUBLIC_URL: "/${{ github.event.repository.name }}"
         run: VITE_APP_VERSION="$APP_VERSION" npm run build
 
       - name: Upload Pages artifact
