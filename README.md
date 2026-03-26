@@ -98,7 +98,6 @@ CORS_SERVER=https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
 .env example :
 
 ```
-
 # FOOTER
 ADNO_FOOTER=TRUE
 

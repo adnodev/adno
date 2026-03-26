@@ -22,8 +22,14 @@ jobs:
           node-version: "lts/*"
           cache: "npm"
 
-      - name: Update version in package.json
-        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+      - name: Determine APP_VERSION
+        id: version
+        run: |
+          # Version package
+          APP_VERSION="${{ github.event.inputs.version }}"
+
+          echo "APP_VERSION=$APP_VERSION"
+          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: npm install
@@ -32,7 +38,7 @@ jobs:
         env:
           GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
           PUBLIC_URL: "/${{ github.event.repository.name }}"
-        run: npm run build
+        run: VITE_APP_VERSION="$APP_VERSION" npm run build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
