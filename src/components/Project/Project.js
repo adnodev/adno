@@ -128,6 +128,8 @@ const Project = ({ editMode }) => {
         })
         : annotations;
 
+        console.log(settings)
+
     if (!state.selectedProject)
         return <div className="loader">
             <InfinitySpin
