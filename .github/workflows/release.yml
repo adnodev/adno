@@ -22,36 +22,21 @@ jobs:
           node-version: "lts/*"
           cache: "npm"
 
-      - name: Determine APP_VERSION
-        id: version
-        run: |
-          # Version package
-          APP_VERSION="${{ github.event.inputs.version }}"
-
-          echo "APP_VERSION=$APP_VERSION"
-          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
-
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build for GitHub Pages
-        env:
-          GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
-          PUBLIC_URL: "/${{ github.event.repository.name }}"
-        run: VITE_APP_VERSION="$APP_VERSION" npm run build
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: "dist/"
-
-      - name: Build for release zip
+      - name: Build prod
         env:
           GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
           PUBLIC_URL: "./"
-        run: npm run build
+          MATOMO_SITE_ID: ${{ secrets.PROD_MATOMO_SITE_ID }}
+          MATOMO_URL: ${{ secrets.PROD_MATOMO_URL }}
+          ADNO_TITLE: ${{ vars.PROD_ADNO_TITLE }}
+        run: |
+          APP_VERSION="${{ github.event.inputs.version }}"
+          APP_VERSION="$APP_VERSION" npm run build
 
-      - name: Zip build output
+      - name: Zip prod build
         run: zip -r adno.${{ github.event.inputs.version }}.zip dist/
 
       - name: Create GitHub Release
@@ -64,16 +49,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Get GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.ADNO_BOT_APP_ID }}
+          private-key: ${{ secrets.ADNO_BOT_PRIVATE_KEY }}
+          repositories: site
+          owner: adno-org
+
+      - name: Trigger prod deploy
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/adno-org/site/dispatches \
+            -d '{"event_type":"new_release","client_payload":{"version":"${{ github.event.inputs.version }}"}}'
