@@ -138,31 +138,26 @@ class ProjectView extends Component {
                 console.error("Image service information is missing in IIIF v2 manifest.");
             }
         } else if (manifest["@id"] && isVersion2) {
-            // For v2: Handle Image API 1.1 manifests with "@id"
             this.setState({
                 imgWidth: 250,
-                imgSource: `${manifest["@id"]}/full/,250/0/native.jpg`,
+                imgSource: `${manifest["@id"]}/full/,1200/0/native.jpg`,
             });
         } else if (manifest["@context"] === "http://library.stanford.edu/iiif/image-api/1.1/context.json") {
-            // For v2: Handle Image API 1.1 specifically
             this.setState({
                 imgWidth: 250,
-                imgSource: `${manifest["@id"]}/full/,250/0/native.jpg`,
+                imgSource: `${manifest["@id"]}/full/,1200/0/native.jpg`,
             });
         } else if (this.props.project.manifest_url && this.props.project.manifest_url.includes("info.json")) {
-            // Fallback: Use "info.json" URL
             this.setState({
                 imgWidth: 250,
                 imgSource: this.props.project.manifest_url.replace("info.json", "") + "/full/,250/0/native.jpg",
             });
         } else if (id) {
-            // Final fallback: Handle missing tiles but with valid ID
             this.setState({
                 imgWidth: 250,
                 imgSource: `${id}/full/,250/0/native.jpg`,
             });
         } else {
-            // If all else fails, log an error
             console.error("Unable to retrieve source image. Manifest is missing required fields.");
         }
 

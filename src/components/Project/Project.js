@@ -260,6 +260,7 @@ const Project = ({ editMode }) => {
                                 }))}
                                 changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
                                 rotation={settings.rotation}
+                                showNavigator={settings.showNavigator}
                             />
                         ) : (
                             <OpenView

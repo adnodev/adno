@@ -1,4 +1,3 @@
-// components/AdnoNavigator/AdnoNavigator.jsx
 import { Component, createRef } from "react";
 import "./AdnoNavigator.css";
 
@@ -7,8 +6,40 @@ class AdnoNavigator extends Component {
         super(props);
         this.canvasRef = createRef();
         this.isDragging = false;
+        this._bgImage = null;
+        this._timer = null;
     }
-    drawNavigator = () => {
+
+    componentDidMount() {
+        const { viewer } = this.props;
+
+        this.loadThumbnail();
+        this._timer = setTimeout(() => this.draw(), 500);
+        viewer.addHandler('animation', this.draw);
+        viewer.addHandler('resize', this.draw);
+    }
+
+    componentWillUnmount() {
+        const { viewer } = this.props;
+
+        clearTimeout(this._timer);
+        viewer.removeHandler('animation', this.draw);
+        viewer.removeHandler('resize', this.draw);
+    }
+
+    loadThumbnail = () => {
+        const { imgUrl } = this.props;
+        if (!imgUrl) return;
+
+        this._bgImage = new Image();
+        this._bgImage.crossOrigin = 'anonymous';
+        this._bgImage.src = imgUrl.endsWith('/info.json')
+            ? `${imgUrl.replace('/info.json', '')}/full/!512,512/0/default.jpg`
+            : imgUrl;
+        this._bgImage.onload = () => this.draw();
+    }
+
+    draw = () => {
         const { viewer } = this.props;
         const canvas = this.canvasRef.current;
         if (!canvas) return;
@@ -22,146 +53,94 @@ class AdnoNavigator extends Component {
         const item = viewer.world.getItemAt(0);
         if (!item) return;
 
-        // Fond sombre
         ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
         ctx.fillRect(0, 0, W, H);
 
-        // Dessine l'image complète (pas le canvas OSD zoomé)
-        if (this._bgImage && this._bgImage.complete && this._bgImage.naturalWidth) {
+        if (this._bgImage?.complete && this._bgImage.naturalWidth) {
             ctx.drawImage(this._bgImage, 0, 0, W, H);
-        } else {
-            // Fallback IIIF : copie le canvas OSD
-            const osdCanvas = viewer.drawer.canvas;
-            if (osdCanvas) {
-                ctx.drawImage(osdCanvas, 0, 0, W, H);
-            }
         }
 
-        // Rectangle de la vue courante
+        this.drawViewportRect(ctx, item, W, H);
+    }
+
+    drawViewportRect = (ctx, item, W, H) => {
+        const { viewer } = this.props;
         const imgBounds = item.getBounds();
         const viewBounds = viewer.viewport.getBounds(true);
 
-        const vpToCanvas = (point) => ({
-            x: ((point.x - imgBounds.x) / imgBounds.width) * W,
-            y: ((point.y - imgBounds.y) / imgBounds.height) * H,
+        const toCanvas = (x, y) => ({
+            x: ((x - imgBounds.x) / imgBounds.width) * W,
+            y: ((y - imgBounds.y) / imgBounds.height) * H,
         });
 
-        const topLeft = vpToCanvas({ x: viewBounds.x, y: viewBounds.y });
-        const bottomRight = vpToCanvas({
-            x: viewBounds.x + viewBounds.width,
-            y: viewBounds.y + viewBounds.height,
-        });
+        const tl = toCanvas(viewBounds.x, viewBounds.y);
+        const br = toCanvas(
+            viewBounds.x + viewBounds.width,
+            viewBounds.y + viewBounds.height
+        );
 
-        const rectX = Math.max(0, topLeft.x);
-        const rectY = Math.max(0, topLeft.y);
-        const rectW = Math.min(W, bottomRight.x) - rectX;
-        const rectH = Math.min(H, bottomRight.y) - rectY;
+        const rx = Math.max(0, tl.x);
+        const ry = Math.max(0, tl.y);
+        const rw = Math.min(W, br.x) - rx;
+        const rh = Math.min(H, br.y) - ry;
 
-        // Zone hors viewport assombrie
         ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-        ctx.fillRect(0, 0, W, rectY);                          // haut
-        ctx.fillRect(0, rectY + rectH, W, H - rectY - rectH);  // bas
-        ctx.fillRect(0, rectY, rectX, rectH);                   // gauche
-        ctx.fillRect(rectX + rectW, rectY, W - rectX - rectW, rectH); // droite
+        ctx.fillRect(0, 0, W, ry);
+        ctx.fillRect(0, ry + rh, W, H - ry - rh);
+        ctx.fillRect(0, ry, rx, rh);
+        ctx.fillRect(rx + rw, ry, W - rx - rw, rh);
 
-        // Bordure du rectangle viewport
         ctx.strokeStyle = 'rgba(255, 220, 50, 0.9)';
         ctx.lineWidth = 2;
-        ctx.strokeRect(rectX, rectY, rectW, rectH);
-    }
-
-    componentDidMount() {
-        const { viewer, imgUrl } = this.props;
-
-        // Précharge l'image une seule fois
-        if (imgUrl) {
-            this._bgImage = new Image();
-            this._bgImage.crossOrigin = 'anonymous';
-            this._bgImage.src = imgUrl;
-            this._bgImage.onload = () => this.drawNavigator();
-        }
-
-        setTimeout(() => this.drawNavigator(), 500)
-        viewer.addHandler('animation', () => this.drawNavigator());
-        viewer.addHandler('pan', () => this.drawNavigator());
-        viewer.addHandler('zoom', () => this.drawNavigator());
-        viewer.addHandler('resize', () => this.drawNavigator());
-    }
-
-    canvasToViewport = (canvasX, canvasY) => {
-        const { viewer } = this.props;
-        const canvas = this.canvasRef.current;
-        const item = viewer.world.getItemAt(0);
-        if (!item) return null;
-
-        const imgBounds = item.getBounds();
-
-        return {
-            x: imgBounds.x + (canvasX / canvas.width) * imgBounds.width,
-            y: imgBounds.y + (canvasY / canvas.height) * imgBounds.height,
-        };
-    }
-
-    handleMouseDown = (e) => {
-        this.isDragging = true;
-        this.panTo(e);
-    }
-
-    handleMouseMove = (e) => {
-        if (!this.isDragging) return;
-        this.panTo(e);
-    }
-
-    handleMouseUp = () => {
-        this.isDragging = false;
+        ctx.strokeRect(rx, ry, rw, rh);
     }
 
     panTo = (e) => {
+        const { viewer } = this.props;
         const canvas = this.canvasRef.current;
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const item = viewer.world.getItemAt(0);
+        if (!canvas || !item) return;
 
-        const vp = this.canvasToViewport(x, y);
-        if (vp) {
-            this.props.viewer.viewport.panTo(
-                new OpenSeadragon.Point(vp.x, vp.y),
-                false
-            );
+        const rect = canvas.getBoundingClientRect();
+        const imgBounds = item.getBounds();
+
+        const vpX = imgBounds.x + ((e.clientX - rect.left) / canvas.width) * imgBounds.width;
+        const vpY = imgBounds.y + ((e.clientY - rect.top) / canvas.height) * imgBounds.height;
+
+        viewer.viewport.panTo(new OpenSeadragon.Point(vpX, vpY), false);
+    }
+
+    handleMouseDown = (e) => { this.isDragging = true; this.panTo(e); }
+    handleMouseMove = (e) => { if (this.isDragging) this.panTo(e); }
+    handleMouseUp = () => { this.isDragging = false; }
+
+    computeSize = () => {
+        const { viewer, imageRatio, layout } = this.props;
+        const container = viewer?.container;
+        const cw = container?.clientWidth || 800;
+        const ch = container?.clientHeight || 600;
+
+        const fit = (w, h, maxW, maxH) => {
+            if (h > maxH) { h = Math.round(maxH); w = Math.round(h / imageRatio); }
+            if (w > maxW) { w = Math.round(maxW); h = Math.round(w * imageRatio); }
+            return { width: w, height: h };
+        };
+
+        if (layout === 'bottom-center') {
+            const w = Math.round(cw * 0.5);
+            return fit(w, Math.round(w * imageRatio), cw * 0.5, ch * 0.4);
         }
+        if (layout === 'right-vertical') {
+            const h = Math.round(ch * 0.8);
+            return fit(Math.round(h / imageRatio), h, cw * 0.2, ch * 0.8);
+        }
+        const w = Math.round(cw * 0.25);
+        return fit(w, Math.round(w * imageRatio), cw * 0.25, ch * 0.3);
     }
 
     render() {
-        const { imageRatio, layout } = this.props;
-
-        // Dimensions selon le layout
-        let width, height;
-        if (layout === 'bottom-center') {
-            // rouleau horizontal : height fixe, width max
-            width = this.props.maxWidth || 400;
-            height = Math.round(width * imageRatio);
-
-            if (height > 300) {
-                height = 300;
-                width = Math.round(height / imageRatio);
-            }
-        } else if (layout === 'right-vertical') {
-            // rouleau vertical : width fixe, height max
-            height = this.props.maxHeight || 400;
-            width = Math.round(height / imageRatio);
-            if (width > 80) {
-                width = 80;
-                height = Math.round(width * imageRatio);
-            }
-        } else {
-            // classique proportionnel
-            width = 200;
-            height = Math.round(width * imageRatio);
-            if (height > 160) {
-                height = 160;
-                width = Math.round(height / imageRatio);
-            }
-        }
+        const { layout } = this.props;
+        const { width, height } = this.computeSize();
 
         return (
             <canvas
@@ -179,3 +158,4 @@ class AdnoNavigator extends Component {
 }
 
 export default AdnoNavigator;
+

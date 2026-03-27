@@ -643,15 +643,6 @@ class OpenView extends Component {
             if (prevProps.showEyes !== this.props.showEyes)
                 setTimeout(this.freeMode, 1000)
 
-            // Check if the user toggled the navigator on/off
-            if (this.props.showNavigator !== prevProps.showNavigator && this.openSeadragon?.navigator) {
-                if (this.props.showNavigator) {
-                    document.getElementById(this.openSeadragon.navigator.id).style.display = 'block';
-                } else {
-                    document.getElementById(this.openSeadragon.navigator.id).style.display = 'none';
-                }
-
-            }
         }
     }
 
@@ -765,14 +756,12 @@ class OpenView extends Component {
 
         return (
             <div id="adno-osd" style={{ position: 'relative' }}>
-                {this.openSeadragon && (
+                {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
                     <AdnoNavigator
                         viewer={this.openSeadragon}
                         imageRatio={this.state.imageRatio}
                         layout={this.state.navigatorLayout}
                         imgUrl={this.props.selectedProject.manifest_url ?? this.props.selectedProject.img_url}
-                        maxWidth={800}
-                        maxHeight={800}
                     />
                 )}
                 {
