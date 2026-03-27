@@ -2,17 +2,14 @@ import { Component } from "react";
 import { withRouter } from "react-router-dom";
 import parse from 'html-react-parser';
 
-// Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
-
-// Import utils
 import { getEye } from "../../Utils/utils";
 
-// Import CSS
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
+
+import AdnoNavigator from '../AdnoNavigator/AdnoNavigator'
 
 class OpenView extends Component {
     constructor(props) {
@@ -25,7 +22,11 @@ class OpenView extends Component {
             isAnnotationsVisible: true,
             currentTrack: undefined,
             soundMode: this.props.soundMode,
-            audioContexts: []
+            audioContexts: [],
+
+            imageRatio: null,
+            navigatorLayout: null,
+            viewerReady: false
         }
     }
 
@@ -53,12 +54,30 @@ class OpenView extends Component {
         this.openSeadragon = OpenSeadragon({
             id: 'adno-osd',
             homeButton: "home-button",
-            showNavigator: this.props.showNavigator,
+            // showNavigator: this.props.showNavigator,
+            showNavigator: false,
             tileSources: tileSources,
             prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
             crossOriginPolicy: 'Anonymous',
             ajaxWithCredentials: false
         })
+
+        this.openSeadragon.addOnceHandler('open', () => {
+            const item = this.openSeadragon.world.getItemAt(0);
+            if (item) {
+                const size = item.getContentSize();
+                const ratio = size.y / size.x;
+                let layout = 'bottom-right';
+                if (ratio < 0.30) layout = 'bottom-center';
+                else if (ratio > 3.33) layout = 'right-vertical';
+
+                this.setState({
+                    imageRatio: ratio,
+                    navigatorLayout: layout,
+                    viewerReady: true  // 👈 maintenant OSD existe vraiment
+                });
+            }
+        });
 
         OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
         OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
@@ -624,15 +643,6 @@ class OpenView extends Component {
             if (prevProps.showEyes !== this.props.showEyes)
                 setTimeout(this.freeMode, 1000)
 
-            // Check if the user toggled the navigator on/off
-            if (this.props.showNavigator !== prevProps.showNavigator && this.openSeadragon?.navigator) {
-                if (this.props.showNavigator) {
-                    document.getElementById(this.openSeadragon.navigator.id).style.display = 'block';
-                } else {
-                    document.getElementById(this.openSeadragon.navigator.id).style.display = 'none';
-                }
-
-            }
         }
     }
 
@@ -746,6 +756,14 @@ class OpenView extends Component {
 
         return (
             <div id="adno-osd" style={{ position: 'relative' }}>
+                {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
+                    <AdnoNavigator
+                        viewer={this.openSeadragon}
+                        imageRatio={this.state.imageRatio}
+                        layout={this.state.navigatorLayout}
+                        imgUrl={this.props.selectedProject.manifest_url ?? this.props.selectedProject.img_url}
+                    />
+                )}
                 {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
                     this.getAnnotationHTMLBody(this.props.selectedAnno)

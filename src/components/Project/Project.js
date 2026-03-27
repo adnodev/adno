@@ -128,6 +128,8 @@ const Project = ({ editMode }) => {
         })
         : annotations;
 
+        console.log(settings)
+
     if (!state.selectedProject)
         return <div className="loader">
             <InfinitySpin
@@ -258,6 +260,7 @@ const Project = ({ editMode }) => {
                                 }))}
                                 changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
                                 rotation={settings.rotation}
+                                showNavigator={settings.showNavigator}
                             />
                         ) : (
                             <OpenView
