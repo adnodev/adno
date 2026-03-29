@@ -4,7 +4,7 @@ import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
-import { getEye } from "../../Utils/utils";
+import { getEye, computeNavigatorInfo } from "../../Utils/utils";
 
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
@@ -54,7 +54,6 @@ class OpenView extends Component {
         this.openSeadragon = OpenSeadragon({
             id: 'adno-osd',
             homeButton: "home-button",
-            // showNavigator: this.props.showNavigator,
             showNavigator: false,
             tileSources: tileSources,
             prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
@@ -63,19 +62,9 @@ class OpenView extends Component {
         })
 
         this.openSeadragon.addOnceHandler('open', () => {
-            const item = this.openSeadragon.world.getItemAt(0);
-            if (item) {
-                const size = item.getContentSize();
-                const ratio = size.y / size.x;
-                let layout = 'bottom-right';
-                if (ratio < 0.30) layout = 'bottom-center';
-                else if (ratio > 3.33) layout = 'right-vertical';
-
-                this.setState({
-                    imageRatio: ratio,
-                    navigatorLayout: layout,
-                    viewerReady: true  // 👈 maintenant OSD existe vraiment
-                });
+            const info = computeNavigatorInfo(this.openSeadragon);
+            if (info) {
+                this.setState({ ...info, viewerReady: true });
             }
         });
 
@@ -761,7 +750,7 @@ class OpenView extends Component {
                         viewer={this.openSeadragon}
                         imageRatio={this.state.imageRatio}
                         layout={this.state.navigatorLayout}
-                        imgUrl={this.props.selectedProject.manifest_url ?? this.props.selectedProject.img_url}
+                        imgUrl={this.state.navigatorImgUrl}
                     />
                 )}
                 {

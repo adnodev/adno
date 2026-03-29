@@ -14,6 +14,7 @@ import "./AdnoEditor.css";
 // Add translations
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
+import { computeNavigatorInfo } from "../../Utils/utils";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 
 class AdnoEditor extends Component {
@@ -66,14 +67,9 @@ class AdnoEditor extends Component {
         });
 
         this.openSeadragon.addOnceHandler('open', () => {
-            const item = this.openSeadragon.world.getItemAt(0);
-            if (item) {
-                const size = item.getContentSize();
-                const ratio = size.y / size.x;
-                let layout = 'bottom-right';
-                if (ratio < 0.30) layout = 'bottom-center';
-                else if (ratio > 3.33) layout = 'right-vertical';
-                this.setState({ imageRatio: ratio, navigatorLayout: layout, viewerReady: true });
+            const info = computeNavigatorInfo(this.openSeadragon);
+            if (info) {
+                this.setState({ ...info, viewerReady: true });
             }
         });
 
@@ -197,12 +193,12 @@ class AdnoEditor extends Component {
                         <div id="toolbar-container"></div>
                         <div id="toolbar-osd"></div>
                     </div>
-                    {this.props.showNavigator && this.state.viewerReady && (
+                    {this.state.viewerReady && (
                         <AdnoNavigator
                             viewer={this.openSeadragon}
                             imageRatio={this.state.imageRatio}
                             layout={this.state.navigatorLayout}
-                            imgUrl={this.props.selectedProject.manifest_url ?? this.props.selectedProject.img_url}
+                            imgUrl={this.state.navigatorImgUrl}
                         />
                     )}
                 </div>

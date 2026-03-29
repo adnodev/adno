@@ -9,19 +9,13 @@
     background: #111;
 }
 
-.adno-navigator--bottom-right {
-    bottom: 12px;
-    right: 12px;
-}
 
 .adno-navigator--bottom-center {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 12px;
+    right: 1.5rem;
 }
 
 .adno-navigator--right-vertical {
-    right: 12px;
-    top: calc(50% + 58px);
-    transform: translateY(-50%);
+    right: 1.5rem;
+    bottom: 12px;
 }

@@ -405,3 +405,26 @@ export function getEye() {
 
   return svg
 }
+
+export function computeNavigatorInfo(viewer) {
+    const item = viewer.world.getItemAt(0);
+    if (!item) return null;
+
+    const size = item.getContentSize();
+    const ratio = size.y / size.x;
+
+    let layout = 'bottom-right';
+    if (ratio < 0.30) layout = 'bottom-center';
+    else if (ratio > 3.33) layout = 'right-vertical';
+
+    const source = item.source;
+    let imgUrl = null;
+    if (source['@id'] || source.id) {
+        const base = (source['@id'] || source.id).replace('/info.json', '');
+        imgUrl = `${base}/full/!512,512/0/default.jpg`;
+    } else if (source.url) {
+        imgUrl = source.url;
+    }
+
+    return { imageRatio: ratio, navigatorLayout: layout, navigatorImgUrl: imgUrl };
+}

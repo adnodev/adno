@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
-import { enhancedFetch, getEye, get_url_extension } from "../../Utils/utils";
+import { enhancedFetch, getEye, get_url_extension, computeNavigatorInfo } from "../../Utils/utils";
 import { InfinitySpin } from 'react-loader-spinner'
 import {
     faMagnifyingGlassMinus,
@@ -209,14 +209,9 @@ class AdnoEmbed extends Component {
         });
 
         this.openSeadragon.addOnceHandler('open', () => {
-            const item = this.openSeadragon.world.getItemAt(0);
-            if (item) {
-                const size = item.getContentSize();
-                const ratio = size.y / size.x;
-                let layout = 'bottom-right';
-                if (ratio < 0.30) layout = 'bottom-center';
-                else if (ratio > 3.33) layout = 'right-vertical';
-                this.setState({ imageRatio: ratio, navigatorLayout: layout, viewerReady: true });
+            const info = computeNavigatorInfo(this.openSeadragon);
+            if (info) {
+                this.setState({ ...info, viewerReady: true });
             }
         });
 
