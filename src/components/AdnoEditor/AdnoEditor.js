@@ -201,7 +201,7 @@ class AdnoEditor extends Component {
 
     render() {
         return <>
-            <div style={{ position: 'relative', width: '100%' }}>
+            <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 58px)' }}>
                 <div id="openseadragon1">
                     <div id="toolbar-container"></div>
                     <div id="toolbar-osd"></div>

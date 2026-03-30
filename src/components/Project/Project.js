@@ -206,8 +206,7 @@ const Project = ({ editMode }) => {
                 </div>
             )}
 
-            <div style={{ display: 'flex', height: '100%' }}>
-
+            <div className="flex h-full">
                 {annotations.length > 0 && editMode && (
                     <div className="sidebar-opened-w-modal">
                         <AnnotationCards

@@ -124,3 +124,7 @@ footer {
 .a9s-annotationlayer .outline-8px .a9s-outer {
     stroke-width: 10px;
 }
+
+.openseadragon-container {
+    max-height: calc(100vh - 58px);
+}

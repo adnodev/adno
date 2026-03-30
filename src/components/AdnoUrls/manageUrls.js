@@ -171,7 +171,7 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
 
         let manifestURL = manifest.items[0]?.items[0].items[0].body.id
 
-        if (!manifestURL.endsWith('/info.json'))
+        if (!manifestURL.endsWith('info.json'))
             manifestURL = `${manifestURL}/info.json`
 
         const project = {

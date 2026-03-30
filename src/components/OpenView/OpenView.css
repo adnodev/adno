@@ -1,6 +1,6 @@
 #adno-osd {
     width: 100%;
-    height: calc(100vh - 58px);
+    height: 100%;
 }
 
 .osd-buttons-bar {

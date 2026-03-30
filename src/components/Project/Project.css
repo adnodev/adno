@@ -430,7 +430,7 @@ input:checked+.slider:before {
     padding: 6px;
     border: none;
     font-size: 1.5rem;
-    position: relative;
+    z-index: 49;
 }
 
 .toolbarButton:hover {
