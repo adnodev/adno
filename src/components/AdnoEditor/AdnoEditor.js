@@ -24,7 +24,7 @@ class AdnoEditor extends Component {
             isMovingItem: false,
             imageRatio: null,
             navigatorLayout: null,
-            viewerReady: false
+            viewerReady: false,
         }
     }
 
@@ -110,7 +110,14 @@ class AdnoEditor extends Component {
 
         // Event triggered when user click on an annotation
         this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-            document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            const container = document.getElementById("annotations_list");
+            const el = document.getElementById(`anno_edit_card_${annotation.id}`);
+            if (container && el) {
+                container.scrollTo({
+                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                    behavior: "smooth"
+                });
+            }
             this.props.openRichEditor(annotation)
         })
 
@@ -133,7 +140,14 @@ class AdnoEditor extends Component {
         this.AdnoAnnotorious.fitBounds(annotation.id)
 
         if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
-            document.getElementById(`anno_edit_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            const container = document.getElementById("annotations_list");
+            const el = document.getElementById(`anno_edit_card_${annotation.id}`);
+            if (container && el) {
+                container.scrollTo({
+                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                    behavior: "smooth"
+                });
+            }
         }
     }
 
@@ -186,32 +200,30 @@ class AdnoEditor extends Component {
 
 
     render() {
-        return (
-            <div>
-                <div style={{ position: 'relative' }}>
-                    <div id="openseadragon1">
-                        <div id="toolbar-container"></div>
-                        <div id="toolbar-osd"></div>
-                    </div>
-                    {this.state.viewerReady && (
-                        <AdnoNavigator
-                            viewer={this.openSeadragon}
-                            imageRatio={this.state.imageRatio}
-                            layout={this.state.navigatorLayout}
-                            imgUrl={this.state.navigatorImgUrl}
-                        />
-                    )}
+        return <>
+            <div style={{ position: 'relative', width: '100%' }}>
+                <div id="openseadragon1">
+                    <div id="toolbar-container"></div>
+                    <div id="toolbar-osd"></div>
                 </div>
-                {
-                    this.state.isMovingItem &&
-                    <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
-                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
-                            <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
-                        </div>
-                    </button>
-                }
+                {this.state.viewerReady && (
+                    <AdnoNavigator
+                        viewer={this.openSeadragon}
+                        imageRatio={this.state.imageRatio}
+                        layout={this.state.navigatorLayout}
+                        imgUrl={this.state.navigatorImgUrl}
+                    />
+                )}
             </div>
-        )
+            {
+                this.state.isMovingItem &&
+                <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
+                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
+                        <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
+                    </div>
+                </button>
+            }
+        </>
     }
 }
 

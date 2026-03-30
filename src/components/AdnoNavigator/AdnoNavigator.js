@@ -8,6 +8,7 @@ class AdnoNavigator extends Component {
         this.isDragging = false;
         this._bgImage = null;
         this._timer = null;
+        this.state = { offset: 0 };
     }
 
     componentDidMount() {
@@ -39,6 +40,34 @@ class AdnoNavigator extends Component {
         this._bgImage.onload = () => this.draw();
     }
 
+    getFullAndVisible = () => {
+        const { imageRatio, layout } = this.props;
+        const { width, height } = this.computeSize();
+        const { offset } = this.state;
+
+        let fullW = width, fullH = height;
+        if (layout === 'right-vertical') {
+            fullH = Math.round(width * imageRatio);
+        } else if (layout === 'bottom-center') {
+            fullW = Math.round(height / imageRatio);
+        }
+
+        const needsScroll = layout === 'right-vertical'
+            ? fullH > height
+            : layout === 'bottom-center'
+                ? fullW > width
+                : false;
+
+        let sx = 0, sy = 0;
+        if (layout === 'right-vertical') {
+            sy = offset;
+        } else if (layout === 'bottom-center') {
+            sx = offset;
+        }
+
+        return { fullW, fullH, visW: width, visH: height, sx, sy, needsScroll };
+    }
+
     draw = () => {
         const { viewer } = this.props;
         const canvas = this.canvasRef.current;
@@ -57,7 +86,8 @@ class AdnoNavigator extends Component {
         ctx.fillRect(0, 0, W, H);
 
         if (this._bgImage?.complete && this._bgImage.naturalWidth) {
-            ctx.drawImage(this._bgImage, 0, 0, W, H);
+            const { fullW, fullH, sx, sy } = this.getFullAndVisible();
+            ctx.drawImage(this._bgImage, -sx, -sy, fullW, fullH);
         }
 
         this.drawViewportRect(ctx, item, W, H);
@@ -67,10 +97,11 @@ class AdnoNavigator extends Component {
         const { viewer } = this.props;
         const imgBounds = item.getBounds();
         const viewBounds = viewer.viewport.getBounds(true);
+        const { fullW, fullH, sx, sy } = this.getFullAndVisible();
 
         const toCanvas = (x, y) => ({
-            x: ((x - imgBounds.x) / imgBounds.width) * W,
-            y: ((y - imgBounds.y) / imgBounds.height) * H,
+            x: ((x - imgBounds.x) / imgBounds.width) * fullW - sx,
+            y: ((y - imgBounds.y) / imgBounds.height) * fullH - sy,
         });
 
         const tl = toCanvas(viewBounds.x, viewBounds.y);
@@ -103,9 +134,10 @@ class AdnoNavigator extends Component {
 
         const rect = canvas.getBoundingClientRect();
         const imgBounds = item.getBounds();
+        const { fullW, fullH, sx, sy } = this.getFullAndVisible();
 
-        const vpX = imgBounds.x + ((e.clientX - rect.left) / canvas.width) * imgBounds.width;
-        const vpY = imgBounds.y + ((e.clientY - rect.top) / canvas.height) * imgBounds.height;
+        const vpX = imgBounds.x + ((e.clientX - rect.left + sx) / fullW) * imgBounds.width;
+        const vpY = imgBounds.y + ((e.clientY - rect.top + sy) / fullH) * imgBounds.height;
 
         viewer.viewport.panTo(new OpenSeadragon.Point(vpX, vpY), false);
     }
@@ -113,6 +145,27 @@ class AdnoNavigator extends Component {
     handleMouseDown = (e) => { this.isDragging = true; this.panTo(e); }
     handleMouseMove = (e) => { if (this.isDragging) this.panTo(e); }
     handleMouseUp = () => { this.isDragging = false; }
+
+    scroll = (direction) => {
+        const { layout, imageRatio } = this.props;
+        const { width, height } = this.computeSize();
+
+        let fullSize, visSize;
+        if (layout === 'right-vertical') {
+            fullSize = Math.round(width * imageRatio);
+            visSize = height;
+        } else {
+            fullSize = Math.round(height / imageRatio);
+            visSize = width;
+        }
+
+        const step = Math.round(visSize * 0.5);
+        const maxOffset = Math.max(0, fullSize - visSize);
+
+        this.setState(prev => ({
+            offset: Math.max(0, Math.min(maxOffset, prev.offset + direction * step))
+        }), () => this.draw());
+    }
 
     computeSize = () => {
         const { viewer, imageRatio, layout } = this.props;
@@ -126,36 +179,52 @@ class AdnoNavigator extends Component {
             return { width: w, height: h };
         };
 
+        const maxW = cw * 0.5;
+        const maxH = ch * 0.5;
+
         if (layout === 'bottom-center') {
-            const w = Math.round(cw * 0.5);
-            return fit(w, Math.round(w * imageRatio), cw * 0.5, ch * 0.4);
+            const w = Math.round(maxW);
+            return fit(w, Math.round(w * imageRatio), maxW, maxH);
         }
         if (layout === 'right-vertical') {
-            const h = Math.round(ch * 0.8);
-            return fit(Math.round(h / imageRatio), h, cw * 0.2, ch * 0.8);
+            const h = Math.round(maxH);
+            return fit(Math.round(h / imageRatio), h, maxW, maxH);
         }
         const w = Math.round(cw * 0.25);
-        return fit(w, Math.round(w * imageRatio), cw * 0.25, ch * 0.3);
+        return fit(w, Math.round(w * imageRatio), maxW, maxH);
     }
 
     render() {
         const { layout } = this.props;
         const { width, height } = this.computeSize();
+        const { needsScroll } = this.getFullAndVisible();
+        const isVertical = layout === 'right-vertical';
 
         return (
-            <canvas
-                ref={this.canvasRef}
-                width={width}
-                height={height}
-                className={`adno-navigator adno-navigator--${layout}`}
-                onMouseDown={this.handleMouseDown}
-                onMouseMove={this.handleMouseMove}
-                onMouseUp={this.handleMouseUp}
-                onMouseLeave={this.handleMouseUp}
-            />
+            <div className={`adno-navigator-wrap adno-navigator-wrap--${layout} ${isVertical ? 'adno-navigator-wrap--col' : 'adno-navigator-wrap--row'}`}>
+                {needsScroll && (
+                    <button className="adno-navigator-arrow" onClick={() => this.scroll(-1)}>
+                        {isVertical ? '▲' : '◀'}
+                    </button>
+                )}
+                <canvas
+                    ref={this.canvasRef}
+                    width={width}
+                    height={height}
+                    className="adno-navigator"
+                    onMouseDown={this.handleMouseDown}
+                    onMouseMove={this.handleMouseMove}
+                    onMouseUp={this.handleMouseUp}
+                    onMouseLeave={this.handleMouseUp}
+                />
+                {needsScroll && (
+                    <button className="adno-navigator-arrow" onClick={() => this.scroll(1)}>
+                        {isVertical ? '▼' : '▶'}
+                    </button>
+                )}
+            </div>
         );
     }
 }
 
 export default AdnoNavigator;
-

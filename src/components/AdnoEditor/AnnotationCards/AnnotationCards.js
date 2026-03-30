@@ -114,7 +114,7 @@ class AnnotationCards extends Component {
         })
 
         return (
-            <div className="annotations_list">
+            <div className="annotations_list" id="annotations_list">
                 {
                     annotationWithTags
                         .map((annotation, index) => {

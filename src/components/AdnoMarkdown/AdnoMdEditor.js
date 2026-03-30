@@ -160,7 +160,14 @@ class AdnoMdEditor extends Component {
                 this.props.updateAnnos(annos)
             })
 
-        document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`)?.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+        const container = document.getElementById("annotations_list");
+        const el = document.getElementById(`anno_edit_card_${this.props.selectedAnnotation.id}`);
+        if (container && el) {
+            container.scrollTo({
+                top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                behavior: "smooth"
+            });
+        }
 
         this.props.closeMdEditor()
     }

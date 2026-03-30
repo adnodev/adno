@@ -1,3 +1,7 @@
+.project {
+    height: 100vh;
+}
+
 .project .navbar {
     /* background: var(--adno-main-color); */
     min-height: initial;
@@ -306,6 +310,8 @@ input:checked+.slider:before {
     width: calc(100% - 350px);
     position: absolute;
     margin-left: 350px;
+    height: calc(100vh - 58px);
+    display: flex;
 }
 
 #image_iiif {
@@ -454,7 +460,7 @@ input:checked+.slider:before {
 
     #image_iiif_annotations #storyboard_viewer .seadragonbox {
         width: 100%;
-        height: calc(100vh - 136px);
+        height: calc(100vh - 58px);
         display: inline-block;
     }
 

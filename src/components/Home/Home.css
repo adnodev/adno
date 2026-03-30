@@ -145,6 +145,11 @@
     color: var(--adno-main-color);
 }
 
+.home {
+    height: 100vh;
+    overflow-y: scroll;
+}
+
 .home h1 {
     font-weight: 400;
 }
@@ -174,14 +179,15 @@
     animation-name: spin;
     animation-duration: 5000ms;
     animation-iteration-count: infinite;
-    animation-timing-function: linear; 
+    animation-timing-function: linear;
 }
 
 @keyframes spin {
     from {
-        transform:rotate(0deg);
+        transform: rotate(0deg);
     }
+
     to {
-        transform:rotate(360deg);
+        transform: rotate(360deg);
     }
 }

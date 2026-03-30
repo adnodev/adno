@@ -22,13 +22,16 @@
 
 .sidebar-opened-w-modal{
   height: calc(100% - 58px);
-  width: 350px;
-  position: fixed;
-  z-index: 1;
-  top: 58px;
-  left: 0;
+  min-width: 350px;
+  max-width: 350px;
+  /* position: fixed; */
+  /* z-index: 1; */
+  /* top: 58px;
+  left: 0; */
   background-color: #f0f0f0;
   transition: 1s;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
   
 

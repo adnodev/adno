@@ -128,8 +128,6 @@ const Project = ({ editMode }) => {
         })
         : annotations;
 
-        console.log(settings)
-
     if (!state.selectedProject)
         return <div className="loader">
             <InfinitySpin
@@ -208,91 +206,94 @@ const Project = ({ editMode }) => {
                 </div>
             )}
 
-            {annotations.length > 0 && editMode && (
-                <div className="sidebar-opened-w-modal">
-                    <AnnotationCards
-                        updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
+            <div style={{ display: 'flex', height: '100%' }}>
+
+                {annotations.length > 0 && editMode && (
+                    <div className="sidebar-opened-w-modal">
+                        <AnnotationCards
+                            updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
+                            selectedProject={state.selectedProject}
+                            openRichEditor={(annotation) => setState(prev => ({
+                                ...prev,
+                                updateAnnotation: true,
+                                selectedAnnotation: annotation
+                            }))}
+                            annotations={annotations}
+                            updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
+                            selectedAnno={selectedAnnotation}
+                            changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                        />
+                    </div>
+                )}
+
+                {annotations.length > 0 && !editMode && settings.sidebarEnabled && (
+                    <div className="sidebar-opened-w-modal">
+                        <ViewerAnnotationCards
+                            updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
+                            selectedProject={state.selectedProject}
+                            annotations={viewerAnnotations}
+                            selectedAnno={selectedAnnotation}
+                            changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                            editingMode={editMode}
+                            openFullAnnotationView={(annotation) => setState(prev => ({
+                                ...prev,
+                                showFullAnnotationView: true,
+                                selectedAnnotation: annotation
+                            }))}
+                        />
+                    </div>
+                )}
+
+                {/* <div className={annotations.length > 0 && settings.sidebarEnabled ? "adno-viewer-rightbar-with-annos" : ""}> */}
+                {/* <div className="col">
+                    <div className="card"> */}
+                {editMode ? (
+                    <AdnoEditor
                         selectedProject={state.selectedProject}
-                        openRichEditor={(annotation) => setState(prev => ({
-                            ...prev,
-                            updateAnnotation: true,
-                            selectedAnnotation: annotation
-                        }))}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}
-                        changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
-                    />
-                </div>
-            )}
-
-            {annotations.length > 0 && !editMode && settings.sidebarEnabled && (
-                <div className="sidebar-opened-w-modal">
-                    <ViewerAnnotationCards
-                        updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
-                        selectedProject={state.selectedProject}
-                        annotations={viewerAnnotations}
-                        selectedAnno={selectedAnnotation}
-                        changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
-                        editingMode={editMode}
-                        openFullAnnotationView={(annotation) => setState(prev => ({
+                        openRichEditor={(annotation) => setState(prev => ({
                             ...prev,
-                            showFullAnnotationView: true,
+                            // updateAnnotation: true,
                             selectedAnnotation: annotation
                         }))}
+                        changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
+                        rotation={settings.rotation}
+                        showNavigator={settings.showNavigator}
                     />
-                </div>
-            )}
-
-            <div className={annotations.length > 0 && settings.sidebarEnabled ? "adno-viewer-rightbar-with-annos" : ""}>
-                <div className="col">
-                    <div className="card">
-                        {editMode ? (
-                            <AdnoEditor
-                                selectedProject={state.selectedProject}
-                                annotations={annotations}
-                                updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
-                                selectedAnno={selectedAnnotation}
-                                openRichEditor={(annotation) => setState(prev => ({
-                                    ...prev,
-                                    updateAnnotation: true,
-                                    selectedAnnotation: annotation
-                                }))}
-                                changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
-                                rotation={settings.rotation}
-                                showNavigator={settings.showNavigator}
-                            />
-                        ) : (
-                            <OpenView
-                                setAudioContexts={audioContexts => setState(prev => ({ ...prev, audioContexts }))}
-                                startbyfirstanno={settings.startbyfirstanno}
-                                shouldAutoPlayAnnotations={settings.shouldAutoPlayAnnotations}
-                                showNavigator={settings.showNavigator}
-                                toolsbarOnFs={settings.toolsbarOnFs}
-                                showToolbar={settings.displayToolbar}
-                                rotation={settings.rotation}
-                                timerDelay={settings.delay}
-                                showOutlines={settings.showOutlines}
-                                showCurrentAnnotation={settings.showCurrentAnnotation}
-                                soundMode={settings.soundMode}
-                                spatialization={settings.spatialization}
-                                showEyes={settings.showEyes}
-                                annos={viewerAnnotations}
-                                selectedAnno={selectedAnnotation}
-                                selectedProject={state.selectedProject}
-                                changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
-                                updateAutoplayId={(id) => setState(prev => ({ ...prev, autoplayID: id }))}
-                                changeShowToolbar={() => setState(prev => ({
-                                    ...prev,
-                                    settings: { ...prev.settings, displayToolbar: !prev.settings.displayToolbar }
-                                }))}
-                                outlineWidth={settings.outlineWidth}
-                                outlineColor={settings.outlineColor}
-                                outlineColorFocus={settings.outlineColorFocus}
-                            />
-                        )}
-                    </div>
-                </div>
+                ) : (
+                    <OpenView
+                        setAudioContexts={audioContexts => setState(prev => ({ ...prev, audioContexts }))}
+                        startbyfirstanno={settings.startbyfirstanno}
+                        shouldAutoPlayAnnotations={settings.shouldAutoPlayAnnotations}
+                        showNavigator={settings.showNavigator}
+                        toolsbarOnFs={settings.toolsbarOnFs}
+                        showToolbar={settings.displayToolbar}
+                        rotation={settings.rotation}
+                        timerDelay={settings.delay}
+                        showOutlines={settings.showOutlines}
+                        showCurrentAnnotation={settings.showCurrentAnnotation}
+                        soundMode={settings.soundMode}
+                        spatialization={settings.spatialization}
+                        showEyes={settings.showEyes}
+                        annos={viewerAnnotations}
+                        selectedAnno={selectedAnnotation}
+                        selectedProject={state.selectedProject}
+                        changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
+                        updateAutoplayId={(id) => setState(prev => ({ ...prev, autoplayID: id }))}
+                        changeShowToolbar={() => setState(prev => ({
+                            ...prev,
+                            settings: { ...prev.settings, displayToolbar: !prev.settings.displayToolbar }
+                        }))}
+                        outlineWidth={settings.outlineWidth}
+                        outlineColor={settings.outlineColor}
+                        outlineColorFocus={settings.outlineColorFocus}
+                    />
+                )}
+                {/* </div>
+                </div> */}
+                {/* </div> */}
             </div>
         </div>
     );

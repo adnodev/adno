@@ -57,8 +57,7 @@ class OpenView extends Component {
             showNavigator: false,
             tileSources: tileSources,
             prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-            crossOriginPolicy: 'Anonymous',
-            ajaxWithCredentials: false
+            crossOriginPolicy: 'Anonymous'
         })
 
         this.openSeadragon.addOnceHandler('open', () => {
@@ -92,18 +91,18 @@ class OpenView extends Component {
         });
 
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
-            if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            // if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
+            //     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 
-                this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
-                document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
-            }
+            //     this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+            //     document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
+            // }
 
-            this.AdnoAnnotorious.fitBounds(annotation.id)
+            // this.AdnoAnnotorious.fitBounds(annotation.id)
 
-            let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
+            // let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
 
-            this.setState({ currentID: annotationIndex })
+            // this.setState({ currentID: annotationIndex })
             this.props.changeSelectedAnno(annotation)
         });
 
@@ -312,13 +311,12 @@ class OpenView extends Component {
 
     changeAnno = (annotation) => {
         if (annotation && annotation.id) {
-            this.props.changeSelectedAnno(annotation)
+            // this.props.changeSelectedAnno(annotation)
 
             this.AdnoAnnotorious.selectAnnotation(annotation.id)
             this.AdnoAnnotorious.fitBounds(annotation.id)
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-
             this.setState({ currentID: annotationIndex })
 
             if (this.props.soundMode === 'no_spatialization') {
@@ -348,10 +346,12 @@ class OpenView extends Component {
             }
 
             if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
-                    inline: "nearest"
+                const container = document.getElementById("annotations_list");
+                const el = document.getElementById(`anno_card_${annotation.id}`);
+
+                container.scrollTo({
+                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                    behavior: "smooth"
                 });
 
                 this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
@@ -496,7 +496,14 @@ class OpenView extends Component {
 
 
             if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
-                document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+                const container = document.getElementById("annotations_list");
+                const el = document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`);
+                if (container && el) {
+                    container.scrollTo({
+                        top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                        behavior: "smooth"
+                    });
+                }
             }
 
         }
@@ -601,7 +608,6 @@ class OpenView extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-
         if (this.AdnoAnnotorious) {
             if (prevProps.selectedAnno !== this.props.selectedAnno) {
                 this.changeAnno(this.props.selectedAnno)

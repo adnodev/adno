@@ -21,7 +21,7 @@ export function extractIIIFContent(imported_project, options) {
         console.log('Detected IIIF Image API info.json');
         resultLink = imported_project['@id'] || imported_project.id;
 
-        if (resultLink && !resultLink.endsWith('/info.json')) {
+        if (resultLink && !resultLink.endsWith('info.json')) {
             resultLink = resultLink + '/info.json';
         }
     }
@@ -45,7 +45,7 @@ export function extractIIIFContent(imported_project, options) {
                             const service = body.service[0];
                             resultLink = service.id || service['@id'];
 
-                            if (resultLink && !resultLink.endsWith('/info.json')) {
+                            if (resultLink && !resultLink.endsWith('info.json')) {
                                 resultLink = resultLink + '/info.json';
                             }
                         }
@@ -81,7 +81,7 @@ export function extractIIIFContent(imported_project, options) {
 
                             resultLink = service['@id'] || service.id;
 
-                            if (resultLink && !resultLink.endsWith('/info.json')) {
+                            if (resultLink && !resultLink.endsWith('info.json')) {
                                 resultLink = resultLink + '/info.json';
                             }
                         }
@@ -184,7 +184,7 @@ export function findImageInObject(obj, depth = 0) {
         const service = Array.isArray(obj.service) ? obj.service[0] : obj.service;
         const serviceId = service['@id'] || service.id;
         if (serviceId) {
-            return serviceId.endsWith('/info.json') ? serviceId : serviceId + '/info.json';
+            return serviceId.endsWith('info.json') ? serviceId : serviceId + '/info.json';
         }
     }
 

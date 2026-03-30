@@ -1,21 +1,42 @@
-/* AdnoNavigator.css */
 .adno-navigator {
-    position: absolute;
     cursor: crosshair;
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.25);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    z-index: 100;
     background: #111;
+    display: block;
 }
 
-
-.adno-navigator--bottom-center {
+.adno-navigator-wrap {
+    position: absolute;
+    z-index: 100;
     bottom: 12px;
     right: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-.adno-navigator--right-vertical {
-    right: 1.5rem;
-    bottom: 12px;
+.adno-navigator-wrap--col {
+    flex-direction: column;
+}
+
+.adno-navigator-wrap--row {
+    flex-direction: row;
+}
+
+.adno-navigator-arrow {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 1;
+    transition: background 0.15s;
+}
+
+.adno-navigator-arrow:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
