@@ -1,244 +1,275 @@
 import { Component, createRef } from "react";
 import "./AdnoNavigator.css";
 
-const SMALL = 120;
-const ARROW_V = 24; // height of top/bottom arrows
-const ARROW_H = 20; // width of left/right arrows
+const SMALL   = 120;
+const SPEED   = 2;
+const ARROW_V = 24;
+const ARROW_H = 20;
 
 class AdnoNavigator extends Component {
     constructor(props) {
         super(props);
+        this.imgRef    = createRef();
         this.canvasRef = createRef();
-        this.wrapRef = createRef();
-        this._bgImage = null;
-        this._timer = null;
-        this._rafId = null;
-        this._scrollDir = null;
+        this.scrollRef = createRef();
+        this._rafScroll = null;
         this.isDragging = false;
-        this.state = { scrollTop: 0, scrollLeft: 0 };
+        this.scrollTop  = 0;
+        this.scrollLeft = 0;
+        this.navW    = 0;
+        this.navH    = 0;
+        this.navImgW = 0;
+        this.navImgH = 0;
+        this.state = { showV: false, showH: false };
     }
 
     componentDidMount() {
         const { viewer } = this.props;
-        this.loadThumbnail();
-        this._timer = setTimeout(() => this.draw(), 500);
-        viewer.addHandler('animation', this.draw);
-        viewer.addHandler('resize', this.draw);
+        this.setup();
+        viewer.addHandler('animation', this.drawRect);
+        viewer.addHandler('zoom',      this.drawRect);
+        viewer.addHandler('pan',       this.drawRect);
+        viewer.addHandler('resize',    this.setup);
+        window.addEventListener('mouseup',    this.onWindowMouseUp);
+        window.addEventListener('touchend',   this.onWindowMouseUp);
+        window.addEventListener('mousemove',  this.onWindowMouseMove);
     }
 
     componentWillUnmount() {
         const { viewer } = this.props;
-        clearTimeout(this._timer);
-        cancelAnimationFrame(this._rafId);
-        viewer.removeHandler('animation', this.draw);
-        viewer.removeHandler('resize', this.draw);
+        viewer.removeHandler('animation', this.drawRect);
+        viewer.removeHandler('zoom',      this.drawRect);
+        viewer.removeHandler('pan',       this.drawRect);
+        viewer.removeHandler('resize',    this.setup);
+        window.removeEventListener('mouseup',   this.onWindowMouseUp);
+        window.removeEventListener('touchend',  this.onWindowMouseUp);
+        window.removeEventListener('mousemove', this.onWindowMouseMove);
+        cancelAnimationFrame(this._rafScroll);
     }
 
-    loadThumbnail = () => {
-        const { imgUrl } = this.props;
-        if (!imgUrl) return;
-        this._bgImage = new Image();
-        this._bgImage.crossOrigin = 'anonymous';
-        this._bgImage.src = imgUrl.endsWith('/info.json')
-            ? `${imgUrl.replace('/info.json', '')}/full/!512,512/0/default.jpg`
-            : imgUrl;
-        this._bgImage.onload = () => this.draw();
-    }
+    // imageRatio = h/w → aspectRatio (w/h) = 1/imageRatio
+    computeNavDimensions = () => {
+        const { viewer, imageRatio } = this.props;
+        const container = viewer?.container;
+        const cw    = container?.clientWidth  || 800;
+        const ch    = container?.clientHeight || 600;
+        const maxW  = Math.floor(cw * 0.6);
+        const maxH  = Math.floor(ch * 0.6);
+        const ratio = 1 / imageRatio; // w/h
 
-    // imageRatio = h/w, so aspectRatio (w/h) = 1/imageRatio
-    computeDimensions = () => {
-        const { imageRatio } = this.props;
-        const MAX_W = SMALL * 3; // fixed pixel max, never scales with viewer
-        const MAX_H = SMALL * 3;
-        const aspectRatio = 1 / imageRatio; // w/h
-
-        // navImgW/navImgH = how big the full image is drawn
-        // navW/navH = visible navigator box (capped)
-        let navImgW, navImgH;
-        if (aspectRatio >= 1) {
-            // wider than tall: fix height to SMALL, grow width
-            navImgH = SMALL;
-            navImgW = Math.round(SMALL * aspectRatio);
+        let w, h;
+        if (ratio <= 1) {
+            w = SMALL;
+            h = Math.min(Math.round(w / ratio), maxH);
         } else {
-            // taller than wide: fix width to SMALL, grow height
-            navImgW = SMALL;
-            navImgH = Math.round(SMALL / aspectRatio);
+            h = SMALL;
+            w = Math.min(Math.round(h * ratio), maxW);
         }
-
-        const navW = Math.min(navImgW, MAX_W);
-        const navH = Math.min(navImgH, MAX_H);
-        const showV = navImgH > navH;
-        const showH = navImgW > navW;
-
-        return { navW, navH, navImgW, navImgH, showV, showH };
+        return { w, h };
     }
 
-    maxScrollTop = (navImgH, navH, showH) => Math.max(0, navImgH - navH - (showH ? ARROW_H * 2 : 0));
-    maxScrollLeft = (navImgW, navW, showV) => Math.max(0, navImgW - navW - (showV ? ARROW_V * 2 : 0));
+    setup = () => {
+        const { imageRatio, imgUrl } = this.props;
+        const { w, h } = this.computeNavDimensions();
+        this.navW = w;
+        this.navH = h;
 
-    draw = () => {
-        const { viewer } = this.props;
-        const { scrollTop, scrollLeft } = this.state;
-        const canvas = this.canvasRef.current;
-        if (!canvas) return;
-
-        const { navW, navH, navImgW, navImgH } = this.computeDimensions();
-        canvas.width = navW;
-        canvas.height = navH;
-
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, navW, navH);
-        ctx.fillStyle = 'rgba(0,0,0,0.85)';
-        ctx.fillRect(0, 0, navW, navH);
-
-        if (this._bgImage?.complete && this._bgImage.naturalWidth) {
-            ctx.drawImage(this._bgImage, -scrollLeft, -scrollTop, navImgW, navImgH);
+        // Cover scaling: scale image so it fills the panel entirely
+        const ratio = 1 / imageRatio; // w/h
+        if (w / h >= ratio) {
+            this.navImgW = w;
+            this.navImgH = Math.round(w * imageRatio);
+        } else {
+            this.navImgH = h;
+            this.navImgW = Math.round(h * ratio);
         }
 
-        const item = viewer.world.getItemAt(0);
-        if (!item) return;
+        const showV = this.navImgH > this.navH;
+        const showH = this.navImgW > this.navW;
 
-        const imgBounds = item.getBounds();
-        const viewBounds = viewer.viewport.getBounds(true);
+        this.scrollTop  = 0;
+        this.scrollLeft = 0;
 
-        const toCanvas = (x, y) => ({
-            x: ((x - imgBounds.x) / imgBounds.width) * navImgW - scrollLeft,
-            y: ((y - imgBounds.y) / imgBounds.height) * navImgH - scrollTop,
+        if (this.imgRef.current && imgUrl) {
+            const src = imgUrl.replace(/\/full\/[^/]+\//, `/full/${this.navImgW},/`);
+            this.imgRef.current.src          = src;
+            this.imgRef.current.style.width  = this.navImgW + 'px';
+            this.imgRef.current.style.height = this.navImgH + 'px';
+        }
+
+        if (this.canvasRef.current) {
+            const dpr = window.devicePixelRatio || 1;
+            this.canvasRef.current.width        = this.navImgW * dpr;
+            this.canvasRef.current.height       = this.navImgH * dpr;
+            this.canvasRef.current.style.width  = this.navImgW + 'px';
+            this.canvasRef.current.style.height = this.navImgH + 'px';
+        }
+
+        this.setState({ showV, showH }, () => {
+            this.applyScroll();
+            this.drawRect();
         });
+    }
 
-        const tl = toCanvas(viewBounds.x, viewBounds.y);
-        const br = toCanvas(viewBounds.x + viewBounds.width, viewBounds.y + viewBounds.height);
+    maxScrollTop  = () => Math.max(0, this.navImgH - this.navH + (this.state.showV ? ARROW_V * 2 : 0));
+    maxScrollLeft = () => Math.max(0, this.navImgW - this.navW + (this.state.showH ? ARROW_H * 2 : 0));
 
-        const rx = Math.max(0, tl.x);
-        const ry = Math.max(0, tl.y);
-        const rw = Math.min(navW, br.x) - rx;
-        const rh = Math.min(navH, br.y) - ry;
+    applyScroll = () => {
+        this.scrollTop  = Math.max(0, Math.min(this.scrollTop,  this.maxScrollTop()));
+        this.scrollLeft = Math.max(0, Math.min(this.scrollLeft, this.maxScrollLeft()));
+        if (this.imgRef.current) {
+            this.imgRef.current.style.top  = -this.scrollTop  + 'px';
+            this.imgRef.current.style.left = -this.scrollLeft + 'px';
+        }
+        if (this.canvasRef.current) {
+            this.canvasRef.current.style.top  = -this.scrollTop  + 'px';
+            this.canvasRef.current.style.left = -this.scrollLeft + 'px';
+        }
+    }
 
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
-        ctx.fillRect(0, 0, navW, ry);
-        ctx.fillRect(0, ry + rh, navW, navH - ry - rh);
-        ctx.fillRect(0, ry, rx, rh);
-        ctx.fillRect(rx + rw, ry, navW - rx - rw, rh);
+    drawRect = () => {
+        const { viewer } = this.props;
+        const canvas = this.canvasRef.current;
+        if (!canvas || !viewer?.viewport) return;
 
-        ctx.strokeStyle = 'rgba(255,220,50,0.9)';
-        ctx.lineWidth = 2;
+        const dpr = window.devicePixelRatio || 1;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const b  = viewer.viewport.getBounds(true);
+        // OSD viewport: x unit = image width, so navImgW for both axes
+        const rx = b.x      * this.navImgW * dpr;
+        const ry = b.y      * this.navImgW * dpr;
+        const rw = b.width  * this.navImgW * dpr;
+        const rh = b.height * this.navImgW * dpr;
+
+        ctx.fillStyle   = 'rgba(255,160,0,0.15)';
+        ctx.fillRect(rx, ry, rw, rh);
+        ctx.strokeStyle = 'rgba(255,160,0,0.9)';
+        ctx.lineWidth   = 2 * dpr;
         ctx.strokeRect(rx, ry, rw, rh);
 
-        // Auto-scroll to keep rect visible (15–85% margin)
-        const margin = 0.15;
-        let newScrollTop = scrollTop;
-        let newScrollLeft = scrollLeft;
-        const { showV, showH } = this.computeDimensions();
-        if (navImgH > navH) {
-            const centerY = (tl.y + br.y) / 2;
-            if (centerY < navH * margin) newScrollTop = Math.max(0, scrollTop - (navH * margin - centerY));
-            else if (centerY > navH * (1 - margin)) newScrollTop = Math.min(this.maxScrollTop(navImgH, navH, showH), scrollTop + (centerY - navH * (1 - margin)));
-        }
-        if (navImgW > navW) {
-            const centerX = (tl.x + br.x) / 2;
-            if (centerX < navW * margin) newScrollLeft = Math.max(0, scrollLeft - (navW * margin - centerX));
-            else if (centerX > navW * (1 - margin)) newScrollLeft = Math.min(this.maxScrollLeft(navImgW, navW, showV), scrollLeft + (centerX - navW * (1 - margin)));
-        }
-        if (newScrollTop !== scrollTop || newScrollLeft !== scrollLeft) {
-            this.setState({ scrollTop: newScrollTop, scrollLeft: newScrollLeft }, () => this.draw());
+        // Auto-scroll: keep rect center visible, but only when zoomed in enough
+        // (skip if viewport covers >60% of the image to avoid bad initial position)
+        if (!this._rafScroll && b.width < 0.6) {
+            const { showV, showH } = this.state;
+            const visH = this.navH - (showV ? ARROW_V * 2 : 0);
+            const visW = this.navW - (showH ? ARROW_H * 2 : 0);
+            const cy   = (b.y + b.height / 2) * this.navImgW;
+            const cx   = (b.x + b.width  / 2) * this.navImgW;
+            let changed = false;
+            if (cy < this.scrollTop  + visH * 0.15 || cy > this.scrollTop  + visH * 0.85) {
+                this.scrollTop  = cy - visH / 2; changed = true;
+            }
+            if (cx < this.scrollLeft + visW * 0.15 || cx > this.scrollLeft + visW * 0.85) {
+                this.scrollLeft = cx - visW / 2; changed = true;
+            }
+            if (changed) this.applyScroll();
         }
     }
 
-    panTo = (e) => {
-        const { viewer } = this.props;
-        const { scrollTop, scrollLeft } = this.state;
-        const canvas = this.canvasRef.current;
-        const item = viewer.world.getItemAt(0);
-        if (!canvas || !item) return;
-
-        const rect = canvas.getBoundingClientRect();
-        const { navImgW, navImgH } = this.computeDimensions();
-        const imgBounds = item.getBounds();
-
-        const px = (e.clientX - rect.left + scrollLeft) / navImgW;
-        const py = (e.clientY - rect.top + scrollTop) / navImgH;
-
-        viewer.viewport.panTo(new OpenSeadragon.Point(
-            imgBounds.x + px * imgBounds.width,
-            imgBounds.y + py * imgBounds.height
-        ), false);
-    }
-
-    handleMouseDown = (e) => { this.isDragging = true; this.panTo(e); }
-    handleMouseMove = (e) => { if (this.isDragging) this.panTo(e); }
-    handleMouseUp = () => { this.isDragging = false; }
-
-    startScroll = (dir) => {
-        // dir: { top: -1|0|1, left: -1|0|1 }
-        this._scrollDir = dir;
-        const step = () => {
-            if (!this._scrollDir) return;
-            const { navImgW, navImgH, navW, navH, showV, showH } = this.computeDimensions();
-            this.setState(prev => ({
-                scrollTop: Math.max(0, Math.min(this.maxScrollTop(navImgH, navH, showH), prev.scrollTop + (this._scrollDir.top || 0) * 2)),
-                scrollLeft: Math.max(0, Math.min(this.maxScrollLeft(navImgW, navW, showV), prev.scrollLeft + (this._scrollDir.left || 0) * 2)),
-            }), () => this.draw());
-            this._rafId = requestAnimationFrame(step);
+    // ── Arrows: scroll thumbnail only ─────────────────────────────────────────
+    startScroll = (e, dt, dl) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (this._rafScroll) return;
+        const loop = () => {
+            this.scrollTop  += dt * SPEED;
+            this.scrollLeft += dl * SPEED;
+            this.applyScroll();
+            this._rafScroll = requestAnimationFrame(loop);
         };
-        this._rafId = requestAnimationFrame(step);
+        this._rafScroll = requestAnimationFrame(loop);
     }
 
     stopScroll = () => {
-        this._scrollDir = null;
-        cancelAnimationFrame(this._rafId);
+        if (this._rafScroll) {
+            cancelAnimationFrame(this._rafScroll);
+            this._rafScroll = null;
+        }
+    }
+
+    // ── Canvas click/drag: pan viewer ─────────────────────────────────────────
+    navPosToPan = (clientX, clientY) => {
+        const { viewer } = this.props;
+        const el = this.scrollRef.current;
+        if (!el || !viewer?.viewport) return;
+        const rect = el.getBoundingClientRect();
+        const px = (clientX - rect.left  + this.scrollLeft) / this.navImgW;
+        const py = (clientY - rect.top   + this.scrollTop)  / this.navImgW;
+        viewer.viewport.panTo(new OpenSeadragon.Point(px, py), false);
+    }
+
+    onScrollMouseDown = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.isDragging = true;
+        this.props.viewer?.setMouseNavEnabled(false);
+        this.navPosToPan(e.clientX, e.clientY);
+    }
+
+    onScrollTouchStart = (e) => {
+        e.stopPropagation();
+        this.isDragging = true;
+        this.props.viewer?.setMouseNavEnabled(false);
+        this.navPosToPan(e.touches[0].clientX, e.touches[0].clientY);
+    }
+
+    onWindowMouseMove = (e) => {
+        if (this.isDragging) this.navPosToPan(e.clientX, e.clientY);
+    }
+
+    onWindowMouseUp = () => {
+        this.stopScroll();
+        if (this.isDragging) {
+            this.isDragging = false;
+            this.props.viewer?.setMouseNavEnabled(true);
+        }
     }
 
     render() {
-        const { navW, navH, showV, showH } = this.computeDimensions();
+        const { showV, showH } = this.state;
 
         return (
-            <div className="adno-navigator-wrap" ref={this.wrapRef}>
+            <div className="adno-navigator-wrap">
                 {showV && (
                     <button className="adno-navigator-arrow adno-navigator-arrow--top"
-                        onMouseDown={() => this.startScroll({ top: -1, left: 0 })}
-                        onMouseUp={this.stopScroll}
-                        onMouseLeave={this.stopScroll}
-                        onTouchStart={() => this.startScroll({ top: -1, left: 0 })}
-                        onTouchEnd={this.stopScroll}
+                        onMouseDown={(e) => this.startScroll(e, -1, 0)}
+                        onTouchStart={(e) => this.startScroll(e, -1, 0)}
                     >▲</button>
                 )}
                 <div className="adno-navigator-row">
                     {showH && (
                         <button className="adno-navigator-arrow adno-navigator-arrow--left"
-                            onMouseDown={() => this.startScroll({ top: 0, left: -1 })}
-                            onMouseUp={this.stopScroll}
-                            onMouseLeave={this.stopScroll}
-                            onTouchStart={() => this.startScroll({ top: 0, left: -1 })}
-                            onTouchEnd={this.stopScroll}
+                            onMouseDown={(e) => this.startScroll(e, 0, -1)}
+                            onTouchStart={(e) => this.startScroll(e, 0, -1)}
                         >◀</button>
                     )}
-                    <canvas
-                        ref={this.canvasRef}
-                        width={navW}
-                        height={navH}
-                        className="adno-navigator"
-                        onMouseDown={this.handleMouseDown}
-                        onMouseMove={this.handleMouseMove}
-                        onMouseUp={this.handleMouseUp}
-                        onMouseLeave={this.handleMouseUp}
-                    />
+                    <div className="adno-navigator-scroll"
+                        ref={this.scrollRef}
+                        style={{ width: this.navW, height: this.navH }}
+                        onMouseDown={this.onScrollMouseDown}
+                        onTouchStart={this.onScrollTouchStart}
+                    >
+                        <img
+                            ref={this.imgRef}
+                            className="adno-navigator-img"
+                            alt=""
+                            draggable={false}
+                        />
+                        <canvas ref={this.canvasRef} className="adno-navigator-canvas" />
+                    </div>
                     {showH && (
                         <button className="adno-navigator-arrow adno-navigator-arrow--right"
-                            onMouseDown={() => this.startScroll({ top: 0, left: 1 })}
-                            onMouseUp={this.stopScroll}
-                            onMouseLeave={this.stopScroll}
-                            onTouchStart={() => this.startScroll({ top: 0, left: 1 })}
-                            onTouchEnd={this.stopScroll}
+                            onMouseDown={(e) => this.startScroll(e, 0, 1)}
+                            onTouchStart={(e) => this.startScroll(e, 0, 1)}
                         >▶</button>
                     )}
                 </div>
                 {showV && (
                     <button className="adno-navigator-arrow adno-navigator-arrow--bottom"
-                        onMouseDown={() => this.startScroll({ top: 1, left: 0 })}
-                        onMouseUp={this.stopScroll}
-                        onMouseLeave={this.stopScroll}
-                        onTouchStart={() => this.startScroll({ top: 1, left: 0 })}
-                        onTouchEnd={this.stopScroll}
+                        onMouseDown={(e) => this.startScroll(e, 1, 0)}
+                        onTouchStart={(e) => this.startScroll(e, 1, 0)}
                     >▼</button>
                 )}
             </div>
