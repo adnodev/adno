@@ -47,42 +47,42 @@ class AdnoNavigator extends Component {
         cancelAnimationFrame(this._rafScroll);
     }
 
-    // imageRatio = h/w → aspectRatio (w/h) = 1/imageRatio
     computeNavDimensions = () => {
-        const { viewer, imageRatio } = this.props;
-        const container = viewer?.container;
-        const cw    = container?.clientWidth  || 800;
-        const ch    = container?.clientHeight || 600;
-        const maxW  = Math.floor(cw * 0.6);
-        const maxH  = Math.floor(ch * 0.6);
-        const ratio = 1 / imageRatio; // w/h
+        const { viewer } = this.props;
+        const item = viewer.world.getItemAt(0);
+        if (!item) return null;
+        const size  = item.getContentSize();
+        const imgW  = size.x;
+        const imgH  = size.y;
+        const container = viewer.container;
+        const cw    = container.clientWidth;
+        const ch    = container.clientHeight;
+        const maxW  = Math.floor(cw * 2 / 3);
+        const maxH  = Math.floor(ch * 2 / 3);
+        const ratio = imgW / imgH;
 
         let w, h;
-        if (ratio <= 1) {
+        if (imgW <= imgH) {
             w = SMALL;
             h = Math.min(Math.round(w / ratio), maxH);
         } else {
             h = SMALL;
             w = Math.min(Math.round(h * ratio), maxW);
         }
-        return { w, h };
+        return { w, h, imgW, imgH };
     }
 
     setup = () => {
-        const { imageRatio, imgUrl } = this.props;
-        const { w, h } = this.computeNavDimensions();
+        const { imgUrl } = this.props;
+        const dims = this.computeNavDimensions();
+        if (!dims) return;
+        const { w, h, imgW, imgH } = dims;
         this.navW = w;
         this.navH = h;
 
-        // Cover scaling: scale image so it fills the panel entirely
-        const ratio = 1 / imageRatio; // w/h
-        if (w / h >= ratio) {
-            this.navImgW = w;
-            this.navImgH = Math.round(w * imageRatio);
-        } else {
-            this.navImgH = h;
-            this.navImgW = Math.round(h * ratio);
-        }
+        const scale = Math.max(w / imgW, h / imgH);
+        this.navImgW = Math.round(imgW * scale);
+        this.navImgH = Math.round(imgH * scale);
 
         const showV = this.navImgH > this.navH;
         const showH = this.navImgW > this.navW;
@@ -111,8 +111,15 @@ class AdnoNavigator extends Component {
         });
     }
 
-    maxScrollTop  = () => Math.max(0, this.navImgH - this.navH + (this.state.showV ? ARROW_V * 2 : 0));
-    maxScrollLeft = () => Math.max(0, this.navImgW - this.navW + (this.state.showH ? ARROW_H * 2 : 0));
+    maxScrollTop = () => {
+        const usedV = this.state.showV ? ARROW_V * 2 : 0;
+        return Math.max(0, this.navImgH - (this.navH - usedV));
+    }
+
+    maxScrollLeft = () => {
+        const usedH = this.state.showH ? ARROW_H * 2 : 0;
+        return Math.max(0, this.navImgW - (this.navW - usedH));
+    }
 
     applyScroll = () => {
         this.scrollTop  = Math.max(0, Math.min(this.scrollTop,  this.maxScrollTop()));
@@ -137,7 +144,6 @@ class AdnoNavigator extends Component {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const b  = viewer.viewport.getBounds(true);
-        // OSD viewport: x unit = image width, so navImgW for both axes
         const rx = b.x      * this.navImgW * dpr;
         const ry = b.y      * this.navImgW * dpr;
         const rw = b.width  * this.navImgW * dpr;
@@ -149,26 +155,25 @@ class AdnoNavigator extends Component {
         ctx.lineWidth   = 2 * dpr;
         ctx.strokeRect(rx, ry, rw, rh);
 
-        // Auto-scroll: keep rect center visible, but only when zoomed in enough
-        // (skip if viewport covers >60% of the image to avoid bad initial position)
-        if (!this._rafScroll && b.width < 0.6) {
+        if (!this._rafScroll) {
             const { showV, showH } = this.state;
-            const visH = this.navH - (showV ? ARROW_V * 2 : 0);
-            const visW = this.navW - (showH ? ARROW_H * 2 : 0);
-            const cy   = (b.y + b.height / 2) * this.navImgW;
-            const cx   = (b.x + b.width  / 2) * this.navImgW;
-            let changed = false;
-            if (cy < this.scrollTop  + visH * 0.15 || cy > this.scrollTop  + visH * 0.85) {
-                this.scrollTop  = cy - visH / 2; changed = true;
+            const usedV = showV ? ARROW_V : 0;
+            const usedH = showH ? ARROW_H : 0;
+            const visW  = this.navW - usedH * 2;
+            const visH  = this.navH - usedV * 2;
+            const cy = ry / dpr + rh / dpr / 2;
+            const cx = rx / dpr + rw / dpr / 2;
+
+            if (cy < this.scrollTop + visH * 0.15 || cy > this.scrollTop + visH * 0.85) {
+                this.scrollTop = cy - visH / 2;
             }
             if (cx < this.scrollLeft + visW * 0.15 || cx > this.scrollLeft + visW * 0.85) {
-                this.scrollLeft = cx - visW / 2; changed = true;
+                this.scrollLeft = cx - visW / 2;
             }
-            if (changed) this.applyScroll();
+            this.applyScroll();
         }
     }
 
-    // ── Arrows: scroll thumbnail only ─────────────────────────────────────────
     startScroll = (e, dt, dl) => {
         e.stopPropagation();
         e.preventDefault();
@@ -189,7 +194,6 @@ class AdnoNavigator extends Component {
         }
     }
 
-    // ── Canvas click/drag: pan viewer ─────────────────────────────────────────
     navPosToPan = (clientX, clientY) => {
         const { viewer } = this.props;
         const el = this.scrollRef.current;

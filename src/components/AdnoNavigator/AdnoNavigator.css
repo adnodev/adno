@@ -33,6 +33,8 @@
     display: block;
     pointer-events: none;
     user-select: none;
+    max-width: none !important;
+    max-height: none !important;
 }
 
 .adno-navigator-canvas {
