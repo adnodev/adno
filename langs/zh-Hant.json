@@ -2,6 +2,68 @@
     "begin_msg": "若要開始使用 Adno，請輸入 IIIF 清單或 IIIF 圖片的網址、jpg 或 png 格式的靜態圖片，或 Adno 專案。",
     "create_project": "建立新專案",
     "import": {
-        "import_project": "匯入專案"
+        "import_project": "匯入專案",
+        "import_now": "使用專案檔案",
+        "validate": "確認",
+        "cancel": "取消",
+        "adno_project": "已找到 Adno 專案，是否要匯入？",
+        "import_success": "專案匯入成功！"
+    },
+    "projects": {
+        "all": "您的現有專案",
+        "nothing": "目前沒有內容，請建立第一個專案以開始使用 Adno"
+    },
+    "project": {
+        "advanced": "進階",
+        "created_on": "建立日期： ",
+        "last_update": "最後更新： ",
+        "no_desc": "此專案尚無說明",
+        "no_creator": "未指定作者",
+        "no_editor": "未指定編輯者",
+        "preview": "預覽",
+        "edit": "編輯",
+        "delete": "刪除",
+        "duplicate": "複製",
+        "download": "下載",
+        "new": "建立我的專案",
+        "new_tooltip": "建立新專案",
+        "title": "標題",
+        "description": "說明",
+        "author": "作者",
+        "editor": "編輯者",
+        "manifest_url": "網址",
+        "create": "建立我的新專案",
+        "back": "返回",
+        "add_desc": "新增簡短說明以描述您的專案（選填）",
+        "add_title": "為您的專案新增標題",
+        "copy": "複製",
+        "cancel": "取消",
+        "choose": "選擇圖片",
+        "choose_desc": "選擇要用於專案的圖片",
+        "choose_canva": "使用此圖片作為我的專案",
+        "back_home": "取消並返回首頁",
+        "metadatas": {
+            "identifier": "識別碼",
+            "source": "來源",
+            "creation_date": "建立日期",
+            "last_update": "最後更新",
+            "format": "格式",
+            "rights": "授權聲明",
+            "allocation_rights": "權利歸屬"
+        },
+        "metadatas_plh": {
+            "title": "為您的專案命名",
+            "description": "新增關於此作品的簡短說明",
+            "author": "在此填入作品的作者",
+            "editor": "在此填入作品的編輯者",
+            "allocation_rights": "在此填入作品的授權聲明"
+        },
+        "settings": {
+            "delay": "兩個標註之間的延遲時間（秒）",
+            "outline_width": "標註外框線條寬度",
+            "outline_color": "標註外框顏色",
+            "outline_focus": "聚焦標註的外框顏色",
+            "navigator": "標註地圖瀏覽器"
+        }
     }
 }
