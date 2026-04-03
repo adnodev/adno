@@ -1,1 +1,7 @@
-{}
+{
+    "begin_msg": "若要開始使用 Adno，請輸入 IIIF 清單或 IIIF 圖片的網址、jpg 或 png 格式的靜態圖片，或 Adno 專案。",
+    "create_project": "建立新專案",
+    "import": {
+        "import_project": "匯入專案"
+    }
+}
