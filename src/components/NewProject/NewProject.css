@@ -3,6 +3,8 @@
     align-items: center;
     justify-content: space-around;
     width: 50vw;
+    max-height: 50vh;
+    overflow: hidden;
 }
 
 .new-project {
