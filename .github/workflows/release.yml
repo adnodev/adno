@@ -39,12 +39,17 @@ jobs:
       - name: Zip prod build
         run: zip -r adno.${{ github.event.inputs.version }}.zip dist/
 
+      - name: Generate SBoM (CycloneDX)
+        run: npm run sbom
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.event.inputs.version }}
           name: ADNO v${{ github.event.inputs.version }}
-          files: adno.${{ github.event.inputs.version }}.zip
+          files: |
+            adno.${{ github.event.inputs.version }}.zip
+            sbom.json
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
