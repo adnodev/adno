@@ -1,0 +1,389 @@
+{
+    "@context": "http://iiif.io/api/presentation/3/context.json",
+    "id": "https://example.com/manifest.json",
+    "type": "Manifest",
+    "metadata": [
+        {
+            "label": {
+                "en": [
+                    "annotations"
+                ]
+            },
+            "value": {
+                "en": [
+                    [
+                        {
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "FragmentSelector",
+                                    "value": "xywh=574,362,2800,3393",
+                                    "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                }
+                            },
+                            "id": "https://example.com/canvas-1/annopage-2/anno-0",
+                            "type": "Annotation"
+                        },
+                        {
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "purpose": "linking",
+                                    "source": {
+                                        "id": "https://b24-audiofiles.ausha.co/SKoefMqSxSeRyKgzF4rLd4J9fHu0QbHch306yYxY.mp3?token=1777447115-zBIIuAhlwM3iJRvzz2h6%2Bhz%2FbI%2FK9zjSI2GfE2BquHA%3D",
+                                        "creator": "",
+                                        "type": "Audio",
+                                        "format": "audio/mpeg"
+                                    }
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 748,1029 A 1281,641 0 1,0 3310,1029 A 1281,641 0 1,0 748,1029 Z\"/></svg>"
+                                }
+                            },
+                            "id": "https://example.com/canvas-1/annopage-2/anno-1",
+                            "type": "Annotation"
+                        },
+                        {
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "purpose": "linking",
+                                    "source": {
+                                        "id": "https://b23-audiofiles.ausha.co/z2wyN1X4L7X7fesJh7jYtWStTRqTFHScumNUM3Mj.mp3?token=1777447275-puI0Hu9fK%2B%2BnIt%2BoWMPhyYV%2Fj9e4I9Z%2FcZIJ2jrMu58%3D",
+                                        "creator": "",
+                                        "type": "Audio",
+                                        "format": "audio/mpeg"
+                                    }
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 831,1956 A 1241,558 0 1,0 3313,1956 A 1241,558 0 1,0 831,1956 Z\"/></svg>"
+                                }
+                            },
+                            "id": "https://example.com/canvas-1/annopage-2/anno-2",
+                            "type": "Annotation"
+                        },
+                        {
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "purpose": "linking",
+                                    "source": {
+                                        "id": "https://b23-audiofiles.ausha.co/4h1V7uIadVzIzMN7KfAv33ZTlMH7j8m4UdhwPkPw.mp3?token=1777447162-a2RsJlsIVp4tgpUSTJH6vNgGByjX5ZE6%2FZ%2F6IPipQrY%3D",
+                                        "creator": "",
+                                        "type": "Audio",
+                                        "format": "audio/mpeg"
+                                    }
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 707,2935 A 1300,689 0 1,0 3307,2935 A 1300,689 0 1,0 707,2935 Z\"/></svg>"
+                                }
+                            },
+                            "id": "https://example.com/canvas-1/annopage-2/anno-3",
+                            "type": "Annotation"
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "title"
+                ]
+            },
+            "value": {
+                "en": [
+                    "Lieu multiple / Espace Mendès France / Collège Denfert Rochereau Saint-Maixent L'École"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "description"
+                ]
+            },
+            "value": {
+                "en": [
+                    null
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "creation_date"
+                ]
+            },
+            "value": {
+                "en": [
+                    "2026-04-29T06:48:00.146Z"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "last_update"
+                ]
+            },
+            "value": {
+                "en": [
+                    "2026-04-29T06:48:00.146Z"
+                ]
+            }
+        },
+        {
+            "label": {
+                "en": [
+                    "adno_settings"
+                ]
+            },
+            "value": {
+                "en": [
+                    "ewogICAgImRlbGF5IjogIjYwIiwKICAgICJzaG93TmF2aWdhdG9yIjogZmFsc2UsCiAgICAidG9vbHNiYXJPbkZzIjogZmFsc2UsCiAgICAic2lkZWJhckVuYWJsZWQiOiB0cnVlLAogICAgInN0YXJ0YnlmaXJzdGFubm8iOiBmYWxzZSwKICAgICJzaG91bGRBdXRvUGxheUFubm90YXRpb25zIjogZmFsc2UsCiAgICAicm90YXRpb24iOiBmYWxzZSwKICAgICJkaXNwbGF5VG9vbGJhciI6IHRydWUsCiAgICAidGFncyI6IFtdLAogICAgIm91dGxpbmVXaWR0aCI6ICJvdXRsaW5lLTFweCIsCiAgICAib3V0bGluZUNvbG9yIjogIm91dGxpbmUtd2hpdGUiLAogICAgIm91dGxpbmVDb2xvckZvY3VzIjogIm91dGxpbmUtZm9jdXMteWVsbG93IiwKICAgICJzaG93T3V0bGluZXMiOiBmYWxzZSwKICAgICJzaG93RXllcyI6IGZhbHNlLAogICAgInNvdW5kTW9kZSI6ICJub19zcGF0aWFsaXphdGlvbiIsCiAgICAic2hvd0N1cnJlbnRBbm5vdGF0aW9uIjogZmFsc2UKfQ=="
+                ]
+            }
+        }
+    ],
+    "label": {
+        "en": [
+            null
+        ],
+        "fr": [
+            null
+        ]
+    },
+    "items": [
+        {
+            "id": "https://example.com/canvas-1",
+            "type": "Canvas",
+            "height": 4694,
+            "width": 6584,
+            "items": [
+                {
+                    "id": "https://example.com/annotation-page/canvas-1/annopage-1",
+                    "type": "AnnotationPage",
+                    "items": [
+                        {
+                            "id": "https://example.com/annotation/canvas-1/annopage-1/anno-1",
+                            "type": "Annotation",
+                            "motivation": "painting",
+                            "body": {
+                                "id": "https://iiif.irht.cnrs.fr/iiif/ark:/63955/vsqvk8p395rx",
+                                "type": "Image",
+                                "format": "image/jpeg",
+                                "service": [
+                                    {
+                                        "id": "https://iiif.irht.cnrs.fr/iiif/ark:/63955/vsqvk8p395rx",
+                                        "type": "ImageService3",
+                                        "profile": "level1"
+                                    }
+                                ],
+                                "height": 4694,
+                                "width": 6584
+                            },
+                            "target": "https://example.com/canvas-1"
+                        }
+                    ]
+                }
+            ],
+            "annotations": [
+                {
+                    "id": "https://example.com/canvas-1/annopage-2",
+                    "type": "AnnotationPage",
+                    "items": [
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-0",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "FragmentSelector",
+                                    "value": "xywh=574,362,2800,3393"
+                                }
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-1",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "purpose": "linking",
+                                    "source": {
+                                        "id": "https://b24-audiofiles.ausha.co/SKoefMqSxSeRyKgzF4rLd4J9fHu0QbHch306yYxY.mp3?token=1777447115-zBIIuAhlwM3iJRvzz2h6%2Bhz%2FbI%2FK9zjSI2GfE2BquHA%3D",
+                                        "creator": "",
+                                        "type": "Audio",
+                                        "format": "audio/mpeg"
+                                    }
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 748,1029 A 1281,641 0 1,0 3310,1029 A 1281,641 0 1,0 748,1029 Z\"/></svg>"
+                                }
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-2",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "purpose": "linking",
+                                    "source": {
+                                        "id": "https://b23-audiofiles.ausha.co/z2wyN1X4L7X7fesJh7jYtWStTRqTFHScumNUM3Mj.mp3?token=1777447275-puI0Hu9fK%2B%2BnIt%2BoWMPhyYV%2Fj9e4I9Z%2FcZIJ2jrMu58%3D",
+                                        "creator": "",
+                                        "type": "Audio",
+                                        "format": "audio/mpeg"
+                                    }
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 831,1956 A 1241,558 0 1,0 3313,1956 A 1241,558 0 1,0 831,1956 Z\"/></svg>"
+                                }
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-3",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": [
+                                {
+                                    "type": "TextualBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "HTMLBody",
+                                    "value": "",
+                                    "purpose": "commenting"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "purpose": "linking",
+                                    "source": {
+                                        "id": "https://b23-audiofiles.ausha.co/4h1V7uIadVzIzMN7KfAv33ZTlMH7j8m4UdhwPkPw.mp3?token=1777447162-a2RsJlsIVp4tgpUSTJH6vNgGByjX5ZE6%2FZ%2F6IPipQrY%3D",
+                                        "creator": "",
+                                        "type": "Audio",
+                                        "format": "audio/mpeg"
+                                    }
+                                }
+                            ],
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "SvgSelector",
+                                    "value": "<svg><path d=\"M 707,2935 A 1300,689 0 1,0 3307,2935 A 1300,689 0 1,0 707,2935 Z\"/></svg>"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

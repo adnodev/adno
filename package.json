@@ -4,7 +4,7 @@
   "homepage": "https://github.com/adnodev/adno",
   "description": "Adno is a web application for viewing, editing and sharing narratives and guided explorations on online images, static images and IIIF images.",
   "scripts": {
-    "dev": "npm install && vite",
+    "dev": "vite",
     "build": "sh -c 'vite build --base ${PUBLIC_URL:-/}'",
     "test": "npm run dev & npx playwright test ; npx playwright show-report"
   },
