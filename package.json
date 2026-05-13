@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "sh -c 'vite build --base ${PUBLIC_URL:-/}'",
-    "test": "npm run dev & npx playwright test ; npx playwright show-report"
+    "test": "npm run dev & npx playwright test ; npx playwright show-report",
+    "sbom": "cyclonedx-npm --output-format JSON --output-file sbom.json"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +42,7 @@
     "wikidata-sdk": "8.1.0"
   },
   "devDependencies": {
+    "@cyclonedx/cyclonedx-npm": "^4.2.1",
     "@playwright/test": "1.50.1",
     "@types/node": "22.13.1",
     "@vitejs/plugin-react": "^5.1.2",
