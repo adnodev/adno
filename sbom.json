@@ -3,15 +3,15 @@
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
   "version": 1,
-  "serialNumber": "urn:uuid:53d70089-9487-41fc-b3dd-c900b8854c5b",
+  "serialNumber": "urn:uuid:578ecdb7-1b49-49d9-abac-1565bde6d64a",
   "metadata": {
-    "timestamp": "2026-05-04T21:10:45.475Z",
+    "timestamp": "2026-05-13T18:00:01.637Z",
     "tools": {
       "components": [
         {
           "type": "application",
           "name": "npm",
-          "version": "10.9.2"
+          "version": "11.11.0"
         },
         {
           "type": "application",
@@ -3407,63 +3407,6 @@
         {
           "name": "cdx:npm:package:path",
           "value": "node_modules/playwright"
-        }
-      ],
-      "components": [
-        {
-          "type": "library",
-          "name": "fsevents",
-          "version": "2.3.2",
-          "bom-ref": "adno@1.0.2|playwright@1.50.1|fsevents@2.3.2",
-          "description": "Native Access to MacOS FSEvents",
-          "scope": "optional",
-          "licenses": [
-            {
-              "license": {
-                "id": "MIT",
-                "acknowledgement": "declared"
-              }
-            }
-          ],
-          "purl": "pkg:npm/fsevents@2.3.2",
-          "externalReferences": [
-            {
-              "url": "git+https://github.com/fsevents/fsevents.git",
-              "type": "vcs",
-              "comment": "as detected from PackageJson property \"repository.url\""
-            },
-            {
-              "url": "https://github.com/fsevents/fsevents",
-              "type": "website",
-              "comment": "as detected from PackageJson property \"homepage\""
-            },
-            {
-              "url": "https://github.com/fsevents/fsevents/issues",
-              "type": "issue-tracker",
-              "comment": "as detected from PackageJson property \"bugs.url\""
-            },
-            {
-              "url": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz",
-              "type": "distribution",
-              "hashes": [
-                {
-                  "alg": "SHA-512",
-                  "content": "c62a8c411e3101e1d3b81f6e5a6f9f1517083a02813223813fe7978b24fb8ec8150aad5b915ca0b74d28012a3007b11db6938769a3e02adf35d8ff5a6fe0c328"
-                }
-              ],
-              "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
-            }
-          ],
-          "properties": [
-            {
-              "name": "cdx:npm:package:development",
-              "value": "true"
-            },
-            {
-              "name": "cdx:npm:package:path",
-              "value": "node_modules/playwright/node_modules/fsevents"
-            }
-          ]
         }
       ]
     },
@@ -8336,57 +8279,6 @@
         {
           "name": "cdx:npm:package:path",
           "value": "node_modules/esbuild"
-        }
-      ]
-    },
-    {
-      "type": "library",
-      "name": "fsevents",
-      "version": "2.3.3",
-      "bom-ref": "adno@1.0.2|fsevents@2.3.3",
-      "description": "Native Access to MacOS FSEvents",
-      "scope": "optional",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT",
-            "acknowledgement": "declared"
-          }
-        }
-      ],
-      "purl": "pkg:npm/fsevents@2.3.3",
-      "externalReferences": [
-        {
-          "url": "git+https://github.com/fsevents/fsevents.git",
-          "type": "vcs",
-          "comment": "as detected from PackageJson property \"repository.url\""
-        },
-        {
-          "url": "https://github.com/fsevents/fsevents",
-          "type": "website",
-          "comment": "as detected from PackageJson property \"homepage\""
-        },
-        {
-          "url": "https://github.com/fsevents/fsevents/issues",
-          "type": "issue-tracker",
-          "comment": "as detected from PackageJson property \"bugs.url\""
-        },
-        {
-          "url": "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz",
-          "type": "distribution",
-          "hashes": [
-            {
-              "alg": "SHA-512",
-              "content": "e71a037d7f9f2fb7da0139da82658fa5b16dc21fd1efb5a630caaa1c64bae42defbc1d181eb805f81d58999df8e35b4c8f99fade4d36d765cda09c339617df43"
-            }
-          ],
-          "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
-        }
-      ],
-      "properties": [
-        {
-          "name": "cdx:npm:package:path",
-          "value": "node_modules/fsevents"
         }
       ]
     },
@@ -14984,11 +14876,11 @@
     },
     {
       "type": "library",
-      "name": "darwin-arm64",
+      "name": "linux-x64",
       "group": "@esbuild",
       "version": "0.24.2",
-      "bom-ref": "adno@1.0.2|@esbuild/darwin-arm64@0.24.2",
-      "description": "The macOS ARM 64-bit binary for esbuild, a JavaScript bundler.",
+      "bom-ref": "adno@1.0.2|@esbuild/linux-x64@0.24.2",
+      "description": "The Linux 64-bit binary for esbuild, a JavaScript bundler.",
       "scope": "optional",
       "licenses": [
         {
@@ -14998,7 +14890,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40esbuild/darwin-arm64@0.24.2",
+      "purl": "pkg:npm/%40esbuild/linux-x64@0.24.2",
       "externalReferences": [
         {
           "url": "git+https://github.com/evanw/esbuild.git",
@@ -15016,12 +14908,12 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.24.2.tgz",
+          "url": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.24.2.tgz",
           "type": "distribution",
           "hashes": [
             {
               "alg": "SHA-512",
-              "content": "923dc09d859cf827a49999d2e483eef43f875ad508e3d85b9f2aa4d052c42436f308842dee183bb9c175490022961b58a48ba37da1ebe8ed141e5cf348f74e78"
+              "content": "f108b89d07024db2e72bd5a8323742f4d8931bafc4dfc44d20253ab1436a2b4405c42620a0046a56ac5d1665a47689d5b2f1aa5a19a6ecc3b48f24ea2eac23d1"
             }
           ],
           "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
@@ -15034,16 +14926,16 @@
         },
         {
           "name": "cdx:npm:package:path",
-          "value": "node_modules/@esbuild/darwin-arm64"
+          "value": "node_modules/@esbuild/linux-x64"
         }
       ]
     },
     {
       "type": "library",
-      "name": "rollup-darwin-arm64",
+      "name": "rollup-linux-x64-gnu",
       "group": "@rollup",
       "version": "4.50.2",
-      "bom-ref": "adno@1.0.2|@rollup/rollup-darwin-arm64@4.50.2",
+      "bom-ref": "adno@1.0.2|@rollup/rollup-linux-x64-gnu@4.50.2",
       "author": "Lukas Taegert-Atkinson",
       "description": "Native bindings for Rollup",
       "scope": "optional",
@@ -15055,7 +14947,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40rollup/rollup-darwin-arm64@4.50.2",
+      "purl": "pkg:npm/%40rollup/rollup-linux-x64-gnu@4.50.2",
       "externalReferences": [
         {
           "url": "git+https://github.com/rollup/rollup.git",
@@ -15073,12 +14965,12 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.50.2.tgz",
+          "url": "https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.50.2.tgz",
           "type": "distribution",
           "hashes": [
             {
               "alg": "SHA-512",
-              "content": "399b93553a63dc20d223198f8061fc7a7fd7b62ad5e677e58c7677c2b370be0913e4340b8482807ae1528b0b5b32da3aa157b1574935175cea5113ca7f9ac8d5"
+              "content": "f4989efc0b7aaa4ef474d21ca2970be29fb5522aeeb04b739e936d72afeefc2e5c0b81c15fba921ac608706e9b7718f5e446168478aed3662f99d3f3ca521994"
             }
           ],
           "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
@@ -15091,7 +14983,64 @@
         },
         {
           "name": "cdx:npm:package:path",
-          "value": "node_modules/@rollup/rollup-darwin-arm64"
+          "value": "node_modules/@rollup/rollup-linux-x64-gnu"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "rollup-linux-x64-musl",
+      "group": "@rollup",
+      "version": "4.50.2",
+      "bom-ref": "adno@1.0.2|@rollup/rollup-linux-x64-musl@4.50.2",
+      "author": "Lukas Taegert-Atkinson",
+      "description": "Native bindings for Rollup",
+      "scope": "optional",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/%40rollup/rollup-linux-x64-musl@4.50.2",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/rollup/rollup.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://rollupjs.org/",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/rollup/rollup/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.50.2.tgz",
+          "type": "distribution",
+          "hashes": [
+            {
+              "alg": "SHA-512",
+              "content": "1cf349c313cbdc49a1cde027b164023370dca2a3b3dff202e9d7bdad67c647c642b841c44e2f649bae9b1ffc06dd81f45779f2cf214419465e2f93cacb2e31bf"
+            }
+          ],
+          "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:development",
+          "value": "true"
+        },
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/@rollup/rollup-linux-x64-musl"
         }
       ]
     },
@@ -27537,7 +27486,6 @@
       "dependsOn": [
         "adno@1.0.2|@types/node@22.13.1",
         "adno@1.0.2|esbuild@0.24.2",
-        "adno@1.0.2|fsevents@2.3.3",
         "adno@1.0.2|jiti@1.21.7",
         "adno@1.0.2|vite@6.1.0|postcss@8.5.6",
         "adno@1.0.2|rollup@4.50.2",
@@ -27648,12 +27596,8 @@
     {
       "ref": "adno@1.0.2|playwright@1.50.1",
       "dependsOn": [
-        "adno@1.0.2|playwright@1.50.1|fsevents@2.3.2",
         "adno@1.0.2|playwright-core@1.50.1"
       ]
-    },
-    {
-      "ref": "adno@1.0.2|playwright@1.50.1|fsevents@2.3.2"
     },
     {
       "ref": "adno@1.0.2|dompurify@2.5.8"
@@ -28093,7 +28037,6 @@
       "dependsOn": [
         "adno@1.0.2|anymatch@3.1.3",
         "adno@1.0.2|braces@3.0.3",
-        "adno@1.0.2|fsevents@2.3.3",
         "adno@1.0.2|glob-parent@5.1.2",
         "adno@1.0.2|is-binary-path@2.1.0",
         "adno@1.0.2|is-glob@4.0.3",
@@ -28212,18 +28155,15 @@
     {
       "ref": "adno@1.0.2|esbuild@0.24.2",
       "dependsOn": [
-        "adno@1.0.2|@esbuild/darwin-arm64@0.24.2"
+        "adno@1.0.2|@esbuild/linux-x64@0.24.2"
       ]
-    },
-    {
-      "ref": "adno@1.0.2|fsevents@2.3.3"
     },
     {
       "ref": "adno@1.0.2|rollup@4.50.2",
       "dependsOn": [
-        "adno@1.0.2|@rollup/rollup-darwin-arm64@4.50.2",
-        "adno@1.0.2|@types/estree@1.0.8",
-        "adno@1.0.2|fsevents@2.3.3"
+        "adno@1.0.2|@rollup/rollup-linux-x64-gnu@4.50.2",
+        "adno@1.0.2|@rollup/rollup-linux-x64-musl@4.50.2",
+        "adno@1.0.2|@types/estree@1.0.8"
       ]
     },
     {
@@ -28885,10 +28825,13 @@
       "ref": "adno@1.0.2|ts-interface-checker@0.1.13"
     },
     {
-      "ref": "adno@1.0.2|@esbuild/darwin-arm64@0.24.2"
+      "ref": "adno@1.0.2|@esbuild/linux-x64@0.24.2"
     },
     {
-      "ref": "adno@1.0.2|@rollup/rollup-darwin-arm64@4.50.2"
+      "ref": "adno@1.0.2|@rollup/rollup-linux-x64-gnu@4.50.2"
+    },
+    {
+      "ref": "adno@1.0.2|@rollup/rollup-linux-x64-musl@4.50.2"
     },
     {
       "ref": "adno@1.0.2|@types/estree@1.0.8"
