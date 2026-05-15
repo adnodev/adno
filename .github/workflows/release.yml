@@ -61,7 +61,7 @@ jobs:
           app-id: ${{ secrets.ADNO_BOT_APP_ID }}
           private-key: ${{ secrets.ADNO_BOT_PRIVATE_KEY }}
           repositories: site
-          owner: adno-org
+          owner: adnodev
 
       - name: Trigger prod deploy
         run: |
