@@ -480,33 +480,45 @@ class NewProject extends Component {
                             <div className="input-group new_project_input mb-3">
                                 <span className="new_project_span">{this.props.t('project.advanced')}</span>
                                 <div className="w-full">
-                                    <button className="btn btn-outline ms-2" onClick={() => {
-                                        console.log('click the options')
+                                    <button type="button" className="btn btn-outline ms-2" onClick={() => {
                                         this.setState({ showSettings: true })
-                                    }}>Options {Object.keys(overloadedSettings).length > 0 ? `(${Object.keys(overloadedSettings).length})` : ''}</button>
-                                    <button className="btn btn-outline ms-2" onClick={() => {
+                                    }}>Options</button>
+                                    <button type="button" className="btn btn-outline ms-2" onClick={() => {
                                         this.setState({ showMetadatas: true })
                                     }}>{this.props.t('navbar.all_metadata')}</button>
                                 </div>
                             </div>
                             <div className="new_project_btns">
-                                <button id="valider_creation" type="submit" className="btn" onClick={(e) => this.createProj(e)}>{this.props.t('project.create')}</button>
-
-
-                                {
-                                    this.state.isCanvaProject && this.state.selectedCanva &&
-                                    <button id="annuler_creation" type="submit" className="btn btn-outline" onClick={() => {
-                                        this.setState({ selectedCanva: false, isCanvaProject: true })
-                                        localStorage.removeItem("selected_canva")
-                                    }}>{this.props.t('project.back')}</button>
-                                }
-
-
                                 {
                                     !this.state.isCanvaProject &&
-                                    <button id="cancel_creation" type="submit" className="btn" onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>{this.props.t('project.cancel')}</button>
+                                    <button
+                                        id="cancel_creation"
+                                        type="button"
+                                        className="btn btn-outline"
+                                        onClick={() => {
+                                            localStorage.removeItem("adno_image_url"), this.props.history.push("/")
+                                        }}>
+                                        {this.props.t('project.cancel')}
+                                    </button>
                                 }
-
+                                <button id="valider_creation"
+                                    type="submit"
+                                    className="btn"
+                                    onClick={(e) => this.createProj(e)}>
+                                    {this.props.t('project.create')}
+                                </button>
+                                {
+                                    this.state.isCanvaProject && this.state.selectedCanva &&
+                                    <button id="annuler_creation"
+                                        type="button"
+                                        className="btn btn-outline"
+                                        onClick={() => {
+                                            this.setState({ selectedCanva: false, isCanvaProject: true })
+                                            localStorage.removeItem("selected_canva")
+                                        }}>
+                                        {this.props.t('project.back')}
+                                    </button>
+                                }
                             </div>
                         </form>
                     </>
@@ -560,7 +572,9 @@ class NewProject extends Component {
 
                 {
                     this.state.isCanvaProject && !this.state.selectedCanva &&
-                    <button id="cancel_creation" type="submit" className="btn"
+                    <button id="cancel_creation"
+                        type="submit"
+                        className="btn btn-outline"
                         onClick={() => { localStorage.removeItem("adno_image_url"), this.props.history.push("/") }}>
                         {this.props.t('project.back_home')}
                     </button>

@@ -35,15 +35,13 @@
 }
 
 .new_project_btns{
+    gap: .5rem;
+    margin-top: 1rem;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     align-items: center;
     width: 100%;
-}
-
-.new_project_btns button {
-    margin-left: 15px;
 }
 
 .new_project_input{
