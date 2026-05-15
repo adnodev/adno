@@ -233,9 +233,10 @@ class AdnoNavigator extends Component {
 
     render() {
         const { showV, showH } = this.state;
+        const layout = this.props.layout || 'bottom-right';
 
         return (
-            <div className="adno-navigator-wrap">
+            <div className={`adno-navigator-wrap adno-navigator-wrap--${layout}`}>
                 {showV && (
                     <button className="adno-navigator-arrow adno-navigator-arrow--top"
                         onMouseDown={(e) => this.startScroll(e, -1, 0)}

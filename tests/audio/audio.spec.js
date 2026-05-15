@@ -2,6 +2,11 @@
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
+const { clearProjectsDB } = require('../helpers');
+
+test.afterEach(async ({ page }) => {
+    await clearProjectsDB(page);
+});
 
 const FIXTURE = path.join(__dirname, 'orchestre-de-manettes.json');
 

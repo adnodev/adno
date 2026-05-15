@@ -65,7 +65,10 @@ class ProjectEditMetadatas extends Component {
                             <div className="label font-medium">
                                 <span className="label-text">{this.props.t('project.title')}</span>
                             </div>
-                            <input type="text" placeholder={this.props.t('project.metadatas_plh.title')} className="input input-bordered w-full max-w-4xl" value={this.state.project.title} onChange={(e) => this.setState({ project: { ...this.state.project, title: e.target.value } })} />
+                            <input type="text" placeholder={this.props.t('project.metadatas_plh.title')}
+                                className="input input-bordered w-full max-w-4xl"
+                                value={this.state.project.title}
+                                onChange={(e) => this.setState({ project: { ...this.state.project, title: e.target.value } })} />
                         </label>
 
                         <label className="form-control w-full mt-4">

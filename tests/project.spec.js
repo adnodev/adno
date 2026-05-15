@@ -1,6 +1,14 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const { clearProjectsDB } = require('./helpers');
 import path from 'path'
+
+test.afterEach(async ({ page }) => {
+    // Defensive cleanup so every test leaves IndexedDB exactly as it found it.
+    // Playwright's per-test context already isolates storage; this guards
+    // against future config changes that loosen that isolation.
+    await clearProjectsDB(page);
+});
 
 test('should import https://bastaire.msh.uca.fr/iiif/3/10243/manifest as project', async ({ page }) => {
   await loadImageProjectFromURL(page, 'https://bastaire.msh.uca.fr/iiif/3/10243/manifest')

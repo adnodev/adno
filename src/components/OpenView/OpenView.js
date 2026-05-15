@@ -426,10 +426,13 @@ class OpenView extends Component {
             const x = Number(svgElement.getAttribute('x'))
             const y = Number(svgElement.getAttribute('y'))
 
-            panner.positionX.value = -((viewportCenter.x - x) * 200);
-            panner.positionY.value = -(((viewportCenter.y * 2) - y) * 200)
+            const px = -((viewportCenter.x - x) * 200);
+            const py = -(((viewportCenter.y * 2) - y) * 200);
 
-            // console.log(svgElement, panner.positionX.value, panner.positionY.value)
+            if (!Number.isFinite(px) || !Number.isFinite(py)) return;
+
+            panner.positionX.value = px;
+            panner.positionY.value = py;
         }
 
         viewer.addHandler('animation', () => updateSoundPosition(audioElement));

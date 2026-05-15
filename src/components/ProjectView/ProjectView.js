@@ -221,8 +221,8 @@ class ProjectView extends Component {
                 exportIIIF={() => exportToIIIF(exportedProject)}
                 ref={this.modalRef} />
 
-            <div className="card card-side bg-base-100 shadow-xl project-view-card">
-                <div className="project-card-img" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
+            <div className="card card-side bg-base-100 shadow-xl project-view-card" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
+                <div className="project-card-img">
                     <img
                         src={this.state.imgSource}
                         onError={({ currentTarget }) => {
@@ -241,14 +241,23 @@ class ProjectView extends Component {
                     </div>
                     <div className="project_vw_btns">
                         <div className="tooltip" data-tip={this.props.t('project.preview')}>
-                            <button type="button" className="btn btn-md" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}> <FontAwesomeIcon icon={faEye} />   </button>
+                            <button type="button" className="btn btn-md" onClick={e => {
+                                e.stopPropagation()
+                                this.props.history.push(`/project/${this.props.project.id}/view`)
+                            }}> <FontAwesomeIcon icon={faEye} />   </button>
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.edit')}>
-                            <button type="button" className="btn btn-md" onClick={() => this.props.history.push(`/project/${this.props.project.id}/edit`)}> <FontAwesomeIcon icon={faPenToSquare} /> </button>
+                            <button type="button" className="btn btn-md" onClick={e => {
+                                e.stopPropagation()
+                                this.props.history.push(`/project/${this.props.project.id}/edit`)
+                            }}> <FontAwesomeIcon icon={faPenToSquare} /> </button>
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.duplicate')}>
                             <button type="button" className="btn btn-md btn-outline"
-                                onClick={() => this.duplicate(this.props.project.id)}><FontAwesomeIcon icon={faCopy} /></button>
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    this.duplicate(this.props.project.id)
+                                }}><FontAwesomeIcon icon={faCopy} /></button>
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.download')}>
                             <Exporter
@@ -257,9 +266,11 @@ class ProjectView extends Component {
                                 exportIIIF={() => exportToIIIF(exportedProject)}
                                 separatedModal
                                 btn={<>
-                                    <button type="button" className="btn btn-md btn-outline me-2" onClick={() => {
-                                        this.modalRef.current?.click()
-                                    }}>
+                                    <button type="button" className="btn btn-md btn-outline me-2"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            this.modalRef.current?.click()
+                                        }}>
                                         <label htmlFor="#" style={{ pointerEvents: 'none' }}>
                                             <FontAwesomeIcon icon={faDownload} />
                                         </label>
@@ -268,7 +279,11 @@ class ProjectView extends Component {
                             />
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.delete')}>
-                            <button type="button" className="btn btn-md btn-outline btn-error" onClick={() => this.deleteProj(this.props.project.id)}>    <FontAwesomeIcon icon={faTrash} />  </button>
+                            <button type="button" className="btn btn-md btn-outline btn-error"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    this.deleteProj(this.props.project.id)
+                                }}>    <FontAwesomeIcon icon={faTrash} />  </button>
                         </div>
                     </div>
                 </div>

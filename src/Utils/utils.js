@@ -414,8 +414,8 @@ export function computeNavigatorInfo(viewer) {
     const ratio = size.y / size.x;
 
     let layout = 'bottom-right';
-    if (ratio < 0.30) layout = 'bottom-center';
-    else if (ratio > 3.33) layout = 'right-vertical';
+    if (ratio < 0.5) layout = 'bottom-center';
+    else if (ratio > 2)  layout = 'right-vertical';
 
     const source = item.source;
     let imgUrl = null;
