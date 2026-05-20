@@ -37,8 +37,13 @@
 .adno-navigator-scroll {
     position: relative;
     overflow: hidden;
-    cursor: crosshair;
+    cursor: grab;
     flex-shrink: 0;
+}
+
+.adno-navigator-scroll.is-dragging,
+.adno-navigator-scroll.is-dragging * {
+    cursor: grabbing;
 }
 
 .adno-navigator-img {

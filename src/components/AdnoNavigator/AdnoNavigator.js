@@ -151,9 +151,18 @@ class AdnoNavigator extends Component {
 
         ctx.fillStyle   = 'rgba(255,160,0,0.15)';
         ctx.fillRect(rx, ry, rw, rh);
+
+        // Inset the stroke by half its width so it stays fully inside the canvas
+        // when the viewport sits flush against an edge (otherwise it gets clipped).
+        const lw = 3 * dpr;
+        const half = lw / 2;
+        const sx1 = Math.max(rx, half);
+        const sy1 = Math.max(ry, half);
+        const sx2 = Math.min(rx + rw, canvas.width  - half);
+        const sy2 = Math.min(ry + rh, canvas.height - half);
         ctx.strokeStyle = 'rgba(255,160,0,0.9)';
-        ctx.lineWidth   = 2 * dpr;
-        ctx.strokeRect(rx, ry, rw, rh);
+        ctx.lineWidth   = lw;
+        ctx.strokeRect(sx1, sy1, sx2 - sx1, sy2 - sy1);
 
         if (!this._rafScroll) {
             const { showV, showH } = this.state;
@@ -208,6 +217,7 @@ class AdnoNavigator extends Component {
         e.preventDefault();
         e.stopPropagation();
         this.isDragging = true;
+        this.scrollRef.current?.classList.add('is-dragging');
         this.props.viewer?.setMouseNavEnabled(false);
         this.navPosToPan(e.clientX, e.clientY);
     }
@@ -215,6 +225,7 @@ class AdnoNavigator extends Component {
     onScrollTouchStart = (e) => {
         e.stopPropagation();
         this.isDragging = true;
+        this.scrollRef.current?.classList.add('is-dragging');
         this.props.viewer?.setMouseNavEnabled(false);
         this.navPosToPan(e.touches[0].clientX, e.touches[0].clientY);
     }
@@ -227,6 +238,7 @@ class AdnoNavigator extends Component {
         this.stopScroll();
         if (this.isDragging) {
             this.isDragging = false;
+            this.scrollRef.current?.classList.remove('is-dragging');
             this.props.viewer?.setMouseNavEnabled(true);
         }
     }
