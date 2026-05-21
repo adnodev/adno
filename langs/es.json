@@ -2,7 +2,7 @@
     "annotation": {
         "delete": "Eliminar la anotación",
         "edit": "Editar",
-        "empty_tags_list": "Las palabras clave aparecerán aquí",
+        "empty_tags_list": "Las etiquetas creadas serán exhibidas aquí.",
         "no_content": "ningún contenido",
         "read_more": "Leer más",
         "switch_down": "Bajar la anotación",
@@ -15,7 +15,7 @@
         "cancel": "Cancelar",
         "close": "Cerrar"
     },
-    "create_project": "Crear mi proyecto",
+    "create_project": "Crea un proyecto nuevo",
     "editor": {
         "approve_changes": "Aprobar los cambios",
         "audio_creator": "Creador de la pista de audio (Crédito)",
@@ -38,7 +38,8 @@
             "tags": "Palabras claves"
         },
         "zoom_in": "ampliar",
-        "zoom_out": "Alejar"
+        "zoom_out": "Alejar",
+        "empty_list": "Sin opciones"
     },
     "errors": {
         "error_found": "Error detectado",
@@ -46,22 +47,22 @@
         "no_iiif": "Proyecto no IIIF detectado, por favor proporcione un proyecto IIIF",
         "no_title": "Por favor, dé un título a su proyecto",
         "no_url": "No se proporcionó ninguna URL",
-        "unable_access_file": "¡Imposible acceder a este archivo!",
-        "unable_reading_file": "No se puede leer este archivo, por favor proporcione un archivo con uno de los siguientes formatos: png, jpg, json",
+        "unable_access_file": "¡No es posible acceder a este archivo! Inténtalo de nuevo o selecciona otro archivo",
+        "unable_reading_file": "¡No es posible leer este tipo de archivo!",
         "unable_reading_manifest": "Imposible leer el manifiesto",
         "unknown_characters": "Imposible leer las anotaciones (Caracteres prohibidos)",
-        "wrong_file": "¡ADNO no puede leer este archivo! Inténtelo de nuevo con otro archivo",
+        "wrong_file": "¡Este archivo no es legible por Adno! Inténtelo de nuevo con otro archivo",
         "wrong_url": "¡La URL proporcionada no es válida! Indique un enlace a un manifiesto o una imagen IIIF, una imagen JPG, PNG, o un archivo de un proyecto Adno"
     },
     "files": {
         "one_selected": "1 Archivo seleccionado"
     },
     "import": {
-        "adno_project": "Proyecto Adno detectado, ¿desea importarlo?",
+        "adno_project": "Se ha encontrado el proyecto Adno, ¿desea importarlo?",
         "cancel": "Cancelar la importación",
         "import_now": "Utilizar el archivo de un proyecto",
         "import_project": "Importar un proyecto",
-        "import_success": "Proyecto importado con éxito",
+        "import_success": "Proyecto importado correctamente.",
         "validate": "Validar la importación"
     },
     "link": {
@@ -71,7 +72,7 @@
         "url": "Introduzca la URL a los recursos IIIF"
     },
     "modal": {
-        "adno_proj_detected": "Proyecto Adno detectado, ¿desea importarlo?",
+        "adno_proj_detected": "Proyecto Adno detectado, ¿le gustaŕia importarlo?",
         "annotation_moved": "Anotación movida con éxito",
         "ask_delete": "¿Realmente desea eliminar esta anotación?",
         "cancel": "Cancelar",
@@ -83,10 +84,10 @@
         "duplicate_project": "¿Realmente desea duplicar este proyecto?",
         "old_version": "Uno o varios proyectos se han hecho con una versión obsoleta de Adno",
         "project_edit_success": "¡Proyecto editado con éxito!",
-        "projects_list_up_to_date": "¡La lista de proyectos se ha actualizado correctamente!",
+        "projects_list_up_to_date": "El listado de proyectos ha sido actualizado",
         "settings_updated_success": "¡Configuraciones actualizadas con éxito!",
         "update_old_version": "Actualizar a la última versión",
-        "version_updated": "¡Felicidades, tus proyectos Adno están actualizados!"
+        "version_updated": "Felicidades, tus proyectos Adno ahora están actualizados"
     },
     "navbar": {
         "back_home": "Volver a inicio",
@@ -121,7 +122,7 @@
         "choose_canva": "Usar esta imagen para mi proyecto",
         "choose_desc": "Elija la imagen que desea usar para su proyecto Adno",
         "copy": "copiar",
-        "create": "Crear mi proyecto",
+        "create": "Crea mi proyecto nuevo",
         "created_on": "Creado el ",
         "delete": "Eliminar",
         "description": "Descripción",
@@ -147,7 +148,7 @@
             "editor": "Indique aquí el editor",
             "title": "Dé un título a este proyecto"
         },
-        "new": "Crear mi proyecto",
+        "new": "Crea mi propio proyecto",
         "new_tooltip": "Crear un nuevo proyecto",
         "no_creator": "No se indicó autor",
         "no_desc": "Ninguna descripción disponible para este proyecto",
@@ -179,7 +180,8 @@
             "toolsbar": "Mostrar la barra de herramientas",
             "visualization": "Visualización"
         },
-        "title": "Título"
+        "title": "Título",
+        "advanced": "Avanzado"
     },
     "projects": {
         "all": "Sus proyectos existentes",
@@ -188,12 +190,13 @@
     "tags_infos": "Por favor, presione la tecla 'enter' para validar cada palabra clave",
     "visualizer": {
         "close": "Cerrar",
-        "expand": "Poner en pantalla completa",
+        "expand": "Poner a pantalla completa",
         "help": "Ayuda",
         "help_and": "y",
-        "help_doc": "Para más información, consulte la documentación oficial de Adno.",
-        "help_key": "tecla",
-        "help_key_plural": "teclas",
+        "help_doc": "Para más información, consulte la documentación oficial de Adno",
+        "help_key_0": "tecla",
+        "help_key_1": "teclas",
+        "help_key_2": "teclas",
         "help_key_arrows": "flechas (izquierda y derecha) para cambiar la anotación actual.",
         "help_key_e": "para activar el modo de pantalla completa,",
         "help_key_escape": "para salir del modo de pantalla completa,",
@@ -207,7 +210,7 @@
         "pause": "Pausar",
         "play": "Reproducir",
         "previous_annotation": "Anotación anterior",
-        "reset_zoom": "Alejar",
+        "reset_zoom": "Zoom",
         "rotation": "Girar 90 grados",
         "toggle_annotations": "Mostrar/ocultar las anotaciones"
     }
