@@ -60,13 +60,13 @@ jobs:
         with:
           app-id: ${{ secrets.ADNO_BOT_APP_ID }}
           private-key: ${{ secrets.ADNO_BOT_PRIVATE_KEY }}
-          repositories: site
+          repositories: w.adno.app
           owner: adnodev
 
       - name: Trigger prod deploy
         run: |
-          curl -X POST \
+          curl -fsS -X POST \
             -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/adno-org/site/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/adnodev/w.adno.app/dispatches \
             -d '{"event_type":"new_release","client_payload":{"version":"${{ github.event.inputs.version }}"}}'
