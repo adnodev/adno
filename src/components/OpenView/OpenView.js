@@ -311,7 +311,9 @@ class OpenView extends Component {
 
     changeAnno = (annotation) => {
         if (annotation && annotation.id) {
-            // this.props.changeSelectedAnno(annotation)
+            if (!this.props.selectedAnno || this.props.selectedAnno.id !== annotation.id) {
+                this.props.changeSelectedAnno(annotation)
+            }
 
             this.AdnoAnnotorious.selectAnnotation(annotation.id)
             this.AdnoAnnotorious.fitBounds(annotation.id)
