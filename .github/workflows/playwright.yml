@@ -25,6 +25,8 @@ jobs:
         run: npm ci
 
       - name: Run Playwright tests
+        env:
+          CORS_SERVER: https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
         run: npx playwright test --project=chromium
 
       - name: Upload Playwright report

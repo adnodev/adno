@@ -1,6 +1,7 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-const { BASE_URL, clearProjectsDB } = require('../helpers');
+const { BASE_URL, clearProjectsDB, seedProject } = require('../helpers');
+const wideFixture = require('./wide.fixture.json');
 
 /**
  * Create a project the same way a user does: type a IIIF info.json URL on the
@@ -33,8 +34,6 @@ async function createProjectFromIIIF(page, iiifUrl) {
 }
 
 test.describe('AdnoNavigator positioning (via real UI flow)', () => {
-    // Real IIIF info.json from the Tabula Peutingeriana — extremely wide rouleau.
-    const HORIZONTAL_IIIF = 'https://iiif.omnesviae.org/image/peutinger.tiff/info.json';
     // Real IIIF info.json from Manchester (MS Latin 2) — extremely tall rouleau.
     const VERTICAL_IIIF   = 'https://image.digitalcollections.manchester.ac.uk/iiif/MS-LATIN-00002-000-00001.jp2/info.json';
     // Normal-ratio IIIF info.json, already used by other specs (SuomiNPP earth, square-ish).
@@ -47,8 +46,9 @@ test.describe('AdnoNavigator positioning (via real UI flow)', () => {
         await clearProjectsDB(page);
     });
 
-    test('horizontal rouleau (Peutinger): navigator anchors bottom-center', async ({ page }) => {
-        await createProjectFromIIIF(page, HORIZONTAL_IIIF);
+    test('horizontal rouleau: navigator anchors bottom-center', async ({ page }) => {
+        await seedProject(page, wideFixture);
+        await page.goto(`${BASE_URL}/#/project/${wideFixture.id}/view`);
 
         const wrap = page.locator('.adno-navigator-wrap');
         await expect(wrap).toBeVisible({ timeout: 30000 });
