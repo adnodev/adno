@@ -11,6 +11,7 @@ test.afterEach(async ({ page }) => {
 });
 
 test('should import https://bastaire.msh.uca.fr/iiif/3/10243/manifest as project', async ({ page }) => {
+  test.skip(!!process.env.CI, 'Import IIIF externe : tuiles injoignables depuis le CI');
   await loadImageProjectFromURL(page, 'https://bastaire.msh.uca.fr/iiif/3/10243/manifest')
 });
 
@@ -84,6 +85,7 @@ test('should import URL with encoded param', async ({ page }) => {
 })
 
 test('shoud load resource with nested service field', async ({ page }) => {
+  test.skip(!!process.env.CI, 'Import IIIF externe : tuiles injoignables depuis le CI');
   await loadImageProjectFromURL(page, 'https://apicollections.parismusees.paris.fr/iiif/320144731/manifest')
 })
 
