@@ -1,31 +1,10 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-const { BASE_URL, clearProjectsDB } = require('../helpers');
+const { BASE_URL, clearProjectsDB, seedProject } = require('../helpers');
 const fixture = require('./project.fixture.json');
 
 const CONTENT_1 = 'CONTENU_ANNOTATION_1';
 const CONTENT_2 = 'CONTENU_ANNOTATION_2';
-
-async function seedProject(page, project) {
-    await page.goto(`${BASE_URL}/#/`);
-    await page.evaluate((proj) => new Promise((resolve, reject) => {
-        const req = indexedDB.open('ProjectsDB', 1);
-        req.onupgradeneeded = () => {
-            const db = req.result;
-            if (!db.objectStoreNames.contains('projects')) {
-                db.createObjectStore('projects', { keyPath: 'id' });
-            }
-        };
-        req.onsuccess = () => {
-            const db = req.result;
-            const tx = db.transaction(['projects'], 'readwrite');
-            tx.objectStore('projects').put(proj);
-            tx.oncomplete = () => resolve(null);
-            tx.onerror = () => reject(tx.error);
-        };
-        req.onerror = () => reject(req.error);
-    }), project);
-}
 
 async function openViewer(page) {
     await seedProject(page, fixture);

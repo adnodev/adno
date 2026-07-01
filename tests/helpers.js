@@ -43,4 +43,25 @@ async function clearProjectsDB(page, ids) {
     }
 }
 
-module.exports = { BASE_URL, clearProjectsDB };
+async function seedProject(page, project) {
+    await page.goto(`${BASE_URL}/#/`);
+    await page.evaluate((proj) => new Promise((resolve, reject) => {
+        const req = indexedDB.open('ProjectsDB', 1);
+        req.onupgradeneeded = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains('projects')) {
+                db.createObjectStore('projects', { keyPath: 'id' });
+            }
+        };
+        req.onsuccess = () => {
+            const db = req.result;
+            const tx = db.transaction(['projects'], 'readwrite');
+            tx.objectStore('projects').put(proj);
+            tx.oncomplete = () => resolve(null);
+            tx.onerror = () => reject(tx.error);
+        };
+        req.onerror = () => reject(req.error);
+    }), project);
+}
+
+module.exports = { BASE_URL, clearProjectsDB, seedProject };

@@ -138,7 +138,8 @@
         "help_key_arrows": "左右方向键可切换当前所选的标注。",
         "help_doc": "如需更多信息，请参阅 Adno 的官方文档。",
         "close": "关闭",
-        "help_key_0": "按键"
+        "help_key": "按键",
+        "help_key_plural": "按键"
     },
     "modal": {
         "delete_project": "确定要删除此项目吗？",
