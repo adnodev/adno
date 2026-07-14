@@ -144,7 +144,8 @@ function extractTargetAndSelector(annotation) {
                 source: "https://example.com/canvas-1",
                 selector: {
                     "type": "FragmentSelector",
-                    "value": coordinates
+                    "value": coordinates,
+                    ...(selector.refinedBy ? { refinedBy: selector.refinedBy } : {})
                 }
             }
         }
