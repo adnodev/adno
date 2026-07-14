@@ -8,7 +8,8 @@
         "switch_down": "Bajar la anotación",
         "switch_up": "Subir la anotación",
         "tags_list": "Filtrar las anotaciones que contienen las palabras clave",
-        "target": "Resaltar"
+        "target": "Resaltar",
+        "orientation": "Orientación de lectura"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {

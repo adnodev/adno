@@ -171,7 +171,8 @@
         "switch_up": "Switch up",
         "delete": "Remove annotation",
         "tags_list": "Filter annotations using tags",
-        "empty_tags_list": "The created tags will be displayed here."
+        "empty_tags_list": "The created tags will be displayed here.",
+        "orientation": "Reading orientation"
     },
     "navbar": {
         "edit_mode": "edit",

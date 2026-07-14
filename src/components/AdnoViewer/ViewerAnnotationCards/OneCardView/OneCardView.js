@@ -13,6 +13,8 @@ import { faBullseye, faPlusCircle, faVolumeHigh } from "@fortawesome/free-solid-
 // Add translations
 import { withTranslation } from "react-i18next";
 
+import { OrientationBadge } from "../../../OrientationBadge/OrientationBadge";
+
 class OneCardView extends Component {
     constructor(props) {
         super(props);
@@ -97,6 +99,7 @@ class OneCardView extends Component {
                 {this.hasAudio(this.props.annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
 
                 <div className="card-tags-list">
+                    <OrientationBadge annotation={this.props.annotation} translate={this.props.t} />
                     {
                         buildTagsList(this.props.annotation).map((tag, idx) => {
                             return (

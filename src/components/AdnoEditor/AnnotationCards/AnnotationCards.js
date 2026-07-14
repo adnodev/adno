@@ -11,6 +11,8 @@ import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong, faVolumeHigh } fr
 // Import SweetAlert
 import Swal from "sweetalert2";
 
+import { OrientationBadge } from "../../OrientationBadge/OrientationBadge";
+
 // Import Utils 
 import { buildTagsList } from "../../../Utils/utils";
 
@@ -125,6 +127,7 @@ class AnnotationCards extends Component {
                                     <div className="anno-card-body">
 
                                         <div className="card-tags-list">
+                                            <OrientationBadge annotation={annotation} translate={this.props.t} />
                                             {
                                                 annotation.tags.map((tag, idx) => {
                                                     return (

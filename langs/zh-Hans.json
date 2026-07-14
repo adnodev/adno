@@ -171,7 +171,8 @@
         "switch_up": "上移标注",
         "delete": "移除标注",
         "tags_list": "按标签筛选标注",
-        "empty_tags_list": "已创建的标签将显示在此处。"
+        "empty_tags_list": "已创建的标签将显示在此处。",
+        "orientation": "阅读方向"
     },
     "navbar": {
         "edit_mode": "编辑",

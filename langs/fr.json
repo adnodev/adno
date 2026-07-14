@@ -171,7 +171,8 @@
         "switch_up": "Remonter l'annotation",
         "delete": "Supprimer l'annotation",
         "tags_list": "Filter les annotations comportant les mots clés",
-        "empty_tags_list": "Les mots clés apparaitront ici."
+        "empty_tags_list": "Les mots clés apparaitront ici.",
+        "orientation": "Orientation de lecture"
     },
     "navbar": {
         "edit_mode": "édition",

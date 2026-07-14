@@ -171,7 +171,8 @@
         "switch_up": "上移標註",
         "delete": "移除標註",
         "tags_list": "以標籤篩選標註",
-        "empty_tags_list": "建立的標籤將顯示於此。"
+        "empty_tags_list": "建立的標籤將顯示於此。",
+        "orientation": "閱讀方向"
     },
     "navbar": {
         "edit_mode": "編輯",
