@@ -149,20 +149,35 @@ class AdnoNavigator extends Component {
         const rw = b.width  * this.navImgW * dpr;
         const rh = b.height * this.navImgW * dpr;
 
-        ctx.fillStyle   = 'rgba(255,160,0,0.15)';
-        ctx.fillRect(rx, ry, rw, rh);
-
-        // Inset the stroke by half its width so it stays fully inside the canvas
-        // when the viewport sits flush against an edge (otherwise it gets clipped).
         const lw = 3 * dpr;
-        const half = lw / 2;
-        const sx1 = Math.max(rx, half);
-        const sy1 = Math.max(ry, half);
-        const sx2 = Math.min(rx + rw, canvas.width  - half);
-        const sy2 = Math.min(ry + rh, canvas.height - half);
+        ctx.fillStyle   = 'rgba(255,160,0,0.15)';
         ctx.strokeStyle = 'rgba(255,160,0,0.9)';
         ctx.lineWidth   = lw;
-        ctx.strokeRect(sx1, sy1, sx2 - sx1, sy2 - sy1);
+
+        if (b.degrees) {
+            const corners = [b.getTopLeft(), b.getTopRight(), b.getBottomRight(), b.getBottomLeft()];
+
+            ctx.beginPath();
+            corners.forEach((corner, index) => {
+                const x = corner.x * this.navImgW * dpr;
+                const y = corner.y * this.navImgW * dpr;
+                index === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        } else {
+            ctx.fillRect(rx, ry, rw, rh);
+
+            // Inset the stroke by half its width so it stays fully inside the canvas
+            // when the viewport sits flush against an edge (otherwise it gets clipped).
+            const half = lw / 2;
+            const sx1 = Math.max(rx, half);
+            const sy1 = Math.max(ry, half);
+            const sx2 = Math.min(rx + rw, canvas.width  - half);
+            const sy2 = Math.min(ry + rh, canvas.height - half);
+            ctx.strokeRect(sx1, sy1, sx2 - sx1, sy2 - sy1);
+        }
 
         if (!this._rafScroll) {
             const { showV, showH } = this.state;
@@ -170,8 +185,9 @@ class AdnoNavigator extends Component {
             const usedH = showH ? ARROW_H : 0;
             const visW  = this.navW - usedH * 2;
             const visH  = this.navH - usedV * 2;
-            const cy = ry / dpr + rh / dpr / 2;
-            const cx = rx / dpr + rw / dpr / 2;
+            const center = b.getCenter();
+            const cx = center.x * this.navImgW;
+            const cy = center.y * this.navImgW;
 
             if (cy < this.scrollTop + visH * 0.15 || cy > this.scrollTop + visH * 0.85) {
                 this.scrollTop = cy - visH / 2;
