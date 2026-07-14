@@ -122,7 +122,9 @@
         "empty_list": "No options",
         "orientation": "Reading orientation",
         "orientation_inherit": "Project default",
-        "orientation_capture": "Use current view"
+        "orientation_capture": "Use current view",
+        "cutout": "Show as a cutout",
+        "cutout_hint": "Opens the region as an upright close-up instead of rotating the image."
     },
     "visualizer": {
         "expand": "Enter full screen",
@@ -176,7 +178,9 @@
         "delete": "Remove annotation",
         "tags_list": "Filter annotations using tags",
         "empty_tags_list": "The created tags will be displayed here.",
-        "orientation": "Reading orientation"
+        "orientation": "Reading orientation",
+        "cutout_close": "Close the cutout",
+        "cutout_rotated": "Straightened by {{degrees}}°"
     },
     "navbar": {
         "edit_mode": "edit",

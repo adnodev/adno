@@ -122,7 +122,9 @@
         "empty_list": "無選項",
         "orientation": "閱讀方向",
         "orientation_inherit": "專案預設值",
-        "orientation_capture": "使用目前檢視"
+        "orientation_capture": "使用目前檢視",
+        "cutout": "以裁切圖顯示",
+        "cutout_hint": "將該區域以擺正的特寫開啟，而不旋轉整幅影像。"
     },
     "visualizer": {
         "expand": "進入全螢幕",
@@ -176,7 +178,9 @@
         "delete": "移除標註",
         "tags_list": "以標籤篩選標註",
         "empty_tags_list": "建立的標籤將顯示於此。",
-        "orientation": "閱讀方向"
+        "orientation": "閱讀方向",
+        "cutout_close": "關閉裁切圖",
+        "cutout_rotated": "已擺正 {{degrees}}°"
     },
     "navbar": {
         "edit_mode": "編輯",

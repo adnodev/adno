@@ -1,0 +1,46 @@
+.cutout-panel {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    z-index: 200;
+    transform: translateY(-50%);
+    max-width: 38vw;
+    max-height: 78vh;
+    padding: 10px;
+    overflow: auto;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+.cutout-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 1;
+}
+
+.cutout-caption {
+    margin-top: 6px;
+    font-size: 12px;
+    text-align: center;
+    color: #555;
+}
+
+.cutout-image {
+    display: block;
+    max-width: 100%;
+    max-height: 66vh;
+}
+
+@media (max-width: 900px) {
+    .cutout-panel {
+        top: auto;
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        max-width: none;
+        max-height: 42vh;
+        transform: none;
+    }
+}

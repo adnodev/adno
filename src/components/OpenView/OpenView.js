@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { getEye, computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView } from "../../Utils/viewport";
+import { getAnnotationCutout } from "../../Utils/cutout";
+import { CutoutView } from "../CutoutView/CutoutView";
 
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
@@ -27,7 +29,8 @@ class OpenView extends Component {
 
             imageRatio: null,
             navigatorLayout: null,
-            viewerReady: false
+            viewerReady: false,
+            cutoutAnno: null
         }
     }
 
@@ -324,7 +327,7 @@ class OpenView extends Component {
             })
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-            this.setState({ currentID: annotationIndex })
+            this.setState({ currentID: annotationIndex, cutoutAnno: getAnnotationCutout(annotation) ? annotation : null })
 
             if (this.props.soundMode === 'no_spatialization') {
                 const { currentTrack } = this.state
@@ -921,6 +924,14 @@ class OpenView extends Component {
                     this.getAnnotationHTMLBody(this.props.selectedAnno)
                 }
             </div>
+
+            {this.state.cutoutAnno &&
+                <CutoutView
+                    project={this.props.selectedProject}
+                    annotation={this.state.cutoutAnno}
+                    close={() => this.setState({ cutoutAnno: null })}
+                    translate={this.props.t} />
+            }
         </div>
     }
 }

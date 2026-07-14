@@ -21,6 +21,7 @@ import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
 import { getAnnotationRotation, normalizeAngle, withAnnotationRotation } from '../../Utils/orientation';
+import { getAnnotationCutout, withAnnotationCutout } from '../../Utils/cutout';
 
 const locale = navigator.language;
 
@@ -48,7 +49,8 @@ class AdnoMdEditor extends Component {
             markdown: [],
             tab: 'editor',
             existingTags: this.computeExistingTags(),
-            rotation: getAnnotationRotation(this.props.selectedAnnotation)
+            rotation: getAnnotationRotation(this.props.selectedAnnotation),
+            cutout: getAnnotationCutout(this.props.selectedAnnotation)
         }
     }
 
@@ -154,6 +156,7 @@ class AdnoMdEditor extends Component {
         }
 
         currentSelectedAnno = withAnnotationRotation(currentSelectedAnno, this.state.rotation)
+        currentSelectedAnno = withAnnotationCutout(currentSelectedAnno, this.state.cutout)
 
         if (annos.find(anno => anno.id === currentSelectedAnno.id)) {
             const idx = annos.findIndex(anno => anno.id === currentSelectedAnno.id);
@@ -273,6 +276,8 @@ class AdnoMdEditor extends Component {
                             rotation={this.state.rotation}
                             setRotation={rotation => this.setState({ rotation })}
                             capture={() => this.captureCurrentRotation()}
+                            cutout={this.state.cutout}
+                            setCutout={cutout => this.setState({ cutout })}
                             translate={this.props.t} />
                     }
 
@@ -346,14 +351,14 @@ class AdnoMdEditor extends Component {
     }
 }
 
-function OrientationPicker({ rotation, setRotation, capture, translate }) {
+function OrientationPicker({ rotation, setRotation, capture, cutout, setCutout, translate }) {
     const isFreeAngle = rotation !== null && !QUARTER_TURNS.includes(rotation)
 
     return <div className="editor-orientation mb-4">
         <div className="label font-medium">
             <span className="label-text">{translate('editor.orientation')}</span>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap mb-2">
             <button type="button"
                 className={rotation === null ? "btn btn-sm" : "btn btn-sm btn-outline"}
                 onClick={() => setRotation(null)}>
@@ -373,6 +378,17 @@ function OrientationPicker({ rotation, setRotation, capture, translate }) {
                 <FontAwesomeIcon icon={faCrosshairs} /> &nbsp; {translate('editor.orientation_capture')}
                 {isFreeAngle && <>&nbsp; ({rotation}&deg;)</>}
             </button>
+        </div>
+
+        <label className="cursor-pointer flex items-center gap-2">
+            <input type="checkbox"
+                className="toggle toggle-sm"
+                checked={cutout}
+                onChange={() => setCutout(!cutout)} />
+            <span className="label-text">{translate('editor.cutout')}</span>
+        </label>
+        <div className="label">
+            <span className="label-text-alt">{translate('editor.cutout_hint')}</span>
         </div>
     </div>
 }

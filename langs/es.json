@@ -9,7 +9,9 @@
         "switch_up": "Subir la anotación",
         "tags_list": "Filtrar las anotaciones que contienen las palabras clave",
         "target": "Resaltar",
-        "orientation": "Orientación de lectura"
+        "orientation": "Orientación de lectura",
+        "cutout_close": "Cerrar el recorte",
+        "cutout_rotated": "Enderezado {{degrees}}°"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {
@@ -43,7 +45,9 @@
         "empty_list": "Sin opciones",
         "orientation": "Orientación de lectura",
         "orientation_inherit": "Valor por defecto del proyecto",
-        "orientation_capture": "Usar la vista actual"
+        "orientation_capture": "Usar la vista actual",
+        "cutout": "Mostrar como recorte",
+        "cutout_hint": "Abre la región como un primer plano enderezado, en lugar de rotar la imagen."
     },
     "errors": {
         "error_found": "Error detectado",

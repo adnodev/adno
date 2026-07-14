@@ -122,7 +122,9 @@
         "empty_list": "Aucune proposition",
         "orientation": "Orientation de lecture",
         "orientation_inherit": "Défaut du projet",
-        "orientation_capture": "Utiliser la vue actuelle"
+        "orientation_capture": "Utiliser la vue actuelle",
+        "cutout": "Présenter en découpe",
+        "cutout_hint": "Ouvre la région en gros plan redressé, au lieu de faire pivoter l'image."
     },
     "visualizer": {
         "expand": "Mettre en plein écran",
@@ -176,7 +178,9 @@
         "delete": "Supprimer l'annotation",
         "tags_list": "Filter les annotations comportant les mots clés",
         "empty_tags_list": "Les mots clés apparaitront ici.",
-        "orientation": "Orientation de lecture"
+        "orientation": "Orientation de lecture",
+        "cutout_close": "Fermer la découpe",
+        "cutout_rotated": "Redressé de {{degrees}}°"
     },
     "navbar": {
         "edit_mode": "édition",

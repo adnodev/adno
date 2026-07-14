@@ -1,4 +1,5 @@
-import { resolveRotation, shortestDelta } from "./orientation"
+import { normalizeAngle, resolveRotation, shortestDelta } from "./orientation"
+import { getAnnotationCutout } from "./cutout"
 
 const ANNOTATION_CLASS = "a9s-annotation"
 const PENDING_TURN = "adnoPendingTurn"
@@ -56,8 +57,12 @@ export function applyAnnotationView(viewer, annotorious, annotation, options = {
         return
     }
 
+    const wanted = getAnnotationCutout(annotation)
+        ? normalizeAngle(defaultRotation || 0)
+        : resolveRotation(annotation, defaultRotation)
+
     const current = viewport.getRotation()
-    const delta = shortestDelta(current, resolveRotation(annotation, defaultRotation))
+    const delta = shortestDelta(current, wanted)
 
     if (Math.abs(delta) < ANGLE_EPSILON) {
         viewport.fitBounds(bounds, false)
@@ -66,7 +71,7 @@ export function applyAnnotationView(viewer, annotorious, annotation, options = {
 
     const target = current + delta
 
-    if (transition === "instant" || prefersReducedMotion()) {
+    if (transition === "instant" || prefersReducedMotion()) {e
         viewport.setRotation(target, true)
         viewport.fitBounds(bounds, true)
         return
