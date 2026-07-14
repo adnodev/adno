@@ -82,7 +82,11 @@
             "visualization": "Visualisation",
             "navigation": "Navigation",
             "annotation": "Annotation",
-            "anno_bounds": "Voir les annotations ?"
+            "anno_bounds": "Voir les annotations ?",
+            "default_rotation": "Orientation de lecture par défaut",
+            "rotation_transition": "Changement d'orientation",
+            "rotation_transition_turn": "Pivoter (cadrer, puis tourner)",
+            "rotation_transition_instant": "Immédiat (sans animation)"
         }
     },
     "files": {

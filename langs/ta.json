@@ -82,7 +82,11 @@
             "visualization": "காட்சிப்படுத்தல்",
             "navigation": "வானோடல்",
             "annotation": "சிறுகுறிப்பு",
-            "anno_bounds": "சிறுகுறிப்புகள் தெரிகிறதா?"
+            "anno_bounds": "சிறுகுறிப்புகள் தெரிகிறதா?",
+            "default_rotation": "இயல்புநிலை படிக்கும் திசை",
+            "rotation_transition": "திசை மாற்றம்",
+            "rotation_transition_turn": "சுழற்று (முதலில் பொருத்து, பின் சுழற்று)",
+            "rotation_transition_instant": "உடனடி (அசைவூட்டம் இல்லை)"
         }
     },
     "files": {

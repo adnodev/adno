@@ -182,7 +182,11 @@
             "spatialization": "Las anotaciones de audio se reproducirán con un efecto de espacialización",
             "tags": "Solo se mostrarán las anotaciones que incluyan la o una de las siguientes palabras clave",
             "toolsbar": "Mostrar la barra de herramientas",
-            "visualization": "Visualización"
+            "visualization": "Visualización",
+            "default_rotation": "Orientación de lectura por defecto",
+            "rotation_transition": "Cambio de orientación",
+            "rotation_transition_turn": "Girar (encuadrar y luego rotar)",
+            "rotation_transition_instant": "Inmediato (sin animación)"
         },
         "title": "Título",
         "advanced": "Avanzado"

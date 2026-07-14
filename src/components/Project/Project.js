@@ -262,6 +262,8 @@ const Project = ({ editMode }) => {
                         }))}
                         changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
                         rotation={settings.rotation}
+                        defaultRotation={settings.defaultRotation}
+                        rotationTransition={settings.rotationTransition}
                         showNavigator={settings.showNavigator}
                         onViewerReady={(viewer) => { viewerRef.current = viewer }}
                     />
@@ -274,6 +276,8 @@ const Project = ({ editMode }) => {
                         toolsbarOnFs={settings.toolsbarOnFs}
                         showToolbar={settings.displayToolbar}
                         rotation={settings.rotation}
+                        defaultRotation={settings.defaultRotation}
+                        rotationTransition={settings.rotationTransition}
                         timerDelay={settings.delay}
                         showOutlines={settings.showOutlines}
                         showCurrentAnnotation={settings.showCurrentAnnotation}

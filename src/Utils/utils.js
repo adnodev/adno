@@ -266,6 +266,8 @@ export function defaultProjectSettings() {
     startbyfirstanno: false,
     shouldAutoPlayAnnotations: false,
     rotation: false,
+    defaultRotation: 0,
+    rotationTransition: "turn",
     displayToolbar: true,
     tags: [],
     outlineWidth: "outline-1px",

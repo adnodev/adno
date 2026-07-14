@@ -82,7 +82,11 @@
             "visualization": "可视化",
             "navigation": "导航",
             "annotation": "标注",
-            "anno_bounds": "是否显示标注？"
+            "anno_bounds": "是否显示标注？",
+            "default_rotation": "默认阅读方向",
+            "rotation_transition": "方向切换",
+            "rotation_transition_turn": "旋转（先取景，再旋转）",
+            "rotation_transition_instant": "立即（无动画）"
         }
     },
     "files": {
