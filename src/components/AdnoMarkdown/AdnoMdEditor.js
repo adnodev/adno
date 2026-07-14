@@ -1,7 +1,7 @@
 import { Component } from 'react';
 
 // Import FontAwesome
-import { faCheckCircle, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faCrosshairs, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Select from 'react-select/creatable';
@@ -20,8 +20,11 @@ import '@toast-ui/editor/dist/i18n/es-es';
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
+import { getAnnotationRotation, normalizeAngle, withAnnotationRotation } from '../../Utils/orientation';
 
 const locale = navigator.language;
+
+const QUARTER_TURNS = [0, 90, 180, 270];
 
 const AUDIO_TYPES = [
     'audio/mpeg',
@@ -44,8 +47,19 @@ class AdnoMdEditor extends Component {
             audioCreator: this.getCreatorFromBody(),
             markdown: [],
             tab: 'editor',
-            existingTags: this.computeExistingTags()
+            existingTags: this.computeExistingTags(),
+            rotation: getAnnotationRotation(this.props.selectedAnnotation)
         }
+    }
+
+    captureCurrentRotation = () => {
+        const current = this.props.getViewerRotation && this.props.getViewerRotation()
+
+        if (current === null || current === undefined) {
+            return
+        }
+
+        this.setState({ rotation: normalizeAngle(Math.round(current)) })
     }
 
     computeSelectedTags = () => {
@@ -138,6 +152,8 @@ class AdnoMdEditor extends Component {
         if (audioBody) {
             currentSelectedAnno.body = [...newBody, audioBody];
         }
+
+        currentSelectedAnno = withAnnotationRotation(currentSelectedAnno, this.state.rotation)
 
         if (annos.find(anno => anno.id === currentSelectedAnno.id)) {
             const idx = annos.findIndex(anno => anno.id === currentSelectedAnno.id);
@@ -252,6 +268,14 @@ class AdnoMdEditor extends Component {
                         <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} translate={this.props.t} />
                     </div>
 
+                    {tab === 'editor' &&
+                        <OrientationPicker
+                            rotation={this.state.rotation}
+                            setRotation={rotation => this.setState({ rotation })}
+                            capture={() => this.captureCurrentRotation()}
+                            translate={this.props.t} />
+                    }
+
                     <div id="editor" style={{ display: tab === 'editor' ? 'block' : 'none' }}></div>
 
                     {tab === 'tags' && <div style={{ height: '600px' }}>
@@ -320,6 +344,37 @@ class AdnoMdEditor extends Component {
 
         )
     }
+}
+
+function OrientationPicker({ rotation, setRotation, capture, translate }) {
+    const isFreeAngle = rotation !== null && !QUARTER_TURNS.includes(rotation)
+
+    return <div className="editor-orientation mb-4">
+        <div className="label font-medium">
+            <span className="label-text">{translate('editor.orientation')}</span>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+            <button type="button"
+                className={rotation === null ? "btn btn-sm" : "btn btn-sm btn-outline"}
+                onClick={() => setRotation(null)}>
+                {translate('editor.orientation_inherit')}
+            </button>
+            {QUARTER_TURNS.map(degrees => (
+                <button type="button"
+                    key={degrees}
+                    className={rotation === degrees ? "btn btn-sm" : "btn btn-sm btn-outline"}
+                    onClick={() => setRotation(degrees)}>
+                    {degrees}&deg;
+                </button>
+            ))}
+            <button type="button"
+                className={isFreeAngle ? "btn btn-sm" : "btn btn-sm btn-outline"}
+                onClick={() => capture()}>
+                <FontAwesomeIcon icon={faCrosshairs} /> &nbsp; {translate('editor.orientation_capture')}
+                {isFreeAngle && <>&nbsp; ({rotation}&deg;)</>}
+            </button>
+        </div>
+    </div>
 }
 
 function TabSelector({ tab, setTab, translate }) {

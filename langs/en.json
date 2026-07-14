@@ -115,7 +115,10 @@
             "tags": "Tags",
             "audio": "Audio"
         },
-        "empty_list": "No options"
+        "empty_list": "No options",
+        "orientation": "Reading orientation",
+        "orientation_inherit": "Project default",
+        "orientation_capture": "Use current view"
     },
     "visualizer": {
         "expand": "Enter full screen",

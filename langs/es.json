@@ -39,7 +39,10 @@
         },
         "zoom_in": "ampliar",
         "zoom_out": "Alejar",
-        "empty_list": "Sin opciones"
+        "empty_list": "Sin opciones",
+        "orientation": "Orientación de lectura",
+        "orientation_inherit": "Valor por defecto del proyecto",
+        "orientation_capture": "Usar la vista actual"
     },
     "errors": {
         "error_found": "Error detectado",

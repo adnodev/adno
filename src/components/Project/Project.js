@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
 import { exportToIIIF } from "../../services/iiif/exporter";
@@ -23,6 +23,8 @@ import "./Sidebar.css";
 const Project = ({ editMode }) => {
     const { id } = useParams();
     const history = useHistory();
+
+    const viewerRef = useRef(null);
 
     const [state, setState] = useState({
         annotations: [],
@@ -193,6 +195,7 @@ const Project = ({ editMode }) => {
                         selectedProjectId={id}
                         annotations={annotations}
                         changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                        getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
                     />
                 </div>
             )}
@@ -260,6 +263,7 @@ const Project = ({ editMode }) => {
                         changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
                         rotation={settings.rotation}
                         showNavigator={settings.showNavigator}
+                        onViewerReady={(viewer) => { viewerRef.current = viewer }}
                     />
                 ) : (
                     <OpenView

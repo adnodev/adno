@@ -115,7 +115,10 @@
             "tags": "標籤",
             "audio": "音訊"
         },
-        "empty_list": "無選項"
+        "empty_list": "無選項",
+        "orientation": "閱讀方向",
+        "orientation_inherit": "專案預設值",
+        "orientation_capture": "使用目前檢視"
     },
     "visualizer": {
         "expand": "進入全螢幕",

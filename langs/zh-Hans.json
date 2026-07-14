@@ -115,7 +115,10 @@
             "tags": "标签",
             "audio": "音频"
         },
-        "empty_list": "无选项"
+        "empty_list": "无选项",
+        "orientation": "阅读方向",
+        "orientation_inherit": "项目默认值",
+        "orientation_capture": "使用当前视图"
     },
     "visualizer": {
         "expand": "进入全屏",

@@ -64,9 +64,13 @@ class AdnoEditor extends Component {
             prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
             // Enable rotation
             toolbar: "toolbar-osd",
-            showRotationControl: this.props.rotation,
+            showRotationControl: true,
             showFullPageControl: false,
         });
+
+        if (this.props.onViewerReady) {
+            this.props.onViewerReady(this.openSeadragon)
+        }
 
         this.openSeadragon.addOnceHandler('open', () => {
             const info = computeNavigatorInfo(this.openSeadragon);

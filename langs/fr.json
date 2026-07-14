@@ -115,7 +115,10 @@
             "tags": "Mots clés",
             "audio": "Audio"
         },
-        "empty_list": "Aucune proposition"
+        "empty_list": "Aucune proposition",
+        "orientation": "Orientation de lecture",
+        "orientation_inherit": "Défaut du projet",
+        "orientation_capture": "Utiliser la vue actuelle"
     },
     "visualizer": {
         "expand": "Mettre en plein écran",
