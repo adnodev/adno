@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
 import { enhancedFetch, getEye, get_url_extension, computeNavigatorInfo } from "../../Utils/utils";
+import { applyAnnotationView } from "../../Utils/viewport";
 import { InfinitySpin } from 'react-loader-spinner'
 import {
     faMagnifyingGlassMinus,
@@ -244,7 +245,7 @@ class AdnoEmbed extends Component {
 
         this.AdnoAnnotorious.on("clickAnnotation", (annotation) => {
             if (this.state.isAnnotationsVisible) {
-                this.AdnoAnnotorious.fitBounds(annotation.id);
+                this.focusAnnotation(annotation)
 
                 let annotationIndex = this.state.annos.findIndex(
                     (anno) => anno.id === annotation.id
@@ -554,12 +555,19 @@ class AdnoEmbed extends Component {
         }
     };
 
+    focusAnnotation = (annotation) => {
+        applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
+            defaultRotation: this.state.defaultRotation,
+            transition: this.state.rotationTransition
+        })
+    }
+
     changeAnno = (annotation) => {
         if (annotation && annotation.id && this.AdnoAnnotorious) {
             this.setState({ selectedAnno: annotation });
 
             this.AdnoAnnotorious.selectAnnotation(annotation.id);
-            this.AdnoAnnotorious.fitBounds(annotation.id);
+            this.focusAnnotation(annotation)
 
             let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id);
 

@@ -5,6 +5,7 @@ import parse from 'html-react-parser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { getEye, computeNavigatorInfo } from "../../Utils/utils";
+import { applyAnnotationView } from "../../Utils/viewport";
 
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
@@ -316,7 +317,11 @@ class OpenView extends Component {
             }
 
             this.AdnoAnnotorious.selectAnnotation(annotation.id)
-            this.AdnoAnnotorious.fitBounds(annotation.id)
+
+            applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
+                defaultRotation: this.props.defaultRotation,
+                transition: this.props.rotationTransition
+            })
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
             this.setState({ currentID: annotationIndex })

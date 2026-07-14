@@ -15,6 +15,7 @@ import "./AdnoEditor.css";
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
+import { applyAnnotationView } from "../../Utils/viewport";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 
 class AdnoEditor extends Component {
@@ -137,7 +138,11 @@ class AdnoEditor extends Component {
         this.setState({ selected: annotation })
 
         this.AdnoAnnotorious.selectAnnotation(annotation.id)
-        this.AdnoAnnotorious.fitBounds(annotation.id)
+
+        applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
+            defaultRotation: this.props.defaultRotation,
+            transition: this.props.rotationTransition
+        })
 
         if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
             const container = document.getElementById("annotations_list");
