@@ -16,6 +16,7 @@ import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView } from "../../Utils/viewport";
+import { preserveRotation } from "../../Utils/orientation";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 
 class AdnoEditor extends Component {
@@ -164,7 +165,7 @@ class AdnoEditor extends Component {
         const annotations = this.props.annotations.map(anno => JSON.parse(JSON.stringify(anno)))
         const newAnnos = annotations.map(anno => {
             if (anno.id === selected.id) {
-                anno.target = selected.target
+                anno.target = preserveRotation(anno, selected.target)
             }
             return anno;
         });
