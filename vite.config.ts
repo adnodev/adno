@@ -11,9 +11,7 @@ const buildDate = new Date().toLocaleDateString('fr-FR', {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
-  const githubWorkflow = process.env.GITHUB_WORKFLOW || ''
-
-  const appVersion = githubWorkflow === 'release.yml' ? pkg.version : `DEV (${buildDate}) ${pkg.version}`
+  const appVersion = process.env.APP_VERSION || `DEV (${buildDate}) ${pkg.version}`
 
   return {
     server: {
