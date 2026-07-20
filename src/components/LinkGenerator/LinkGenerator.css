@@ -1,5 +1,7 @@
 .link-generator {
     background: #eee;
+    height: 100vh;
+    overflow-y: scroll;
 }
 
 .label-text {
