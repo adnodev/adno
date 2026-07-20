@@ -32,9 +32,8 @@ jobs:
           MATOMO_SITE_ID: ${{ secrets.PROD_MATOMO_SITE_ID }}
           MATOMO_URL: ${{ secrets.PROD_MATOMO_URL }}
           ADNO_TITLE: ${{ vars.PROD_ADNO_TITLE }}
-        run: |
-          APP_VERSION="${{ github.event.inputs.version }}"
-          APP_VERSION="$APP_VERSION" npm run build
+          APP_VERSION: ${{ github.event.inputs.version }}
+        run: npm run build
 
       - name: Zip prod build
         run: zip -r adno.${{ github.event.inputs.version }}.zip dist/

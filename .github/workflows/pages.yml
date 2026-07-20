@@ -27,30 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Determine APP_VERSION
-        id: version
-        run: |
-          # Version package
-          VERSION=$(jq -r .version package.json)
-
-          # Date locale pour GitHub Actions (dd/mm/yyyy)
-          BUILD_DATE=$(date +"%d/%m/%Y")
-
-          # Déterminer APP_VERSION selon workflow / branche
-          if [ "${{ github.workflow_ref }}" = *"release"* ]; then
-            APP_VERSION=$VERSION
-          else
-            APP_VERSION="DEV (${BUILD_DATE}) ${VERSION}"
-          fi
-
-          echo "APP_VERSION=$APP_VERSION"
-          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
-
       - name: Build project
         env:
             GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
             PUBLIC_URL: "/${{ github.event.repository.name }}"
-        run: VITE_APP_VERSION="$APP_VERSION" npm run build
+        run: npm run build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
