@@ -6,12 +6,12 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
 
 // Import SweetAlert
 import Swal from "sweetalert2";
 
-import { OrientationBadge } from "../../OrientationBadge/OrientationBadge";
+import { AnnotationBadges } from "../../AnnotationBadges/AnnotationBadges";
 
 // Import Utils 
 import { buildTagsList } from "../../../Utils/utils";
@@ -38,15 +38,6 @@ class AnnotationCards extends Component {
         } else {
             return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
         }
-    }
-
-    hasAudio = annotation => {
-        if (Array.isArray(annotation.body) && annotation.body.length > 0) {
-            const resource = annotation.body
-                .find(body => body.type === "SpecificResource")
-            return resource?.source?.id
-        }
-        return false
     }
 
     // Function to move an annotation up one place
@@ -123,11 +114,11 @@ class AnnotationCards extends Component {
                             return (
                                 <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}>
 
-                                    {this.hasAudio(annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
                                     <div className="anno-card-body">
 
+                                        <AnnotationBadges annotation={annotation} translate={this.props.t} />
+
                                         <div className="card-tags-list">
-                                            <OrientationBadge annotation={annotation} translate={this.props.t} />
                                             {
                                                 annotation.tags.map((tag, idx) => {
                                                     return (

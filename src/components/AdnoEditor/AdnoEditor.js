@@ -15,7 +15,7 @@ import "./AdnoEditor.css";
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
-import { applyAnnotationView } from "../../Utils/viewport";
+import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { preserveRotation } from "../../Utils/orientation";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 
@@ -86,6 +86,8 @@ class AdnoEditor extends Component {
             disableEditor: true
         });
 
+        this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
+
         const annos = this.props.annotations
 
         // Generate dataURI and load annotations into Annotorious
@@ -136,6 +138,10 @@ class AdnoEditor extends Component {
 
             this.setState({ selected })
         });
+    }
+
+    componentWillUnmount() {
+        this.unwatchResize?.()
     }
 
     changeAnno = (annotation) => {

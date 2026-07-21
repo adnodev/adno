@@ -130,7 +130,7 @@
         "expand": "進入全螢幕",
         "pause": "暫停",
         "play": "播放",
-        "reset_zoom": "縮放",
+        "reset_view": "重設檢視",
         "toggle_annotations": "顯示／隱藏標註",
         "previous_annotation": "前往上一個標註",
         "next_annotation": "前往下一個標註",
@@ -179,8 +179,14 @@
         "tags_list": "以標籤篩選標註",
         "empty_tags_list": "建立的標籤將顯示於此。",
         "orientation": "閱讀方向",
-        "cutout_close": "關閉裁切圖",
-        "cutout_rotated": "已擺正 {{degrees}}°"
+        "cutout_expand": "重新開啟裁切圖",
+        "cutout_minimize": "最小化裁切圖",
+        "sound": "聲音標註",
+        "cutout_rotated": "已擺正 {{degrees}}°",
+        "cutout_size_default": "一般大小",
+        "cutout_size_full": "佔滿檢視",
+        "cutout_size_tall": "整個高度",
+        "cutout_title": "已擺正的裁切圖"
     },
     "navbar": {
         "edit_mode": "編輯",

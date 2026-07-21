@@ -3,11 +3,11 @@ import { withRouter } from "react-router-dom";
 import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
-import { getEye, computeNavigatorInfo } from "../../Utils/utils";
-import { applyAnnotationView } from "../../Utils/viewport";
+import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { getEye, computeNavigatorInfo, annotationShapes } from "../../Utils/utils";
+import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { getAnnotationCutout } from "../../Utils/cutout";
-import { CutoutView } from "../CutoutView/CutoutView";
+import CutoutView from "../CutoutView/CutoutView";
 
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
@@ -30,7 +30,8 @@ class OpenView extends Component {
             imageRatio: null,
             navigatorLayout: null,
             viewerReady: false,
-            cutoutAnno: null
+            cutoutAnno: null,
+            cutoutView: { minimized: false, size: 'default', position: null }
         }
     }
 
@@ -94,6 +95,8 @@ class OpenView extends Component {
             formatters: annoFormatter
         });
 
+        this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
+
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
             // if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
             //     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
@@ -134,7 +137,7 @@ class OpenView extends Component {
     }
 
     toggleOutlines = showOutlines => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        const annos = annotationShapes()
         annos.forEach(anno => {
             if (showOutlines)
                 [...anno.children].forEach(r => {
@@ -151,7 +154,7 @@ class OpenView extends Component {
 
     freeMode = () => {
         if (this.props.showEyes) {
-            const annos = [...document.getElementsByClassName("a9s-annotation")]
+            const annos = annotationShapes()
 
             annos.map((anno, i) => {
                 const svgElement = getEye()
@@ -243,6 +246,7 @@ class OpenView extends Component {
     componentWillUnmount() {
         removeEventListener("keydown", this.keyPressedEvents)
         removeEventListener("fullscreenchange", this.updateFullScreenEvent)
+        this.unwatchResize?.()
     }
 
     automateLoading = timeout => {
@@ -264,7 +268,7 @@ class OpenView extends Component {
         if (timeout) {
             const id = this.props.annos[newCurrentID].id;
 
-            const annotation = [...document.getElementsByClassName("a9s-annotation")]
+            const annotation = annotationShapes()
                 .find(elt => elt.getAttribute("data-id") === id)
 
             let delay = timeout;
@@ -291,7 +295,7 @@ class OpenView extends Component {
         const showOutlinesOrEyes = (this.props.showOutlines || this.props.showEyes) && this.props.isAnnotationsVisible
 
         if (showOutlinesOrEyes && this.props.showCurrentAnnotation) {
-            const annos = [...document.getElementsByClassName("a9s-annotation")]
+            const annos = annotationShapes()
 
             // HIDE ALL ANNOS AND EYES
             annos.forEach(anno => {
@@ -337,7 +341,7 @@ class OpenView extends Component {
                     currentTrack.currentTime = 0;
                 }
 
-                const annos = [...document.getElementsByClassName("a9s-annotation")]
+                const annos = annotationShapes()
                 const annoSvg = annos.find(anno => anno.getAttribute('data-id') === annotation.id)
 
                 if (annoSvg) {
@@ -571,7 +575,7 @@ class OpenView extends Component {
     }
 
     toggleAudioElementLoopAttribute = looping => {
-        [...document.getElementsByClassName("a9s-annotation")]
+        annotationShapes()
             .forEach(annotation => {
                 const audioElement = annotation.getElementsByTagName("audio")[0];
 
@@ -589,7 +593,7 @@ class OpenView extends Component {
             this.toggleAudioElementLoopAttribute(false)
 
             if (soundMode === 'no_sound') {
-                [...document.getElementsByClassName("a9s-annotation")]
+                annotationShapes()
                     .forEach(annotation => {
                         const audioElement = annotation.getElementsByTagName("audio")[0];
 
@@ -655,7 +659,7 @@ class OpenView extends Component {
     }
 
     loadAudio = () => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        const annos = annotationShapes()
 
         annos.forEach(anno => {
             const audioElement = document.createElement('audio')
@@ -716,7 +720,7 @@ class OpenView extends Component {
     }
 
     toggleAnnotations = (visible) => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        const annos = annotationShapes()
         annos.forEach(anno => {
             [...anno.children].forEach(r => {
                 if (visible) {
@@ -792,8 +796,8 @@ class OpenView extends Component {
                     }
 
                     <button id="home-button" className="toolbarButton toolbaractive">
-                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_zoom')}>
-                            <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" />
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_view')}>
+                            <FontAwesomeIcon icon={faHouse} size="lg" />
                         </div>
                     </button>
 
@@ -923,15 +927,16 @@ class OpenView extends Component {
                     this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
                     this.getAnnotationHTMLBody(this.props.selectedAnno)
                 }
-            </div>
 
-            {this.state.cutoutAnno &&
-                <CutoutView
-                    project={this.props.selectedProject}
-                    annotation={this.state.cutoutAnno}
-                    close={() => this.setState({ cutoutAnno: null })}
-                    translate={this.props.t} />
-            }
+                {this.state.cutoutAnno &&
+                    <CutoutView
+                        project={this.props.selectedProject}
+                        annotation={this.state.cutoutAnno}
+                        styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
+                        view={this.state.cutoutView}
+                        setView={(cutoutView) => this.setState({ cutoutView })} />
+                }
+            </div>
         </div>
     }
 }

@@ -130,7 +130,7 @@
         "expand": "进入全屏",
         "pause": "暂停",
         "play": "播放",
-        "reset_zoom": "缩放",
+        "reset_view": "重置视图",
         "toggle_annotations": "显示／隐藏标注",
         "previous_annotation": "转到上一个标注",
         "next_annotation": "转到下一个标注",
@@ -179,8 +179,14 @@
         "tags_list": "按标签筛选标注",
         "empty_tags_list": "已创建的标签将显示在此处。",
         "orientation": "阅读方向",
-        "cutout_close": "关闭裁切图",
-        "cutout_rotated": "已摆正 {{degrees}}°"
+        "cutout_expand": "重新打开裁切图",
+        "cutout_minimize": "最小化裁切图",
+        "sound": "声音标注",
+        "cutout_rotated": "已摆正 {{degrees}}°",
+        "cutout_size_default": "常规大小",
+        "cutout_size_full": "占满视图",
+        "cutout_size_tall": "整个高度",
+        "cutout_title": "已摆正的裁切图"
     },
     "navbar": {
         "edit_mode": "编辑",

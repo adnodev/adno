@@ -2,10 +2,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
 import { enhancedFetch, getEye, get_url_extension, computeNavigatorInfo } from "../../Utils/utils";
-import { applyAnnotationView } from "../../Utils/viewport";
+import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { InfinitySpin } from 'react-loader-spinner'
 import {
-    faMagnifyingGlassMinus,
+    faHouse,
     faPlay,
     faPause,
     faEye,
@@ -241,6 +241,8 @@ class AdnoEmbed extends Component {
             formatters: annoFormatter
         });
 
+        this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
+
         // this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
 
         this.AdnoAnnotorious.on("clickAnnotation", (annotation) => {
@@ -420,6 +422,7 @@ class AdnoEmbed extends Component {
     componentWillUnmount() {
         removeEventListener("keydown", this.keyPressedEvents);
         removeEventListener("fullscreenchange", this.updateFullScreenEvent);
+        this.unwatchResize?.();
     }
 
     previousAnno = () => {
@@ -1068,8 +1071,8 @@ class AdnoEmbed extends Component {
                             }
 
                             <button id="home-button" className="toolbarButton toolbaractive">
-                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_zoom')}>
-                                    <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" />
+                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_view')}>
+                                    <FontAwesomeIcon icon={faHouse} size="lg" />
                                 </div>
                             </button>
 

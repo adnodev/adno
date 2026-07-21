@@ -327,6 +327,11 @@ export async function enhancedFetch(url) {
   }
 }
 
+export function annotationShapes() {
+  return [...document.getElementsByClassName("a9s-annotation")]
+    .filter(shape => !shape.closest("#cutout-osd"))
+}
+
 export function getEye() {
   const SVG_NS = "http://www.w3.org/2000/svg";
 

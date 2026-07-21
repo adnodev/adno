@@ -1,46 +1,119 @@
 .cutout-panel {
     position: absolute;
-    top: 50%;
-    right: 16px;
-    z-index: 200;
-    transform: translateY(-50%);
-    max-width: 38vw;
-    max-height: 78vh;
-    padding: 10px;
-    overflow: auto;
+    bottom: 12px;
+    left: 12px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    min-width: 240px;
+    min-height: 200px;
+    overflow: hidden;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.97);
+    background: #fff;
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 
-.cutout-close {
+.cutout-panel--default {
+    width: 30vw;
+    height: 38vh;
+}
+
+.cutout-panel--tall {
+    width: 30vw;
+    height: calc(100% - 24px);
+}
+
+.cutout-panel--full {
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+}
+
+.cutout-panel--minimized {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.cutout-pill {
     position: absolute;
-    top: 6px;
-    right: 6px;
-    z-index: 1;
+    bottom: 12px;
+    left: 12px;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 50%;
+    color: #71719d;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
 }
 
-.cutout-caption {
-    margin-top: 6px;
-    font-size: 12px;
-    text-align: center;
-    color: #555;
+.cutout-bar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 2px 2px 12px;
+    color: #71719d;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
 }
 
-.cutout-image {
-    display: block;
-    max-width: 100%;
-    max-height: 66vh;
+.cutout-bar:active {
+    cursor: grabbing;
+}
+
+.cutout-title {
+    flex: 1;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cutout-btn {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 6px;
+    color: inherit;
+    background: none;
+    cursor: pointer;
+}
+
+.cutout-btn:hover {
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.cutout-btn--current {
+    color: #fff;
+    background: #71719d;
+}
+
+.cutout-btn--current:hover {
+    background: #71719d;
+}
+
+.cutout-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    background: #000;
 }
 
 @media (max-width: 900px) {
-    .cutout-panel {
-        top: auto;
-        bottom: 12px;
+    .cutout-panel--default,
+    .cutout-panel--tall {
         right: 12px;
-        left: 12px;
-        max-width: none;
-        max-height: 42vh;
-        transform: none;
+        width: auto;
     }
 }

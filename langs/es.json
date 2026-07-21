@@ -10,8 +10,14 @@
         "tags_list": "Filtrar las anotaciones que contienen las palabras clave",
         "target": "Resaltar",
         "orientation": "Orientación de lectura",
-        "cutout_close": "Cerrar el recorte",
-        "cutout_rotated": "Enderezado {{degrees}}°"
+        "cutout_expand": "Reabrir el recorte",
+        "cutout_minimize": "Minimizar el recorte",
+        "sound": "Anotación sonora",
+        "cutout_rotated": "Enderezado {{degrees}}°",
+        "cutout_size_default": "Tamaño normal",
+        "cutout_size_full": "Ocupar toda la vista",
+        "cutout_size_tall": "Toda la altura",
+        "cutout_title": "Recorte enderezado"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {
@@ -220,7 +226,7 @@
         "pause": "Pausar",
         "play": "Reproducir",
         "previous_annotation": "Anotación anterior",
-        "reset_zoom": "Zoom",
+        "reset_view": "Vista inicial",
         "rotation": "Girar 90 grados",
         "toggle_annotations": "Mostrar/ocultar las anotaciones"
     }

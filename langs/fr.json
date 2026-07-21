@@ -130,7 +130,7 @@
         "expand": "Mettre en plein écran",
         "pause": "Mettre en pause",
         "play": "Lancer",
-        "reset_zoom": "Zoomer",
+        "reset_view": "Vue initiale",
         "toggle_annotations": "Afficher/masquer les annotations",
         "previous_annotation": "Annotation précédente",
         "next_annotation": "Annotation suivante",
@@ -179,8 +179,14 @@
         "tags_list": "Filter les annotations comportant les mots clés",
         "empty_tags_list": "Les mots clés apparaitront ici.",
         "orientation": "Orientation de lecture",
-        "cutout_close": "Fermer la découpe",
-        "cutout_rotated": "Redressé de {{degrees}}°"
+        "cutout_expand": "Rouvrir la découpe",
+        "cutout_minimize": "Réduire la découpe",
+        "sound": "Annotation sonore",
+        "cutout_rotated": "Redressé de {{degrees}}°",
+        "cutout_size_default": "Taille normale",
+        "cutout_size_full": "Occuper toute la vue",
+        "cutout_size_tall": "Toute la hauteur",
+        "cutout_title": "Découpe redressée"
     },
     "navbar": {
         "edit_mode": "édition",

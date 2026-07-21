@@ -1,8 +1,9 @@
 import { normalizeAngle, resolveRotation, shortestDelta } from "./orientation"
 import { getAnnotationCutout } from "./cutout"
+import { annotationShapes } from "./utils"
 
-const ANNOTATION_CLASS = "a9s-annotation"
 const PENDING_TURN = "adnoPendingTurn"
+const LAST_VIEW = "adnoLastView"
 const PAN_TIMEOUT = 1500
 const ANGLE_EPSILON = 0.5
 
@@ -18,7 +19,7 @@ function isSettled(viewport) {
 }
 
 export function annotationBounds(viewer, annotationId) {
-    const shapes = [...document.getElementsByClassName(ANNOTATION_CLASS)]
+    const shapes = annotationShapes()
     const shape = shapes.find(item => item.getAttribute('data-id') === annotationId)
 
     if (!shape || typeof shape.getBBox !== "function") {
@@ -49,6 +50,8 @@ export function applyAnnotationView(viewer, annotorious, annotation, options = {
     const viewport = viewer.viewport
 
     cancelPendingTurn(viewer)
+
+    viewer[LAST_VIEW] = { annotation, options }
 
     const bounds = annotationBounds(viewer, annotation.id)
 
@@ -96,4 +99,30 @@ export function applyAnnotationView(viewer, annotorious, annotation, options = {
 
     viewer[PENDING_TURN] = { turn, timer: setTimeout(turn, PAN_TIMEOUT) }
     viewer.addOnceHandler('animation-finish', turn)
+}
+
+export function reapplyAnnotationView(viewer, annotorious) {
+    const last = viewer[LAST_VIEW]
+
+    if (!last) {
+        return
+    }
+
+    applyAnnotationView(viewer, annotorious, last.annotation, { ...last.options, transition: "instant" })
+}
+
+export function watchViewerResize(viewer, annotorious) {
+    let frame = null
+
+    const reframe = () => {
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(() => reapplyAnnotationView(viewer, annotorious))
+    }
+
+    viewer.addHandler('after-resize', reframe)
+
+    return () => {
+        cancelAnimationFrame(frame)
+        viewer.removeHandler('after-resize', reframe)
+    }
 }

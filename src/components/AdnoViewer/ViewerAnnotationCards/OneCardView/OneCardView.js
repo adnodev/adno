@@ -8,12 +8,12 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faPlusCircle, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 // Add translations
 import { withTranslation } from "react-i18next";
 
-import { OrientationBadge } from "../../../OrientationBadge/OrientationBadge";
+import { AnnotationBadges } from "../../../AnnotationBadges/AnnotationBadges";
 
 class OneCardView extends Component {
     constructor(props) {
@@ -83,23 +83,13 @@ class OneCardView extends Component {
         }
     }
 
-    hasAudio = annotation => {
-        if (Array.isArray(annotation.body) && annotation.body.length > 0) {
-            const resource = annotation.body
-                .find(body => body.type === "SpecificResource")
-            return resource?.source?.id
-        }
-        return false
-    }
-
     render() {
         return (
             <div className="anno-card-body">
                 {/* <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(this.props.annotation)} </h6> */}
-                {this.hasAudio(this.props.annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
+                <AnnotationBadges annotation={this.props.annotation} translate={this.props.t} />
 
                 <div className="card-tags-list">
-                    <OrientationBadge annotation={this.props.annotation} translate={this.props.t} />
                     {
                         buildTagsList(this.props.annotation).map((tag, idx) => {
                             return (

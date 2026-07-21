@@ -130,7 +130,7 @@
         "expand": "Enter full screen",
         "pause": "Pause",
         "play": "Play",
-        "reset_zoom": "Zoom",
+        "reset_view": "Reset view",
         "toggle_annotations": "Hide/show annotations",
         "previous_annotation": "Go to previous annotation",
         "next_annotation": "Go to next annotation",
@@ -179,8 +179,14 @@
         "tags_list": "Filter annotations using tags",
         "empty_tags_list": "The created tags will be displayed here.",
         "orientation": "Reading orientation",
-        "cutout_close": "Close the cutout",
-        "cutout_rotated": "Straightened by {{degrees}}°"
+        "cutout_expand": "Reopen the cutout",
+        "cutout_minimize": "Minimise the cutout",
+        "sound": "Sound annotation",
+        "cutout_rotated": "Straightened by {{degrees}}°",
+        "cutout_size_default": "Normal size",
+        "cutout_size_full": "Fill the view",
+        "cutout_size_tall": "Full height",
+        "cutout_title": "Upright cutout"
     },
     "navbar": {
         "edit_mode": "edit",
