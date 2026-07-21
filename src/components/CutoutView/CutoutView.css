@@ -45,7 +45,7 @@
     height: 56px;
     border: none;
     border-radius: 50%;
-    color: #71719d;
+    color: #000;
     background: #fff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
     cursor: pointer;
@@ -56,7 +56,7 @@
     align-items: center;
     gap: 2px;
     padding: 2px 2px 2px 12px;
-    color: #71719d;
+    color: #000;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     cursor: grab;
     touch-action: none;
@@ -96,11 +96,11 @@
 
 .cutout-btn--current {
     color: #fff;
-    background: #71719d;
+    background: #000;
 }
 
 .cutout-btn--current:hover {
-    background: #71719d;
+    background: #000;
 }
 
 .cutout-body {

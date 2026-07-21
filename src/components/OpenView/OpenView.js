@@ -4,7 +4,7 @@ import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
-import { getEye, computeNavigatorInfo, annotationShapes } from "../../Utils/utils";
+import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { getAnnotationCutout } from "../../Utils/cutout";
 import CutoutView from "../CutoutView/CutoutView";
@@ -156,14 +156,10 @@ class OpenView extends Component {
         if (this.props.showEyes) {
             const annos = annotationShapes()
 
-            annos.map((anno, i) => {
+            annos.forEach(anno => {
                 const svgElement = getEye()
 
                 const tileSize = document.getElementById('adno-osd').clientWidth / 5
-
-                svgElement.setAttribute('width', tileSize);
-                svgElement.setAttribute('height', tileSize);
-
 
                 svgElement.style.fill = "#000"
                 svgElement.style.stroke = "#000"
@@ -171,34 +167,14 @@ class OpenView extends Component {
                 svgElement.classList.add('eye')
                 svgElement.id = `eye-${anno.getAttribute('data-id')}`;
 
-                const type = [...anno.children][0].tagName
+                if (anno.classList.contains("a9s-point")) {
+                    anno.removeAttribute("transform")
 
-                if (type === "ellipse" || type == "circle") {
-                    svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
-                    svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
+                    anno.classList.remove("a9s-point")
+                    anno.classList.remove("a9s-non-scaling")
+                }
 
-                    if (anno.classList.contains("a9s-point")) {
-                        anno.removeAttribute("transform", "")
-
-                        anno.classList.remove("a9s-point")
-                        anno.classList.remove("a9s-non-scaling")
-                    }
-
-                    anno.appendChild(svgElement)
-                } else if (type === "rect") {
-                    svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
-                    svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
-
-                    anno.appendChild(svgElement)
-                } else if (type === "path" || type === "polygon") {
-                    const bbox = anno.getBBox();
-
-                    const centerX = bbox.x + bbox.width / 2;
-                    const centerY = bbox.y + bbox.height / 2;
-
-                    svgElement.setAttribute('x', centerX - tileSize / 2);
-                    svgElement.setAttribute('y', centerY - tileSize / 2);
-
+                if (placeEye(anno, svgElement, tileSize)) {
                     anno.appendChild(svgElement)
                 }
 

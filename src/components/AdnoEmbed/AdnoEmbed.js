@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
-import { enhancedFetch, getEye, get_url_extension, computeNavigatorInfo } from "../../Utils/utils";
+import { enhancedFetch, getEye, get_url_extension, computeNavigatorInfo, placeEye } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { InfinitySpin } from 'react-loader-spinner'
 import {
@@ -137,13 +137,10 @@ class AdnoEmbed extends Component {
         if (this.state.showEyes) {
             const annos = [...document.getElementsByClassName("a9s-annotation")]
 
-            annos.map(anno => {
+            annos.forEach(anno => {
                 const svgElement = getEye()
 
                 const tileSize = document.getElementById('adno-embed').clientWidth / 10
-
-                svgElement.setAttribute('width', tileSize);
-                svgElement.setAttribute('height', tileSize);
 
                 svgElement.style.fill = "#000"
                 svgElement.style.stroke = "#000"
@@ -151,34 +148,14 @@ class AdnoEmbed extends Component {
                 svgElement.classList.add('eye')
                 svgElement.id = `eye-${anno.getAttribute('data-id')}`;
 
-                const type = [...anno.children][0].tagName
+                if (anno.classList.contains("a9s-point")) {
+                    anno.removeAttribute("transform")
 
-                if (type === "ellipse" || type == "circle") {
-                    svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
-                    svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
+                    anno.classList.remove("a9s-point")
+                    anno.classList.remove("a9s-non-scaling")
+                }
 
-                    if (anno.classList.contains("a9s-point")) {
-                        anno.removeAttribute("transform", "")
-
-                        anno.classList.remove("a9s-point")
-                        anno.classList.remove("a9s-non-scaling")
-                    }
-
-                    anno.appendChild(svgElement)
-                } else if (type === "rect") {
-                    svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
-                    svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
-
-                    anno.appendChild(svgElement)
-                } else if (type === "path" || type === "polygon") {
-                    const bbox = anno.getBBox();
-
-                    const centerX = bbox.x + bbox.width / 2;
-                    const centerY = bbox.y + bbox.height / 2;
-
-                    svgElement.setAttribute('x', centerX - tileSize / 2);
-                    svgElement.setAttribute('y', centerY - tileSize / 2);
-
+                if (placeEye(anno, svgElement, tileSize)) {
                     anno.appendChild(svgElement)
                 }
             })

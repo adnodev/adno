@@ -332,6 +332,134 @@ export function annotationShapes() {
     .filter(shape => !shape.closest("#cutout-osd"))
 }
 
+const EYE_PROBES = 24
+const PATH_SAMPLES = 64
+
+function outlinePoints(geometry) {
+  const points = []
+
+  if (geometry.points && geometry.points.numberOfItems > 2) {
+    for (let i = 0; i < geometry.points.numberOfItems; i++) {
+      const point = geometry.points.getItem(i)
+      points.push({ x: point.x, y: point.y })
+    }
+
+    return points
+  }
+
+  if (geometry.tagName !== "path" || typeof geometry.getTotalLength !== "function") {
+    return null
+  }
+
+  const length = geometry.getTotalLength()
+
+  if (!length) {
+    return null
+  }
+
+  for (let i = 0; i < PATH_SAMPLES; i++) {
+    const point = geometry.getPointAtLength(length * i / PATH_SAMPLES)
+    points.push({ x: point.x, y: point.y })
+  }
+
+  return points
+}
+
+function centroidOf(points) {
+  let area = 0
+  let x = 0
+  let y = 0
+
+  for (let i = 0; i < points.length; i++) {
+    const from = points[i]
+    const to = points[(i + 1) % points.length]
+    const cross = from.x * to.y - to.x * from.y
+
+    area += cross
+    x += (from.x + to.x) * cross
+    y += (from.y + to.y) * cross
+  }
+
+  return Math.abs(area) < 1e-6 ? null : { x: x / (3 * area), y: y / (3 * area) }
+}
+
+function isInside(points, x, y) {
+  let inside = false
+
+  for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+    const from = points[i]
+    const to = points[j]
+
+    if ((from.y > y) !== (to.y > y)
+      && x < (to.x - from.x) * (y - from.y) / (to.y - from.y) + from.x) {
+      inside = !inside
+    }
+  }
+
+  return inside
+}
+
+function widestRun(points, box, y) {
+  let best = null
+  let run = null
+
+  for (let step = 0; step <= EYE_PROBES; step++) {
+    const x = box.x + box.width * step / EYE_PROBES
+
+    if (isInside(points, x, y)) {
+      run = run || { from: x, to: x }
+      run.to = x
+    } else {
+      best = run && (!best || run.to - run.from > best.to - best.from) ? run : best
+      run = null
+    }
+  }
+
+  return run && (!best || run.to - run.from > best.to - best.from) ? run : best
+}
+
+function shapeCentre(geometry, box) {
+  const boxCentre = { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+  const points = outlinePoints(geometry)
+
+  if (!points) {
+    return boxCentre
+  }
+
+  const centre = centroidOf(points) || boxCentre
+
+  if (isInside(points, centre.x, centre.y)) {
+    return centre
+  }
+
+  const run = widestRun(points, box, centre.y)
+
+  return run ? { x: (run.from + run.to) / 2, y: centre.y } : boxCentre
+}
+
+export function placeEye(shape, eye, size) {
+  const geometry = shape.children[0]
+
+  if (!geometry || typeof geometry.getBBox !== "function") {
+    return false
+  }
+
+  const box = geometry.getBBox()
+
+  if (!box.width || !box.height) {
+    return false
+  }
+
+  const centre = shapeCentre(geometry, box)
+
+  eye.setAttribute('width', size)
+  eye.setAttribute('height', size)
+  eye.setAttribute('x', centre.x - size / 2)
+  eye.setAttribute('y', centre.y - size / 2)
+
+  return true
+}
+
 export function getEye() {
   const SVG_NS = "http://www.w3.org/2000/svg";
 
