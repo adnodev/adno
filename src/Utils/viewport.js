@@ -71,7 +71,7 @@ export function applyAnnotationView(viewer, annotorious, annotation, options = {
 
     const target = current + delta
 
-    if (transition === "instant" || prefersReducedMotion()) {e
+    if (transition === "instant" || prefersReducedMotion()) {
         viewport.setRotation(target, true)
         viewport.fitBounds(bounds, true)
         return
