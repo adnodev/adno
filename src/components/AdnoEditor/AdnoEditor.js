@@ -15,6 +15,8 @@ import "./AdnoEditor.css";
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
+import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
+import { preserveRotation } from "../../Utils/orientation";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 
 class AdnoEditor extends Component {
@@ -62,9 +64,13 @@ class AdnoEditor extends Component {
             prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
             // Enable rotation
             toolbar: "toolbar-osd",
-            showRotationControl: this.props.rotation,
+            showRotationControl: true,
             showFullPageControl: false,
         });
+
+        if (this.props.onViewerReady) {
+            this.props.onViewerReady(this.openSeadragon)
+        }
 
         this.openSeadragon.addOnceHandler('open', () => {
             const info = computeNavigatorInfo(this.openSeadragon);
@@ -79,6 +85,8 @@ class AdnoEditor extends Component {
             allowEmpty: true,
             disableEditor: true
         });
+
+        this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
 
         const annos = this.props.annotations
 
@@ -132,12 +140,20 @@ class AdnoEditor extends Component {
         });
     }
 
+    componentWillUnmount() {
+        this.unwatchResize?.()
+    }
+
     changeAnno = (annotation) => {
         // If the user edits the annotation from the modal, update the current selected annotation in the state
         this.setState({ selected: annotation })
 
         this.AdnoAnnotorious.selectAnnotation(annotation.id)
-        this.AdnoAnnotorious.fitBounds(annotation.id)
+
+        applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
+            defaultRotation: this.props.defaultRotation,
+            transition: this.props.rotationTransition
+        })
 
         if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
             const container = document.getElementById("annotations_list");
@@ -159,7 +175,7 @@ class AdnoEditor extends Component {
         const annotations = this.props.annotations.map(anno => JSON.parse(JSON.stringify(anno)))
         const newAnnos = annotations.map(anno => {
             if (anno.id === selected.id) {
-                anno.target = selected.target
+                anno.target = preserveRotation(anno, selected.target)
             }
             return anno;
         });

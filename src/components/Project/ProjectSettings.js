@@ -16,8 +16,10 @@ import { withTranslation } from "react-i18next";
 import ReactSelect from 'react-select/creatable';
 import { buildTagsList } from "../../Utils/utils";
 
+const QUARTER_TURNS = [0, 90, 180, 270]
+
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
+    'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
     'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
     'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
@@ -351,6 +353,33 @@ class ProjectSettings extends Component {
                                 </div>
                                 <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.rotation}
                                     onChange={() => this.setState({ settings: { ...this.state.settings, rotation: !this.state.settings.rotation } })} />
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('defaultRotation') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.default_rotation')}</span>
+                                </div>
+                                <select className="select select-bordered"
+                                    value={this.state.settings.defaultRotation ?? 0}
+                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, defaultRotation: Number(e.target.value) } })}>
+                                    {QUARTER_TURNS.map(degrees => <option key={degrees} value={degrees}>{degrees}°</option>)}
+                                </select>
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('rotationTransition') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.rotation_transition')}</span>
+                                </div>
+                                <select className="select select-bordered"
+                                    value={this.state.settings.rotationTransition || 'turn'}
+                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, rotationTransition: e.target.value } })}>
+                                    <option value="turn">{this.props.t('project.settings.rotation_transition_turn')}</option>
+                                    <option value="instant">{this.props.t('project.settings.rotation_transition_instant')}</option>
+                                </select>
                             </label>
                         </>}
                     </div>

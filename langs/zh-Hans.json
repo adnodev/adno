@@ -82,7 +82,11 @@
             "visualization": "可视化",
             "navigation": "导航",
             "annotation": "标注",
-            "anno_bounds": "是否显示标注？"
+            "anno_bounds": "是否显示标注？",
+            "default_rotation": "默认阅读方向",
+            "rotation_transition": "方向切换",
+            "rotation_transition_turn": "旋转（先取景，再旋转）",
+            "rotation_transition_instant": "立即（无动画）"
         }
     },
     "files": {
@@ -115,13 +119,18 @@
             "tags": "标签",
             "audio": "音频"
         },
-        "empty_list": "无选项"
+        "empty_list": "无选项",
+        "orientation": "阅读方向",
+        "orientation_inherit": "项目默认值",
+        "orientation_capture": "使用当前视图",
+        "cutout": "以裁切图显示",
+        "cutout_hint": "将该区域以摆正的特写打开，而不旋转整幅图像。"
     },
     "visualizer": {
         "expand": "进入全屏",
         "pause": "暂停",
         "play": "播放",
-        "reset_zoom": "缩放",
+        "reset_view": "重置视图",
         "toggle_annotations": "显示／隐藏标注",
         "previous_annotation": "转到上一个标注",
         "next_annotation": "转到下一个标注",
@@ -168,7 +177,16 @@
         "switch_up": "上移标注",
         "delete": "移除标注",
         "tags_list": "按标签筛选标注",
-        "empty_tags_list": "已创建的标签将显示在此处。"
+        "empty_tags_list": "已创建的标签将显示在此处。",
+        "orientation": "阅读方向",
+        "cutout_expand": "重新打开裁切图",
+        "cutout_minimize": "最小化裁切图",
+        "sound": "声音标注",
+        "cutout_rotated": "已摆正 {{degrees}}°",
+        "cutout_size_default": "常规大小",
+        "cutout_size_full": "占满视图",
+        "cutout_size_tall": "整个高度",
+        "cutout_title": "已摆正的裁切图"
     },
     "navbar": {
         "edit_mode": "编辑",

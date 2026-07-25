@@ -434,8 +434,7 @@ input:checked+.slider:before {
 }
 
 .toolbarButton:hover {
-    background-color: #989898a8;
-    color: white;
+    background-color: #d9d9d9;
 }
 
 @media (min-width: 840px) and (max-width: 1440px) {

@@ -82,7 +82,11 @@
             "visualization": "Visualisation",
             "navigation": "Navigation",
             "annotation": "Annotation",
-            "anno_bounds": "Voir les annotations ?"
+            "anno_bounds": "Voir les annotations ?",
+            "default_rotation": "Orientation de lecture par défaut",
+            "rotation_transition": "Changement d'orientation",
+            "rotation_transition_turn": "Pivoter (cadrer, puis tourner)",
+            "rotation_transition_instant": "Immédiat (sans animation)"
         }
     },
     "files": {
@@ -115,13 +119,18 @@
             "tags": "Mots clés",
             "audio": "Audio"
         },
-        "empty_list": "Aucune proposition"
+        "empty_list": "Aucune proposition",
+        "orientation": "Orientation de lecture",
+        "orientation_inherit": "Défaut du projet",
+        "orientation_capture": "Utiliser la vue actuelle",
+        "cutout": "Présenter en découpe",
+        "cutout_hint": "Ouvre la région en gros plan redressé, au lieu de faire pivoter l'image."
     },
     "visualizer": {
         "expand": "Mettre en plein écran",
         "pause": "Mettre en pause",
         "play": "Lancer",
-        "reset_zoom": "Zoomer",
+        "reset_view": "Vue initiale",
         "toggle_annotations": "Afficher/masquer les annotations",
         "previous_annotation": "Annotation précédente",
         "next_annotation": "Annotation suivante",
@@ -168,7 +177,16 @@
         "switch_up": "Remonter l'annotation",
         "delete": "Supprimer l'annotation",
         "tags_list": "Filter les annotations comportant les mots clés",
-        "empty_tags_list": "Les mots clés apparaitront ici."
+        "empty_tags_list": "Les mots clés apparaitront ici.",
+        "orientation": "Orientation de lecture",
+        "cutout_expand": "Rouvrir la découpe",
+        "cutout_minimize": "Réduire la découpe",
+        "sound": "Annotation sonore",
+        "cutout_rotated": "Redressé de {{degrees}}°",
+        "cutout_size_default": "Taille normale",
+        "cutout_size_full": "Occuper toute la vue",
+        "cutout_size_tall": "Toute la hauteur",
+        "cutout_title": "Découpe redressée"
     },
     "navbar": {
         "edit_mode": "édition",

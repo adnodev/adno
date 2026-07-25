@@ -8,7 +8,16 @@
         "switch_down": "Bajar la anotación",
         "switch_up": "Subir la anotación",
         "tags_list": "Filtrar las anotaciones que contienen las palabras clave",
-        "target": "Resaltar"
+        "target": "Resaltar",
+        "orientation": "Orientación de lectura",
+        "cutout_expand": "Reabrir el recorte",
+        "cutout_minimize": "Minimizar el recorte",
+        "sound": "Anotación sonora",
+        "cutout_rotated": "Enderezado {{degrees}}°",
+        "cutout_size_default": "Tamaño normal",
+        "cutout_size_full": "Ocupar toda la vista",
+        "cutout_size_tall": "Toda la altura",
+        "cutout_title": "Recorte enderezado"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {
@@ -39,7 +48,12 @@
         },
         "zoom_in": "ampliar",
         "zoom_out": "Alejar",
-        "empty_list": "Sin opciones"
+        "empty_list": "Sin opciones",
+        "orientation": "Orientación de lectura",
+        "orientation_inherit": "Valor por defecto del proyecto",
+        "orientation_capture": "Usar la vista actual",
+        "cutout": "Mostrar como recorte",
+        "cutout_hint": "Abre la región como un primer plano enderezado, en lugar de rotar la imagen."
     },
     "errors": {
         "error_found": "Error detectado",
@@ -178,7 +192,11 @@
             "spatialization": "Las anotaciones de audio se reproducirán con un efecto de espacialización",
             "tags": "Solo se mostrarán las anotaciones que incluyan la o una de las siguientes palabras clave",
             "toolsbar": "Mostrar la barra de herramientas",
-            "visualization": "Visualización"
+            "visualization": "Visualización",
+            "default_rotation": "Orientación de lectura por defecto",
+            "rotation_transition": "Cambio de orientación",
+            "rotation_transition_turn": "Girar (encuadrar y luego rotar)",
+            "rotation_transition_instant": "Inmediato (sin animación)"
         },
         "title": "Título",
         "advanced": "Avanzado"
@@ -208,7 +226,7 @@
         "pause": "Pausar",
         "play": "Reproducir",
         "previous_annotation": "Anotación anterior",
-        "reset_zoom": "Zoom",
+        "reset_view": "Vista inicial",
         "rotation": "Girar 90 grados",
         "toggle_annotations": "Mostrar/ocultar las anotaciones"
     }
