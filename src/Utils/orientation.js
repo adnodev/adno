@@ -1,3 +1,5 @@
+import { getTargets, withTargets } from "./targets"
+
 const IMAGE_API_SELECTOR = "ImageApiSelector"
 
 export function normalizeAngle(degrees) {
@@ -10,8 +12,8 @@ export function shortestDelta(from, to) {
     return delta === -180 ? 180 : delta
 }
 
-export function getAnnotationRotation(annotation) {
-    const selector = annotation && annotation.target ? annotation.target.selector : null
+export function getTargetRotation(target) {
+    const selector = target ? target.selector : null
     const refinedBy = selector ? selector.refinedBy : null
 
     if (!refinedBy || refinedBy.type !== IMAGE_API_SELECTOR) {
@@ -23,6 +25,10 @@ export function getAnnotationRotation(annotation) {
     return isNaN(rotation) ? null : normalizeAngle(rotation)
 }
 
+export function getAnnotationRotation(annotation) {
+    return getTargetRotation(getTargets(annotation)[0])
+}
+
 export function buildRotationSelector(degrees) {
     return {
         "type": IMAGE_API_SELECTOR,
@@ -30,26 +36,22 @@ export function buildRotationSelector(degrees) {
     }
 }
 
-export function withAnnotationRotation(annotation, degrees) {
-    const selector = { ...annotation.target.selector }
-
-    if (degrees === null || degrees === undefined || degrees === "") {
-        delete selector.refinedBy
-    } else {
-        selector.refinedBy = buildRotationSelector(degrees)
-    }
+export function withTargetRotation(target, degrees) {
+    const { refinedBy, ...selector } = target.selector || {}
+    const cleared = degrees === null || degrees === undefined || degrees === ""
 
     return {
-        ...annotation,
-        target: {
-            ...annotation.target,
-            selector
-        }
+        ...target,
+        selector: cleared ? selector : { ...selector, refinedBy: buildRotationSelector(degrees) }
     }
 }
 
-export function preserveRotation(previousAnnotation, newTarget) {
-    const rotation = getAnnotationRotation(previousAnnotation)
+export function withAnnotationRotation(annotation, degrees) {
+    return withTargets(annotation, getTargets(annotation).map(target => withTargetRotation(target, degrees)))
+}
+
+export function preserveTargetRotation(previousTarget, newTarget) {
+    const rotation = getTargetRotation(previousTarget)
 
     if (rotation === null || !newTarget || !newTarget.selector) {
         return newTarget
@@ -62,6 +64,10 @@ export function preserveRotation(previousAnnotation, newTarget) {
             refinedBy: buildRotationSelector(rotation)
         }
     }
+}
+
+export function preserveRotation(previousAnnotation, newTarget) {
+    return preserveTargetRotation(getTargets(previousAnnotation)[0], newTarget)
 }
 
 export function resolveRotation(annotation, defaultRotation) {
