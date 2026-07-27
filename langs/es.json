@@ -53,7 +53,12 @@
         "orientation_inherit": "Valor por defecto del proyecto",
         "orientation_capture": "Usar la vista actual",
         "cutout": "Mostrar como recorte",
-        "cutout_hint": "Abre la región como un primer plano enderezado, en lugar de rotar la imagen."
+        "cutout_hint": "Abre la región como un primer plano enderezado, en lugar de rotar la imagen.",
+        "images": "Imágenes",
+        "previous_image": "Imagen anterior",
+        "next_image": "Imagen siguiente",
+        "collapse_images": "Plegar las imágenes",
+        "expand_images": "Mostrar las imágenes"
     },
     "errors": {
         "error_found": "Error detectado",

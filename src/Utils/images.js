@@ -44,6 +44,18 @@ export function imageTileSource(image) {
     return image.type === IIIF_TYPE ? image.source : { type: 'image', url: image.source }
 }
 
+export function imageThumbnail(image, height) {
+    if (!image) {
+        return null
+    }
+
+    if (image.type !== IIIF_TYPE) {
+        return image.source
+    }
+
+    return `${image.source.replace(/\/info\.json$/, '')}/full/,${height}/0/default.jpg`
+}
+
 export function findImage(images, id) {
     return (images || []).find(image => image.id === id) || null
 }

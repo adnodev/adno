@@ -124,7 +124,12 @@
         "orientation_inherit": "專案預設值",
         "orientation_capture": "使用目前檢視",
         "cutout": "以裁切圖顯示",
-        "cutout_hint": "將該區域以擺正的特寫開啟，而不旋轉整幅影像。"
+        "cutout_hint": "將該區域以擺正的特寫開啟，而不旋轉整幅影像。",
+        "images": "圖像",
+        "previous_image": "上一幅圖像",
+        "next_image": "下一幅圖像",
+        "collapse_images": "收起圖像",
+        "expand_images": "顯示圖像"
     },
     "visualizer": {
         "expand": "進入全螢幕",

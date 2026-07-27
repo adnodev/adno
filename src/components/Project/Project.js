@@ -254,6 +254,7 @@ const Project = ({ editMode }) => {
                     <AdnoEditor
                         selectedProject={state.selectedProject}
                         currentImageIndex={state.currentImageIndex}
+                        changeImage={(index) => setState(prev => ({ ...prev, currentImageIndex: index }))}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}

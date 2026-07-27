@@ -124,7 +124,12 @@
         "orientation_inherit": "Défaut du projet",
         "orientation_capture": "Utiliser la vue actuelle",
         "cutout": "Présenter en découpe",
-        "cutout_hint": "Ouvre la région en gros plan redressé, au lieu de faire pivoter l'image."
+        "cutout_hint": "Ouvre la région en gros plan redressé, au lieu de faire pivoter l'image.",
+        "images": "Images",
+        "previous_image": "Image précédente",
+        "next_image": "Image suivante",
+        "collapse_images": "Replier les images",
+        "expand_images": "Afficher les images"
     },
     "visualizer": {
         "expand": "Mettre en plein écran",

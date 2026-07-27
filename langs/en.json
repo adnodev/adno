@@ -124,7 +124,12 @@
         "orientation_inherit": "Project default",
         "orientation_capture": "Use current view",
         "cutout": "Show as a cutout",
-        "cutout_hint": "Opens the region as an upright close-up instead of rotating the image."
+        "cutout_hint": "Opens the region as an upright close-up instead of rotating the image.",
+        "images": "Images",
+        "previous_image": "Previous image",
+        "next_image": "Next image",
+        "collapse_images": "Collapse images",
+        "expand_images": "Show images"
     },
     "visualizer": {
         "expand": "Enter full screen",

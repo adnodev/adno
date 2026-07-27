@@ -20,6 +20,7 @@ import { preserveTargetRotation } from "../../Utils/orientation";
 import { imageTileSource, projectImages } from "../../Utils/images";
 import { getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
+import { ImageFilmstrip } from '../ImageFilmstrip/ImageFilmstrip';
 
 class AdnoEditor extends Component {
     constructor(props) {
@@ -265,6 +266,13 @@ class AdnoEditor extends Component {
                         imgUrl={this.state.navigatorImgUrl}
                     />
                 )}
+                <ImageFilmstrip
+                    images={this.images()}
+                    annotations={this.props.annotations}
+                    currentIndex={this.props.currentImageIndex}
+                    changeImage={this.props.changeImage}
+                    translate={this.props.t}
+                />
             </div>
             {
                 this.state.isMovingItem &&

@@ -124,7 +124,12 @@
         "orientation_inherit": "项目默认值",
         "orientation_capture": "使用当前视图",
         "cutout": "以裁切图显示",
-        "cutout_hint": "将该区域以摆正的特写打开，而不旋转整幅图像。"
+        "cutout_hint": "将该区域以摆正的特写打开，而不旋转整幅图像。",
+        "images": "图像",
+        "previous_image": "上一幅图像",
+        "next_image": "下一幅图像",
+        "collapse_images": "收起图像",
+        "expand_images": "显示图像"
     },
     "visualizer": {
         "expand": "进入全屏",
