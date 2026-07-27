@@ -1,10 +1,6 @@
 .filmstrip {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
-    background: rgba(255, 255, 255, 0.94);
+    flex: 0 0 auto;
+    background: #fff;
     border-top: 1px solid #d4d4d8;
     outline: none;
 }

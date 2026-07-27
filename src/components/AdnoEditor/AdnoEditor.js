@@ -253,19 +253,29 @@ class AdnoEditor extends Component {
 
     render() {
         return <>
-            <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 58px)' }}>
-                <div id="openseadragon1">
-                    <div id="toolbar-container"></div>
-                    <div id="toolbar-osd"></div>
+            <div className="editor-stage">
+                <div className="editor-viewer">
+                    <div id="openseadragon1">
+                        <div id="toolbar-container"></div>
+                        <div id="toolbar-osd"></div>
+                    </div>
+                    {this.state.viewerReady && (
+                        <AdnoNavigator
+                            viewer={this.openSeadragon}
+                            imageRatio={this.state.imageRatio}
+                            layout={this.state.navigatorLayout}
+                            imgUrl={this.state.navigatorImgUrl}
+                        />
+                    )}
+                    {
+                        this.state.isMovingItem &&
+                        <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
+                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
+                                <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
+                            </div>
+                        </button>
+                    }
                 </div>
-                {this.state.viewerReady && (
-                    <AdnoNavigator
-                        viewer={this.openSeadragon}
-                        imageRatio={this.state.imageRatio}
-                        layout={this.state.navigatorLayout}
-                        imgUrl={this.state.navigatorImgUrl}
-                    />
-                )}
                 <ImageFilmstrip
                     images={this.images()}
                     annotations={this.props.annotations}
@@ -274,14 +284,6 @@ class AdnoEditor extends Component {
                     translate={this.props.t}
                 />
             </div>
-            {
-                this.state.isMovingItem &&
-                <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
-                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
-                        <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
-                    </div>
-                </button>
-            }
         </>
     }
 }
