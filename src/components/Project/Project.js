@@ -29,6 +29,7 @@ const Project = ({ editMode }) => {
     const [state, setState] = useState({
         annotations: [],
         selectedProject: undefined,
+        currentImageIndex: 0,
         sidebarOpened: true,
         updateAnnotation: false,
         showProjectMetadatas: false,
@@ -252,6 +253,7 @@ const Project = ({ editMode }) => {
                 {editMode ? (
                     <AdnoEditor
                         selectedProject={state.selectedProject}
+                        currentImageIndex={state.currentImageIndex}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}

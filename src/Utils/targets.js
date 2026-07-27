@@ -57,14 +57,18 @@ export function targetsOnImage(annotation, images, imageIndex) {
         .filter(({ target }) => imageIndexForSource(images, target && target.source) === imageIndex)
 }
 
+export function toShadow(annotation, target, index) {
+    return {
+        ...annotation,
+        id: shadowId(annotation.id, index),
+        target
+    }
+}
+
 export function toShadowAnnotations(annotations, images, imageIndex) {
     return (annotations || []).flatMap(annotation =>
         targetsOnImage(annotation, images, imageIndex)
-            .map(({ target, index }) => ({
-                ...annotation,
-                id: shadowId(annotation.id, index),
-                target
-            })))
+            .map(({ target, index }) => toShadow(annotation, target, index)))
 }
 
 export function zoneCountsByImage(annotations, images) {

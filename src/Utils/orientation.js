@@ -66,10 +66,6 @@ export function preserveTargetRotation(previousTarget, newTarget) {
     }
 }
 
-export function preserveRotation(previousAnnotation, newTarget) {
-    return preserveTargetRotation(getTargets(previousAnnotation)[0], newTarget)
-}
-
 export function resolveRotation(annotation, defaultRotation) {
     const rotation = getAnnotationRotation(annotation)
 

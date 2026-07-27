@@ -16,7 +16,9 @@ import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
-import { preserveRotation } from "../../Utils/orientation";
+import { preserveTargetRotation } from "../../Utils/orientation";
+import { imageTileSource, projectImages } from "../../Utils/images";
+import { getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 
 class AdnoEditor extends Component {
@@ -28,6 +30,7 @@ class AdnoEditor extends Component {
             navigatorLayout: null,
             viewerReady: false,
         }
+        this._openToken = 0
     }
 
     componentDidMount() {
@@ -37,16 +40,7 @@ class AdnoEditor extends Component {
             return;
         }
 
-        let tileSources = {
-            type: 'image',
-            url: selectedProject.img_url
-        }
-
-        if (selectedProject.manifest_url) {
-            tileSources = [
-                selectedProject.manifest_url
-            ]
-        }
+        const tileSources = imageTileSource(projectImages(selectedProject)[this.props.currentImageIndex || 0])
 
         OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
         OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
@@ -73,10 +67,8 @@ class AdnoEditor extends Component {
         }
 
         this.openSeadragon.addOnceHandler('open', () => {
-            const info = computeNavigatorInfo(this.openSeadragon);
-            if (info) {
-                this.setState({ ...info, viewerReady: true });
-            }
+            this.refreshNavigator()
+            this.syncShadows()
         });
 
         this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
@@ -88,11 +80,7 @@ class AdnoEditor extends Component {
 
         this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
 
-        const annos = this.props.annotations
-
-        // Generate dataURI and load annotations into Annotorious
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
-        this.AdnoAnnotorious.loadAnnotations(dataURI)
+        this.syncShadows()
 
         Annotorious.SelectorPack(this.AdnoAnnotorious);
         Annotorious.BetterPolygon(this.AdnoAnnotorious);
@@ -100,14 +88,17 @@ class AdnoEditor extends Component {
 
         // Event triggered by using saveSelected annotorious function
         this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-            const annotations = [...this.props.annotations] || []
-            annotations.push(newAnnotation)
+            const image = this.images()[this.props.currentImageIndex]
+            const created = image
+                ? { ...newAnnotation, target: { ...newAnnotation.target, source: image.source } }
+                : newAnnotation
+            const annotations = [...this.props.annotations, created]
 
             projectDB.updateAnnotations(selectedProject.id, annotations)
                 .then(() => {
                     this.props.updateAnnos(annotations)
 
-                    this.props.openRichEditor(newAnnotation)
+                    this.props.openRichEditor(created)
                 })
         });
 
@@ -117,16 +108,12 @@ class AdnoEditor extends Component {
         })
 
         // Event triggered when user click on an annotation
-        this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-            const container = document.getElementById("annotations_list");
-            const el = document.getElementById(`anno_edit_card_${annotation.id}`);
-            if (container && el) {
-                container.scrollTo({
-                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
-                    behavior: "smooth"
-                });
-            }
-            this.props.openRichEditor(annotation)
+        this.AdnoAnnotorious.on('selectAnnotation', (shadow) => {
+            const { id } = parseShadowId(shadow.id)
+            const annotation = this.props.annotations.find(anno => anno.id === id)
+
+            this.scrollToCard(id)
+            this.props.openRichEditor(annotation || shadow)
         })
 
         // Event triggered when resizing an annotation shape
@@ -144,40 +131,86 @@ class AdnoEditor extends Component {
         this.unwatchResize?.()
     }
 
+    images = () => projectImages(this.props.selectedProject)
+
+    refreshNavigator = () => {
+        const info = computeNavigatorInfo(this.openSeadragon)
+
+        if (info) {
+            this.setState({ ...info, viewerReady: true })
+        }
+    }
+
+    syncShadows = () => {
+        this.AdnoAnnotorious.setAnnotations(toShadowAnnotations(this.props.annotations, this.images(), this.props.currentImageIndex))
+    }
+
+    openImage = (index) => {
+        const image = this.images()[index]
+
+        if (!image) {
+            return
+        }
+
+        const token = ++this._openToken
+
+        this.openSeadragon.addOnceHandler('open', () => {
+            if (token !== this._openToken) {
+                return
+            }
+
+            this.refreshNavigator()
+            this.syncShadows()
+        })
+
+        this.openSeadragon.open(imageTileSource(image))
+    }
+
+    scrollToCard = (id) => {
+        const container = document.getElementById("annotations_list")
+        const el = document.getElementById(`anno_edit_card_${id}`)
+
+        if (container && el) {
+            container.scrollTo({
+                top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                behavior: "smooth"
+            })
+        }
+    }
+
     changeAnno = (annotation) => {
-        // If the user edits the annotation from the modal, update the current selected annotation in the state
-        this.setState({ selected: annotation })
+        const [onImage] = targetsOnImage(annotation, this.images(), this.props.currentImageIndex)
 
-        this.AdnoAnnotorious.selectAnnotation(annotation.id)
+        if (!onImage) {
+            return
+        }
 
-        applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
+        const shadow = toShadow(annotation, onImage.target, onImage.index)
+
+        this.setState({ selected: shadow })
+
+        this.AdnoAnnotorious.selectAnnotation(shadow.id)
+
+        applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
             defaultRotation: this.props.defaultRotation,
             transition: this.props.rotationTransition
         })
 
-        if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
-            const container = document.getElementById("annotations_list");
-            const el = document.getElementById(`anno_edit_card_${annotation.id}`);
-            if (container && el) {
-                container.scrollTo({
-                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
-                    behavior: "smooth"
-                });
-            }
-        }
+        this.scrollToCard(annotation.id)
     }
 
     validateMove = () => {
         const projectId = this.props.match.params.id
 
         const selected = this.state.selected;
+        const { id, index } = parseShadowId(selected.id)
 
-        const annotations = this.props.annotations.map(anno => JSON.parse(JSON.stringify(anno)))
-        const newAnnos = annotations.map(anno => {
-            if (anno.id === selected.id) {
-                anno.target = preserveRotation(anno, selected.target)
+        const newAnnos = this.props.annotations.map(anno => {
+            if (anno.id !== id) {
+                return anno
             }
-            return anno;
+
+            return replaceTargetAt(anno, index, preserveTargetRotation(getTargets(anno)[index], selected.target))
         });
 
         projectDB.updateAnnotations(projectId, newAnnos)
@@ -197,17 +230,19 @@ class AdnoEditor extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        // If the user clicks the target button on the annotation card it'll trigger this method     
+        if (prevProps.currentImageIndex !== this.props.currentImageIndex) {
+            this.openImage(this.props.currentImageIndex)
+            return
+        }
+
         if (prevProps.selectedAnno !== this.props.selectedAnno) {
             this.changeAnno(this.props.selectedAnno)
             this.setState({ isMovingItem: false })
         }
 
         if (prevProps.annotations !== this.props.annotations) {
-            // First, we update the annotations's list to the Annotorious component 
-            this.AdnoAnnotorious.setAnnotations(this.props.annotations);
+            this.syncShadows()
 
-            // Then, we focus on the current selected annotation
             if (this.props.selectedAnno) {
                 this.changeAnno(this.props.selectedAnno)
             }
