@@ -7,6 +7,8 @@ import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft,
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { getAnnotationCutout } from "../../Utils/cutout";
+import { projectImages } from "../../Utils/images";
+import { parseShadowId, toShadowAnnotations } from "../../Utils/targets";
 import CutoutView from "../CutoutView/CutoutView";
 
 import "./OpenView.css";
@@ -110,11 +112,15 @@ class OpenView extends Component {
             // let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
 
             // this.setState({ currentID: annotationIndex })
-            this.props.changeSelectedAnno(annotation)
+            const { id } = parseShadowId(annotation.id)
+
+            this.props.changeSelectedAnno(this.props.annos.find(anno => anno.id === id) || annotation)
         });
 
+        const shadows = toShadowAnnotations(this.props.annos, projectImages(project), 0)
+
         // Generate dataURI and load annotations into Annotorious
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))));
         this.AdnoAnnotorious.loadAnnotations(dataURI)
             .then(() => {
                 setTimeout(() => {
@@ -281,15 +287,15 @@ class OpenView extends Component {
                 [...anno.children].forEach(r => r.classList.add("a9s-annotation--hidden"))
             })
 
-            const currentAnnotation = annos.find(anno => anno.getAttribute('data-id') === annotationId)
+            const currentShapes = annos.filter(anno => parseShadowId(anno.getAttribute('data-id')).id === annotationId)
 
-            Array.from(currentAnnotation.children).forEach(r => {
+            currentShapes.forEach(shape => Array.from(shape.children).forEach(r => {
                 const isEye = r.classList.contains('eye')
                 const showChild = isEye ? this.props.showEyes : this.props.showOutlines
 
                 if (showChild)
                     r.classList.remove("a9s-annotation--hidden")
-            })
+            }))
         }
     }
 
