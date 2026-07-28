@@ -64,4 +64,28 @@ async function seedProject(page, project) {
     }), project);
 }
 
-module.exports = { BASE_URL, clearProjectsDB, seedProject };
+/**
+ * Read a project back from IndexedDB, to assert on what actually got persisted.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} id
+ * @returns {Promise<any>}
+ */
+async function readProject(page, id) {
+    return page.evaluate((projectId) => new Promise((resolve) => {
+        const req = indexedDB.open('ProjectsDB', 1);
+        req.onerror = () => resolve(null);
+        req.onsuccess = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains('projects')) {
+                resolve(null);
+                return;
+            }
+            const get = db.transaction(['projects'], 'readonly').objectStore('projects').get(projectId);
+            get.onsuccess = () => resolve(get.result || null);
+            get.onerror = () => resolve(null);
+        };
+    }), id);
+}
+
+module.exports = { BASE_URL, clearProjectsDB, readProject, seedProject };
