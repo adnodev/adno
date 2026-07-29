@@ -30,6 +30,7 @@ const Project = ({ editMode }) => {
         annotations: [],
         selectedProject: undefined,
         currentImageIndex: 0,
+        pendingZoneAnnotationId: null,
         sidebarOpened: true,
         updateAnnotation: false,
         showProjectMetadatas: false,
@@ -39,7 +40,8 @@ const Project = ({ editMode }) => {
         audioContexts: [],
         past: [],
         future: [],
-        selectedAnnotation: null,
+        selectedAnnotationId: null,
+        selectedTargetIndex: 0,
         showFullAnnotationView: false
     });
 
@@ -70,6 +72,14 @@ const Project = ({ editMode }) => {
     const updateSettings = async (newSettings) => {
         setState(prev => ({ ...prev, settings: newSettings }));
         await projectDB.update(id, { settings: newSettings });
+    };
+
+    const selectAnnotation = (annotation, targetIndex = 0) => {
+        setState(prev => ({
+            ...prev,
+            selectedAnnotationId: annotation ? annotation.id : null,
+            selectedTargetIndex: targetIndex
+        }));
     };
 
     const handleChanges = (arr) => {
@@ -122,7 +132,8 @@ const Project = ({ editMode }) => {
         });
     };
 
-    const { annotations, settings, selectedAnnotation } = state;
+    const { annotations, settings } = state;
+    const selectedAnnotation = annotations.find(annotation => annotation.id === state.selectedAnnotationId) || null;
     const settingsTags = settings.tags || [];
     const viewerAnnotations = settingsTags.length > 0
         ? annotations.filter(annotation => {
@@ -147,7 +158,7 @@ const Project = ({ editMode }) => {
                 selectedProject={state.selectedProject}
                 showProjectMetadatas={() => setState(prev => ({ ...prev, showProjectMetadatas: true }))}
                 editMode={editMode}
-                changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
                 showEditorSettings={() => setState(prev => ({ ...prev, showSettings: true }))}
                 autoplayID={state.autoplayID}
                 exportIIIF={() => exportToIIIF(state)}
@@ -195,7 +206,7 @@ const Project = ({ editMode }) => {
                         selectedAnnotation={selectedAnnotation}
                         selectedProjectId={id}
                         annotations={annotations}
-                        changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                        changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
                         getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
                     />
                 </div>
@@ -219,12 +230,15 @@ const Project = ({ editMode }) => {
                             openRichEditor={(annotation) => setState(prev => ({
                                 ...prev,
                                 updateAnnotation: true,
-                                selectedAnnotation: annotation
+                                selectedAnnotationId: annotation.id,
+                                selectedTargetIndex: 0
                             }))}
                             annotations={annotations}
                             updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                             selectedAnno={selectedAnnotation}
-                            changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                            changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
+                            pendingZoneAnnotationId={state.pendingZoneAnnotationId}
+                            startPendingZone={(annotationId) => setState(prev => ({ ...prev, pendingZoneAnnotationId: annotationId }))}
                         />
                     </div>
                 )}
@@ -236,12 +250,13 @@ const Project = ({ editMode }) => {
                             selectedProject={state.selectedProject}
                             annotations={viewerAnnotations}
                             selectedAnno={selectedAnnotation}
-                            changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                            changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
                             editingMode={editMode}
                             openFullAnnotationView={(annotation) => setState(prev => ({
                                 ...prev,
                                 showFullAnnotationView: true,
-                                selectedAnnotation: annotation
+                                selectedAnnotationId: annotation.id,
+                                selectedTargetIndex: 0
                             }))}
                         />
                     </div>
@@ -255,15 +270,13 @@ const Project = ({ editMode }) => {
                         selectedProject={state.selectedProject}
                         currentImageIndex={state.currentImageIndex}
                         changeImage={(index) => setState(prev => ({ ...prev, currentImageIndex: index }))}
+                        pendingZoneAnnotationId={state.pendingZoneAnnotationId}
+                        endPendingZone={() => setState(prev => ({ ...prev, pendingZoneAnnotationId: null }))}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}
-                        openRichEditor={(annotation) => setState(prev => ({
-                            ...prev,
-                            // updateAnnotation: true,
-                            selectedAnnotation: annotation
-                        }))}
-                        changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
+                        selectedTargetIndex={state.selectedTargetIndex}
+                        changeSelectedAnno={selectAnnotation}
                         rotation={settings.rotation}
                         defaultRotation={settings.defaultRotation}
                         rotationTransition={settings.rotationTransition}
@@ -289,8 +302,9 @@ const Project = ({ editMode }) => {
                         showEyes={settings.showEyes}
                         annos={viewerAnnotations}
                         selectedAnno={selectedAnnotation}
+                        selectedTargetIndex={state.selectedTargetIndex}
                         selectedProject={state.selectedProject}
-                        changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
+                        changeSelectedAnno={selectAnnotation}
                         updateAutoplayId={(id) => setState(prev => ({ ...prev, autoplayID: id }))}
                         changeShowToolbar={() => setState(prev => ({
                             ...prev,

@@ -129,7 +129,9 @@
         "previous_image": "Previous image",
         "next_image": "Next image",
         "collapse_images": "Collapse images",
-        "expand_images": "Show images"
+        "expand_images": "Show images",
+        "add_zone_hint": "Draw a zone to add it to the annotation",
+        "add_zone_cancel": "Cancel"
     },
     "visualizer": {
         "expand": "Enter full screen",
@@ -191,7 +193,8 @@
         "cutout_size_default": "Normal size",
         "cutout_size_full": "Fill the view",
         "cutout_size_tall": "Full height",
-        "cutout_title": "Upright cutout"
+        "cutout_title": "Upright cutout",
+        "add_zone": "Add a zone"
     },
     "navbar": {
         "edit_mode": "edit",

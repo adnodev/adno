@@ -104,6 +104,22 @@
     margin: 2% 0 0 8%;
 }
 
+.pending-zone{
+    position: absolute;
+    z-index: 2;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(113, 113, 157, 0.95);
+    color: #fff;
+    font-size: 14px;
+}
+
 .editor-stage{
     display: flex;
     flex-direction: column;

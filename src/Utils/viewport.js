@@ -1,6 +1,7 @@
 import { normalizeAngle, resolveRotation, shortestDelta } from "./orientation"
 import { getAnnotationCutout } from "./cutout"
 import { annotationShapes } from "./utils"
+import { parseShadowId } from "./targets"
 
 const PENDING_TURN = "adnoPendingTurn"
 const LAST_VIEW = "adnoLastView"
@@ -19,20 +20,24 @@ function isSettled(viewport) {
 }
 
 export function annotationBounds(viewer, annotationId) {
-    const shapes = annotationShapes()
-    const shape = shapes.find(item => item.getAttribute('data-id') === annotationId)
+    const wanted = parseShadowId(annotationId).id
 
-    if (!shape || typeof shape.getBBox !== "function") {
+    const boxes = annotationShapes()
+        .filter(item => parseShadowId(item.getAttribute('data-id')).id === wanted)
+        .filter(item => typeof item.getBBox === "function")
+        .map(item => item.getBBox())
+        .filter(box => box.width && box.height)
+
+    if (boxes.length === 0) {
         return null
     }
 
-    const box = shape.getBBox()
+    const left = Math.min(...boxes.map(box => box.x))
+    const top = Math.min(...boxes.map(box => box.y))
+    const right = Math.max(...boxes.map(box => box.x + box.width))
+    const bottom = Math.max(...boxes.map(box => box.y + box.height))
 
-    if (!box.width || !box.height) {
-        return null
-    }
-
-    return viewer.viewport.imageToViewportRectangle(box.x, box.y, box.width, box.height)
+    return viewer.viewport.imageToViewportRectangle(left, top, right - left, bottom - top)
 }
 
 function cancelPendingTurn(viewer) {

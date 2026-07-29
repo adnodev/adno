@@ -129,7 +129,9 @@
         "previous_image": "Image précédente",
         "next_image": "Image suivante",
         "collapse_images": "Replier les images",
-        "expand_images": "Afficher les images"
+        "expand_images": "Afficher les images",
+        "add_zone_hint": "Dessinez une zone pour l’ajouter à l’annotation",
+        "add_zone_cancel": "Annuler"
     },
     "visualizer": {
         "expand": "Mettre en plein écran",
@@ -191,7 +193,8 @@
         "cutout_size_default": "Taille normale",
         "cutout_size_full": "Occuper toute la vue",
         "cutout_size_tall": "Toute la hauteur",
-        "cutout_title": "Découpe redressée"
+        "cutout_title": "Découpe redressée",
+        "add_zone": "Ajouter une zone"
     },
     "navbar": {
         "edit_mode": "édition",

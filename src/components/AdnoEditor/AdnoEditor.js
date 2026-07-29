@@ -18,7 +18,7 @@ import { computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { preserveTargetRotation } from "../../Utils/orientation";
 import { imageTileSource, projectImages } from "../../Utils/images";
-import { getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
+import { addTarget, getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 import { ImageFilmstrip } from '../ImageFilmstrip/ImageFilmstrip';
 
@@ -27,6 +27,7 @@ class AdnoEditor extends Component {
         super(props);
         this.state = {
             isMovingItem: false,
+            pending: null,
             imageRatio: null,
             navigatorLayout: null,
             viewerReady: false,
@@ -90,16 +91,29 @@ class AdnoEditor extends Component {
         // Event triggered by using saveSelected annotorious function
         this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
             const image = this.images()[this.props.currentImageIndex]
-            const created = image
-                ? { ...newAnnotation, target: { ...newAnnotation.target, source: image.source } }
-                : newAnnotation
-            const annotations = [...this.props.annotations, created]
+            const target = image
+                ? { ...newAnnotation.target, source: image.source }
+                : newAnnotation.target
+            const created = { ...newAnnotation, target }
+            const pendingId = this.props.pendingZoneAnnotationId
+
+            const annotations = pendingId
+                ? this.props.annotations.map(anno => anno.id === pendingId ? addTarget(anno, target) : anno)
+                : [...this.props.annotations, created]
 
             projectDB.updateAnnotations(selectedProject.id, annotations)
                 .then(() => {
                     this.props.updateAnnos(annotations)
 
-                    this.props.openRichEditor(created)
+                    if (!pendingId) {
+                        this.props.changeSelectedAnno(created, 0)
+                        return
+                    }
+
+                    const extended = annotations.find(anno => anno.id === pendingId)
+
+                    this.props.endPendingZone()
+                    this.props.changeSelectedAnno(extended, getTargets(extended).length - 1)
                 })
         });
 
@@ -108,24 +122,46 @@ class AdnoEditor extends Component {
             this.AdnoAnnotorious.saveSelected()
         })
 
+        this.AdnoAnnotorious.on('clickAnnotation', (clicked) => {
+            const pending = this.state.pending
+
+            if (!pending) {
+                return
+            }
+
+            const selected = this.AdnoAnnotorious.getSelected()
+
+            if (!selected || selected.id === clicked.id) {
+                return
+            }
+
+            const { id, index } = parseShadowId(selected.id)
+
+            if (id !== pending.id) {
+                return
+            }
+
+            const target = getTargets(pending.annotation)[index]
+
+            this.AdnoAnnotorious.addAnnotation(toShadow(pending.annotation, target, index))
+        })
+
         // Event triggered when user click on an annotation
         this.AdnoAnnotorious.on('selectAnnotation', (shadow) => {
-            const { id } = parseShadowId(shadow.id)
+            const { id, index } = parseShadowId(shadow.id)
             const annotation = this.props.annotations.find(anno => anno.id === id)
 
+            if (this.state.pending && this.state.pending.id !== id) {
+                this.syncShadows()
+                this.savePending()
+            }
+
             this.scrollToCard(id)
-            this.props.openRichEditor(annotation || shadow)
+            this.props.changeSelectedAnno(annotation || shadow, index)
         })
 
         // Event triggered when resizing an annotation shape
-        this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
-            this.setState({ isMovingItem: true })
-
-            const selected = this.state.selected ? { ...this.state.selected } : this.AdnoAnnotorious.getSelected();
-            selected.target = newTarget
-
-            this.setState({ selected })
-        });
+        this.AdnoAnnotorious.on('changeSelectionTarget', this.applyTargetEdit);
     }
 
     componentWillUnmount() {
@@ -133,6 +169,16 @@ class AdnoEditor extends Component {
     }
 
     images = () => projectImages(this.props.selectedProject)
+
+    currentAnnotations = () => {
+        const pending = this.state.pending
+
+        if (!pending) {
+            return this.props.annotations
+        }
+
+        return this.props.annotations.map(anno => anno.id === pending.id ? pending.annotation : anno)
+    }
 
     refreshNavigator = () => {
         const info = computeNavigatorInfo(this.openSeadragon)
@@ -143,7 +189,16 @@ class AdnoEditor extends Component {
     }
 
     syncShadows = () => {
-        this.AdnoAnnotorious.setAnnotations(toShadowAnnotations(this.props.annotations, this.images(), this.props.currentImageIndex))
+        const shadows = toShadowAnnotations(this.currentAnnotations(), this.images(), this.props.currentImageIndex)
+        const signature = JSON.stringify(shadows.map(shadow => [shadow.id, shadow.target]))
+
+        if (signature === this._shadowSignature) {
+            return
+        }
+
+        this._shadowSignature = signature
+
+        this.AdnoAnnotorious.setAnnotations(shadows)
     }
 
     openImage = (index) => {
@@ -180,15 +235,19 @@ class AdnoEditor extends Component {
     }
 
     changeAnno = (annotation) => {
-        const [onImage] = targetsOnImage(annotation, this.images(), this.props.currentImageIndex)
-
-        if (!onImage) {
+        if (!annotation) {
             return
         }
 
-        const shadow = toShadow(annotation, onImage.target, onImage.index)
+        const onImage = targetsOnImage(annotation, this.images(), this.props.currentImageIndex)
+        const wanted = onImage.find(item => item.index === this.props.selectedTargetIndex)
+        const picked = wanted || onImage[0]
 
-        this.setState({ selected: shadow })
+        if (!picked) {
+            return
+        }
+
+        const shadow = toShadow(annotation, picked.target, picked.index)
 
         this.AdnoAnnotorious.selectAnnotation(shadow.id)
 
@@ -200,34 +259,60 @@ class AdnoEditor extends Component {
         this.scrollToCard(annotation.id)
     }
 
+    applyTargetEdit = (newTarget) => {
+        const current = this.AdnoAnnotorious.getSelected()
+
+        if (!current) {
+            return
+        }
+
+        const { id, index } = parseShadowId(current.id)
+        const pending = this.state.pending
+        const base = pending && pending.id === id
+            ? pending.annotation
+            : this.props.annotations.find(anno => anno.id === id)
+
+        if (!base) {
+            return
+        }
+
+        const target = preserveTargetRotation(getTargets(base)[index], newTarget)
+
+        this.setState({
+            isMovingItem: true,
+            pending: { id, annotation: replaceTargetAt(base, index, target) }
+        })
+    }
+
+    savePending = () => {
+        const pending = this.state.pending
+
+        if (!pending) {
+            return Promise.resolve(false)
+        }
+
+        const newAnnos = this.currentAnnotations()
+
+        this.props.updateAnnos(newAnnos)
+        this.setState({ isMovingItem: false, pending: null })
+
+        return projectDB.updateAnnotations(this.props.match.params.id, newAnnos).then(() => true)
+    }
+
     validateMove = () => {
-        const projectId = this.props.match.params.id
-
-        const selected = this.state.selected;
-        const { id, index } = parseShadowId(selected.id)
-
-        const newAnnos = this.props.annotations.map(anno => {
-            if (anno.id !== id) {
-                return anno
+        this.savePending().then(saved => {
+            if (!saved) {
+                return
             }
 
-            return replaceTargetAt(anno, index, preserveTargetRotation(getTargets(anno)[index], selected.target))
-        });
-
-        projectDB.updateAnnotations(projectId, newAnnos)
-            .then(() => {
-                this.props.updateAnnos(newAnnos)
-
-                this.setState({ isMovingItem: false })
-
-                Swal.fire({
-                    title: this.props.t('modal.annotation_moved'),
-                    showCancelButton: false,
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    icon: 'success'
-                })
+            Swal.fire({
+                title: this.props.t('modal.annotation_moved'),
+                showCancelButton: false,
+                showConfirmButton: true,
+                confirmButtonText: 'OK',
+                icon: 'success'
             })
+        })
     }
 
     componentDidUpdate(prevProps) {
@@ -236,17 +321,17 @@ class AdnoEditor extends Component {
             return
         }
 
-        if (prevProps.selectedAnno !== this.props.selectedAnno) {
-            this.changeAnno(this.props.selectedAnno)
-            this.setState({ isMovingItem: false })
+        const rebuilt = prevProps.annotations !== this.props.annotations
+
+        if (rebuilt) {
+            this.syncShadows()
         }
 
-        if (prevProps.annotations !== this.props.annotations) {
-            this.syncShadows()
+        const selectionChanged = prevProps.selectedAnno !== this.props.selectedAnno
+            || prevProps.selectedTargetIndex !== this.props.selectedTargetIndex
 
-            if (this.props.selectedAnno) {
-                this.changeAnno(this.props.selectedAnno)
-            }
+        if (rebuilt || selectionChanged) {
+            this.changeAnno(this.props.selectedAnno)
         }
     }
 
@@ -255,6 +340,14 @@ class AdnoEditor extends Component {
         return <>
             <div className="editor-stage">
                 <div className="editor-viewer">
+                    {this.props.pendingZoneAnnotationId &&
+                        <div className="pending-zone">
+                            <span>{this.props.t('editor.add_zone_hint')}</span>
+                            <button className="btn btn-xs" onClick={() => this.props.endPendingZone()}>
+                                {this.props.t('editor.add_zone_cancel')}
+                            </button>
+                        </div>
+                    }
                     <div id="openseadragon1">
                         <div id="toolbar-container"></div>
                         <div id="toolbar-osd"></div>

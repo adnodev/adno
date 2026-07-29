@@ -129,7 +129,9 @@
         "previous_image": "上一幅图像",
         "next_image": "下一幅图像",
         "collapse_images": "收起图像",
-        "expand_images": "显示图像"
+        "expand_images": "显示图像",
+        "add_zone_hint": "绘制一个区域以添加到该批注",
+        "add_zone_cancel": "取消"
     },
     "visualizer": {
         "expand": "进入全屏",
@@ -191,7 +193,8 @@
         "cutout_size_default": "常规大小",
         "cutout_size_full": "占满视图",
         "cutout_size_tall": "整个高度",
-        "cutout_title": "已摆正的裁切图"
+        "cutout_title": "已摆正的裁切图",
+        "add_zone": "添加区域"
     },
     "navbar": {
         "edit_mode": "编辑",

@@ -17,7 +17,8 @@
         "cutout_size_default": "Tamaño normal",
         "cutout_size_full": "Ocupar toda la vista",
         "cutout_size_tall": "Toda la altura",
-        "cutout_title": "Recorte enderezado"
+        "cutout_title": "Recorte enderezado",
+        "add_zone": "Añadir una zona"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {
@@ -58,7 +59,9 @@
         "previous_image": "Imagen anterior",
         "next_image": "Imagen siguiente",
         "collapse_images": "Plegar las imágenes",
-        "expand_images": "Mostrar las imágenes"
+        "expand_images": "Mostrar las imágenes",
+        "add_zone_hint": "Dibuje una zona para añadirla a la anotación",
+        "add_zone_cancel": "Cancelar"
     },
     "errors": {
         "error_found": "Error detectado",

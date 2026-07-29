@@ -6,7 +6,7 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faDownLong, faEdit, faPlus, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
 
 // Import SweetAlert
 import Swal from "sweetalert2";
@@ -15,6 +15,7 @@ import { AnnotationBadges } from "../../AnnotationBadges/AnnotationBadges";
 
 // Import Utils 
 import { buildTagsList } from "../../../Utils/utils";
+import { getTargets } from "../../../Utils/targets";
 
 //Imports CSS
 import "./AnnotationCards.css";
@@ -111,6 +112,8 @@ class AnnotationCards extends Component {
                 {
                     annotationWithTags
                         .map((annotation, index) => {
+                            const zones = getTargets(annotation).length
+
                             return (
                                 <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}>
 
@@ -145,6 +148,15 @@ class AnnotationCards extends Component {
                                                 className="btn btn-sm btn-show-more">
                                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.target')}>
                                                     <FontAwesomeIcon icon={faBullseye} />
+                                                </div>
+                                            </button>
+                                            <button type="button"
+                                                id={`anno_add_zone_${annotation.id}`}
+                                                onClick={() => this.props.startPendingZone(annotation.id)}
+                                                className={this.props.pendingZoneAnnotationId === annotation.id ? "btn btn-sm btn-active" : "btn btn-sm"}>
+                                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.add_zone')}>
+                                                    <FontAwesomeIcon icon={faPlus} />
+                                                    {zones > 1 && <span className="zone-count">{zones}</span>}
                                                 </div>
                                             </button>
                                             {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline bg-white" onClick={() => this.annoSwitchDown(index)}>
