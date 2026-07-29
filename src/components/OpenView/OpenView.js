@@ -8,7 +8,7 @@ import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { getAnnotationCutout } from "../../Utils/cutout";
 import { projectImages } from "../../Utils/images";
-import { parseShadowId, toShadowAnnotations } from "../../Utils/targets";
+import { parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import CutoutView from "../CutoutView/CutoutView";
 
 import "./OpenView.css";
@@ -100,21 +100,9 @@ class OpenView extends Component {
         this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
 
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
-            // if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-            //     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            const { id, index } = parseShadowId(annotation.id)
 
-            //     this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
-            //     document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
-            // }
-
-            // this.AdnoAnnotorious.fitBounds(annotation.id)
-
-            // let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-
-            // this.setState({ currentID: annotationIndex })
-            const { id } = parseShadowId(annotation.id)
-
-            this.props.changeSelectedAnno(this.props.annos.find(anno => anno.id === id) || annotation)
+            this.props.changeSelectedAnno(this.props.annos.find(anno => anno.id === id) || annotation, index)
         });
 
         const shadows = toShadowAnnotations(this.props.annos, projectImages(project), 0)
@@ -299,15 +287,20 @@ class OpenView extends Component {
         }
     }
 
-    changeAnno = (annotation) => {
+    changeAnno = (annotation, targetIndex = 0) => {
         if (annotation && annotation.id) {
             if (!this.props.selectedAnno || this.props.selectedAnno.id !== annotation.id) {
-                this.props.changeSelectedAnno(annotation)
+                this.props.changeSelectedAnno(annotation, targetIndex)
             }
 
-            this.AdnoAnnotorious.selectAnnotation(annotation.id)
+            const onImage = targetsOnImage(annotation, projectImages(this.props.selectedProject), 0)
+            const wanted = onImage.find(item => item.index === targetIndex)
+            const picked = wanted || onImage[0]
+            const shadow = picked ? toShadow(annotation, picked.target, picked.index) : annotation
 
-            applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
+            this.AdnoAnnotorious.selectAnnotation(shadow.id)
+
+            applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
                 defaultRotation: this.props.defaultRotation,
                 transition: this.props.rotationTransition
             })
@@ -595,21 +588,23 @@ class OpenView extends Component {
     }
 
     reloadAnnotationsFromProps = () => {
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+        const shadows = toShadowAnnotations(this.props.annos, projectImages(this.props.selectedProject), 0)
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))));
         if (this.AdnoAnnotorious) {
             this.AdnoAnnotorious.loadAnnotations(dataURI)
 
             this.loadAudio()
 
             setTimeout(this.freeMode, 1000)
-            setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
+            setTimeout(() => this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex), 1000)
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.AdnoAnnotorious) {
-            if (prevProps.selectedAnno !== this.props.selectedAnno) {
-                this.changeAnno(this.props.selectedAnno)
+            if (prevProps.selectedAnno !== this.props.selectedAnno
+                || prevProps.selectedTargetIndex !== this.props.selectedTargetIndex) {
+                this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex)
             }
 
             if (prevProps.annos !== this.props.annos) {
