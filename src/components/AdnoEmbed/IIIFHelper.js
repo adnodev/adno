@@ -206,6 +206,24 @@ export function findImageInObject(obj, depth = 0) {
 }
 
 
+function withMediaFrags(target) {
+    if (Array.isArray(target)) {
+        return target.map(withMediaFrags)
+    }
+
+    if (target && target.selector && target.selector.type === "FragmentSelector") {
+        return {
+            ...target,
+            selector: {
+                ...target.selector,
+                conformsTo: "http://www.w3.org/TR/media-frags/"
+            }
+        }
+    }
+
+    return target
+}
+
 export function extractIIIFv3Annotations(manifest) {
     const annotations = [];
 
@@ -219,9 +237,7 @@ export function extractIIIFv3Annotations(manifest) {
                 annotationPage.items.forEach(anno => {
                     // Fix FragmentSelector conformsTo for commenting annotations
                     if (anno.motivation === "commenting") {
-                        if (anno.target && anno.target.selector && anno.target.selector.type === "FragmentSelector") {
-                            anno.target.selector.conformsTo = "http://www.w3.org/TR/media-frags/";
-                        }
+                        anno.target = withMediaFrags(anno.target);
                     }
                     annotations.push(anno);
                 });
@@ -265,9 +281,7 @@ export function extractIIIFv2Annotations(manifest) {
 
                         // Fix FragmentSelector conformsTo for commenting annotations
                         if (converted.motivation === "commenting") {
-                            if (converted.target && converted.target.selector && converted.target.selector.type === "FragmentSelector") {
-                                converted.target.selector.conformsTo = "http://www.w3.org/TR/media-frags/";
-                            }
+                            converted.target = withMediaFrags(converted.target);
                         }
 
                         annotations.push(converted);

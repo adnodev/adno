@@ -214,6 +214,10 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
 
 function buildAnnotationTarget(target) {
 
+    if (Array.isArray(target)) {
+        return target.map(buildAnnotationTarget)
+    }
+
     if (typeof target === 'string') {
         // "https://example.com/canvas-1#xywh=1415,406,334,626"
         return {

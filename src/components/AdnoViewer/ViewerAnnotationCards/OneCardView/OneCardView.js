@@ -2,6 +2,7 @@ import { Component } from "react";
 
 // Import Utils
 import { buildTagsList } from "../../../../Utils/utils";
+import { primaryTarget } from "../../../../Utils/targets";
 
 // Import Html Parser
 import parse from 'html-react-parser';
@@ -45,9 +46,11 @@ class OneCardView extends Component {
     }
 
     buildExternalLink = () => {
-        if (this.props.annotation.target.selector.type === "FragmentSelector" && this.props.project.manifest_url) {
+        const target = primaryTarget(this.props.annotation)
 
-            let coordinates = this.props.annotation.target.selector.value.replace("xywh=pixel:", "")
+        if (target && target.selector.type === "FragmentSelector" && this.props.project.manifest_url) {
+
+            let coordinates = target.selector.value.replace("xywh=pixel:", "")
 
             let coord_left = Math.round(coordinates.split(",")[0])
             let coord_top = Math.round(coordinates.split(",")[1])
@@ -56,8 +59,8 @@ class OneCardView extends Component {
 
             let newCoordinates = `${coord_left},${coord_top},${coord_width},${coord_height}`
 
-            let url_full = `${this.props.annotation.target.source}/${newCoordinates}/full/0/default.jpg`
-            let url_max = `${this.props.annotation.target.source}/${newCoordinates}/max/0/default.jpg`
+            let url_full = `${target.source}/${newCoordinates}/full/0/default.jpg`
+            let url_max = `${target.source}/${newCoordinates}/max/0/default.jpg`
 
             fetch(url_full)
                 .then(res => {

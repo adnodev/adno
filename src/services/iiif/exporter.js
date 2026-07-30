@@ -1,4 +1,5 @@
 import { enhancedFetch } from "../../Utils/utils"
+import { getTargets } from "../../Utils/targets"
 
 export const exportToIIIF = async (state) => {
     const {
@@ -129,8 +130,14 @@ export const exportToIIIF = async (state) => {
 }
 
 function extractTargetAndSelector(annotation) {
+    const targets = getTargets(annotation).map(exportTarget)
 
-    const { selector } = annotation.target
+    return { target: targets.length === 1 ? targets[0] : targets }
+}
+
+function exportTarget(target) {
+
+    const { selector } = target
     const value = selector.value
 
     if (value.startsWith('xywh')) {
@@ -139,61 +146,51 @@ function extractTargetAndSelector(annotation) {
 
         const coordinates = formatCoordinates(value);
         return {
-            target: {
-                type: "SpecificResource",
-                source: "https://example.com/canvas-1",
-                selector: {
-                    "type": "FragmentSelector",
-                    "value": coordinates,
-                    ...(selector.refinedBy ? { refinedBy: selector.refinedBy } : {})
-                }
+            type: "SpecificResource",
+            source: "https://example.com/canvas-1",
+            selector: {
+                "type": "FragmentSelector",
+                "value": coordinates,
+                ...(selector.refinedBy ? { refinedBy: selector.refinedBy } : {})
             }
         }
 
     } else if (value.includes('circle')) {
         //<svg><circle cx=\"6651.482267818101\" cy=\"485.07000879322743\" r=\"434.5177321818993\"></circle></svg>
         return {
-            target: {
-                type: "SpecificResource",
-                source: `https://example.com/canvas-1`,
-                selector: {
-                    ...selector,
-                    value: formatSvgCircleToPath(value)
-                }
+            type: "SpecificResource",
+            source: `https://example.com/canvas-1`,
+            selector: {
+                ...selector,
+                value: formatSvgCircleToPath(value)
             }
         }
     } else if (value.includes('ellipse')) {
         return {
-            target: {
-                type: "SpecificResource",
-                source: `https://example.com/canvas-1`,
-                selector: {
-                    ...selector,
-                    value: formatSvgEllipseToPath(value)
-                }
+            type: "SpecificResource",
+            source: `https://example.com/canvas-1`,
+            selector: {
+                ...selector,
+                value: formatSvgEllipseToPath(value)
             }
         }
     } else if (value.includes('polygon')) {
         // <svg><polygon points=\"712.383056640625,1071.79345703125 1086.5421142578125,1162.2012939453125 1004.058837890625,1548.3990478515625 622.3629760742188,1518.2855224609375 425.7992248535156,1259.4378662109375\" /></svg>
         return {
-            target: {
-                type: "SpecificResource",
-                source: `https://example.com/canvas-1`,
-                selector: {
-                    ...selector,
-                    value: formatSvgPolygonToPath(value)
-                }
+            type: "SpecificResource",
+            source: `https://example.com/canvas-1`,
+            selector: {
+                ...selector,
+                value: formatSvgPolygonToPath(value)
             }
         }
     } else {
         return {
-            target: {
-                type: "SpecificResource",
-                source: `https://example.com/canvas-1`,
-                selector: {
-                    ...selector,
-                    value: formatSvgPath(value)
-                }
+            type: "SpecificResource",
+            source: `https://example.com/canvas-1`,
+            selector: {
+                ...selector,
+                value: formatSvgPath(value)
             }
         }
     }

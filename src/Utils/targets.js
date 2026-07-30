@@ -12,6 +12,10 @@ export function getTargets(annotation) {
     return Array.isArray(target) ? target : [target]
 }
 
+export function primaryTarget(annotation) {
+    return getTargets(annotation)[0] || null
+}
+
 export function withTargets(annotation, targets) {
     if (!targets || targets.length === 0) {
         const { target, ...rest } = annotation

@@ -1,4 +1,5 @@
 import { annotationShapes } from "./utils"
+import { primaryTarget } from "./targets"
 
 const XYWH = /xywh=(?:pixel:)?([\d.]+),([\d.]+),([\d.]+),([\d.]+)/
 
@@ -40,7 +41,8 @@ export function annotationImageBox(annotation) {
         }
     }
 
-    const selector = annotation.target && annotation.target.selector
+    const target = primaryTarget(annotation)
+    const selector = target && target.selector
     const match = selector ? XYWH.exec(selector.value || '') : null
 
     if (!match) {
