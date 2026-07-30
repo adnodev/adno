@@ -220,12 +220,14 @@ function buildAnnotationTarget(target) {
 
     if (typeof target === 'string') {
         // "https://example.com/canvas-1#xywh=1415,406,334,626"
+        const [source, fragment] = target.split('#')
+
         return {
             type: "SpecificResource",
-            // source: "https://example.com/canvas-1",
+            source,
             selector: {
                 type: "FragmentSelector",
-                value: target.split('#')[1].replace('xywh=', 'xywh=pixel:'),
+                value: fragment.replace('xywh=', 'xywh=pixel:'),
                 conformsTo: "http://www.w3.org/TR/media-frags/"
             }
         }
