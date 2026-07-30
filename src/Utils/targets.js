@@ -1,6 +1,23 @@
 import { imageIndexForSource } from "./images"
 
 const SHADOW_SEPARATOR = '#t:'
+const XYWH = /xywh=(?:pixel:)?([\d.]+),([\d.]+),([\d.]+),([\d.]+)/
+
+export function targetBox(target) {
+    const selector = target ? target.selector : null
+    const match = selector ? XYWH.exec(selector.value || '') : null
+
+    if (!match) {
+        return null
+    }
+
+    return {
+        x: parseFloat(match[1]),
+        y: parseFloat(match[2]),
+        width: parseFloat(match[3]),
+        height: parseFloat(match[4])
+    }
+}
 
 export function getTargets(annotation) {
     const target = annotation ? annotation.target : null
@@ -73,6 +90,11 @@ export function toShadowAnnotations(annotations, images, imageIndex) {
     return (annotations || []).flatMap(annotation =>
         targetsOnImage(annotation, images, imageIndex)
             .map(({ target, index }) => toShadow(annotation, target, index)))
+}
+
+export function toAllShadows(annotations) {
+    return (annotations || []).flatMap(annotation =>
+        getTargets(annotation).map((target, index) => toShadow(annotation, target, index)))
 }
 
 export function zoneCountsByImage(annotations, images) {

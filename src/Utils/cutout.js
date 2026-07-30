@@ -1,7 +1,5 @@
 import { annotationShapes } from "./utils"
-import { primaryTarget } from "./targets"
-
-const XYWH = /xywh=(?:pixel:)?([\d.]+),([\d.]+),([\d.]+),([\d.]+)/
+import { primaryTarget, targetBox } from "./targets"
 
 export function getAnnotationCutout(annotation) {
     return Boolean(annotation && annotation.adno && annotation.adno.cutout)
@@ -41,18 +39,5 @@ export function annotationImageBox(annotation) {
         }
     }
 
-    const target = primaryTarget(annotation)
-    const selector = target && target.selector
-    const match = selector ? XYWH.exec(selector.value || '') : null
-
-    if (!match) {
-        return null
-    }
-
-    return {
-        x: parseFloat(match[1]),
-        y: parseFloat(match[2]),
-        width: parseFloat(match[3]),
-        height: parseFloat(match[4])
-    }
+    return targetBox(primaryTarget(annotation))
 }
