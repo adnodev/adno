@@ -22,6 +22,7 @@ import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
 import { getAnnotationRotation, normalizeAngle, withAnnotationRotation } from '../../Utils/orientation';
 import { getAnnotationCutout, withAnnotationCutout } from '../../Utils/cutout';
+import { getTargets, removeTargetAt, targetBox } from '../../Utils/targets';
 
 const locale = navigator.language;
 
@@ -253,8 +254,20 @@ class AdnoMdEditor extends Component {
         }
     }
 
+    removeZone = (index) => {
+        const selected = this.props.selectedAnnotation
+        const annotations = this.props.annotations.map(anno =>
+            anno.id === selected.id ? removeTargetAt(anno, index) : anno)
+
+        projectDB.updateAnnotations(this.props.selectedProjectId, annotations)
+            .then(() => {
+                this.props.updateAnnos(annotations)
+            })
+    }
+
     render() {
         const { tab } = this.state;
+        const zones = getTargets(this.props.selectedAnnotation);
 
         return (
             <div className="card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor">
@@ -306,6 +319,30 @@ class AdnoMdEditor extends Component {
                             </div>
                         </div>
                     </div>}
+
+                    {tab === 'zones' &&
+                        <div style={{ height: '600px' }}>
+                            <div className="zone-list">
+                                {zones.map((target, index) =>
+                                    <div className="zone-row" key={`zone-${index}`}>
+                                        <span className="zone-rank">{index + 1}</span>
+                                        <span className="zone-coords">{describeZone(target)}</span>
+                                        <button type="button"
+                                            className="btn btn-sm btn-outline btn-error"
+                                            disabled={zones.length < 2}
+                                            onClick={() => this.removeZone(index)}>
+                                            <div className="tooltip tooltip-left z-50" data-tip={this.props.t('annotation.delete_zone')}>
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </div>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('editor.zones_hint')}</span>
+                            </div>
+                        </div>
+                    }
 
                     {tab === 'audio' &&
                         <div style={{ height: '600px' }}>
@@ -393,6 +430,16 @@ function OrientationPicker({ rotation, setRotation, capture, cutout, setCutout, 
     </div>
 }
 
+function describeZone(target) {
+    const box = targetBox(target)
+
+    if (!box) {
+        return target && target.selector ? target.selector.type : ''
+    }
+
+    return `${Math.round(box.x)}, ${Math.round(box.y)} — ${Math.round(box.width)} × ${Math.round(box.height)}`
+}
+
 function TabSelector({ tab, setTab, translate }) {
 
     return <div className="flex">
@@ -402,12 +449,16 @@ function TabSelector({ tab, setTab, translate }) {
             onClick={() => setTab('editor')}>{translate('editor.tabs.editor')}</button>
         <button type="button"
             className="btn btn-outline"
-            style={{ borderBottom: tab === 'tags' ? '4px solid #000' : '1px solid', borderLeft: 0, borderRight: 0, borderRadius: 0 }}
+            style={{ borderBottom: tab === 'tags' ? '4px solid #000' : '1px solid', borderLeft: 0, borderRadius: 0 }}
             onClick={() => setTab('tags')}>{translate('editor.tabs.tags')}</button>
         <button type="button"
             className="btn btn-outline"
-            style={{ borderBottom: tab === 'audio' ? '4px solid #000' : '1px solid', borderRadius: 0 }}
+            style={{ borderBottom: tab === 'audio' ? '4px solid #000' : '1px solid', borderLeft: 0, borderRadius: 0 }}
             onClick={() => setTab('audio')}>{translate('editor.tabs.audio')}</button>
+        <button type="button"
+            className="btn btn-outline"
+            style={{ borderBottom: tab === 'zones' ? '4px solid #000' : '1px solid', borderLeft: 0, borderRadius: 0 }}
+            onClick={() => setTab('zones')}>{translate('editor.tabs.zones')}</button>
     </div>
 }
 

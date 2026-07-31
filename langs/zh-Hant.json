@@ -117,7 +117,8 @@
         "tabs": {
             "editor": "編輯器",
             "tags": "標籤",
-            "audio": "音訊"
+            "audio": "音訊",
+            "zones": "區域"
         },
         "empty_list": "無選項",
         "orientation": "閱讀方向",
@@ -131,7 +132,8 @@
         "collapse_images": "收起圖像",
         "expand_images": "顯示圖像",
         "add_zone_hint": "繪製一個區域以加入該註釋",
-        "add_zone_cancel": "取消"
+        "add_zone_cancel": "取消",
+        "zones_hint": "註釋至少保留一個區域。要移除最後一個，請刪除該註釋。"
     },
     "visualizer": {
         "expand": "進入全螢幕",
@@ -194,7 +196,8 @@
         "cutout_size_full": "佔滿檢視",
         "cutout_size_tall": "整個高度",
         "cutout_title": "已擺正的裁切圖",
-        "add_zone": "新增區域"
+        "add_zone": "新增區域",
+        "delete_zone": "刪除該區域"
     },
     "navbar": {
         "edit_mode": "編輯",

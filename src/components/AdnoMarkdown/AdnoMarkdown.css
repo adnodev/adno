@@ -1059,3 +1059,35 @@
   margin: auto;
   display: flex;
 }
+.zone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zone-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+}
+
+.zone-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: #71719d;
+  color: #fff;
+  font-size: 12px;
+}
+
+.zone-coords {
+  flex: 1 1 auto;
+  font-size: 14px;
+  color: #3f3f46;
+}

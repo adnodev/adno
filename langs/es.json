@@ -18,7 +18,8 @@
         "cutout_size_full": "Ocupar toda la vista",
         "cutout_size_tall": "Toda la altura",
         "cutout_title": "Recorte enderezado",
-        "add_zone": "Añadir una zona"
+        "add_zone": "Añadir una zona",
+        "delete_zone": "Eliminar esta zona"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {
@@ -45,7 +46,8 @@
         "tabs": {
             "audio": "Audio",
             "editor": "Editor",
-            "tags": "Palabras claves"
+            "tags": "Palabras claves",
+            "zones": "Zonas"
         },
         "zoom_in": "ampliar",
         "zoom_out": "Alejar",
@@ -61,7 +63,8 @@
         "collapse_images": "Plegar las imágenes",
         "expand_images": "Mostrar las imágenes",
         "add_zone_hint": "Dibuje una zona para añadirla a la anotación",
-        "add_zone_cancel": "Cancelar"
+        "add_zone_cancel": "Cancelar",
+        "zones_hint": "Una anotación conserva al menos una zona. Elimine la anotación para quitar la última."
     },
     "errors": {
         "error_found": "Error detectado",

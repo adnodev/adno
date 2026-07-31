@@ -117,7 +117,8 @@
         "tabs": {
             "editor": "编辑器",
             "tags": "标签",
-            "audio": "音频"
+            "audio": "音频",
+            "zones": "区域"
         },
         "empty_list": "无选项",
         "orientation": "阅读方向",
@@ -131,7 +132,8 @@
         "collapse_images": "收起图像",
         "expand_images": "显示图像",
         "add_zone_hint": "绘制一个区域以添加到该批注",
-        "add_zone_cancel": "取消"
+        "add_zone_cancel": "取消",
+        "zones_hint": "批注至少保留一个区域。要移除最后一个，请删除该批注。"
     },
     "visualizer": {
         "expand": "进入全屏",
@@ -194,7 +196,8 @@
         "cutout_size_full": "占满视图",
         "cutout_size_tall": "整个高度",
         "cutout_title": "已摆正的裁切图",
-        "add_zone": "添加区域"
+        "add_zone": "添加区域",
+        "delete_zone": "删除该区域"
     },
     "navbar": {
         "edit_mode": "编辑",
