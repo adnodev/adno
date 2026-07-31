@@ -115,7 +115,8 @@ class AnnotationCards extends Component {
                             const zones = getTargets(annotation).length
 
                             return (
-                                <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}>
+                                <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}
+                                    onClick={() => this.props.openRichEditor(annotation)}>
 
                                     <div className="anno-card-body">
 
@@ -137,7 +138,7 @@ class AnnotationCards extends Component {
                                             {this.getAnnotationHTMLBody(annotation)}
                                         </div>
 
-                                        <div className="btn-line-one-card">
+                                        <div className="btn-line-one-card" onClick={event => event.stopPropagation()}>
                                             <button className="btn btn-sm" onClick={() => this.props.openRichEditor(annotation)}>
                                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.edit')}>
                                                     <FontAwesomeIcon icon={faEdit} />

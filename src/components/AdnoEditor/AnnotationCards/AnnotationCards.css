@@ -3,6 +3,7 @@
     background-color: #fff;
     border-radius: 5px;
     margin-bottom: 5px;
+    cursor: pointer;
 }
 
 .adno-nb-annos{
@@ -73,4 +74,8 @@
     margin-left: 4px;
     font-size: 11px;
     font-weight: 600;
+}
+
+.anno-card .btn-line-one-card{
+    cursor: default;
 }

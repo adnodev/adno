@@ -2,21 +2,60 @@ import { imageIndexForSource } from "./images"
 
 const SHADOW_SEPARATOR = '#t:'
 const XYWH = /xywh=(?:pixel:)?([\d.]+),([\d.]+),([\d.]+),([\d.]+)/
+const CIRCLE = /<circle[^>]*cx="([-\d.]+)"[^>]*cy="([-\d.]+)"[^>]*r="([-\d.]+)"/
+const ELLIPSE = /<ellipse[^>]*cx="([-\d.]+)"[^>]*cy="([-\d.]+)"[^>]*rx="([-\d.]+)"[^>]*ry="([-\d.]+)"/
+const POINTS = /points="([^"]+)"/
+const PATH = /\sd="([^"]+)"/
 
-export function targetBox(target) {
-    const selector = target ? target.selector : null
-    const match = selector ? XYWH.exec(selector.value || '') : null
+function boxAround(x, y, radiusX, radiusY) {
+    return { x: x - radiusX, y: y - radiusY, width: radiusX * 2, height: radiusY * 2 }
+}
 
-    if (!match) {
+function boxOfPoints(points) {
+    const numbers = points.replace(/[A-Za-z]/g, ' ').trim().split(/[\s,]+/).map(parseFloat).filter(value => !isNaN(value))
+    const xs = numbers.filter((_, index) => index % 2 === 0)
+    const ys = numbers.filter((_, index) => index % 2 === 1)
+
+    if (xs.length === 0 || ys.length === 0) {
         return null
     }
 
-    return {
-        x: parseFloat(match[1]),
-        y: parseFloat(match[2]),
-        width: parseFloat(match[3]),
-        height: parseFloat(match[4])
+    const left = Math.min(...xs)
+    const top = Math.min(...ys)
+
+    return { x: left, y: top, width: Math.max(...xs) - left, height: Math.max(...ys) - top }
+}
+
+export function targetBox(target) {
+    const selector = target ? target.selector : null
+    const value = selector ? selector.value || '' : ''
+
+    const fragment = XYWH.exec(value)
+
+    if (fragment) {
+        return {
+            x: parseFloat(fragment[1]),
+            y: parseFloat(fragment[2]),
+            width: parseFloat(fragment[3]),
+            height: parseFloat(fragment[4])
+        }
     }
+
+    const circle = CIRCLE.exec(value)
+
+    if (circle) {
+        return boxAround(parseFloat(circle[1]), parseFloat(circle[2]), parseFloat(circle[3]), parseFloat(circle[3]))
+    }
+
+    const ellipse = ELLIPSE.exec(value)
+
+    if (ellipse) {
+        return boxAround(parseFloat(ellipse[1]), parseFloat(ellipse[2]), parseFloat(ellipse[3]), parseFloat(ellipse[4]))
+    }
+
+    const points = POINTS.exec(value) || PATH.exec(value)
+
+    return points ? boxOfPoints(points[1]) : null
 }
 
 export function getTargets(annotation) {
