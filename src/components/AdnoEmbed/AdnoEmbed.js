@@ -3,6 +3,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 import { enhancedFetch, getEye, get_url_extension, computeNavigatorInfo, placeEye } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
+import { parseShadowId, toAllShadows } from "../../Utils/targets";
 import { InfinitySpin } from 'react-loader-spinner'
 import {
     faHouse,
@@ -222,12 +223,15 @@ class AdnoEmbed extends Component {
 
         // this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
 
-        this.AdnoAnnotorious.on("clickAnnotation", (annotation) => {
+        this.AdnoAnnotorious.on("clickAnnotation", (shadow) => {
             if (this.state.isAnnotationsVisible) {
-                this.focusAnnotation(annotation)
+                const { id } = parseShadowId(shadow.id)
+                const annotation = this.state.annos.find(anno => anno.id === id) || shadow
+
+                this.focusAnnotation(shadow)
 
                 let annotationIndex = this.state.annos.findIndex(
-                    (anno) => anno.id === annotation.id
+                    (anno) => anno.id === id
                 );
 
                 this.setState({ currentID: annotationIndex, selectedAnno: annotation });
@@ -236,7 +240,7 @@ class AdnoEmbed extends Component {
 
         // Generate dataURI and load annotations into Annotorious
         const dataURI =
-            `data:application/json;base64,${btoa(unescape(encodeURIComponent(JSON.stringify(annos))))}`;
+            `data:application/json;base64,${btoa(unescape(encodeURIComponent(JSON.stringify(toAllShadows(annos)))))}`;
         this.AdnoAnnotorious.loadAnnotations(dataURI)
             .then(() => {
                 setTimeout(() => {
@@ -462,15 +466,15 @@ class AdnoEmbed extends Component {
                 [...anno.children].forEach(r => r.classList.add("a9s-annotation--hidden"))
             })
 
-            const currentAnnotation = annos.find(anno => anno.getAttribute('data-id') === annotationId)
+            const currentShapes = annos.filter(anno => parseShadowId(anno.getAttribute('data-id')).id === annotationId)
 
-            Array.from(currentAnnotation.children).forEach(r => {
+            currentShapes.forEach(shape => Array.from(shape.children).forEach(r => {
                 const isEye = r.classList.contains('eye')
                 const showChild = isEye ? this.state.showEyes : this.state.showOutlines
 
                 if (showChild)
                     r.classList.remove("a9s-annotation--hidden")
-            })
+            }))
         }
     }
 
