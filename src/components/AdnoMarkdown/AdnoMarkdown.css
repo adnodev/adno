@@ -1091,3 +1091,16 @@
   font-size: 14px;
   color: #3f3f46;
 }
+
+.rich-card-editor--docked {
+  border-radius: 12px 12px 0 0;
+  border-top: 1px solid #d4d4d8;
+}
+
+.rich-card-editor--docked .card-body {
+  max-height: 38vh;
+}
+
+.zone-row {
+  cursor: pointer;
+}

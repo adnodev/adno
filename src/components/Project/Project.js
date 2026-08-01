@@ -206,7 +206,7 @@ const Project = ({ editMode }) => {
                         selectedAnnotation={selectedAnnotation}
                         selectedProjectId={id}
                         annotations={annotations}
-                        changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
+                        changeSelectedAnno={selectAnnotation}
                         getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
                     />
                 </div>

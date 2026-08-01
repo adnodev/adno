@@ -270,7 +270,9 @@ class AdnoMdEditor extends Component {
         const zones = getTargets(this.props.selectedAnnotation);
 
         return (
-            <div className="card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor">
+            <div className={tab === 'zones'
+                ? "card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor rich-card-editor--docked"
+                : "card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor"}>
                 <div className="card-body">
                     <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeMdEditor()}
                         style={{
@@ -324,13 +326,17 @@ class AdnoMdEditor extends Component {
                         <div style={{ height: '600px' }}>
                             <div className="zone-list">
                                 {zones.map((target, index) =>
-                                    <div className="zone-row" key={`zone-${index}`}>
+                                    <div className="zone-row" key={`zone-${index}`}
+                                        onClick={() => this.props.changeSelectedAnno(this.props.selectedAnnotation, index)}>
                                         <span className="zone-rank">{index + 1}</span>
                                         <span className="zone-coords">{describeZone(target)}</span>
                                         <button type="button"
                                             className="btn btn-sm btn-outline btn-error"
                                             disabled={zones.length < 2}
-                                            onClick={() => this.removeZone(index)}>
+                                            onClick={event => {
+                                                event.stopPropagation()
+                                                this.removeZone(index)
+                                            }}>
                                             <div className="tooltip tooltip-left z-50" data-tip={this.props.t('annotation.delete_zone')}>
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </div>

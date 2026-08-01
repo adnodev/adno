@@ -189,6 +189,16 @@ input:checked+.slider:before {
     display: flex;
 }
 
+.text-rich:has(.rich-card-editor--docked) {
+    background: transparent;
+    align-items: flex-end;
+    pointer-events: none;
+}
+
+.text-rich:has(.rich-card-editor--docked) .rich-card-editor--docked {
+    pointer-events: auto;
+}
+
 .text-rich .text-rich-content {
     width: 90vw;
     height: 70vh;
