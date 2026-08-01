@@ -26,7 +26,7 @@ function boxOfPoints(points) {
     return { x: left, y: top, width: Math.max(...xs) - left, height: Math.max(...ys) - top }
 }
 
-export function targetBox(target) {
+export function targetShape(target) {
     const selector = target ? target.selector : null
     const value = selector ? selector.value || '' : ''
 
@@ -34,6 +34,7 @@ export function targetBox(target) {
 
     if (fragment) {
         return {
+            kind: 'rect',
             x: parseFloat(fragment[1]),
             y: parseFloat(fragment[2]),
             width: parseFloat(fragment[3]),
@@ -44,18 +45,52 @@ export function targetBox(target) {
     const circle = CIRCLE.exec(value)
 
     if (circle) {
-        return boxAround(parseFloat(circle[1]), parseFloat(circle[2]), parseFloat(circle[3]), parseFloat(circle[3]))
+        return { kind: 'circle', cx: parseFloat(circle[1]), cy: parseFloat(circle[2]), r: parseFloat(circle[3]) }
     }
 
     const ellipse = ELLIPSE.exec(value)
 
     if (ellipse) {
-        return boxAround(parseFloat(ellipse[1]), parseFloat(ellipse[2]), parseFloat(ellipse[3]), parseFloat(ellipse[4]))
+        return {
+            kind: 'ellipse',
+            cx: parseFloat(ellipse[1]),
+            cy: parseFloat(ellipse[2]),
+            rx: parseFloat(ellipse[3]),
+            ry: parseFloat(ellipse[4])
+        }
     }
 
-    const points = POINTS.exec(value) || PATH.exec(value)
+    const points = POINTS.exec(value)
 
-    return points ? boxOfPoints(points[1]) : null
+    if (points) {
+        return { kind: 'polygon', points: points[1] }
+    }
+
+    const path = PATH.exec(value)
+
+    return path ? { kind: 'path', d: path[1] } : null
+}
+
+export function targetBox(target) {
+    const shape = targetShape(target)
+
+    if (!shape) {
+        return null
+    }
+
+    if (shape.kind === 'rect') {
+        return { x: shape.x, y: shape.y, width: shape.width, height: shape.height }
+    }
+
+    if (shape.kind === 'circle') {
+        return boxAround(shape.cx, shape.cy, shape.r, shape.r)
+    }
+
+    if (shape.kind === 'ellipse') {
+        return boxAround(shape.cx, shape.cy, shape.rx, shape.ry)
+    }
+
+    return boxOfPoints(shape.kind === 'polygon' ? shape.points : shape.d)
 }
 
 export function getTargets(annotation) {

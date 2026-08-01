@@ -22,7 +22,8 @@ import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
 import { getAnnotationRotation, normalizeAngle, withAnnotationRotation } from '../../Utils/orientation';
 import { getAnnotationCutout, withAnnotationCutout } from '../../Utils/cutout';
-import { getTargets, removeTargetAt, targetBox } from '../../Utils/targets';
+import { getTargets, removeTargetAt } from '../../Utils/targets';
+import { ZonePreview } from './ZonePreview';
 
 const locale = navigator.language;
 
@@ -329,7 +330,7 @@ class AdnoMdEditor extends Component {
                                     <div className="zone-row" key={`zone-${index}`}
                                         onClick={() => this.props.changeSelectedAnno(this.props.selectedAnnotation, index)}>
                                         <span className="zone-rank">{index + 1}</span>
-                                        <span className="zone-coords">{describeZone(target)}</span>
+                                        <ZonePreview target={target} />
                                         <button type="button"
                                             className="btn btn-sm btn-outline btn-error"
                                             disabled={zones.length < 2}
@@ -434,16 +435,6 @@ function OrientationPicker({ rotation, setRotation, capture, cutout, setCutout, 
             <span className="label-text-alt">{translate('editor.cutout_hint')}</span>
         </div>
     </div>
-}
-
-function describeZone(target) {
-    const box = targetBox(target)
-
-    if (!box) {
-        return target && target.selector ? target.selector.type : ''
-    }
-
-    return `${Math.round(box.x)}, ${Math.round(box.y)} — ${Math.round(box.width)} × ${Math.round(box.height)}`
 }
 
 function TabSelector({ tab, setTab, translate }) {

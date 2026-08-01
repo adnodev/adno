@@ -1061,15 +1061,15 @@
 }
 .zone-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .zone-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: 8px;
+  padding: 6px 8px;
   border: 1px solid #d4d4d8;
   border-radius: 6px;
 }
@@ -1086,11 +1086,31 @@
   font-size: 12px;
 }
 
-.zone-coords {
-  flex: 1 1 auto;
-  font-size: 14px;
-  color: #3f3f46;
+.zone-preview {
+  flex: 0 0 auto;
+  background: #f4f4f5;
+  border-radius: 4px;
 }
+
+.zone-preview > * {
+  fill: rgba(113, 113, 157, 0.3);
+  stroke: #71719d;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.zone-preview path {
+  fill: none;
+}
+
+.zone-preview--empty {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  background: #f4f4f5;
+  border-radius: 4px;
+}
+
 
 .rich-card-editor--docked {
   border-radius: 12px 12px 0 0;
