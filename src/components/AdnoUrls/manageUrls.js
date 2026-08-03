@@ -172,16 +172,16 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
         const desc = manifest.description || manifest.subject
 
         const canvases = (manifest.items || [])
-            .map(canvas => ({ canvas, source: canvasImageSource(canvas) }))
-            .filter(entry => entry.source)
+            .map(canvas => ({ canvas, image: canvasImage(canvas) }))
+            .filter(entry => entry.image)
 
-        const sourceByCanvas = new Map(canvases.map(({ canvas, source }) => [canvas.id, source]))
+        const sourceByCanvas = new Map(canvases.map(({ canvas, image }) => [canvas.id, image.source]))
 
-        const images = canvases.map(({ canvas, source }) => ({
+        const images = canvases.map(({ canvas, image }) => ({
             id: canvas.id,
-            source,
+            source: image.source,
             label: extractLanguageValue(canvas.label) || '',
-            type: 'iiif'
+            type: image.type
         }))
 
         const project = withImages({
@@ -229,14 +229,20 @@ function buildImportedAnnotations(annotation, sourceByCanvas) {
     return []
 }
 
-function canvasImageSource(canvas) {
-    const painted = canvas.items?.[0]?.items?.[0]?.body?.id
+function canvasImage(canvas) {
+    const painted = canvas.items?.[0]?.items?.[0]?.body
 
     if (!painted) {
         return null
     }
 
-    return painted.endsWith('info.json') ? painted : `${painted}/info.json`
+    const service = painted.service?.[0]?.id || painted.service?.[0]?.['@id']
+
+    if (service) {
+        return { source: service.endsWith('info.json') ? service : `${service}/info.json`, type: 'iiif' }
+    }
+
+    return painted.id ? { source: painted.id, type: 'image' } : null
 }
 
 function remapTargetSource(target, sourceByCanvas) {
