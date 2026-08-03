@@ -1,6 +1,8 @@
 import Swal from "sweetalert2"
 import { buildJsonProjectWithManifest, enhancedFetch, migrateTextBody } from "../../Utils/utils";
 import { projectDB } from "../../services/db";
+import { withImages } from "../../Utils/images";
+import { extractLanguageValue } from "../AdnoEmbed/IIIFHelper";
 import { v7 } from 'uuid'
 
 
@@ -169,33 +171,27 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
 
         const desc = manifest.description || manifest.subject
 
-        let manifestURL = manifest.items[0]?.items[0].items[0].body.id
+        const canvases = (manifest.items || [])
+            .map(canvas => ({ canvas, source: canvasImageSource(canvas) }))
+            .filter(entry => entry.source)
 
-        if (!manifestURL.endsWith('info.json'))
-            manifestURL = `${manifestURL}/info.json`
+        const sourceByCanvas = new Map(canvases.map(({ canvas, source }) => [canvas.id, source]))
 
-        const project = {
-            ...buildJsonProjectWithManifest(projectID, title, desc, manifestURL),
+        const images = canvases.map(({ canvas, source }) => ({
+            id: canvas.id,
+            source,
+            label: extractLanguageValue(canvas.label) || '',
+            type: 'iiif'
+        }))
+
+        const project = withImages({
+            ...buildJsonProjectWithManifest(projectID, title, desc, images[0]?.source),
             settings
-        }
+        }, images)
 
-        const annotations = manifest.items[0]?.annotations[0].items.flatMap(annotation => {
-            if (annotation.body)
-                return {
-                    // "@context": "http://www.w3.org/ns/anno.jsonld",
-                    body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
-                    target: buildAnnotationTarget(annotation.target),
-                    id: annotation.id,
-                    type: 'Annotation'
-                }
-            else if (annotation.items) {
-                return annotation.items.map(item => ({
-                    ...item,
-                    body: Array.isArray(item.body) ? item.body : [item.body],
-                    target: buildAnnotationTarget(item.target),
-                }))
-            }
-        })
+        const annotations = canvases.flatMap(({ canvas }) =>
+            (canvas.annotations || []).flatMap(page =>
+                (page.items || []).flatMap(annotation => buildImportedAnnotations(annotation, sourceByCanvas))))
 
         projectDB.add(
             projectID,
@@ -210,6 +206,47 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
         console.log(err)
         return Promise.reject(translation('errors.unable_access_file'))
     }
+}
+
+function buildImportedAnnotations(annotation, sourceByCanvas) {
+    if (annotation.body) {
+        return [{
+            body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
+            target: remapTargetSource(buildAnnotationTarget(annotation.target), sourceByCanvas),
+            id: annotation.id,
+            type: 'Annotation'
+        }]
+    }
+
+    if (annotation.items) {
+        return annotation.items.map(item => ({
+            ...item,
+            body: Array.isArray(item.body) ? item.body : [item.body],
+            target: remapTargetSource(buildAnnotationTarget(item.target), sourceByCanvas)
+        }))
+    }
+
+    return []
+}
+
+function canvasImageSource(canvas) {
+    const painted = canvas.items?.[0]?.items?.[0]?.body?.id
+
+    if (!painted) {
+        return null
+    }
+
+    return painted.endsWith('info.json') ? painted : `${painted}/info.json`
+}
+
+function remapTargetSource(target, sourceByCanvas) {
+    if (Array.isArray(target)) {
+        return target.map(item => remapTargetSource(item, sourceByCanvas))
+    }
+
+    const mapped = target && target.source ? sourceByCanvas.get(target.source) : null
+
+    return mapped ? { ...target, source: mapped } : target
 }
 
 function buildAnnotationTarget(target) {

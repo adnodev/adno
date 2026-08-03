@@ -88,4 +88,28 @@ async function readProject(page, id) {
     }), id);
 }
 
-module.exports = { BASE_URL, clearProjectsDB, readProject, seedProject };
+/**
+ * Read every stored project. Importing generates a fresh id, so a test that
+ * imports has to find its project back by title.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<any[]>}
+ */
+async function readProjects(page) {
+    return page.evaluate(() => new Promise((resolve) => {
+        const req = indexedDB.open('ProjectsDB', 1);
+        req.onerror = () => resolve([]);
+        req.onsuccess = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains('projects')) {
+                resolve([]);
+                return;
+            }
+            const all = db.transaction(['projects'], 'readonly').objectStore('projects').getAll();
+            all.onsuccess = () => resolve(all.result || []);
+            all.onerror = () => resolve([]);
+        };
+    }));
+}
+
+module.exports = { BASE_URL, clearProjectsDB, readProject, readProjects, seedProject };
