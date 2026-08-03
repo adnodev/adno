@@ -184,19 +184,11 @@ input:checked+.slider:before {
     margin: 0;
     background: #5c555580;
     z-index: 1000000000000000;
-    justify-content: center;
-    align-items: center;
-    display: flex;
 }
 
 .text-rich:has(.rich-card-editor--docked) {
     background: transparent;
-    align-items: flex-end;
     pointer-events: none;
-}
-
-.text-rich:has(.rich-card-editor--docked) .rich-card-editor--docked {
-    pointer-events: auto;
 }
 
 .text-rich .text-rich-content {

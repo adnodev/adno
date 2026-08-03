@@ -83,7 +83,7 @@ class AdnoMdEditor extends Component {
             el: document.querySelector('#editor'),
             initialValue: this.getAnnoBody(),
             previewStyle: "vertical",
-            height: "600px",
+            height: "100%",
             initialEditType: "wysiwyg",
             usageStatistics: false,
             placeholder: this.props.t("editor.placeholder"),
@@ -272,8 +272,8 @@ class AdnoMdEditor extends Component {
 
         return (
             <div className={tab === 'zones'
-                ? "card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor rich-card-editor--docked"
-                : "card w-full max-w-4xl bg-base-100 shadow-xl rich-card-editor"}>
+                ? "card bg-base-100 shadow-xl rich-card-editor rich-card-editor--docked"
+                : "card bg-base-100 shadow-xl rich-card-editor"}>
                 <div className="card-body">
                     <button type="button" className="btn btn-square btn-sm" onClick={() => this.props.closeMdEditor()}
                         style={{
@@ -287,6 +287,8 @@ class AdnoMdEditor extends Component {
                         <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} translate={this.props.t} />
                     </div>
 
+                    <div id="editor" style={{ display: tab === 'editor' ? 'block' : 'none' }}></div>
+
                     {tab === 'editor' &&
                         <OrientationPicker
                             rotation={this.state.rotation}
@@ -296,8 +298,6 @@ class AdnoMdEditor extends Component {
                             setCutout={cutout => this.setState({ cutout })}
                             translate={this.props.t} />
                     }
-
-                    <div id="editor" style={{ display: tab === 'editor' ? 'block' : 'none' }}></div>
 
                     {tab === 'tags' && <div style={{ height: '600px' }}>
                         <div className="editor-tags">
@@ -398,7 +398,7 @@ class AdnoMdEditor extends Component {
 function OrientationPicker({ rotation, setRotation, capture, cutout, setCutout, translate }) {
     const isFreeAngle = rotation !== null && !QUARTER_TURNS.includes(rotation)
 
-    return <div className="editor-orientation mb-4">
+    return <div className="editor-orientation mt-4">
         <div className="label font-medium">
             <span className="label-text">{translate('editor.orientation')}</span>
         </div>

@@ -1014,41 +1014,43 @@
   overflow: auto;
 }
 
-@media (min-device-width: 768px) {
-  .rich-card-editor {
-    width: 80vw;
-    max-height: 80vh;
-    background-color: #fff !important;
-    border-radius: 10px !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    display: flex !important;
-  }
+
+.text-rich .rich-card-editor {
+  position: absolute;
+  top: 58px;
+  left: 350px;
+  width: 50vw;
+  height: calc(100vh - 58px);
+  margin: 0;
+  border-radius: 0 !important;
+  pointer-events: auto;
+  animation: rich-card-open 180ms ease-out;
 }
 
-@media (max-device-width: 768px) {
-  .rich-card-editor {
-    width: 90vw;
-    max-height: 70vh;
-    border-radius: 8px;
-    padding: 20px;
+@keyframes rich-card-open {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
   }
-}
-
-@media (max-device-width: 480px) {
-  .rich-card-editor {
-    width: 100vw;
-    max-height: auto;
-    border-radius: 5px;
-    padding: 15px;
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
 .rich-card-editor .card-body {
   width: 100%;
-  max-height: 85vh;
+  height: 100%;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
   overflow: auto;
+}
+
+.rich-card-editor #editor {
+  flex: 1 1 0;
+  height: 0;
+  min-height: 200px;
 }
 
 .rich-card-editor-btns {
@@ -1112,12 +1114,30 @@
 }
 
 
-.rich-card-editor--docked {
-  border-radius: 12px 12px 0 0;
+.text-rich .rich-card-editor--docked {
+  top: auto;
+  bottom: 0;
+  right: 0;
+  width: auto;
+  height: auto;
+  min-height: 0;
   border-top: 1px solid #d4d4d8;
+  animation: rich-card-rise 180ms ease-out;
+}
+
+@keyframes rich-card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .rich-card-editor--docked .card-body {
+  height: auto;
   max-height: 38vh;
 }
 
