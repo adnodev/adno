@@ -208,7 +208,7 @@
         "redo": "Rétablir l'action annulée",
         "back_home": "Retourner à l'accueil",
         "download_project": "Télécharger le projet",
-        "export_project_to_iiif": "IIIF",
+        "export_project_to_iiif": "IIIF v3",
         "edit_project": "Editer les métadonnées",
         "show_metadatas": "Voir les métadonnées",
         "all_metadata": "Toutes les métadonnées",

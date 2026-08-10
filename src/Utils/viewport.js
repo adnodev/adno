@@ -7,6 +7,7 @@ const PENDING_TURN = "adnoPendingTurn"
 const LAST_VIEW = "adnoLastView"
 const PAN_TIMEOUT = 1500
 const ANGLE_EPSILON = 0.5
+const BOUNDS_PADDING = 0.08
 
 function prefersReducedMotion() {
     return typeof window.matchMedia === "function"
@@ -19,7 +20,7 @@ function isSettled(viewport) {
         && viewport.zoomSpring.isAtTargetValue()
 }
 
-export function annotationBounds(viewer, annotationId) {
+export function annotationBounds(viewer, annotationId, padding = 0) {
     const wanted = parseShadowId(annotationId).id
 
     const boxes = annotationShapes()
@@ -37,7 +38,17 @@ export function annotationBounds(viewer, annotationId) {
     const right = Math.max(...boxes.map(box => box.x + box.width))
     const bottom = Math.max(...boxes.map(box => box.y + box.height))
 
-    return viewer.viewport.imageToViewportRectangle(left, top, right - left, bottom - top)
+    const width = right - left
+    const height = bottom - top
+    const marginX = width * padding
+    const marginY = height * padding
+
+    return viewer.viewport.imageToViewportRectangle(
+        left - marginX,
+        top - marginY,
+        width + marginX * 2,
+        height + marginY * 2
+    )
 }
 
 function cancelPendingTurn(viewer) {
@@ -51,14 +62,14 @@ function cancelPendingTurn(viewer) {
 }
 
 export function applyAnnotationView(viewer, annotorious, annotation, options = {}) {
-    const { defaultRotation = 0, transition = "turn" } = options
+    const { defaultRotation = 0, transition = "turn", padded = false } = options
     const viewport = viewer.viewport
 
     cancelPendingTurn(viewer)
 
     viewer[LAST_VIEW] = { annotation, options }
 
-    const bounds = annotationBounds(viewer, annotation.id)
+    const bounds = annotationBounds(viewer, annotation.id, padded ? BOUNDS_PADDING : 0)
 
     if (!bounds) {
         annotorious.fitBounds(annotation.id)

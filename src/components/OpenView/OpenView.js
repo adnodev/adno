@@ -302,7 +302,8 @@ class OpenView extends Component {
 
             applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
                 defaultRotation: this.props.defaultRotation,
-                transition: this.props.rotationTransition
+                transition: this.props.rotationTransition,
+                padded: true
             })
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)

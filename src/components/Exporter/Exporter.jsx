@@ -45,18 +45,19 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
                 </p>
                 <p className="my-3 text-center font-bold">{translate('navbar.export_project_to')}</p>
                 <div className="flex gap-3 justify-center items-center">
+
+                    <label className="btn btn-success" onClick={() => {
+                        exportIIIF()
+                    }
+                    }>
+                        {translate('navbar.export_project_to_iiif')}
+                    </label>
+                    ou
                     <label className="btn btn-success">
                         {selectedProject &&
                             selectedProject.id &&
                             <DownloadLink selectedProject={selectedProject} translate={translate} />
                         }
-                    </label>
-                    ou
-                    <label className="btn btn-success" onClick={() => {
-                        exportIIIF()
-                    }
-                    }>
-                        {translate('navbar.export_project_to_iiif')}<span className="badge badge-md ms-2">BETA</span>
                     </label>
                 </div>
                 <a id="downloadAnchorElem" className="hidden"></a>

@@ -131,7 +131,7 @@
         "view_mode": "Lectura",
         "edit_mode_help": "Modo edición",
         "view_mode_help": "Modo lectura",
-        "export_project_to_iiif": "IIIF"
+        "export_project_to_iiif": "IIIF v3"
     },
     "new_project": {
         "add_info": "Complete su proyecto"

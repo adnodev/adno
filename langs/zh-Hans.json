@@ -208,7 +208,7 @@
         "redo": "重做已撤销的操作",
         "back_home": "返回主页",
         "download_project": "下载项目",
-        "export_project_to_iiif": "IIIF",
+        "export_project_to_iiif": "IIIF v3",
         "edit_project": "编辑项目元数据",
         "show_metadatas": "显示元数据",
         "all_metadata": "所有元数据",

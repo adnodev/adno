@@ -208,7 +208,7 @@
         "redo": "重做已復原的動作",
         "back_home": "返回首頁",
         "download_project": "下載專案",
-        "export_project_to_iiif": "IIIF",
+        "export_project_to_iiif": "IIIF v3",
         "edit_project": "編輯專案詮釋資料",
         "show_metadatas": "顯示詮釋資料",
         "all_metadata": "所有詮釋資料",

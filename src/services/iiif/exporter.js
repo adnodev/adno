@@ -1,5 +1,8 @@
 import { enhancedFetch } from "../../Utils/utils"
 import { getTargets } from "../../Utils/targets"
+import { projectImages } from "../../Utils/images"
+
+const EXCLUDED_METADATA = ['settings', 'id', 'manifest_url', 'img_url', 'images', 'annotations']
 
 export const exportToIIIF = async (state) => {
     const {
@@ -10,13 +13,10 @@ export const exportToIIIF = async (state) => {
 
     const adnoSettings = btoa(JSON.stringify(settings, null, 4));
 
-    const manifest = await enhancedFetch(selectedProject.manifest_url)
-        .then(rawResponse => rawResponse.response.text())
-        .then(data => {
-            const manifest = data ? JSON.parse(data) : {};
-            // TODO - manage error
-            return manifest
-        })
+    const image = projectImages(selectedProject)[0]
+    const isIIIF = image && image.type === 'iiif'
+    const imageId = image ? image.source.replace(/\/info\.json$/, '') : ''
+    const { width, height } = await imageSize(image)
 
     const content = {
         "@context": "http://iiif.io/api/presentation/3/context.json",
@@ -25,7 +25,7 @@ export const exportToIIIF = async (state) => {
         "type": "Manifest",
         "metadata": [
             ...Object.entries(selectedProject)
-                .filter(([key, value]) => !['settings', 'id', 'manifest_url'].includes(key) && ("" + value)?.length > 0)
+                .filter(([key, value]) => !EXCLUDED_METADATA.includes(key) && ("" + value)?.length > 0)
                 .map(([key, value]) => ({
                     label: {
                         en: [
@@ -63,8 +63,8 @@ export const exportToIIIF = async (state) => {
             {
                 "id": `https://example.com/canvas-1`,
                 "type": "Canvas",
-                "height": manifest.height,
-                "width": manifest.width,
+                "height": height,
+                "width": width,
                 "items": [
                     {
                         "id": `https://example.com/annotation-page/canvas-1/annopage-1`,
@@ -75,18 +75,20 @@ export const exportToIIIF = async (state) => {
                                 "type": "Annotation",
                                 "motivation": "painting",
                                 "body": {
-                                    "id": selectedProject.manifest_url.replace('/info.json', ''),
+                                    "id": imageId,
                                     "type": "Image",
-                                    "format": "image/jpeg",
-                                    "service": [
-                                        {
-                                            "id": selectedProject.manifest_url.replace('/info.json', ''),
-                                            "type": "ImageService3",
-                                            "profile": "level1"
-                                        }
-                                    ],
-                                    "height": manifest.height,
-                                    "width": manifest.width,
+                                    "format": imageFormat(imageId),
+                                    ...(isIIIF ? {
+                                        "service": [
+                                            {
+                                                "id": imageId,
+                                                "type": "ImageService3",
+                                                "profile": "level1"
+                                            }
+                                        ]
+                                    } : {}),
+                                    "height": height,
+                                    "width": width,
                                 },
                                 "target": `https://example.com/canvas-1`
                             },
@@ -127,6 +129,41 @@ export const exportToIIIF = async (state) => {
     }
 
     return content
+}
+
+async function imageSize(image) {
+    if (!image) {
+        return {}
+    }
+
+    return image.type === 'iiif' ? infoSize(image.source) : measureImage(image.source)
+}
+
+async function infoSize(source) {
+    const url = source.endsWith('info.json') ? source : `${source}/info.json`
+    const fetched = await enhancedFetch(url)
+    const response = fetched && fetched.response
+
+    if (!response || typeof response.json !== 'function') {
+        return {}
+    }
+
+    return response.json()
+        .then(info => ({ width: info.width, height: info.height }))
+        .catch(() => ({}))
+}
+
+function measureImage(source) {
+    return new Promise(resolve => {
+        const image = new Image()
+        image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight })
+        image.onerror = () => resolve({})
+        image.src = source
+    })
+}
+
+function imageFormat(source) {
+    return /\.png$/i.test(source) ? 'image/png' : 'image/jpeg'
 }
 
 function extractTargetAndSelector(annotation) {

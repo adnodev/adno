@@ -542,7 +542,8 @@ class AdnoEmbed extends Component {
     focusAnnotation = (annotation) => {
         applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
             defaultRotation: this.state.defaultRotation,
-            transition: this.state.rotationTransition
+            transition: this.state.rotationTransition,
+            padded: true
         })
     }
 
