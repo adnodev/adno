@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
+import { ensureTargetGroups } from "../../Utils/groups";
 import { exportToIIIF } from "../../services/iiif/exporter";
 import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
@@ -55,7 +56,7 @@ const Project = ({ editMode }) => {
             setState(prev => ({
                 ...prev,
                 selectedProject: project,
-                annotations: project.annotations,
+                annotations: ensureTargetGroups(project.annotations),
                 settings: project.settings || defaultProjectSettings()
             }));
         };

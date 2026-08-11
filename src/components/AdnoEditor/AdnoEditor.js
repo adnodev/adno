@@ -17,6 +17,7 @@ import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { preserveTargetRotation } from "../../Utils/orientation";
+import { buildTargetId, preserveTargetId, targetGroupId } from "../../Utils/groups";
 import { imageTileSource, projectImages } from "../../Utils/images";
 import { addTarget, getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
@@ -91,11 +92,15 @@ class AdnoEditor extends Component {
         // Event triggered by using saveSelected annotorious function
         this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
             const image = this.images()[this.props.currentImageIndex]
-            const target = image
-                ? { ...newAnnotation.target, source: image.source }
-                : newAnnotation.target
-            const created = { ...newAnnotation, target }
             const pendingId = this.props.pendingZoneAnnotationId
+            const host = pendingId ? this.props.annotations.find(anno => anno.id === pendingId) : null
+            const siblings = getTargets(host)
+            const target = {
+                ...newAnnotation.target,
+                ...(image ? { source: image.source } : {}),
+                id: buildTargetId(targetGroupId(siblings[siblings.length - 1]), pendingId || newAnnotation.id)
+            }
+            const created = { ...newAnnotation, target }
 
             const annotations = pendingId
                 ? this.props.annotations.map(anno => anno.id === pendingId ? addTarget(anno, target) : anno)
@@ -276,7 +281,8 @@ class AdnoEditor extends Component {
             return
         }
 
-        const target = preserveTargetRotation(getTargets(base)[index], newTarget)
+        const previous = getTargets(base)[index]
+        const target = preserveTargetId(previous, preserveTargetRotation(previous, newTarget))
 
         this.setState({
             isMovingItem: true,
