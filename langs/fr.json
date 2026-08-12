@@ -133,7 +133,9 @@
         "expand_images": "Afficher les images",
         "add_zone_hint": "Dessinez une zone pour l’ajouter à l’annotation",
         "add_zone_cancel": "Annuler",
-        "zones_hint": "Une annotation garde au moins une zone. Supprimez l’annotation elle-même pour retirer la dernière."
+        "zones_hint": "Une annotation garde au moins une zone. Supprimez l’annotation elle-même pour retirer la dernière.",
+        "editor_hint": "Rédigez le contenu de l’annotation, puis enregistrez.",
+        "audio_hint": "Associez une piste audio jouée avec cette annotation."
     },
     "visualizer": {
         "expand": "Mettre en plein écran",

@@ -186,11 +186,6 @@ input:checked+.slider:before {
     z-index: 1000000000000000;
 }
 
-.text-rich:has(.rich-card-editor--docked) {
-    background: transparent;
-    pointer-events: none;
-}
-
 .text-rich .text-rich-content {
     width: 90vw;
     height: 70vh;

@@ -200,17 +200,15 @@ const Project = ({ editMode }) => {
             )}
 
             {state.updateAnnotation && selectedAnnotation && (
-                <div className="text-rich">
-                    <AdnoMdEditor
-                        updateAnnos={(annos) => handleChanges({ annotations: annos })}
-                        closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false }))}
-                        selectedAnnotation={selectedAnnotation}
-                        selectedProjectId={id}
-                        annotations={annotations}
-                        changeSelectedAnno={selectAnnotation}
-                        getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
-                    />
-                </div>
+                <AdnoMdEditor
+                    updateAnnos={(annos) => handleChanges({ annotations: annos })}
+                    closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false }))}
+                    selectedAnnotation={selectedAnnotation}
+                    selectedProjectId={id}
+                    annotations={annotations}
+                    changeSelectedAnno={selectAnnotation}
+                    getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
+                />
             )}
 
             {state.showFullAnnotationView && (

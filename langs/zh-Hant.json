@@ -133,7 +133,9 @@
         "expand_images": "顯示圖像",
         "add_zone_hint": "繪製一個區域以加入該註釋",
         "add_zone_cancel": "取消",
-        "zones_hint": "註釋至少保留一個區域。要移除最後一個，請刪除該註釋。"
+        "zones_hint": "註釋至少保留一個區域。要移除最後一個，請刪除該註釋。",
+        "editor_hint": "撰寫註釋內容，然後儲存。",
+        "audio_hint": "關聯隨此註釋播放的音軌。"
     },
     "visualizer": {
         "expand": "進入全螢幕",

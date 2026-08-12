@@ -64,7 +64,9 @@
         "expand_images": "Mostrar las imágenes",
         "add_zone_hint": "Dibuje una zona para añadirla a la anotación",
         "add_zone_cancel": "Cancelar",
-        "zones_hint": "Una anotación conserva al menos una zona. Elimine la anotación para quitar la última."
+        "zones_hint": "Una anotación conserva al menos una zona. Elimine la anotación para quitar la última.",
+        "editor_hint": "Escribe el contenido de la anotación y guarda.",
+        "audio_hint": "Asocia una pista de audio reproducida con esta anotación."
     },
     "errors": {
         "error_found": "Error detectado",
