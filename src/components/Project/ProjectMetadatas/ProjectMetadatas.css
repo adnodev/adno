@@ -17,8 +17,9 @@
     height: 80vh;
     background-color: #fff;
     border-radius: 10px;
+    padding-top: 12px;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     display: flex;
 }
