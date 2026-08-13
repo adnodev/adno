@@ -22,8 +22,8 @@ import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
 import { normalizeAngle } from '../../Utils/orientation';
 import { withGroupCutout } from '../../Utils/cutout';
-import { removeTargetAt } from '../../Utils/targets';
-import { nextGroupId, withGroupRotation } from '../../Utils/groups';
+import { getTargets, removeTargetAt } from '../../Utils/targets';
+import { movedTargetIndex, moveTarget, nextGroupId, targetIndexOf, withGroupOrder, withGroupRotation } from '../../Utils/groups';
 import { ZoneGroups } from './ZoneGroups';
 
 const locale = navigator.language;
@@ -286,6 +286,27 @@ class AdnoMdEditor extends Component {
         this.props.startPendingZone(this.props.selectedAnnotation.id, groupId)
     }
 
+    moveZone = (fromIndex, toIndex, groupId) => {
+        const annotation = this.props.selectedAnnotation
+        const selected = this.props.selectedTargetIndex
+        const current = getTargets(annotation)[selected]
+        const next = moveTarget(annotation, fromIndex, toIndex, groupId)
+
+        this.persist(next)
+        this.props.changeSelectedAnno(next, selected === fromIndex
+            ? movedTargetIndex(fromIndex, toIndex)
+            : targetIndexOf(next, current))
+    }
+
+    orderGroups = (order) => {
+        const annotation = this.props.selectedAnnotation
+        const current = getTargets(annotation)[this.props.selectedTargetIndex]
+        const next = withGroupOrder(annotation, order)
+
+        this.persist(next)
+        this.props.changeSelectedAnno(next, targetIndexOf(next, current))
+    }
+
     setGroupRotation = (groupId, degrees) => {
         this.persist(withGroupRotation(this.props.selectedAnnotation, groupId, degrees))
     }
@@ -354,6 +375,8 @@ class AdnoMdEditor extends Component {
                                 removeZone={this.removeZone}
                                 addGroup={this.addGroup}
                                 addZone={this.addZone}
+                                moveZone={this.moveZone}
+                                orderGroups={this.orderGroups}
                                 setRotation={this.setGroupRotation}
                                 captureRotation={this.captureGroupRotation}
                                 setCutout={this.setGroupCutout}

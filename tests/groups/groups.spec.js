@@ -101,6 +101,19 @@ async function savedTargets(page) {
     return saved.annotations[0].target;
 }
 
+/**
+ * Open the annotation panel and switch to its Zones tab, which is the second
+ * of the four tabs in the strip.
+ *
+ * @param {import('@playwright/test').Page} page
+ */
+async function openZonesTab(page) {
+    await page.locator('.anno-card').first().click();
+    await expect(page.locator('.rich-card-editor')).toBeVisible();
+    await page.locator('.rich-card-tab').nth(1).click();
+    await expect(page.locator('.zone-groups')).toBeVisible();
+}
+
 test.afterEach(async ({ page }) => {
     await clearProjectsDB(page, [PROJECT_ID]);
 });
@@ -133,5 +146,57 @@ test.describe('Group ids across an edit round-trip', () => {
 
         expect(targets[1].selector.refinedBy).toEqual({ type: 'ImageApiSelector', rotation: '180' });
         expect(targets[0].selector.refinedBy).toBeUndefined();
+    });
+});
+
+test.describe('The grouped zones tab', () => {
+
+    test('each group gets its own card, letter and chips', async ({ page }) => {
+        await openEditor(page);
+        await openZonesTab(page);
+
+        await expect(page.locator('.zone-group')).toHaveCount(2);
+        await expect(page.locator('.zone-group-badge')).toHaveText(['A', 'B']);
+        await expect(page.locator('.zone-group').nth(0).locator('.zone-row[data-zone-index]')).toHaveCount(1);
+        await expect(page.locator('.zone-group').nth(1).locator('.zone-row[data-zone-index]')).toHaveCount(1);
+    });
+
+    test('an orientation set on one group leaves the other alone', async ({ page }) => {
+        await openEditor(page);
+        await openZonesTab(page);
+
+        await page.locator('.zone-group').nth(0).locator('.zone-group-rotation').selectOption('90');
+        await page.waitForTimeout(800);
+
+        const targets = await savedTargets(page);
+
+        expect(targets[0].selector.refinedBy).toEqual({ type: 'ImageApiSelector', rotation: '90' });
+        expect(targets[1].selector.refinedBy).toEqual({ type: 'ImageApiSelector', rotation: '180' });
+    });
+
+    test('the cutout flag is stored under the group it belongs to', async ({ page }) => {
+        await openEditor(page);
+        await openZonesTab(page);
+
+        await page.locator('.zone-group').nth(0).locator('.zone-group-cutout input').click();
+        await page.waitForTimeout(800);
+
+        const saved = await readProject(page, PROJECT_ID);
+
+        expect(saved.annotations[0].adno.cutouts).toEqual({ g1: true });
+    });
+
+    test('a group added from the panel stays out of the stored annotation', async ({ page }) => {
+        await openEditor(page);
+        await openZonesTab(page);
+
+        await page.locator('.zone-group-add').click();
+
+        await expect(page.locator('.zone-group')).toHaveCount(3);
+        await expect(page.locator('.zone-group-badge')).toHaveText(['A', 'B', 'C']);
+
+        const targets = await savedTargets(page);
+
+        expect(targets).toHaveLength(2);
     });
 });

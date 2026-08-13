@@ -136,7 +136,8 @@
         "zones_hint": "Une annotation garde au moins une zone. Supprimez l’annotation elle-même pour retirer la dernière.",
         "editor_hint": "Rédigez le contenu de l’annotation, puis enregistrez.",
         "audio_hint": "Associez une piste audio jouée avec cette annotation.",
-        "add_group": "Ajouter un groupe"
+        "add_group": "Ajouter un groupe",
+        "move_group": "Réordonner ce groupe"
     },
     "visualizer": {
         "expand": "Mettre en plein écran",

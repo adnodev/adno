@@ -1,4 +1,4 @@
-import { getTargets, replaceTargetAt, targetBox, withTargets } from "./targets"
+import { getTargets, targetBox, withTargets } from "./targets"
 import { getTargetRotation, withTargetRotation } from "./orientation"
 
 const GROUP_SEPARATOR = '@'
@@ -104,12 +104,37 @@ export function withGroupRotation(annotation, groupId, degrees) {
         targetGroupId(target) === groupId ? withTargetRotation(target, degrees) : target))
 }
 
-export function moveTargetToGroup(annotation, index, groupId) {
-    const target = getTargets(annotation)[index]
+export function movedTargetIndex(fromIndex, toIndex) {
+    return toIndex > fromIndex ? toIndex - 1 : toIndex
+}
 
-    if (!target) {
+export function moveTarget(annotation, fromIndex, toIndex, groupId) {
+    const targets = getTargets(annotation)
+    const moving = targets[fromIndex]
+
+    if (!moving) {
         return annotation
     }
 
-    return replaceTargetAt(annotation, index, { ...target, id: buildTargetId(groupId, annotation.id) })
+    const stamped = groupId && targetGroupId(moving) !== groupId
+        ? { ...moving, id: buildTargetId(groupId, annotation.id) }
+        : moving
+
+    const without = targets.filter((_, index) => index !== fromIndex)
+    const at = movedTargetIndex(fromIndex, toIndex)
+
+    return withTargets(annotation, [...without.slice(0, at), stamped, ...without.slice(at)])
+}
+
+export function targetIndexOf(annotation, target) {
+    return Math.max(0, getTargets(annotation).findIndex(item => item === target))
+}
+
+export function withGroupOrder(annotation, order) {
+    const groups = deriveGroups(annotation)
+    const ranked = order.map(id => groups.find(group => group.id === id)).filter(Boolean)
+    const rest = groups.filter(group => !order.includes(group.id))
+
+    return withTargets(annotation, [...ranked, ...rest]
+        .flatMap(group => group.targets.map(entry => entry.target)))
 }
