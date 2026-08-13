@@ -1138,3 +1138,75 @@
   background: #f4f4f5;
   border-radius: 4px;
 }
+
+.zone-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zone-group {
+  border: 1px solid #d4d4d8;
+  border-left: 4px solid #d4d4d8;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.zone-group-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.zone-group-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.zone-group-count {
+  font-size: 12px;
+  color: #6a737d;
+}
+
+.zone-group-rotation {
+  height: 26px;
+  min-height: 26px;
+  font-size: 12px;
+  padding: 0 6px;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  margin-left: auto;
+}
+
+.zone-group-cutout {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.zone-row--current {
+  border-color: #71719d;
+  box-shadow: 0 0 0 1px #71719d;
+}
+
+.zone-row--add {
+  justify-content: center;
+  width: 44px;
+  border-style: dashed;
+  color: #6a737d;
+}
+
+.zone-group-add {
+  align-self: flex-start;
+}

@@ -1,7 +1,7 @@
 import { Component, createRef } from 'react';
 
 // Import FontAwesome
-import { faCrosshairs, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Select from 'react-select/creatable';
@@ -20,14 +20,13 @@ import '@toast-ui/editor/dist/i18n/es-es';
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
-import { getAnnotationRotation, normalizeAngle, withAnnotationRotation } from '../../Utils/orientation';
-import { getAnnotationCutout, withAnnotationCutout } from '../../Utils/cutout';
-import { getTargets, removeTargetAt } from '../../Utils/targets';
-import { ZonePreview } from './ZonePreview';
+import { normalizeAngle } from '../../Utils/orientation';
+import { withGroupCutout } from '../../Utils/cutout';
+import { removeTargetAt } from '../../Utils/targets';
+import { nextGroupId, withGroupRotation } from '../../Utils/groups';
+import { ZoneGroups } from './ZoneGroups';
 
 const locale = navigator.language;
-
-const QUARTER_TURNS = [0, 90, 180, 270];
 
 const AUDIO_TYPES = [
     'audio/mpeg',
@@ -57,8 +56,7 @@ class AdnoMdEditor extends Component {
             markdown: [],
             tab: 'editor',
             existingTags: this.computeExistingTags(),
-            rotation: getAnnotationRotation(this.props.selectedAnnotation),
-            cutout: getAnnotationCutout(this.props.selectedAnnotation)
+            draftGroupId: null
         }
 
         this.panelRef = createRef()
@@ -110,16 +108,6 @@ class AdnoMdEditor extends Component {
 
         this.drag = null
         event.currentTarget.releasePointerCapture(event.pointerId)
-    }
-
-    captureCurrentRotation = () => {
-        const current = this.props.getViewerRotation && this.props.getViewerRotation()
-
-        if (current === null || current === undefined) {
-            return
-        }
-
-        this.setState({ rotation: normalizeAngle(Math.round(current)) })
     }
 
     computeSelectedTags = () => {
@@ -213,9 +201,6 @@ class AdnoMdEditor extends Component {
             currentSelectedAnno.body = [...newBody, audioBody];
         }
 
-        currentSelectedAnno = withAnnotationRotation(currentSelectedAnno, this.state.rotation)
-        currentSelectedAnno = withAnnotationCutout(currentSelectedAnno, this.state.cutout)
-
         if (annos.find(anno => anno.id === currentSelectedAnno.id)) {
             const idx = annos.findIndex(anno => anno.id === currentSelectedAnno.id);
             annos[idx] = currentSelectedAnno;
@@ -279,10 +264,9 @@ class AdnoMdEditor extends Component {
         }
     }
 
-    removeZone = (index) => {
-        const selected = this.props.selectedAnnotation
+    persist = (annotation) => {
         const annotations = this.props.annotations.map(anno =>
-            anno.id === selected.id ? removeTargetAt(anno, index) : anno)
+            anno.id === annotation.id ? annotation : anno)
 
         projectDB.updateAnnotations(this.props.selectedProjectId, annotations)
             .then(() => {
@@ -290,9 +274,38 @@ class AdnoMdEditor extends Component {
             })
     }
 
+    removeZone = (index) => {
+        this.persist(removeTargetAt(this.props.selectedAnnotation, index))
+    }
+
+    addGroup = () => {
+        this.setState({ draftGroupId: nextGroupId(this.props.selectedAnnotation) })
+    }
+
+    addZone = (groupId) => {
+        this.props.startPendingZone(this.props.selectedAnnotation.id, groupId)
+    }
+
+    setGroupRotation = (groupId, degrees) => {
+        this.persist(withGroupRotation(this.props.selectedAnnotation, groupId, degrees))
+    }
+
+    captureGroupRotation = (groupId) => {
+        const current = this.props.getViewerRotation && this.props.getViewerRotation()
+
+        if (current === null || current === undefined) {
+            return
+        }
+
+        this.setGroupRotation(groupId, normalizeAngle(Math.round(current)))
+    }
+
+    setGroupCutout = (groupId, enabled) => {
+        this.persist(withGroupCutout(this.props.selectedAnnotation, groupId, enabled))
+    }
+
     render() {
         const { tab } = this.state
-        const zones = getTargets(this.props.selectedAnnotation)
         const current = TABS.find(item => item.name === tab)
 
         return (
@@ -332,36 +345,19 @@ class AdnoMdEditor extends Component {
                     <div className="rich-card-pane">
                         <div id="editor" style={{ display: tab === 'editor' ? 'block' : 'none' }}></div>
 
-                        {tab === 'editor' &&
-                            <OrientationPicker
-                                rotation={this.state.rotation}
-                                setRotation={rotation => this.setState({ rotation })}
-                                capture={() => this.captureCurrentRotation()}
-                                cutout={this.state.cutout}
-                                setCutout={cutout => this.setState({ cutout })}
-                                translate={this.props.t} />
-                        }
-
                         {tab === 'zones' &&
-                            <div className="zone-list">
-                                {zones.map((target, index) =>
-                                    <div className="zone-row" key={`zone-${index}`}
-                                        onClick={() => this.props.changeSelectedAnno(this.props.selectedAnnotation, index)}>
-                                        <ZonePreview target={target} />
-                                        <button type="button"
-                                            className="btn btn-sm btn-outline btn-error"
-                                            disabled={zones.length < 2}
-                                            onClick={event => {
-                                                event.stopPropagation()
-                                                this.removeZone(index)
-                                            }}>
-                                            <div className="tooltip tooltip-left z-50" data-tip={this.props.t('annotation.delete_zone')}>
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </div>
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                            <ZoneGroups
+                                annotation={this.props.selectedAnnotation}
+                                draftGroupId={this.state.draftGroupId}
+                                selectedTargetIndex={this.props.selectedTargetIndex}
+                                pickZone={index => this.props.changeSelectedAnno(this.props.selectedAnnotation, index)}
+                                removeZone={this.removeZone}
+                                addGroup={this.addGroup}
+                                addZone={this.addZone}
+                                setRotation={this.setGroupRotation}
+                                captureRotation={this.captureGroupRotation}
+                                setCutout={this.setGroupCutout}
+                                translate={this.props.t} />
                         }
 
                         {tab === 'tags' &&
@@ -417,49 +413,6 @@ class AdnoMdEditor extends Component {
         )
     }
 }
-
-function OrientationPicker({ rotation, setRotation, capture, cutout, setCutout, translate }) {
-    const isFreeAngle = rotation !== null && !QUARTER_TURNS.includes(rotation)
-
-    return <div className="editor-orientation mt-4">
-        <div className="label font-medium">
-            <span className="label-text">{translate('editor.orientation')}</span>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap mb-2">
-            <button type="button"
-                className={rotation === null ? "btn btn-sm" : "btn btn-sm btn-outline"}
-                onClick={() => setRotation(null)}>
-                {translate('editor.orientation_inherit')}
-            </button>
-            {QUARTER_TURNS.map(degrees => (
-                <button type="button"
-                    key={degrees}
-                    className={rotation === degrees ? "btn btn-sm" : "btn btn-sm btn-outline"}
-                    onClick={() => setRotation(degrees)}>
-                    {degrees}&deg;
-                </button>
-            ))}
-            <button type="button"
-                className={isFreeAngle ? "btn btn-sm" : "btn btn-sm btn-outline"}
-                onClick={() => capture()}>
-                <FontAwesomeIcon icon={faCrosshairs} /> &nbsp; {translate('editor.orientation_capture')}
-                {isFreeAngle && <>&nbsp; ({rotation}&deg;)</>}
-            </button>
-        </div>
-
-        <label className="cursor-pointer flex items-center gap-2">
-            <input type="checkbox"
-                className="toggle toggle-sm"
-                checked={cutout}
-                onChange={() => setCutout(!cutout)} />
-            <span className="label-text">{translate('editor.cutout')}</span>
-        </label>
-        <div className="label">
-            <span className="label-text-alt">{translate('editor.cutout_hint')}</span>
-        </div>
-    </div>
-}
-
 
 const NoOptionsMessage = ({ t }) => {
     return (

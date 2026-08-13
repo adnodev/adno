@@ -92,13 +92,15 @@ class AdnoEditor extends Component {
         // Event triggered by using saveSelected annotorious function
         this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
             const image = this.images()[this.props.currentImageIndex]
-            const pendingId = this.props.pendingZoneAnnotationId
+            const pending = this.props.pendingZone
+            const pendingId = pending ? pending.annotationId : null
             const host = pendingId ? this.props.annotations.find(anno => anno.id === pendingId) : null
             const siblings = getTargets(host)
+            const groupId = (pending && pending.groupId) || targetGroupId(siblings[siblings.length - 1])
             const target = {
                 ...newAnnotation.target,
                 ...(image ? { source: image.source } : {}),
-                id: buildTargetId(targetGroupId(siblings[siblings.length - 1]), pendingId || newAnnotation.id)
+                id: buildTargetId(groupId, pendingId || newAnnotation.id)
             }
             const created = { ...newAnnotation, target }
 
@@ -346,7 +348,7 @@ class AdnoEditor extends Component {
         return <>
             <div className="editor-stage">
                 <div className="editor-viewer">
-                    {this.props.pendingZoneAnnotationId &&
+                    {this.props.pendingZone &&
                         <div className="pending-zone">
                             <span>{this.props.t('editor.add_zone_hint')}</span>
                             <button className="btn btn-xs" onClick={() => this.props.endPendingZone()}>

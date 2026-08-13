@@ -135,7 +135,8 @@
         "add_zone_cancel": "取消",
         "zones_hint": "註釋至少保留一個區域。要移除最後一個，請刪除該註釋。",
         "editor_hint": "撰寫註釋內容，然後儲存。",
-        "audio_hint": "關聯隨此註釋播放的音軌。"
+        "audio_hint": "關聯隨此註釋播放的音軌。",
+        "add_group": "新增群組"
     },
     "visualizer": {
         "expand": "進入全螢幕",

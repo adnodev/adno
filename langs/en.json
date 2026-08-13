@@ -135,7 +135,8 @@
         "add_zone_cancel": "Cancel",
         "zones_hint": "An annotation keeps at least one zone. Delete the annotation itself to remove the last one.",
         "editor_hint": "Write the annotation content, then save.",
-        "audio_hint": "Link an audio track played alongside this annotation."
+        "audio_hint": "Link an audio track played alongside this annotation.",
+        "add_group": "Add a group"
     },
     "visualizer": {
         "expand": "Enter full screen",

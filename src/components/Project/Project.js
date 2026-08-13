@@ -31,7 +31,7 @@ const Project = ({ editMode }) => {
         annotations: [],
         selectedProject: undefined,
         currentImageIndex: 0,
-        pendingZoneAnnotationId: null,
+        pendingZone: null,
         sidebarOpened: true,
         updateAnnotation: false,
         showProjectMetadatas: false,
@@ -207,6 +207,8 @@ const Project = ({ editMode }) => {
                     selectedProjectId={id}
                     annotations={annotations}
                     changeSelectedAnno={selectAnnotation}
+                    selectedTargetIndex={state.selectedTargetIndex}
+                    startPendingZone={(annotationId, groupId) => setState(prev => ({ ...prev, pendingZone: { annotationId, groupId } }))}
                     getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
                 />
             )}
@@ -236,8 +238,8 @@ const Project = ({ editMode }) => {
                             updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                             selectedAnno={selectedAnnotation}
                             changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
-                            pendingZoneAnnotationId={state.pendingZoneAnnotationId}
-                            startPendingZone={(annotationId) => setState(prev => ({ ...prev, pendingZoneAnnotationId: annotationId }))}
+                            pendingZone={state.pendingZone}
+                            startPendingZone={(annotationId, groupId) => setState(prev => ({ ...prev, pendingZone: { annotationId, groupId } }))}
                         />
                     </div>
                 )}
@@ -269,8 +271,8 @@ const Project = ({ editMode }) => {
                         selectedProject={state.selectedProject}
                         currentImageIndex={state.currentImageIndex}
                         changeImage={(index) => setState(prev => ({ ...prev, currentImageIndex: index }))}
-                        pendingZoneAnnotationId={state.pendingZoneAnnotationId}
-                        endPendingZone={() => setState(prev => ({ ...prev, pendingZoneAnnotationId: null }))}
+                        pendingZone={state.pendingZone}
+                        endPendingZone={() => setState(prev => ({ ...prev, pendingZone: null }))}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}

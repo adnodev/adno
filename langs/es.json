@@ -66,7 +66,8 @@
         "add_zone_cancel": "Cancelar",
         "zones_hint": "Una anotación conserva al menos una zona. Elimine la anotación para quitar la última.",
         "editor_hint": "Escribe el contenido de la anotación y guarda.",
-        "audio_hint": "Asocia una pista de audio reproducida con esta anotación."
+        "audio_hint": "Asocia una pista de audio reproducida con esta anotación.",
+        "add_group": "Añadir un grupo"
     },
     "errors": {
         "error_found": "Error detectado",

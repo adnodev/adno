@@ -135,7 +135,8 @@
         "add_zone_cancel": "取消",
         "zones_hint": "批注至少保留一个区域。要移除最后一个，请删除该批注。",
         "editor_hint": "撰写注释内容，然后保存。",
-        "audio_hint": "关联随此注释播放的音轨。"
+        "audio_hint": "关联随此注释播放的音轨。",
+        "add_group": "添加分组"
     },
     "visualizer": {
         "expand": "进入全屏",

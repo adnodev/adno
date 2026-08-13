@@ -154,7 +154,7 @@ class AnnotationCards extends Component {
                                             <button type="button"
                                                 id={`anno_add_zone_${annotation.id}`}
                                                 onClick={() => this.props.startPendingZone(annotation.id)}
-                                                className={this.props.pendingZoneAnnotationId === annotation.id ? "btn btn-sm btn-active" : "btn btn-sm"}>
+                                                className={this.props.pendingZone && this.props.pendingZone.annotationId === annotation.id ? "btn btn-sm btn-active" : "btn btn-sm"}>
                                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.add_zone')}>
                                                     <FontAwesomeIcon icon={faPlus} />
                                                     {zones > 1 && <span className="zone-count">{zones}</span>}
