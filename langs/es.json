@@ -68,7 +68,8 @@
         "editor_hint": "Escribe el contenido de la anotación y guarda.",
         "audio_hint": "Asocia una pista de audio reproducida con esta anotación.",
         "add_group": "Añadir un grupo",
-        "move_group": "Reordenar este grupo"
+        "move_group": "Reordenar este grupo",
+        "group_label": "Grupo {{letter}} · {{count}} zonas"
     },
     "errors": {
         "error_found": "Error detectado",

@@ -169,3 +169,10 @@
         margin-left: 25vw !important;
     }
 }
+
+.editor-split{
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 8px;
+}

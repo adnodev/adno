@@ -137,7 +137,8 @@
         "editor_hint": "Rédigez le contenu de l’annotation, puis enregistrez.",
         "audio_hint": "Associez une piste audio jouée avec cette annotation.",
         "add_group": "Ajouter un groupe",
-        "move_group": "Réordonner ce groupe"
+        "move_group": "Réordonner ce groupe",
+        "group_label": "Groupe {{letter}} · {{count}} zones"
     },
     "visualizer": {
         "expand": "Mettre en plein écran",

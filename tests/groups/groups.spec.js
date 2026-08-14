@@ -236,3 +236,31 @@ test.describe('Drawing into a group from the panel', () => {
         expect(strokes.sort()).toEqual(['rgb(196, 98, 42)', 'rgb(36, 81, 196)']);
     });
 });
+
+test.describe('The edit workspace split by group', () => {
+
+    test('every group but the active one gets a read-only panel', async ({ page }) => {
+        await openEditor(page);
+
+        await page.locator('.anno-card').first().locator('[data-icon="bullseye"]').click();
+        await page.waitForTimeout(1200);
+
+        await expect(page.locator('.group-panel')).toHaveCount(1);
+        await expect(page.locator('#group-osd-g2 canvas')).toBeVisible();
+        await expect(page.locator('.group-overlay-badge')).toContainText('B');
+    });
+
+    test('the workspace disappears once a single group is left', async ({ page }) => {
+        await openEditor(page);
+
+        await page.locator('.anno-card').first().locator('[data-icon="bullseye"]').click();
+        await expect(page.locator('.group-panel')).toHaveCount(1);
+
+        await openZonesTab(page);
+        await page.locator('.zone-group').nth(1).locator('.btn-error').click();
+        await page.waitForTimeout(1000);
+
+        await expect(page.locator('.zone-group')).toHaveCount(1);
+        await expect(page.locator('.group-panel')).toHaveCount(0);
+    });
+});

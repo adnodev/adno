@@ -137,7 +137,8 @@
         "editor_hint": "撰写注释内容，然后保存。",
         "audio_hint": "关联随此注释播放的音轨。",
         "add_group": "添加分组",
-        "move_group": "重新排序此分组"
+        "move_group": "重新排序此分组",
+        "group_label": "分组 {{letter}} · {{count}} 个区域"
     },
     "visualizer": {
         "expand": "进入全屏",
