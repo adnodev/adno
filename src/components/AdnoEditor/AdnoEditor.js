@@ -17,7 +17,7 @@ import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { preserveTargetRotation } from "../../Utils/orientation";
-import { buildTargetId, preserveTargetId, targetGroupId } from "../../Utils/groups";
+import { applyGroupColors, buildTargetId, preserveTargetId, targetGroupId } from "../../Utils/groups";
 import { imageTileSource, projectImages } from "../../Utils/images";
 import { addTarget, getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
@@ -78,7 +78,8 @@ class AdnoEditor extends Component {
             locale: 'auto',
             drawOnSingleClick: true,
             allowEmpty: true,
-            disableEditor: true
+            disableEditor: true,
+            disableSelect: true
         });
 
         this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
@@ -173,6 +174,7 @@ class AdnoEditor extends Component {
 
     componentWillUnmount() {
         this.unwatchResize?.()
+        cancelAnimationFrame(this._paintFrame)
     }
 
     images = () => projectImages(this.props.selectedProject)
@@ -206,6 +208,13 @@ class AdnoEditor extends Component {
         this._shadowSignature = signature
 
         this.AdnoAnnotorious.setAnnotations(shadows)
+        this.paintGroups()
+    }
+
+    paintGroups = () => {
+        cancelAnimationFrame(this._paintFrame)
+        this._paintFrame = requestAnimationFrame(() =>
+            applyGroupColors(this.openSeadragon.element, this.props.selectedAnno))
     }
 
     openImage = (index) => {
@@ -260,10 +269,12 @@ class AdnoEditor extends Component {
 
         applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
             defaultRotation: this.props.defaultRotation,
-            transition: this.props.rotationTransition
+            transition: this.props.rotationTransition,
+            padded: true
         })
 
         this.scrollToCard(annotation.id)
+        this.paintGroups()
     }
 
     applyTargetEdit = (newTarget) => {

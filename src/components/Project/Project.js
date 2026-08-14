@@ -202,7 +202,7 @@ const Project = ({ editMode }) => {
             {state.updateAnnotation && selectedAnnotation && (
                 <AdnoMdEditor
                     updateAnnos={(annos) => handleChanges({ annotations: annos })}
-                    closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false }))}
+                    closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false, pendingZone: null }))}
                     selectedAnnotation={selectedAnnotation}
                     selectedProjectId={id}
                     annotations={annotations}

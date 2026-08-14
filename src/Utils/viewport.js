@@ -23,7 +23,7 @@ function isSettled(viewport) {
 export function annotationBounds(viewer, annotationId, padding = 0) {
     const wanted = parseShadowId(annotationId).id
 
-    const boxes = annotationShapes()
+    const boxes = annotationShapes(viewer.element)
         .filter(item => parseShadowId(item.getAttribute('data-id')).id === wanted)
         .filter(item => typeof item.getBBox === "function")
         .map(item => item.getBBox())

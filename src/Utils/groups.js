@@ -1,4 +1,5 @@
-import { getTargets, targetBox, withTargets } from "./targets"
+import { getTargets, shadowId, targetBox, withTargets } from "./targets"
+import { annotationShapes } from "./utils"
 import { getTargetRotation, withTargetRotation } from "./orientation"
 
 const GROUP_SEPARATOR = '@'
@@ -137,4 +138,33 @@ export function withGroupOrder(annotation, order) {
 
     return withTargets(annotation, [...ranked, ...rest]
         .flatMap(group => group.targets.map(entry => entry.target)))
+}
+
+function colorParts(shape) {
+    const inner = shape.getElementsByClassName("a9s-inner")
+
+    return inner.length > 0
+        ? [...inner]
+        : [...shape.children].filter(child => child.tagName !== "svg")
+}
+
+function paintShape(shape, color) {
+    colorParts(shape).forEach(part => {
+        if (color) {
+            part.style.stroke = color
+        } else {
+            part.style.removeProperty("stroke")
+        }
+    })
+}
+
+export function groupColorsById(annotation) {
+    return deriveGroups(annotation).reduce((colors, group) => group.targets.reduce(
+        (acc, entry) => ({ ...acc, [shadowId(annotation.id, entry.index)]: group.color }), colors), {})
+}
+
+export function applyGroupColors(root, annotation) {
+    const colors = annotation ? groupColorsById(annotation) : {}
+
+    annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute("data-id")]))
 }

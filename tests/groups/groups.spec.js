@@ -200,3 +200,39 @@ test.describe('The grouped zones tab', () => {
         expect(targets).toHaveLength(2);
     });
 });
+
+test.describe('Drawing into a group from the panel', () => {
+
+    test('a zone drawn for group A joins it even though it lands last in the array', async ({ page }) => {
+        await openEditor(page);
+        await openZonesTab(page);
+
+        await page.locator('.zone-group').nth(0).locator('.zone-row--add').click();
+        await expect(page.locator('.pending-zone')).toBeVisible();
+
+        await drawRect(page, 420, 120, 90, 70);
+
+        const targets = await savedTargets(page);
+
+        expect(targets.map(target => target.id)).toEqual([
+            `g1@${ANNOTATION_ID}`,
+            `g2@${ANNOTATION_ID}`,
+            `g1@${ANNOTATION_ID}`
+        ]);
+    });
+
+    test('every zone of the current annotation is stroked with its group colour', async ({ page }) => {
+        await openEditor(page);
+
+        await page.locator('.anno-card').first().locator('[data-icon="bullseye"]').click();
+        await page.waitForTimeout(1200);
+
+        const strokes = await page.locator('#openseadragon1 .a9s-annotation').evaluateAll(
+            nodes => nodes.map((node) => {
+                const inner = node.getElementsByClassName('a9s-inner')[0];
+                return inner ? inner.style.stroke : '';
+            }));
+
+        expect(strokes.sort()).toEqual(['rgb(196, 98, 42)', 'rgb(36, 81, 196)']);
+    });
+});

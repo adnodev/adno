@@ -327,7 +327,11 @@ export async function enhancedFetch(url) {
   }
 }
 
-export function annotationShapes() {
+export function annotationShapes(root) {
+  if (root) {
+    return [...root.getElementsByClassName("a9s-annotation")]
+  }
+
   return [...document.getElementsByClassName("a9s-annotation")]
     .filter(shape => !shape.closest("#cutout-osd"))
 }
