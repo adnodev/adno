@@ -86,7 +86,15 @@
             "default_rotation": "Default reading orientation",
             "rotation_transition": "Orientation change",
             "rotation_transition_turn": "Turn (frame, then rotate)",
-            "rotation_transition_instant": "Instant (no animation)"
+            "rotation_transition_instant": "Instant (no animation)",
+            "content_position": "Annotation content",
+            "content_position_floating": "Floating panel",
+            "content_position_left": "Left margin",
+            "content_position_bottom": "Bottom margin",
+            "content_position_right": "Right margin",
+            "multiview_disposition": "Zone group layout",
+            "multiview_row": "Side by side",
+            "multiview_column": "Stacked"
         }
     },
     "files": {

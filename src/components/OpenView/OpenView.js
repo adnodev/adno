@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { getAnnotationCutout } from "../../Utils/cutout";
@@ -811,7 +811,7 @@ class OpenView extends Component {
                     }
                     <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
-                            <FontAwesomeIcon icon={faExpand} size="lg" />
+                            <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} size="lg" />
                         </div>
                     </button>
                     <button id="info" className="toolbarButton toolbaractive">

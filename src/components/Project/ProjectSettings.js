@@ -14,12 +14,12 @@ import "./ProjectSettings.css";
 import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select/creatable';
-import { buildTagsList } from "../../Utils/utils";
+import { buildTagsList, CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/utils";
 
 const QUARTER_TURNS = [0, 90, 180, 270]
 
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
+    'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'contentPosition', 'multiviewDisposition', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
     'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
     'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
 }
@@ -379,6 +379,32 @@ class ProjectSettings extends Component {
                                     onChange={(e) => this.setState({ settings: { ...this.state.settings, rotationTransition: e.target.value } })}>
                                     <option value="turn">{this.props.t('project.settings.rotation_transition_turn')}</option>
                                     <option value="instant">{this.props.t('project.settings.rotation_transition_instant')}</option>
+                                </select>
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes("contentPosition") && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t("project.settings.content_position")}</span>
+                                </div>
+                                <select className="select select-bordered"
+                                    value={this.state.settings.contentPosition || "left"}
+                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, contentPosition: e.target.value } })}>
+                                    {CONTENT_POSITIONS.map(position => <option key={position} value={position}>{this.props.t("project.settings.content_position_" + position)}</option>)}
+                                </select>
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes("multiviewDisposition") && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t("project.settings.multiview_disposition")}</span>
+                                </div>
+                                <select className="select select-bordered"
+                                    value={this.state.settings.multiviewDisposition || "row"}
+                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, multiviewDisposition: e.target.value } })}>
+                                    {MULTIVIEW_LAYOUTS.map(layout => <option key={layout} value={layout}>{this.props.t("project.settings.multiview_" + layout)}</option>)}
                                 </select>
                             </label>
                         </>}

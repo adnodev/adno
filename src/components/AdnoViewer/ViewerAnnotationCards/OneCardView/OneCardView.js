@@ -9,7 +9,7 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faExpand } from "@fortawesome/free-solid-svg-icons";
 
 // Add translations
 import { withTranslation } from "react-i18next";
@@ -114,7 +114,7 @@ class OneCardView extends Component {
                     {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more bg-white"
                         onClick={() => this.props.openFullAnnotationView(this.props.annotation)}>
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.read_more')}>
-                            <FontAwesomeIcon icon={faPlusCircle} />
+                            <FontAwesomeIcon icon={faExpand} />
                         </div>
                     </button>}
 

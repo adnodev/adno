@@ -86,7 +86,15 @@
             "default_rotation": "預設閱讀方向",
             "rotation_transition": "方向切換",
             "rotation_transition_turn": "旋轉（先取景，再旋轉）",
-            "rotation_transition_instant": "立即（無動畫）"
+            "rotation_transition_instant": "立即（無動畫）",
+            "content_position": "註釋內容",
+            "content_position_floating": "浮動面板",
+            "content_position_left": "左側邊欄",
+            "content_position_bottom": "底部邊欄",
+            "content_position_right": "右側邊欄",
+            "multiview_disposition": "區域群組佈局",
+            "multiview_row": "並排",
+            "multiview_column": "堆疊"
         }
     },
     "files": {

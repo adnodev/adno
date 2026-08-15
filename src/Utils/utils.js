@@ -256,6 +256,9 @@ export function diffProjectSettings(a, b) {
   return diff;
 }
 
+export const CONTENT_POSITIONS = ['floating', 'left', 'bottom', 'right']
+export const MULTIVIEW_LAYOUTS = ['row', 'column']
+
 // Set default settings for any ADNO project
 export function defaultProjectSettings() {
   return {
@@ -276,7 +279,9 @@ export function defaultProjectSettings() {
     showOutlines: true,
     showEyes: false,
     soundMode: 'no_sound',
-    showCurrentAnnotation: false
+    showCurrentAnnotation: false,
+    contentPosition: 'left',
+    multiviewDisposition: 'row'
   }
 }
 

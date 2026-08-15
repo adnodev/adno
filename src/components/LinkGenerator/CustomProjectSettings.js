@@ -2,6 +2,8 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select';
 
+import { CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from '../../Utils/utils';
+
 function CustomProjectSettings({ t, settings, setSettings }) {
 
     const soundsMode = [{
@@ -238,6 +240,24 @@ function CustomProjectSettings({ t, settings, setSettings }) {
         </label>
         <input type="checkbox" className="toggle toggle-toolsbar" checked={settings.rotation}
             onChange={() => setSettings({ ...settings, rotation: !settings.rotation })} />
+
+        <label className="label">
+            <span className="label-text">{t('project.settings.content_position')}</span>
+        </label>
+        <select className="input input-bordered w-full"
+            value={settings.contentPosition || 'left'}
+            onChange={(e) => setSettings({ ...settings, contentPosition: e.target.value })}>
+            {CONTENT_POSITIONS.map(position => <option key={position} value={position}>{t('project.settings.content_position_' + position)}</option>)}
+        </select>
+
+        <label className="label">
+            <span className="label-text">{t('project.settings.multiview_disposition')}</span>
+        </label>
+        <select className="input input-bordered w-full"
+            value={settings.multiviewDisposition || 'row'}
+            onChange={(e) => setSettings({ ...settings, multiviewDisposition: e.target.value })}>
+            {MULTIVIEW_LAYOUTS.map(layout => <option key={layout} value={layout}>{t('project.settings.multiview_' + layout)}</option>)}
+        </select>
 
     </>
 }

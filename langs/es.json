@@ -212,7 +212,15 @@
             "default_rotation": "Orientación de lectura por defecto",
             "rotation_transition": "Cambio de orientación",
             "rotation_transition_turn": "Girar (encuadrar y luego rotar)",
-            "rotation_transition_instant": "Inmediato (sin animación)"
+            "rotation_transition_instant": "Inmediato (sin animación)",
+            "content_position": "Contenido de la anotación",
+            "content_position_floating": "Panel flotante",
+            "content_position_left": "Margen izquierdo",
+            "content_position_bottom": "Margen inferior",
+            "content_position_right": "Margen derecho",
+            "multiview_disposition": "Disposición de los grupos de zonas",
+            "multiview_row": "Lado a lado",
+            "multiview_column": "Apilados"
         },
         "title": "Título",
         "advanced": "Avanzado"

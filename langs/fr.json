@@ -86,7 +86,15 @@
             "default_rotation": "Orientation de lecture par défaut",
             "rotation_transition": "Changement d'orientation",
             "rotation_transition_turn": "Pivoter (cadrer, puis tourner)",
-            "rotation_transition_instant": "Immédiat (sans animation)"
+            "rotation_transition_instant": "Immédiat (sans animation)",
+            "content_position": "Contenu de l’annotation",
+            "content_position_floating": "Panneau flottant",
+            "content_position_left": "Marge à gauche",
+            "content_position_bottom": "Marge en bas",
+            "content_position_right": "Marge à droite",
+            "multiview_disposition": "Disposition des groupes de zones",
+            "multiview_row": "Côte à côte",
+            "multiview_column": "Empilés"
         }
     },
     "files": {
