@@ -1,8 +1,7 @@
 import { Component } from "react"
 
-import { applyGroupColors, groupBox, groupRotation } from "../../Utils/groups"
+import { applyGroupColors, groupBox, groupRotation, groupShadows } from "../../Utils/groups"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
-import { toShadow } from "../../Utils/targets"
 
 import { GroupOverlay } from "./GroupOverlay"
 
@@ -53,8 +52,7 @@ class GroupPanel extends Component {
             return
         }
 
-        this.annotorious.setAnnotations(group.targets.map(entry =>
-            toShadow(annotation, entry.target, entry.index)))
+        this.annotorious.setAnnotations(groupShadows(annotation, group.id))
 
         const marginX = box.width * FRAME_PADDING
         const marginY = box.height * FRAME_PADDING

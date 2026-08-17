@@ -1,5 +1,3 @@
-import { annotationShapes } from "./utils"
-import { primaryTarget, targetBox } from "./targets"
 import { deriveGroups } from "./groups"
 
 export function getAnnotationCutout(annotation) {
@@ -40,17 +38,8 @@ export function withGroupCutout(annotation, groupId, enabled) {
     return Object.keys(next).length > 0 ? { ...rest, adno: next } : rest
 }
 
-export function annotationImageBox(annotation) {
-    const shapes = annotationShapes()
-    const shape = shapes.find(item => item.getAttribute('data-id') === annotation.id)
+export function cutoutGroupIds(annotation) {
+    const cutouts = annotation && annotation.adno ? annotation.adno.cutouts : null
 
-    if (shape && typeof shape.getBBox === "function") {
-        const box = shape.getBBox()
-
-        if (box.width && box.height) {
-            return { x: box.x, y: box.y, width: box.width, height: box.height }
-        }
-    }
-
-    return targetBox(primaryTarget(annotation))
+    return cutouts ? Object.keys(cutouts).filter(key => cutouts[key]) : []
 }

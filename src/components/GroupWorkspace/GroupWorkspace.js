@@ -7,6 +7,11 @@ import GroupPanel from "./GroupPanel"
 import "./GroupWorkspace.css"
 
 class GroupWorkspace extends Component {
+    classes = () => ["group-workspace", this.props.variant, this.props.disposition, this.props.side]
+        .filter(Boolean)
+        .map((name, index) => index === 0 ? name : `group-workspace--${name}`)
+        .join(" ")
+
     render() {
         const groups = deriveGroups(this.props.annotation)
 
@@ -15,7 +20,7 @@ class GroupWorkspace extends Component {
         }
 
         return (
-            <div className="group-workspace">
+            <div className={this.classes()}>
                 {groups
                     .filter(group => group.id !== this.props.activeGroupId)
                     .map(group =>

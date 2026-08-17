@@ -86,3 +86,34 @@
     border-bottom-width: 2px;
     border-right-width: 2px;
 }
+
+.group-workspace--reader {
+    position: absolute;
+    z-index: 35;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px;
+}
+
+.group-workspace--reader.group-workspace--column {
+    top: 0;
+    bottom: 0;
+    width: 240px;
+    flex-direction: column;
+}
+
+.group-workspace--reader.group-workspace--column.group-workspace--right {
+    right: 0;
+}
+
+.group-workspace--reader.group-workspace--column.group-workspace--left {
+    left: 0;
+}
+
+.group-workspace--reader.group-workspace--row {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 190px;
+    width: auto;
+    flex-direction: row;
+}

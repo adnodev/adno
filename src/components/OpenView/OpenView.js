@@ -6,10 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
-import { getAnnotationCutout } from "../../Utils/cutout";
+import { cutoutGroupIds, getAnnotationCutout } from "../../Utils/cutout";
 import { projectImages } from "../../Utils/images";
-import { parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
+import { getTargets, parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
+import { applyGroupColors, deriveGroups, targetGroupId } from "../../Utils/groups";
 import CutoutView from "../CutoutView/CutoutView";
+import GroupWorkspace from "../GroupWorkspace/GroupWorkspace";
 import { ContentMargin, hasMarginContent } from "./ContentMargin";
 
 import "./OpenView.css";
@@ -34,6 +36,7 @@ class OpenView extends Component {
             navigatorLayout: null,
             viewerReady: false,
             cutoutAnno: null,
+            cutoutGroupId: null,
             cutoutView: { minimized: false, size: 'default', position: null }
         }
     }
@@ -308,7 +311,11 @@ class OpenView extends Component {
             })
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-            this.setState({ currentID: annotationIndex, cutoutAnno: getAnnotationCutout(annotation) ? annotation : null })
+            this.setState({
+                currentID: annotationIndex,
+                cutoutAnno: getAnnotationCutout(annotation) ? annotation : null,
+                cutoutGroupId: cutoutGroupIds(annotation)[0] || null
+            })
 
             if (this.props.soundMode === 'no_spatialization') {
                 const { currentTrack } = this.state
@@ -348,33 +355,30 @@ class OpenView extends Component {
                 this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
                 document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
 
-                this.updateCurrentAnnotationColors(annotation.id)
+                this.paintGroups()
             }
         }
     }
 
-    updateCurrentAnnotationColors = annotationId => {
-        try {
-            const eye = document.getElementById(`eye-${annotationId}`)?.parentElement?.className?.animVal;
-            const shape = [...document.getElementsByClassName('selected')][0]?.className?.animVal;
+    paintGroups = () => {
+        cancelAnimationFrame(this._paintFrame)
+        this._paintFrame = requestAnimationFrame(() => {
+            applyGroupColors(this.openSeadragon.element, this.props.selectedAnno)
+            this.tintSelectedCard()
+        })
+    }
 
-            const className = eye ? eye : shape;
+    tintSelectedCard = () => {
+        const annotation = this.props.selectedAnno
+        const groupId = targetGroupId(getTargets(annotation)[this.props.selectedTargetIndex])
+        const group = deriveGroups(annotation).find(item => item.id === groupId)
 
-            if (className) {
-                const regex = /outline-([a-zA-Z]+)/g;
-                const matches = [...className.matchAll(regex)].map(match => match[1]);
+        if (!group) {
+            return
+        }
 
-                const color = matches.filter(f => ['green', 'white', 'red', 'orange', 'yellow', 'blue', 'violet', 'black'].includes(f))[0]
-
-                const style = window.getComputedStyle(document.body)
-
-                document.documentElement.style.setProperty('--selected-anno-border-color',
-                    style.getPropertyValue(`--outline-${color}`) || '#fde047')
-                document.documentElement.style.setProperty('--selected-anno-background-color',
-                    `${style.getPropertyValue(`--outline-${color}`)}1c` || '#fefce8')
-            }
-
-        } catch (err) { }
+        document.documentElement.style.setProperty('--selected-anno-border-color', group.color)
+        document.documentElement.style.setProperty('--selected-anno-background-color', `${group.color}1c`)
     }
 
     playSound = (audioElement, soundMode) => {
@@ -730,6 +734,10 @@ class OpenView extends Component {
 
     isFloating = () => (this.props.contentPosition || 'left') === 'floating'
 
+    activeGroupId = () => targetGroupId(getTargets(this.props.selectedAnno)[this.props.selectedTargetIndex])
+
+    workspaceSide = () => this.props.contentPosition === 'right' ? 'left' : 'right'
+
     getAnnotationHTMLBody = (annotation) => {
         console.log(annotation)
         if (annotation && annotation.body) {
@@ -915,10 +923,22 @@ class OpenView extends Component {
                         position={this.props.contentPosition || 'left'} />
                 }
 
+                {this.props.selectedAnno &&
+                    <GroupWorkspace
+                        variant="reader"
+                        project={this.props.selectedProject}
+                        annotation={this.props.selectedAnno}
+                        activeGroupId={this.activeGroupId()}
+                        disposition={this.props.multiviewDisposition || 'row'}
+                        side={this.workspaceSide()}
+                        translate={this.props.t} />
+                }
+
                 {this.state.cutoutAnno &&
                     <CutoutView
                         project={this.props.selectedProject}
                         annotation={this.state.cutoutAnno}
+                        groupId={this.state.cutoutGroupId}
                         styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
                         view={this.state.cutoutView}
                         setView={(cutoutView) => this.setState({ cutoutView })} />

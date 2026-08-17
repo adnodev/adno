@@ -1,4 +1,4 @@
-import { getTargets, shadowId, targetBox, withTargets } from "./targets"
+import { getTargets, shadowId, targetBox, toShadow, withTargets } from "./targets"
 import { annotationShapes } from "./utils"
 import { getTargetRotation, withTargetRotation } from "./orientation"
 
@@ -167,4 +167,11 @@ export function applyGroupColors(root, annotation) {
     const colors = annotation ? groupColorsById(annotation) : {}
 
     annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute("data-id")]))
+}
+
+export function groupShadows(annotation, groupId) {
+    return getTargets(annotation)
+        .map((target, index) => ({ target, index }))
+        .filter(entry => !groupId || targetGroupId(entry.target) === groupId)
+        .map(entry => toShadow(annotation, entry.target, entry.index))
 }

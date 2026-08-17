@@ -5,8 +5,7 @@ import { faCropSimple, faDownLeftAndUpRightToCenter, faMinus, faUpDown, faUpRigh
 
 import { withTranslation } from "react-i18next";
 
-import { annotationImageBox } from "../../Utils/cutout";
-import { getAnnotationRotation } from "../../Utils/orientation";
+import { groupBox, groupRotation, groupShadows } from "../../Utils/groups";
 
 import "./CutoutView.css";
 
@@ -50,7 +49,7 @@ class CutoutView extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.annotation.id !== this.props.annotation.id) {
+        if (prevProps.annotation !== this.props.annotation || prevProps.groupId !== this.props.groupId) {
             this.frameAnnotation();
         }
     }
@@ -61,19 +60,20 @@ class CutoutView extends Component {
     }
 
     frameAnnotation = () => {
-        const box = annotationImageBox(this.props.annotation);
+        const { annotation, groupId } = this.props;
+        const box = groupBox(annotation, groupId);
 
         if (!this.viewer || !this.viewer.isOpen() || !box) {
             return;
         }
 
-        this.annotorious.setAnnotations([this.props.annotation]);
+        this.annotorious.setAnnotations(groupShadows(annotation, groupId));
 
         const marginX = box.width * FRAME_PADDING;
         const marginY = box.height * FRAME_PADDING;
         const viewport = this.viewer.viewport;
 
-        viewport.setRotation(getAnnotationRotation(this.props.annotation) || 0, true);
+        viewport.setRotation(groupRotation(annotation, groupId) || 0, true);
         viewport.fitBounds(viewport.imageToViewportRectangle(
             box.x - marginX,
             box.y - marginY,
@@ -141,7 +141,7 @@ class CutoutView extends Component {
     }
 
     render() {
-        const rotation = getAnnotationRotation(this.props.annotation);
+        const rotation = groupRotation(this.props.annotation, this.props.groupId);
         const { minimized, size, position } = this.props.view;
 
         const classes = ["cutout-panel", `cutout-panel--${size}`];
