@@ -10,6 +10,7 @@ import { getAnnotationCutout } from "../../Utils/cutout";
 import { projectImages } from "../../Utils/images";
 import { parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import CutoutView from "../CutoutView/CutoutView";
+import { ContentMargin, hasMarginContent } from "./ContentMargin";
 
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
@@ -727,6 +728,8 @@ class OpenView extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
+    isFloating = () => (this.props.contentPosition || 'left') === 'floating'
+
     getAnnotationHTMLBody = (annotation) => {
         console.log(annotation)
         if (annotation && annotation.body) {
@@ -902,8 +905,14 @@ class OpenView extends Component {
             </div>
             <div id="adno-osd" style={{ position: 'relative' }} >
                 {
-                    this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
+                    this.isFloating() && this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
                     this.getAnnotationHTMLBody(this.props.selectedAnno)
+                }
+
+                {!this.isFloating() && hasMarginContent(this.props.selectedAnno) &&
+                    <ContentMargin
+                        annotation={this.props.selectedAnno}
+                        position={this.props.contentPosition || 'left'} />
                 }
 
                 {this.state.cutoutAnno &&

@@ -301,6 +301,8 @@ const Project = ({ editMode }) => {
                         soundMode={settings.soundMode}
                         spatialization={settings.spatialization}
                         showEyes={settings.showEyes}
+                        contentPosition={settings.contentPosition}
+                        multiviewDisposition={settings.multiviewDisposition}
                         annos={viewerAnnotations}
                         selectedAnno={selectedAnnotation}
                         selectedTargetIndex={state.selectedTargetIndex}
