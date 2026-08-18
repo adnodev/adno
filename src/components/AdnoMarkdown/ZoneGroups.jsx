@@ -56,7 +56,7 @@ function orderWith(groups, movedId, beforeId) {
         .flatMap(id => id === beforeId ? [movedId, id] : [id])
 }
 
-function applyDrop(source, spot, groups, moveZone, orderGroups) {
+function applyDrop(source, spot, groups, moveZone, regroupZone, orderGroups) {
     if (source.kind === 'group') {
         const before = spot.kind === 'group' ? spot.id : spot.groupId
 
@@ -72,12 +72,7 @@ function applyDrop(source, spot, groups, moveZone, orderGroups) {
         return
     }
 
-    const group = groups.find(item => item.id === spot.id)
-    const tail = group && group.targets.length > 0
-        ? group.targets[group.targets.length - 1].index + 1
-        : source.index
-
-    moveZone(source.index, tail, spot.id)
+    regroupZone(source.index, spot.id)
 }
 
 function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone, removeZone, addZone, setRotation, captureRotation, setCutout, translate }) {
@@ -156,7 +151,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone
     )
 }
 
-export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, orderGroups, setRotation, captureRotation, setCutout, translate }) {
+export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, orderGroups, setRotation, captureRotation, setCutout, translate }) {
     const groups = withDraft(deriveGroups(annotation), draftGroupId)
     const total = getTargets(annotation).length
 
@@ -188,7 +183,7 @@ export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pick
         }
 
         event.preventDefault()
-        applyDrop(JSON.parse(raw), spot, groups, moveZone, orderGroups)
+        applyDrop(JSON.parse(raw), spot, groups, moveZone, regroupZone, orderGroups)
     }
 
     return (

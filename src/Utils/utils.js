@@ -3,6 +3,8 @@ import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
 import { v7 } from "uuid";
 
+const SECONDARY_VIEWERS = '#cutout-osd, .group-panel'
+
 export function findInfoJsonFromManifest(url) {
   return fetch(url)
     .then(rep => rep.json())
@@ -333,12 +335,14 @@ export async function enhancedFetch(url) {
 }
 
 export function annotationShapes(root) {
-  if (root) {
-    return [...root.getElementsByClassName("a9s-annotation")]
-  }
+  const scope = root || document
 
-  return [...document.getElementsByClassName("a9s-annotation")]
-    .filter(shape => !shape.closest("#cutout-osd"))
+  return [...scope.getElementsByClassName("a9s-annotation")]
+    .filter(shape => {
+      const panel = shape.closest(SECONDARY_VIEWERS)
+
+      return !panel || Boolean(root && panel.contains(root))
+    })
 }
 
 const EYE_PROBES = 24

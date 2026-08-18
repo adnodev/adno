@@ -1,11 +1,11 @@
-import { getTargets, shadowId, targetBox, toShadow, withTargets } from "./targets"
+import { getTargets, replaceTargetAt, shadowId, targetBox, toShadow, withTargets } from "./targets"
 import { annotationShapes } from "./utils"
 import { getTargetRotation, withTargetRotation } from "./orientation"
 
 const GROUP_SEPARATOR = '@'
 const GROUP_PATTERN = /^g(\d+)$/
-const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-const PALETTE = ["#2451C4", "#C4622A", "#1F9E6D", "#A23DBB"]
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const PALETTE = ['#2451C4', '#C4622A', '#1F9E6D', '#A23DBB']
 
 const FIRST_GROUP = 'g1'
 
@@ -105,6 +105,16 @@ export function withGroupRotation(annotation, groupId, degrees) {
         targetGroupId(target) === groupId ? withTargetRotation(target, degrees) : target))
 }
 
+export function moveTargetToGroup(annotation, index, groupId) {
+    const target = getTargets(annotation)[index]
+
+    if (!target || targetGroupId(target) === groupId) {
+        return annotation
+    }
+
+    return replaceTargetAt(annotation, index, { ...target, id: buildTargetId(groupId, annotation.id) })
+}
+
 export function movedTargetIndex(fromIndex, toIndex) {
     return toIndex > fromIndex ? toIndex - 1 : toIndex
 }
@@ -141,11 +151,11 @@ export function withGroupOrder(annotation, order) {
 }
 
 function colorParts(shape) {
-    const inner = shape.getElementsByClassName("a9s-inner")
+    const inner = shape.getElementsByClassName('a9s-inner')
 
     return inner.length > 0
         ? [...inner]
-        : [...shape.children].filter(child => child.tagName !== "svg")
+        : [...shape.children].filter(child => child.tagName !== 'svg')
 }
 
 function paintShape(shape, color) {
@@ -153,7 +163,7 @@ function paintShape(shape, color) {
         if (color) {
             part.style.stroke = color
         } else {
-            part.style.removeProperty("stroke")
+            part.style.removeProperty('stroke')
         }
     })
 }
@@ -166,7 +176,7 @@ function groupColorsById(annotation) {
 export function applyGroupColors(root, annotation) {
     const colors = annotation ? groupColorsById(annotation) : {}
 
-    annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute("data-id")]))
+    annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute('data-id')]))
 }
 
 export function groupShadows(annotation, groupId) {
@@ -174,4 +184,8 @@ export function groupShadows(annotation, groupId) {
         .map((target, index) => ({ target, index }))
         .filter(entry => !groupId || targetGroupId(entry.target) === groupId)
         .map(entry => toShadow(annotation, entry.target, entry.index))
+}
+
+export function activeGroupId(annotation, targetIndex) {
+    return targetGroupId(getTargets(annotation)[targetIndex])
 }

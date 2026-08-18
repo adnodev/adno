@@ -23,7 +23,7 @@ import { projectDB } from '../../services/db';
 import { normalizeAngle } from '../../Utils/orientation';
 import { withGroupCutout } from '../../Utils/cutout';
 import { getTargets, removeTargetAt } from '../../Utils/targets';
-import { movedTargetIndex, moveTarget, nextGroupId, targetIndexOf, withGroupOrder, withGroupRotation } from '../../Utils/groups';
+import { movedTargetIndex, moveTarget, moveTargetToGroup, nextGroupId, targetIndexOf, withGroupOrder, withGroupRotation } from '../../Utils/groups';
 import { ZoneGroups } from './ZoneGroups';
 
 const locale = navigator.language;
@@ -286,6 +286,10 @@ class AdnoMdEditor extends Component {
         this.props.startPendingZone(this.props.selectedAnnotation.id, groupId)
     }
 
+    regroupZone = (index, groupId) => {
+        this.persist(moveTargetToGroup(this.props.selectedAnnotation, index, groupId))
+    }
+
     moveZone = (fromIndex, toIndex, groupId) => {
         const annotation = this.props.selectedAnnotation
         const selected = this.props.selectedTargetIndex
@@ -376,6 +380,7 @@ class AdnoMdEditor extends Component {
                                 addGroup={this.addGroup}
                                 addZone={this.addZone}
                                 moveZone={this.moveZone}
+                                regroupZone={this.regroupZone}
                                 orderGroups={this.orderGroups}
                                 setRotation={this.setGroupRotation}
                                 captureRotation={this.captureGroupRotation}

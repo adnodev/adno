@@ -8,10 +8,10 @@ import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { cutoutGroupIds, getAnnotationCutout } from "../../Utils/cutout";
 import { projectImages } from "../../Utils/images";
-import { getTargets, parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
-import { applyGroupColors, deriveGroups, targetGroupId } from "../../Utils/groups";
+import { parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
+import { activeGroupId, applyGroupColors } from "../../Utils/groups";
 import CutoutView from "../CutoutView/CutoutView";
-import GroupWorkspace from "../GroupWorkspace/GroupWorkspace";
+import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace";
 import { ContentMargin, hasMarginContent } from "./ContentMargin";
 
 import "./OpenView.css";
@@ -369,16 +369,12 @@ class OpenView extends Component {
     }
 
     tintSelectedCard = () => {
-        const annotation = this.props.selectedAnno
-        const groupId = targetGroupId(getTargets(annotation)[this.props.selectedTargetIndex])
-        const group = deriveGroups(annotation).find(item => item.id === groupId)
+        const name = (this.props.outlineColorFocus || '').replace('outline-focus-', '')
+        const style = window.getComputedStyle(document.body)
+        const color = style.getPropertyValue(`--outline-${name}`).trim() || '#fde047'
 
-        if (!group) {
-            return
-        }
-
-        document.documentElement.style.setProperty('--selected-anno-border-color', group.color)
-        document.documentElement.style.setProperty('--selected-anno-background-color', `${group.color}1c`)
+        document.documentElement.style.setProperty('--selected-anno-border-color', color)
+        document.documentElement.style.setProperty('--selected-anno-background-color', `${color}1c`)
     }
 
     playSound = (audioElement, soundMode) => {
@@ -734,8 +730,6 @@ class OpenView extends Component {
 
     isFloating = () => (this.props.contentPosition || 'left') === 'floating'
 
-    activeGroupId = () => targetGroupId(getTargets(this.props.selectedAnno)[this.props.selectedTargetIndex])
-
     workspaceSide = () => this.props.contentPosition === 'right' ? 'left' : 'right'
 
     getAnnotationHTMLBody = (annotation) => {
@@ -928,7 +922,7 @@ class OpenView extends Component {
                         variant="reader"
                         project={this.props.selectedProject}
                         annotation={this.props.selectedAnno}
-                        activeGroupId={this.activeGroupId()}
+                        activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
                         disposition={this.props.multiviewDisposition || 'row'}
                         side={this.workspaceSide()}
                         translate={this.props.t} />
