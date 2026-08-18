@@ -7,9 +7,9 @@ const GROUP_PATTERN = /^g(\d+)$/
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const PALETTE = ["#2451C4", "#C4622A", "#1F9E6D", "#A23DBB"]
 
-export const FIRST_GROUP = 'g1'
+const FIRST_GROUP = 'g1'
 
-export function parseTargetGroup(target) {
+function parseTargetGroup(target) {
     const id = target ? target.id : null
     const at = typeof id === 'string' ? id.indexOf(GROUP_SEPARATOR) : -1
     const prefix = at === -1 ? '' : id.slice(0, at)
@@ -77,7 +77,7 @@ export function deriveGroups(annotation) {
         }, [])
 }
 
-export function groupTargets(annotation, groupId) {
+function groupTargets(annotation, groupId) {
     return getTargets(annotation).filter(target => !groupId || targetGroupId(target) === groupId)
 }
 
@@ -158,7 +158,7 @@ function paintShape(shape, color) {
     })
 }
 
-export function groupColorsById(annotation) {
+function groupColorsById(annotation) {
     return deriveGroups(annotation).reduce((colors, group) => group.targets.reduce(
         (acc, entry) => ({ ...acc, [shadowId(annotation.id, entry.index)]: group.color }), colors), {})
 }
