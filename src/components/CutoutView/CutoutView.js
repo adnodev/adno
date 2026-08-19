@@ -5,12 +5,12 @@ import { faCropSimple, faDownLeftAndUpRightToCenter, faMinus, faUpDown, faUpRigh
 
 import { withTranslation } from "react-i18next";
 
-import { groupBox, groupRotation, groupShadows } from "../../Utils/groups";
+import { groupRotation } from "../../Utils/groups";
+import { frameGroup } from "../../Utils/viewport";
 
 import "./CutoutView.css";
 
 const TILE_CACHE = 40;
-const FRAME_PADDING = 0.06;
 
 const SIZES = [
     { name: 'default', icon: faDownLeftAndUpRightToCenter, label: 'annotation.cutout_size_default' },
@@ -60,26 +60,7 @@ class CutoutView extends Component {
     }
 
     frameAnnotation = () => {
-        const { annotation, groupId } = this.props;
-        const box = groupBox(annotation, groupId);
-
-        if (!this.viewer || !this.viewer.isOpen() || !box) {
-            return;
-        }
-
-        this.annotorious.setAnnotations(groupShadows(annotation, groupId));
-
-        const marginX = box.width * FRAME_PADDING;
-        const marginY = box.height * FRAME_PADDING;
-        const viewport = this.viewer.viewport;
-
-        viewport.setRotation(groupRotation(annotation, groupId) || 0, true);
-        viewport.fitBounds(viewport.imageToViewportRectangle(
-            box.x - marginX,
-            box.y - marginY,
-            box.width + marginX * 2,
-            box.height + marginY * 2
-        ), true);
+        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.groupId);
     }
 
     dragSpot = (event) => {

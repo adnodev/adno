@@ -110,8 +110,6 @@
         "audio_track": "Audio Track (URL)",
         "audio_creator": "Audio Creator (Credit)",
         "md_save": "Save",
-        "md_delete": "Delete",
-        "md_delete_confirm": "Confirm deletion",
         "fullpage": "Toggle full page",
         "home": "Go home",
         "zoom_in": "Zoom in",
@@ -129,11 +127,9 @@
             "zones": "Zones"
         },
         "empty_list": "No options",
-        "orientation": "Reading orientation",
         "orientation_inherit": "Project default",
         "orientation_capture": "Use current view",
         "cutout": "Show as a cutout",
-        "cutout_hint": "Opens the region as an upright close-up instead of rotating the image.",
         "images": "Images",
         "previous_image": "Previous image",
         "next_image": "Next image",
@@ -146,7 +142,7 @@
         "audio_hint": "Link an audio track played alongside this annotation.",
         "add_group": "Add a group",
         "move_group": "Reorder this group",
-        "group_label": "Group {{letter}} · {{count}} zones"
+        "group_label": "Group {{letter}} · {{zones}} zones"
     },
     "visualizer": {
         "expand": "Enter full screen",

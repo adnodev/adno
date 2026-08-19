@@ -2,12 +2,14 @@ import { normalizeAngle, resolveRotation, shortestDelta } from "./orientation"
 import { getAnnotationCutout } from "./cutout"
 import { annotationShapes } from "./utils"
 import { parseShadowId } from "./targets"
+import { groupBox, groupRotation, groupShadows } from "./groups"
 
 const PENDING_TURN = "adnoPendingTurn"
 const LAST_VIEW = "adnoLastView"
 const PAN_TIMEOUT = 1500
 const ANGLE_EPSILON = 0.5
 const BOUNDS_PADDING = 0.08
+const GROUP_PADDING = 0.06
 
 function prefersReducedMotion() {
     return typeof window.matchMedia === "function"
@@ -141,4 +143,28 @@ export function watchViewerResize(viewer, annotorious) {
         cancelAnimationFrame(frame)
         viewer.removeHandler('after-resize', reframe)
     }
+}
+
+export function frameGroup(viewer, annotorious, annotation, groupId) {
+    const box = groupBox(annotation, groupId)
+
+    if (!viewer || !viewer.isOpen() || !box) {
+        return false
+    }
+
+    annotorious.setAnnotations(groupShadows(annotation, groupId))
+
+    const marginX = box.width * GROUP_PADDING
+    const marginY = box.height * GROUP_PADDING
+    const viewport = viewer.viewport
+
+    viewport.setRotation(groupRotation(annotation, groupId) || 0, true)
+    viewport.fitBounds(viewport.imageToViewportRectangle(
+        box.x - marginX,
+        box.y - marginY,
+        box.width + marginX * 2,
+        box.height + marginY * 2
+    ), true)
+
+    return true
 }

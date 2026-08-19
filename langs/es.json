@@ -35,8 +35,6 @@
         "fullpage": "Poner en pantalla completa",
         "home": "Ir a inicio",
         "md_add_tag": "Agregar una palabra clave",
-        "md_delete": "Eliminar",
-        "md_delete_confirm": "Confirmar la eliminación",
         "md_save": "Guardar",
         "next_page": "Página siguiente",
         "placeholder": "Agregue su texto aquí",
@@ -52,11 +50,9 @@
         "zoom_in": "ampliar",
         "zoom_out": "Alejar",
         "empty_list": "Sin opciones",
-        "orientation": "Orientación de lectura",
         "orientation_inherit": "Valor por defecto del proyecto",
         "orientation_capture": "Usar la vista actual",
         "cutout": "Mostrar como recorte",
-        "cutout_hint": "Abre la región como un primer plano enderezado, en lugar de rotar la imagen.",
         "images": "Imágenes",
         "previous_image": "Imagen anterior",
         "next_image": "Imagen siguiente",
@@ -69,7 +65,7 @@
         "audio_hint": "Asocia una pista de audio reproducida con esta anotación.",
         "add_group": "Añadir un grupo",
         "move_group": "Reordenar este grupo",
-        "group_label": "Grupo {{letter}} · {{count}} zonas"
+        "group_label": "Grupo {{letter}} · {{zones}} zonas"
     },
     "errors": {
         "error_found": "Error detectado",

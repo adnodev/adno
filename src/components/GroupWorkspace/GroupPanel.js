@@ -1,12 +1,12 @@
 import { Component } from "react"
 
-import { applyGroupColors, groupBox, groupRotation, groupShadows } from "../../Utils/groups"
+import { applyGroupColors } from "../../Utils/groups"
+import { frameGroup } from "../../Utils/viewport"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
 
 import { GroupOverlay } from "./GroupOverlay"
 
 const TILE_CACHE = 40
-const FRAME_PADDING = 0.08
 
 class GroupPanel extends Component {
     componentDidMount() {
@@ -28,13 +28,13 @@ class GroupPanel extends Component {
             disableSelect: true
         })
 
-        this.viewer.addOnceHandler('open', this.frameGroup)
-        this.viewer.addHandler('after-resize', this.frameGroup)
+        this.viewer.addOnceHandler('open', this.refresh)
+        this.viewer.addHandler('after-resize', this.refresh)
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.annotation !== this.props.annotation || prevProps.group !== this.props.group) {
-            this.frameGroup()
+            this.refresh()
         }
     }
 
@@ -44,27 +44,12 @@ class GroupPanel extends Component {
         this.viewer.destroy()
     }
 
-    frameGroup = () => {
+    refresh = () => {
         const { annotation, group } = this.props
-        const box = groupBox(annotation, group.id)
 
-        if (!this.viewer || !this.viewer.isOpen() || !box) {
+        if (!frameGroup(this.viewer, this.annotorious, annotation, group.id)) {
             return
         }
-
-        this.annotorious.setAnnotations(groupShadows(annotation, group.id))
-
-        const marginX = box.width * FRAME_PADDING
-        const marginY = box.height * FRAME_PADDING
-        const viewport = this.viewer.viewport
-
-        viewport.setRotation(groupRotation(annotation, group.id) || 0, true)
-        viewport.fitBounds(viewport.imageToViewportRectangle(
-            box.x - marginX,
-            box.y - marginY,
-            box.width + marginX * 2,
-            box.height + marginY * 2
-        ), true)
 
         cancelAnimationFrame(this._paintFrame)
         this._paintFrame = requestAnimationFrame(() =>

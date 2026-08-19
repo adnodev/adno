@@ -17,12 +17,12 @@ import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { preserveTargetRotation } from "../../Utils/orientation";
-import { applyGroupColors, buildTargetId, preserveTargetId, targetGroupId } from "../../Utils/groups";
+import { activeGroupId, applyGroupColors, buildTargetId, preserveTargetId, targetGroupId } from "../../Utils/groups";
 import { imageTileSource, projectImages } from "../../Utils/images";
 import { addTarget, getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 import { ImageFilmstrip } from '../ImageFilmstrip/ImageFilmstrip';
-import GroupWorkspace from '../GroupWorkspace/GroupWorkspace';
+import { GroupWorkspace } from '../GroupWorkspace/GroupWorkspace';
 
 class AdnoEditor extends Component {
     constructor(props) {
@@ -179,8 +179,6 @@ class AdnoEditor extends Component {
     }
 
     images = () => projectImages(this.props.selectedProject)
-
-    activeGroupId = () => targetGroupId(getTargets(this.props.selectedAnno)[this.props.selectedTargetIndex])
 
     currentAnnotations = () => {
         const pending = this.state.pending
@@ -395,7 +393,7 @@ class AdnoEditor extends Component {
                     <GroupWorkspace
                         project={this.props.selectedProject}
                         annotation={this.props.selectedAnno}
-                        activeGroupId={this.activeGroupId()}
+                        activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
                         translate={this.props.t} />
                 </div>
                 <ImageFilmstrip

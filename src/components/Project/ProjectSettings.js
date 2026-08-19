@@ -383,28 +383,28 @@ class ProjectSettings extends Component {
                             </label>
                         </>}
 
-                        {PARAMETERS_BY_TAB[this.state.tab].includes("contentPosition") && <>
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('contentPosition') && <>
                             <label className="form-control w-full mt-4">
                                 <div className="label font-medium">
-                                    <span className="label-text">{this.props.t("project.settings.content_position")}</span>
+                                    <span className="label-text">{this.props.t('project.settings.content_position')}</span>
                                 </div>
                                 <select className="select select-bordered"
                                     value={this.state.settings.contentPosition || "left"}
                                     onChange={(e) => this.setState({ settings: { ...this.state.settings, contentPosition: e.target.value } })}>
-                                    {CONTENT_POSITIONS.map(position => <option key={position} value={position}>{this.props.t("project.settings.content_position_" + position)}</option>)}
+                                    {CONTENT_POSITIONS.map(position => <option key={position} value={position}>{this.props.t('project.settings.content_position_' + position)}</option>)}
                                 </select>
                             </label>
                         </>}
 
-                        {PARAMETERS_BY_TAB[this.state.tab].includes("multiviewDisposition") && <>
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('multiviewDisposition') && <>
                             <label className="form-control w-full mt-4">
                                 <div className="label font-medium">
-                                    <span className="label-text">{this.props.t("project.settings.multiview_disposition")}</span>
+                                    <span className="label-text">{this.props.t('project.settings.multiview_disposition')}</span>
                                 </div>
                                 <select className="select select-bordered"
                                     value={this.state.settings.multiviewDisposition || "row"}
                                     onChange={(e) => this.setState({ settings: { ...this.state.settings, multiviewDisposition: e.target.value } })}>
-                                    {MULTIVIEW_LAYOUTS.map(layout => <option key={layout} value={layout}>{this.props.t("project.settings.multiview_" + layout)}</option>)}
+                                    {MULTIVIEW_LAYOUTS.map(layout => <option key={layout} value={layout}>{this.props.t('project.settings.multiview_' + layout)}</option>)}
                                 </select>
                             </label>
                         </>}

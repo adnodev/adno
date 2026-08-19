@@ -110,8 +110,6 @@
         "audio_track": "音频轨道（URL）",
         "audio_creator": "音频创作者（版权信息）",
         "md_save": "保存",
-        "md_delete": "删除",
-        "md_delete_confirm": "确认删除",
         "fullpage": "切换全屏",
         "home": "返回主页",
         "zoom_in": "放大",
@@ -129,11 +127,9 @@
             "zones": "区域"
         },
         "empty_list": "无选项",
-        "orientation": "阅读方向",
         "orientation_inherit": "项目默认值",
         "orientation_capture": "使用当前视图",
         "cutout": "以裁切图显示",
-        "cutout_hint": "将该区域以摆正的特写打开，而不旋转整幅图像。",
         "images": "图像",
         "previous_image": "上一幅图像",
         "next_image": "下一幅图像",
@@ -146,7 +142,7 @@
         "audio_hint": "关联随此注释播放的音轨。",
         "add_group": "添加分组",
         "move_group": "重新排序此分组",
-        "group_label": "分组 {{letter}} · {{count}} 个区域"
+        "group_label": "分组 {{letter}} · {{zones}} 个区域"
     },
     "visualizer": {
         "expand": "进入全屏",

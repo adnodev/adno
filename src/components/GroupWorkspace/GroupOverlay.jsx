@@ -4,7 +4,7 @@ export function GroupOverlay({ letter, color, count, translate }) {
     return (
         <div className="group-overlay">
             <span className="group-overlay-badge" style={{ background: color }}>
-                {translate('editor.group_label', { letter, count })}
+                {translate('editor.group_label', { letter, zones: count })}
             </span>
 
             {count > 1 &&
