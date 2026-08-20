@@ -253,6 +253,7 @@ const Project = ({ editMode }) => {
                             selectedAnno={selectedAnnotation}
                             changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
                             editingMode={editMode}
+                            contentPosition={settings.contentPosition}
                             openFullAnnotationView={(annotation) => setState(prev => ({
                                 ...prev,
                                 showFullAnnotationView: true,

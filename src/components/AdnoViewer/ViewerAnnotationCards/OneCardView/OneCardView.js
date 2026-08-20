@@ -9,7 +9,7 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faExpand } from "@fortawesome/free-solid-svg-icons";
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
 
 // Add translations
 import { withTranslation } from "react-i18next";
@@ -111,20 +111,15 @@ class OneCardView extends Component {
 
                 <div className="btn-line-one-card">
 
-                    {this.state.annoBody && <button type="button" className="btn btn-outline btn-sm btn-show-more bg-white"
-                        onClick={() => this.props.openFullAnnotationView(this.props.annotation)}>
+                    {this.state.annoBody && this.props.contentPosition === 'floating' && <button type="button" className="btn btn-outline btn-sm btn-show-more bg-white"
+                        onClick={event => {
+                            event.stopPropagation()
+                            this.props.openFullAnnotationView(this.props.annotation)
+                        }}>
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.read_more')}>
                             <FontAwesomeIcon icon={faExpand} />
                         </div>
                     </button>}
-
-                    <button type="button"
-                        onClick={() => this.props.clickOnTarget(this.props.annotation)}
-                        className="btn btn-outline btn-sm btn-show-more bg-white">
-                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.target')}>
-                            <FontAwesomeIcon icon={faBullseye} />
-                        </div>
-                    </button>
 
                     {/* Afficher la redirection vers la zone de l'annotation */}
                     {/* {this.state.url && <a href={this.state.url} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>} */}

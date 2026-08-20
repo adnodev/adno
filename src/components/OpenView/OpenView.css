@@ -60,6 +60,10 @@
     display: none;
 }
 
+.toolbarButton--off {
+    color: #a1a1aa;
+}
+
 .a9s-annotation--hidden {
     opacity: 0;
 }

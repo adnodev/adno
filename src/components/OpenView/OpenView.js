@@ -811,7 +811,9 @@ class OpenView extends Component {
                             </button>}
 
                             <button id="toggle-sidebar"
-                                className={this.props.sidebarEnabled ? "toolbarButton toolbaractive" : "toolbarButton"}
+                                className={this.props.sidebarEnabled
+                                    ? "toolbarButton toolbaractive"
+                                    : "toolbarButton toolbaractive toolbarButton--off"}
                                 onClick={() => this.props.changeSidebar()}>
                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_sidebar')}>
                                     <FontAwesomeIcon icon={faTableColumns} size="lg" />
