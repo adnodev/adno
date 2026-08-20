@@ -12,9 +12,6 @@ import "./CutoutView.css";
 
 const TILE_CACHE = 40;
 const CASCADE_STEP = 26;
-const EDGE = 12;
-const MARGIN_WIDTH = 320;
-const MARGIN_HEIGHT = '38%';
 
 const SIZES = [
     { name: 'default', icon: faDownLeftAndUpRightToCenter, label: 'annotation.cutout_size_default' },
@@ -121,16 +118,12 @@ class CutoutView extends Component {
         this.props.setView({ ...this.props.view, position: spot });
     }
 
-    anchor = () => {
-        const step = (this.props.rank || 0) * CASCADE_STEP;
+    anchor = () => ({ '--cutout-step': `${(this.props.rank || 0) * CASCADE_STEP}px` })
+
+    dodge = (prefix) => {
         const position = this.props.contentPosition;
 
-        const left = position === 'left' ? MARGIN_WIDTH + EDGE + step : EDGE + step;
-        const bottom = position === 'bottom'
-            ? `calc(${MARGIN_HEIGHT} + ${EDGE + step}px)`
-            : `${EDGE + step}px`;
-
-        return { left: `${left}px`, bottom };
+        return position === 'left' || position === 'bottom' ? `${prefix}--dodge-${position}` : '';
     }
 
     resize = (size) => {
@@ -141,7 +134,7 @@ class CutoutView extends Component {
         const rotation = groupRotation(this.props.annotation, this.props.groupId);
         const { minimized, size, position } = this.props.view;
 
-        const classes = ["cutout-panel", `cutout-panel--${size}`];
+        const classes = ["cutout-panel", `cutout-panel--${size}`, this.dodge("cutout-panel")].filter(Boolean);
 
         if (minimized) {
             classes.push("cutout-panel--minimized");
@@ -188,7 +181,7 @@ class CutoutView extends Component {
 
                 {minimized &&
                     <button type="button"
-                        className="cutout-pill"
+                        className={["cutout-pill", this.dodge("cutout-pill")].filter(Boolean).join(" ")}
                         style={this.anchor()}
                         aria-label={this.props.t('annotation.cutout_expand')}
                         onClick={() => this.props.setView({ ...this.props.view, minimized: false })}>

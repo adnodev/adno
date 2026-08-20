@@ -1,7 +1,7 @@
 .cutout-panel {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
+    bottom: calc(12px + var(--cutout-step, 0px));
+    left: calc(12px + var(--cutout-step, 0px));
     z-index: 10000;
     display: flex;
     flex-direction: column;
@@ -35,8 +35,8 @@
 
 .cutout-pill {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
+    bottom: calc(12px + var(--cutout-step, 0px));
+    left: calc(12px + var(--cutout-step, 0px));
     z-index: 10001;
     display: flex;
     align-items: center;
@@ -116,4 +116,14 @@
         right: 12px;
         width: auto;
     }
+}
+
+.cutout-panel--dodge-left,
+.cutout-pill--dodge-left {
+    left: calc(var(--adno-margin-width) + 12px + var(--cutout-step, 0px));
+}
+
+.cutout-panel--dodge-bottom,
+.cutout-pill--dodge-bottom {
+    bottom: calc(var(--adno-margin-height) + 12px + var(--cutout-step, 0px));
 }

@@ -26,13 +26,17 @@ export function hasMarginContent(annotation) {
     return Boolean(htmlBody(annotation)) || Boolean(audioSource(annotation)) || buildTagsList(annotation).length > 0
 }
 
-export function ContentMargin({ annotation, position }) {
+export function ContentMargin({ annotation, position, offsetTop }) {
     const html = htmlBody(annotation)
     const tags = buildTagsList(annotation)
     const track = audioSource(annotation)
 
+    const anchored = position === 'left' || position === 'right'
+
     return (
-        <div id="adno-content-margin" className={`content-margin content-margin--${position}`}>
+        <div id="adno-content-margin"
+            className={`content-margin content-margin--${position}`}
+            style={anchored ? { top: `${offsetTop}px` } : null}>
             {html && <div className="content-margin-body markdown-body">{parse(html)}</div>}
 
             {tags.length > 0 &&

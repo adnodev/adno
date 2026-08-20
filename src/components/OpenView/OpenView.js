@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, createRef } from "react";
 import { withRouter } from "react-router-dom";
 import parse from 'html-react-parser';
 
@@ -19,6 +19,8 @@ import { withTranslation } from "react-i18next";
 
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator'
 
+const FALLBACK_TOOLBAR = 48
+
 class OpenView extends Component {
     constructor(props) {
         super(props);
@@ -36,8 +38,28 @@ class OpenView extends Component {
             navigatorLayout: null,
             viewerReady: false,
             cutoutAnno: null,
-            cutoutViews: {}
+            cutoutViews: {},
+            toolbarHeight: 0
         }
+
+        this.toolbarRef = createRef()
+    }
+
+    measureToolbar = () => {
+        const bar = this.toolbarRef.current
+        const height = bar ? Math.round(bar.getBoundingClientRect().height) : 0
+
+        if (height !== this.state.toolbarHeight) {
+            this.setState({ toolbarHeight: height })
+        }
+    }
+
+    marginOffset = () => {
+        if (this.state.fullScreenEnabled || !this.props.showToolbar) {
+            return 0
+        }
+
+        return this.state.toolbarHeight || FALLBACK_TOOLBAR
     }
 
     componentDidMount() {
@@ -125,6 +147,8 @@ class OpenView extends Component {
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
         addEventListener('keydown', this.keyPressedEvents)
+
+        this.measureToolbar()
     }
 
     automaticStart = () => {
@@ -601,6 +625,8 @@ class OpenView extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        this.measureToolbar()
+
         if (this.AdnoAnnotorious) {
             if (prevProps.selectedAnno !== this.props.selectedAnno
                 || prevProps.selectedTargetIndex !== this.props.selectedTargetIndex) {
@@ -745,7 +771,9 @@ class OpenView extends Component {
         this.setState({ cutoutViews: { ...this.state.cutoutViews, [groupId || 'all']: view } })
     }
 
-    isFloating = () => (this.props.contentPosition || 'left') === 'floating'
+    marginPosition = () => this.props.contentPosition || 'left'
+
+    isFloating = () => this.marginPosition() === 'floating'
 
     workspaceSide = () => this.props.contentPosition === 'right' ? 'left' : 'right'
 
@@ -778,12 +806,14 @@ class OpenView extends Component {
                     imgUrl={this.state.navigatorImgUrl}
                 />
             )}
-            <div className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"} style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                left: 0
-            }}>
+            <div ref={this.toolbarRef}
+                className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    left: 0
+                }}>
                 <div className={this.state.fullScreenEnabled && this.props.toolsbarOnFs ? "osd-buttons-bar" : this.state.fullScreenEnabled && !this.props.toolsbarOnFs ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
 
                     {
@@ -931,7 +961,8 @@ class OpenView extends Component {
                 {!this.isFloating() && hasMarginContent(this.props.selectedAnno) &&
                     <ContentMargin
                         annotation={this.props.selectedAnno}
-                        position={this.props.contentPosition || 'left'} />
+                        position={this.marginPosition()}
+                        offsetTop={this.marginOffset()} />
                 }
 
                 {this.props.selectedAnno &&
@@ -952,7 +983,7 @@ class OpenView extends Component {
                         project={this.props.selectedProject}
                         annotation={this.state.cutoutAnno}
                         groupId={groupId}
-                        contentPosition={this.props.contentPosition}
+                        contentPosition={this.marginPosition()}
                         styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
                         view={this.cutoutViewFor(groupId)}
                         setView={(view) => this.setCutoutView(groupId, view)} />

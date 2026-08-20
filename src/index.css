@@ -8,6 +8,9 @@
     --adno-background: #FAFAFA; /* Neutral 50 */
     --adno-edit-color: #DC143C;  /* Orange 500 */
     --adno-view-color: #A3B18A; /* Lime 500 */
+
+    --adno-margin-width: clamp(360px, 26vw, 520px);
+    --adno-margin-height: 38%;
 }
 
 #app {
