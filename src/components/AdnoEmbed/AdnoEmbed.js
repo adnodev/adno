@@ -13,7 +13,7 @@ import {
     faEyeSlash,
     faArrowRight,
     faArrowLeft,
-    faExpand,
+    faUpRightAndDownLeftFromCenter,
     faRotate,
     faQuestion,
     faCircleInfo,
@@ -1093,7 +1093,7 @@ class AdnoEmbed extends Component {
 
                             <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
-                                    <FontAwesomeIcon icon={faExpand} size="lg" />
+                                    <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} size="lg" />
                                 </div>
                             </button>
 

@@ -11,6 +11,7 @@ import { frameGroup } from "../../Utils/viewport";
 import "./CutoutView.css";
 
 const TILE_CACHE = 40;
+const CASCADE_STEP = 26;
 
 const SIZES = [
     { name: 'default', icon: faDownLeftAndUpRightToCenter, label: 'annotation.cutout_size_default' },
@@ -29,7 +30,7 @@ class CutoutView extends Component {
         const project = this.props.project;
 
         this.viewer = OpenSeadragon({
-            id: 'cutout-osd',
+            id: this.props.elementId,
             tileSources: project.manifest_url
                 ? [project.manifest_url]
                 : { type: 'image', url: project.img_url },
@@ -117,6 +118,12 @@ class CutoutView extends Component {
         this.props.setView({ ...this.props.view, position: spot });
     }
 
+    cascade = () => {
+        const step = (this.props.rank || 0) * CASCADE_STEP
+
+        return step ? { left: `${12 + step}px`, bottom: `${12 + step}px` } : null
+    }
+
     resize = (size) => {
         this.props.setView({ ...this.props.view, size, position: null });
     }
@@ -135,7 +142,7 @@ class CutoutView extends Component {
             <>
                 <div ref={this.panelRef}
                     className={classes.join(" ")}
-                    style={position ? { left: `${position.left}px`, top: `${position.top}px`, bottom: 'auto' } : null}>
+                    style={position ? { left: `${position.left}px`, top: `${position.top}px`, bottom: 'auto' } : this.cascade()}>
 
                     <div className="cutout-bar"
                         onPointerDown={this.startDrag}
@@ -167,12 +174,13 @@ class CutoutView extends Component {
                         </button>
                     </div>
 
-                    <div id="cutout-osd" className="cutout-body"></div>
+                    <div id={this.props.elementId} className="cutout-body"></div>
                 </div>
 
                 {minimized &&
                     <button type="button"
                         className="cutout-pill"
+                        style={this.cascade()}
                         aria-label={this.props.t('annotation.cutout_expand')}
                         onClick={() => this.props.setView({ ...this.props.view, minimized: false })}>
                         <FontAwesomeIcon icon={faCropSimple} size="lg" />

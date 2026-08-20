@@ -36,8 +36,7 @@ class OpenView extends Component {
             navigatorLayout: null,
             viewerReady: false,
             cutoutAnno: null,
-            cutoutGroupId: null,
-            cutoutView: { minimized: false, size: 'default', position: null }
+            cutoutViews: {}
         }
     }
 
@@ -313,8 +312,7 @@ class OpenView extends Component {
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
             this.setState({
                 currentID: annotationIndex,
-                cutoutAnno: getAnnotationCutout(annotation) ? annotation : null,
-                cutoutGroupId: cutoutGroupIds(annotation)[0] || null
+                cutoutAnno: getAnnotationCutout(annotation) ? annotation : null
             })
 
             if (this.props.soundMode === 'no_spatialization') {
@@ -728,6 +726,25 @@ class OpenView extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
+    cutoutGroups = () => {
+        const annotation = this.state.cutoutAnno
+
+        if (!annotation) {
+            return []
+        }
+
+        const groups = cutoutGroupIds(annotation)
+
+        return groups.length > 0 ? groups : [null]
+    }
+
+    cutoutViewFor = (groupId) =>
+        this.state.cutoutViews[groupId || 'all'] || { minimized: false, size: 'default', position: null }
+
+    setCutoutView = (groupId, view) => {
+        this.setState({ cutoutViews: { ...this.state.cutoutViews, [groupId || 'all']: view } })
+    }
+
     isFloating = () => (this.props.contentPosition || 'left') === 'floating'
 
     workspaceSide = () => this.props.contentPosition === 'right' ? 'left' : 'right'
@@ -928,15 +945,17 @@ class OpenView extends Component {
                         translate={this.props.t} />
                 }
 
-                {this.state.cutoutAnno &&
-                    <CutoutView
+                {this.cutoutGroups().map((groupId, rank) =>
+                    <CutoutView key={groupId || 'all'}
+                        elementId={`cutout-osd-${groupId || 'all'}`}
+                        rank={rank}
                         project={this.props.selectedProject}
                         annotation={this.state.cutoutAnno}
-                        groupId={this.state.cutoutGroupId}
+                        groupId={groupId}
                         styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
-                        view={this.state.cutoutView}
-                        setView={(cutoutView) => this.setState({ cutoutView })} />
-                }
+                        view={this.cutoutViewFor(groupId)}
+                        setView={(view) => this.setCutoutView(groupId, view)} />
+                )}
             </div>
         </div>
     }

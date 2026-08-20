@@ -156,7 +156,7 @@ test.describe('The grouped zones tab', () => {
         await openZonesTab(page);
 
         await expect(page.locator('.zone-group')).toHaveCount(2);
-        await expect(page.locator('.zone-group-badge')).toHaveText(['A', 'B']);
+        await expect(page.locator('.zone-group').first()).toHaveAttribute('data-group-id', 'g2');
         await expect(page.locator('.zone-group').nth(0).locator('.zone-row[data-zone-index]')).toHaveCount(1);
         await expect(page.locator('.zone-group').nth(1).locator('.zone-row[data-zone-index]')).toHaveCount(1);
     });
@@ -262,5 +262,67 @@ test.describe('The edit workspace split by group', () => {
 
         await expect(page.locator('.zone-group')).toHaveCount(1);
         await expect(page.locator('.group-panel')).toHaveCount(0);
+    });
+});
+
+/**
+ * Drive an HTML5 drag with a real DataTransfer. A simulated mouse never fires
+ * dragstart/drop in Chromium, so the events are dispatched directly; the
+ * handlers only read event.target and the transfer, so this exercises them
+ * for real.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} from
+ * @param {string} to
+ */
+async function dragOnto(page, from, to) {
+    await page.evaluate(([fromSelector, toSelector]) => {
+        const source = document.querySelector(fromSelector);
+        const target = document.querySelector(toSelector);
+
+        if (!source || !target) {
+            throw new Error(`missing drag endpoint: ${fromSelector} -> ${toSelector}`);
+        }
+
+        const dataTransfer = new DataTransfer();
+        const fire = (node, type) => node.dispatchEvent(
+            new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer }));
+
+        fire(source, 'dragstart');
+        fire(target, 'dragover');
+        fire(target, 'drop');
+    }, [from, to]);
+
+    await page.waitForTimeout(800);
+}
+
+test.describe('Dragging zones and groups', () => {
+
+    test('a chip dropped on another group changes group without moving in the array', async ({ page }) => {
+        await openEditor(page);
+        await openZonesTab(page);
+
+        const before = await savedTargets(page);
+
+        await dragOnto(page, '.zone-row[data-zone-index="1"]', '.zone-group[data-group-id="g1"]');
+
+        const after = await savedTargets(page);
+
+        expect(after.map(item => item.id)).toEqual([`g1@${ANNOTATION_ID}`, `g1@${ANNOTATION_ID}`]);
+        expect(after.map(item => item.selector.value)).toEqual(before.map(item => item.selector.value));
+        await expect(page.locator('.zone-group')).toHaveCount(1);
+    });
+
+    test('dragging a group by its grip rewrites the array as contiguous runs', async ({ page }) => {
+        await openEditor(page);
+        await openZonesTab(page);
+
+        await dragOnto(page, '[data-group-grip="g2"]', '.zone-group[data-group-id="g1"]');
+
+        const targets = await savedTargets(page);
+
+        expect(targets.map(item => item.id)).toEqual([`g2@${ANNOTATION_ID}`, `g1@${ANNOTATION_ID}`]);
+        expect(targets[0].selector.value).toEqual('xywh=pixel:260,200,140,100');
+        await expect(page.locator('.zone-group').first()).toHaveAttribute('data-group-id', 'g2');
     });
 });

@@ -3,7 +3,7 @@ import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
 import { v7 } from "uuid";
 
-const SECONDARY_VIEWERS = '#cutout-osd, .group-panel'
+const SECONDARY_VIEWERS = '.cutout-panel, .group-panel'
 
 export function findInfoJsonFromManifest(url) {
   return fetch(url)

@@ -84,14 +84,26 @@ test.describe('Reading an annotation split across groups', () => {
         await openViewer(page, projectWith({ cutouts: { g2: true } }));
 
         await expect(page.locator('.cutout-panel')).toBeVisible({ timeout: 10000 });
-        await expect(page.locator('#cutout-osd canvas')).toBeVisible();
-        await expect(page.locator('#cutout-osd .a9s-annotation')).toHaveCount(2);
+        await expect(page.locator('.cutout-body canvas')).toBeVisible();
+        await expect(page.locator('.cutout-body .a9s-annotation')).toHaveCount(2);
     });
 
     test('the legacy cutout flag still covers the whole annotation', async ({ page }) => {
         await openViewer(page, projectWith({ cutout: true }));
 
         await expect(page.locator('.cutout-panel')).toBeVisible({ timeout: 10000 });
-        await expect(page.locator('#cutout-osd .a9s-annotation')).toHaveCount(3);
+        await expect(page.locator('.cutout-body .a9s-annotation')).toHaveCount(3);
+    });
+
+    test('two cutout groups each get their own panel', async ({ page }) => {
+        await openViewer(page, projectWith({ cutouts: { g1: true, g2: true } }));
+
+        await expect(page.locator('.cutout-panel')).toHaveCount(2);
+        await expect(page.locator('.cutout-body canvas')).toHaveCount(2);
+
+        const boxes = await page.locator('.cutout-panel').evaluateAll(
+            nodes => nodes.map(node => node.getBoundingClientRect().left));
+
+        expect(boxes[0]).not.toEqual(boxes[1]);
     });
 });

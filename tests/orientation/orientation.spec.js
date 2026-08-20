@@ -110,7 +110,7 @@ test.describe('Reading orientation', () => {
         await focus(page, CUTOUT);
 
         await expect(page.locator('.cutout-panel')).toBeVisible({ timeout: 10000 });
-        await expect(page.locator('#cutout-osd canvas')).toBeVisible();
+        await expect(page.locator('.cutout-body canvas')).toBeVisible();
 
         // It carries an angle, but a cutout must not rotate the viewport: that
         // is the point of showing it aside rather than turning the whole image.
@@ -122,7 +122,7 @@ test.describe('Reading orientation', () => {
 
         await focus(page, CUTOUT);
 
-        await expect(page.locator('#cutout-osd .a9s-annotation')).toHaveCount(1);
+        await expect(page.locator('.cutout-body .a9s-annotation')).toHaveCount(1);
         await expect(page.locator('.openseadragon-canvas .a9s-annotation')).not.toHaveCount(1);
     });
 
@@ -157,17 +157,17 @@ test.describe('The cutout panel', () => {
 
         await page.locator('.cutout-pill').click();
         await expect(page.locator('.cutout-panel')).toBeVisible();
-        await expect(page.locator('#cutout-osd canvas')).toBeVisible();
+        await expect(page.locator('.cutout-body canvas')).toBeVisible();
     });
 
     test('it is dropped as soon as the reading leaves the cutouts', async ({ page }) => {
         await openViewer(page);
 
         await focus(page, CUTOUT);
-        await expect(page.locator('#cutout-osd')).toHaveCount(1);
+        await expect(page.locator('.cutout-body')).toHaveCount(1);
 
         await focus(page, INHERITS);
-        await expect(page.locator('#cutout-osd')).toHaveCount(0);
+        await expect(page.locator('.cutout-body')).toHaveCount(0);
     });
 });
 
