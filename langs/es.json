@@ -249,6 +249,9 @@
         "reset_view": "Vista inicial",
         "rotation": "Girar 90 grados",
         "toggle_annotations": "Mostrar/ocultar las anotaciones",
-        "toggle_sidebar": "Mostrar u ocultar la lista de anotaciones"
+        "sidebar_control": "Columna de anotaciones",
+        "sidebar_expanded": "Desplegada",
+        "sidebar_collapsed": "Plegada",
+        "sidebar_hover": "Desplegar al pasar"
     }
 }

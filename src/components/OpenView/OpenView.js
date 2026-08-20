@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { cutoutGroupIds, getAnnotationCutout } from "../../Utils/cutout";
@@ -809,16 +809,6 @@ class OpenView extends Component {
                                     <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
                                 </div>
                             </button>}
-
-                            <button id="toggle-sidebar"
-                                className={this.props.sidebarEnabled
-                                    ? "toolbarButton toolbaractive"
-                                    : "toolbarButton toolbaractive toolbarButton--off"}
-                                onClick={() => this.props.changeSidebar()}>
-                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_sidebar')}>
-                                    <FontAwesomeIcon icon={faTableColumns} size="lg" />
-                                </div>
-                            </button>
 
                             <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>

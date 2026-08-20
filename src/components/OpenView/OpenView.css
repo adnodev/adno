@@ -54,6 +54,7 @@
 
 .toolbar-on {
     display: block;
+    z-index: 60;
 }
 
 .toolbar-off {
@@ -101,7 +102,7 @@
 .content-margin {
     position: absolute;
     z-index: 40;
-    padding: 14px 18px;
+    padding: 52px 18px 14px;
     overflow: auto;
     background: rgba(255, 255, 255, 0.94);
     display: flex;

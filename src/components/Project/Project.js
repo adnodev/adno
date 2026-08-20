@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
 import { ensureTargetGroups } from "../../Utils/groups";
 import { exportToIIIF } from "../../services/iiif/exporter";
@@ -17,6 +18,7 @@ import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnn
 import ProjectSettings from "./ProjectSettings";
 import AdnoMdEditor from "../AdnoMarkdown/AdnoMdEditor";
 import AdnoMdViewer from "../AdnoMarkdown/AdnoMdViewer";
+import { SidebarControl } from "./SidebarControl";
 
 import "./Project.css";
 import "./Sidebar.css";
@@ -24,6 +26,7 @@ import "./Sidebar.css";
 const Project = ({ editMode }) => {
     const { id } = useParams();
     const history = useHistory();
+    const { t } = useTranslation();
 
     const viewerRef = useRef(null);
 
@@ -33,6 +36,7 @@ const Project = ({ editMode }) => {
         currentImageIndex: 0,
         pendingZone: null,
         sidebarOpened: true,
+        sidebarMode: 'expanded',
         updateAnnotation: false,
         showProjectMetadatas: false,
         showSettings: false,
@@ -245,7 +249,12 @@ const Project = ({ editMode }) => {
                 )}
 
                 {annotations.length > 0 && !editMode && settings.sidebarEnabled && (
-                    <div className="sidebar-opened-w-modal">
+                    <div className={`sidebar-opened-w-modal sidebar--${state.sidebarMode}`}>
+                        <SidebarControl
+                            mode={state.sidebarMode}
+                            setMode={(sidebarMode) => setState(prev => ({ ...prev, sidebarMode }))}
+                            translate={t}
+                        />
                         <ViewerAnnotationCards
                             updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
                             selectedProject={state.selectedProject}
@@ -313,11 +322,6 @@ const Project = ({ editMode }) => {
                         changeShowToolbar={() => setState(prev => ({
                             ...prev,
                             settings: { ...prev.settings, displayToolbar: !prev.settings.displayToolbar }
-                        }))}
-                        sidebarEnabled={settings.sidebarEnabled}
-                        changeSidebar={() => setState(prev => ({
-                            ...prev,
-                            settings: { ...prev.settings, sidebarEnabled: !prev.settings.sidebarEnabled }
                         }))}
                         outlineWidth={settings.outlineWidth}
                         outlineColor={settings.outlineColor}
