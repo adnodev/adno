@@ -1015,11 +1015,12 @@
 }
 
 
-.rich-card-editor {
+.card.rich-card-editor {
   position: fixed;
   top: 96px;
   left: 372px;
   width: 420px;
+  height: 34rem;
   max-height: calc(100vh - 140px);
   margin: 0;
   z-index: 1000;
@@ -1040,6 +1041,7 @@
 
 .rich-card-editor .card-body {
   width: 100%;
+  height: 100%;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -1078,8 +1080,48 @@
 .rich-card-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
   margin-left: auto;
+  padding-bottom: 6px;
+}
+
+.rich-card-close {
+  border: 0;
+  background: transparent;
+  color: #6a737d;
+  padding: 2px 4px;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.rich-card-footer {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 12px;
+  border-top: 1px solid #d4d4d8;
+}
+
+.rich-card-save {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-radius: 4px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--adno-main-color);
+  cursor: pointer;
+}
+
+.rich-card-save:hover,
+.rich-card-save:focus-visible {
+  background: var(--adno-second-color);
+}
+
+.rich-card-close:hover,
+.rich-card-close:focus-visible {
+  color: #000;
 }
 
 .rich-card-hint {
@@ -1089,13 +1131,17 @@
 }
 
 .rich-card-pane {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: 8px 12px 12px 12px;
   overflow: auto;
 }
 
 .rich-card-editor #editor {
   flex: 1 1 auto;
-  min-height: 220px;
+  min-height: 240px;
 }
 
 .zone-list {

@@ -8,6 +8,7 @@ import Select from 'react-select/creatable';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
+import './AdnoMarkdown.css';
 
 // import { Editor } from '@toast-ui/react-editor';
 
@@ -353,14 +354,11 @@ class AdnoMdEditor extends Component {
                         )}
 
                         <div className="rich-card-actions">
-                            <button type="button" className="btn btn-sm" onClick={() => this.saveMD()}>
-                                <FontAwesomeIcon icon={faSave} /> &nbsp; {this.props.t('editor.md_save')}
-                            </button>
                             <button type="button"
-                                className="btn btn-square btn-sm"
+                                className="rich-card-close"
                                 aria-label={this.props.t('buttons.close')}
                                 onClick={() => this.props.closeMdEditor()}>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
                     </div>
@@ -435,6 +433,12 @@ class AdnoMdEditor extends Component {
                                 </label>
                             </>
                         }
+                    </div>
+
+                    <div className="rich-card-footer">
+                        <button type="button" className="rich-card-save" onClick={() => this.saveMD()}>
+                            <FontAwesomeIcon icon={faSave} /> &nbsp; {this.props.t('editor.md_save')}
+                        </button>
                     </div>
                 </div>
             </div>
