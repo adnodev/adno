@@ -313,6 +313,11 @@ const Project = ({ editMode }) => {
                             ...prev,
                             settings: { ...prev.settings, displayToolbar: !prev.settings.displayToolbar }
                         }))}
+                        sidebarEnabled={settings.sidebarEnabled}
+                        changeSidebar={() => setState(prev => ({
+                            ...prev,
+                            settings: { ...prev.settings, sidebarEnabled: !prev.settings.sidebarEnabled }
+                        }))}
                         outlineWidth={settings.outlineWidth}
                         outlineColor={settings.outlineColor}
                         outlineColorFocus={settings.outlineColorFocus}

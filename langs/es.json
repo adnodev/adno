@@ -248,6 +248,7 @@
         "previous_annotation": "Anotación anterior",
         "reset_view": "Vista inicial",
         "rotation": "Girar 90 grados",
-        "toggle_annotations": "Mostrar/ocultar las anotaciones"
+        "toggle_annotations": "Mostrar/ocultar las anotaciones",
+        "toggle_sidebar": "Mostrar u ocultar la lista de anotaciones"
     }
 }

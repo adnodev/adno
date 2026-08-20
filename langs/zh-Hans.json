@@ -150,6 +150,7 @@
         "play": "播放",
         "reset_view": "重置视图",
         "toggle_annotations": "显示／隐藏标注",
+        "toggle_sidebar": "显示或隐藏注释列表",
         "previous_annotation": "转到上一个标注",
         "next_annotation": "转到下一个标注",
         "rotation": "旋转 90 度",
