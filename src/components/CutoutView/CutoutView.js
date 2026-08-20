@@ -12,6 +12,9 @@ import "./CutoutView.css";
 
 const TILE_CACHE = 40;
 const CASCADE_STEP = 26;
+const EDGE = 12;
+const MARGIN_WIDTH = 320;
+const MARGIN_HEIGHT = '38%';
 
 const SIZES = [
     { name: 'default', icon: faDownLeftAndUpRightToCenter, label: 'annotation.cutout_size_default' },
@@ -118,10 +121,16 @@ class CutoutView extends Component {
         this.props.setView({ ...this.props.view, position: spot });
     }
 
-    cascade = () => {
-        const step = (this.props.rank || 0) * CASCADE_STEP
+    anchor = () => {
+        const step = (this.props.rank || 0) * CASCADE_STEP;
+        const position = this.props.contentPosition;
 
-        return step ? { left: `${12 + step}px`, bottom: `${12 + step}px` } : null
+        const left = position === 'left' ? MARGIN_WIDTH + EDGE + step : EDGE + step;
+        const bottom = position === 'bottom'
+            ? `calc(${MARGIN_HEIGHT} + ${EDGE + step}px)`
+            : `${EDGE + step}px`;
+
+        return { left: `${left}px`, bottom };
     }
 
     resize = (size) => {
@@ -142,7 +151,7 @@ class CutoutView extends Component {
             <>
                 <div ref={this.panelRef}
                     className={classes.join(" ")}
-                    style={position ? { left: `${position.left}px`, top: `${position.top}px`, bottom: 'auto' } : this.cascade()}>
+                    style={position ? { left: `${position.left}px`, top: `${position.top}px`, bottom: 'auto' } : this.anchor()}>
 
                     <div className="cutout-bar"
                         onPointerDown={this.startDrag}
@@ -180,7 +189,7 @@ class CutoutView extends Component {
                 {minimized &&
                     <button type="button"
                         className="cutout-pill"
-                        style={this.cascade()}
+                        style={this.anchor()}
                         aria-label={this.props.t('annotation.cutout_expand')}
                         onClick={() => this.props.setView({ ...this.props.view, minimized: false })}>
                         <FontAwesomeIcon icon={faCropSimple} size="lg" />

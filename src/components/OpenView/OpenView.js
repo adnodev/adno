@@ -952,6 +952,7 @@ class OpenView extends Component {
                         project={this.props.selectedProject}
                         annotation={this.state.cutoutAnno}
                         groupId={groupId}
+                        contentPosition={this.props.contentPosition}
                         styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
                         view={this.cutoutViewFor(groupId)}
                         setView={(view) => this.setCutoutView(groupId, view)} />
