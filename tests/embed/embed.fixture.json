@@ -1,0 +1,95 @@
+{
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "embed-offline-project",
+    "type": "AnnotationCollection",
+    "title": "Embedded sheet",
+    "description": "Two annotations, three zones",
+    "creator": "Camille Rey",
+    "editor": "Adno tests",
+    "rights": "CC BY-SA",
+    "date": "2026-07-01T00:00:00.000Z",
+    "modified": "2026-07-01T00:00:00.000Z",
+    "source": "http://localhost:1234/embed-source.png",
+    "format": "Adno",
+    "total": 2,
+    "first": {
+        "id": "page1",
+        "type": "AnnotationPage",
+        "startIndex": 0,
+        "items": [
+            {
+                "@context": "http://www.w3.org/ns/anno.jsonld",
+                "id": "#first-annotation",
+                "type": "Annotation",
+                "body": [
+                    {
+                        "type": "TextualBody",
+                        "value": "ANNOTATION ONE",
+                        "purpose": "commenting"
+                    },
+                    {
+                        "type": "HTMLBody",
+                        "value": "<p>ANNOTATION ONE</p>",
+                        "purpose": "commenting"
+                    }
+                ],
+                "target": {
+                    "source": "http://localhost:1234/embed-source.png",
+                    "selector": {
+                        "type": "FragmentSelector",
+                        "conformsTo": "http://www.w3.org/TR/media-frags/",
+                        "value": "xywh=pixel:40,40,120,90"
+                    }
+                }
+            },
+            {
+                "@context": "http://www.w3.org/ns/anno.jsonld",
+                "id": "#second-annotation",
+                "type": "Annotation",
+                "body": [
+                    {
+                        "type": "TextualBody",
+                        "value": "ANNOTATION TWO",
+                        "purpose": "commenting"
+                    }
+                ],
+                "target": [
+                    {
+                        "source": "http://localhost:1234/embed-source.png",
+                        "selector": {
+                            "type": "FragmentSelector",
+                            "conformsTo": "http://www.w3.org/TR/media-frags/",
+                            "value": "xywh=pixel:260,200,140,100"
+                        }
+                    },
+                    {
+                        "source": "http://localhost:1234/embed-source.png",
+                        "selector": {
+                            "type": "FragmentSelector",
+                            "conformsTo": "http://www.w3.org/TR/media-frags/",
+                            "value": "xywh=pixel:420,60,100,80"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "adno_settings": {
+        "delay": 5,
+        "showNavigator": false,
+        "toolsbarOnFs": true,
+        "sidebarEnabled": true,
+        "startbyfirstanno": false,
+        "shouldAutoPlayAnnotations": false,
+        "rotation": false,
+        "displayToolbar": true,
+        "tags": [],
+        "outlineWidth": "outline-1px",
+        "outlineColor": "outline-white",
+        "outlineColorFocus": "outline-focus-yellow",
+        "showOutlines": true,
+        "showEyes": false,
+        "soundMode": "no_sound",
+        "showCurrentAnnotation": false
+    }
+}

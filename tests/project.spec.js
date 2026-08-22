@@ -113,9 +113,11 @@ async function testIIIF(page, url) {
 }
 
 test('embed view works - ponts et sentiers', async ({ page }) => {
+  test.skip(!!process.env.CI, 'Embed en ligne : projet distant injoignable depuis le CI');
   await testIIIF(page, "http://localhost:1234/#/embed?url=https://ponts-et-sentiers.emf.fr/files/original/5cfedc4610ce4fd2ecccffbc0f45f02d05529357.json")
 })
 
 test('embed view works - horae-pictavenses', async ({ page }) => {
+  test.skip(!!process.env.CI, 'Embed en ligne : manifeste distant injoignable depuis le CI');
   await testIIIF(page, "http://localhost:1234/#/embed?url=https://horae-pictavenses.fr/iiif/2/8477/info.json")
 })
