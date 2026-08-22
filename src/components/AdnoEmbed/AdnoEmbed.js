@@ -1,53 +1,36 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Component } from "react";
 import { withRouter } from "react-router";
-import { enhancedFetch, getEye, get_url_extension, computeNavigatorInfo, placeEye } from "../../Utils/utils";
-import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
-import { parseShadowId, toAllShadows } from "../../Utils/targets";
-import { InfinitySpin } from 'react-loader-spinner'
-import {
-    faHouse,
-    faPlay,
-    faPause,
-    faEye,
-    faEyeSlash,
-    faArrowRight,
-    faArrowLeft,
-    faUpRightAndDownLeftFromCenter,
-    faRotate,
-    faQuestion,
-    faCircleInfo,
-    faVolumeHigh,
-    faVolumeOff,
-    faExternalLink
-} from "@fortawesome/free-solid-svg-icons";
-import parse from 'html-react-parser';
-import Swal from "sweetalert2";
 import { withTranslation } from "react-i18next";
+import { InfinitySpin } from 'react-loader-spinner'
+import Swal from "sweetalert2";
+
+import { buildTagsList, enhancedFetch, get_url_extension } from "../../Utils/utils";
+import { extractIIIFContent } from "./IIIFHelper";
+import OpenView from "../OpenView/OpenView";
 
 // Import Style
 import "./AdnoEmbed.css";
-import { extractIIIFContent } from "./IIIFHelper";
-import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
+
+const IMAGE_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
 
 class AdnoEmbed extends Component {
     constructor(props) {
         super(props);
         this.state = {
             annos: [],
-            currentID: -1,
-            intervalID: 0,
-            selectedAnno: {},
+            selectedAnno: null,
+            selectedTargetIndex: 0,
+            source: null,
             isLoaded: false,
-            currentTrack: undefined,
-            soundMode: 'no_sound',
-            audioContexts: [],
-            hasInteracted: false,
-            imageRatio: null,
-            navigatorLayout: null,
-            viewerReady: false,
-            navigatorImgUrl: null
+            settingsReady: false,
+            soundMode: 'no_sound'
         };
+    }
+
+    componentDidMount() {
+        const query = new URLSearchParams(this.props.location.search);
+
+        this.getAdnoProject(query.get("url"))
     }
 
     overrideSettings = () => {
@@ -118,639 +101,42 @@ class AdnoEmbed extends Component {
             outlineWidth,
             outlineColor,
             outlineColorFocus,
-            showCurrentAnnotation
+            showCurrentAnnotation,
+            settingsReady: true
         }
 
         // Update settings
         this.setState({ ...settings });
     };
 
-    componentDidUpdate() {
-        if (!this.state.hasInteracted && this.state.shouldAutoPlayAnnotations && this.state.annos.length > 0) {
-            this.setState({
-                hasInteracted: true
-            })
-            this.startTimer()
-        }
+    changeSelectedAnno = (annotation, targetIndex = 0) => {
+        this.setState({ selectedAnno: annotation || null, selectedTargetIndex: targetIndex })
     }
 
-    freeMode = () => {
-        if (this.state.showEyes) {
-            const annos = [...document.getElementsByClassName("a9s-annotation")]
-
-            annos.forEach(anno => {
-                const svgElement = getEye()
-
-                const tileSize = document.getElementById('adno-embed').clientWidth / 10
-
-                svgElement.style.fill = "#000"
-                svgElement.style.stroke = "#000"
-                svgElement.style.strokeWidth = 2
-                svgElement.classList.add('eye')
-                svgElement.id = `eye-${anno.getAttribute('data-id')}`;
-
-                if (anno.classList.contains("a9s-point")) {
-                    anno.removeAttribute("transform")
-
-                    anno.classList.remove("a9s-point")
-                    anno.classList.remove("a9s-non-scaling")
-                }
-
-                if (placeEye(anno, svgElement, tileSize)) {
-                    anno.appendChild(svgElement)
-                }
-            })
-        } else {
-            [...document.getElementsByClassName('eye')].forEach(r => r.remove())
-        }
+    changeShowToolbar = () => {
+        this.setState({ showToolbar: !this.state.showToolbar })
     }
 
-    componentDidMount() {
-        const query = new URLSearchParams(this.props.location.search);
+    embeddedProject = () => {
+        const { source, title, description, creator, editor, rights, annos } = this.state
+        const isImage = IMAGE_EXTENSIONS.includes(get_url_extension(source))
 
-        let urlParam = query.get("url")
-
-
-        this.getAdnoProject(urlParam)
-
-        // Accessibility shortcuts
-        addEventListener("fullscreenchange", this.updateFullScreenEvent);
-        addEventListener("keydown", this.keyPressedEvents);
-    }
-
-    displayViewer = (tileSources, annos) => {
-        this.openSeadragon = OpenSeadragon({
-            id: "adno-embed",
-            homeButton: "home-button",
-            showNavigator: false,
-            tileSources: tileSources,
-            prefixUrl: "https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/",
-        });
-
-        this.openSeadragon.addOnceHandler('open', () => {
-            const info = computeNavigatorInfo(this.openSeadragon);
-            if (info) {
-                this.setState({ ...info, viewerReady: true });
-            }
-        });
-
-        OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
-        OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
-        OpenSeadragon.setString("Tooltips.ZoomIn", this.props.t('editor.zoom_in'));
-        OpenSeadragon.setString("Tooltips.ZoomOut", this.props.t('editor.zoom_out'));
-        OpenSeadragon.setString("Tooltips.NextPage", this.props.t('editor.next_page'));
-        OpenSeadragon.setString("Tooltips.PreviousPage", this.props.t('editor.previous_page'));
-        OpenSeadragon.setString("Tooltips.RotateLeft", this.props.t('editor.rotate_left'));
-        OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
-        OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
-
-        const annoStyles = this.state.outlineWidth + " " + this.state.outlineColor + " " + this.state.outlineColorFocus;
-
-        const annoFormatter = function () {
-            return annoStyles;
+        return {
+            id: 'adno-embed',
+            title,
+            description,
+            creator,
+            editor,
+            rights,
+            [isImage ? 'img_url' : 'manifest_url']: source,
+            annotations: annos
         }
-
-        this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
-            locale: "auto",
-            drawOnSingleClick: true,
-            allowEmpty: true,
-            disableEditor: true,
-            readOnly: true,
-            formatters: annoFormatter
-        });
-
-        this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
-
-        // this.AdnoAnnotorious.setVisible(this.state.isAnnotationsVisible);
-
-        this.AdnoAnnotorious.on("clickAnnotation", (shadow) => {
-            if (this.state.isAnnotationsVisible) {
-                const { id } = parseShadowId(shadow.id)
-                const annotation = this.state.annos.find(anno => anno.id === id) || shadow
-
-                this.focusAnnotation(shadow)
-
-                let annotationIndex = this.state.annos.findIndex(
-                    (anno) => anno.id === id
-                );
-
-                this.setState({ currentID: annotationIndex, selectedAnno: annotation });
-            }
-        });
-
-        // Generate dataURI and load annotations into Annotorious
-        const dataURI =
-            `data:application/json;base64,${btoa(unescape(encodeURIComponent(JSON.stringify(toAllShadows(annos)))))}`;
-        this.AdnoAnnotorious.loadAnnotations(dataURI)
-            .then(() => {
-                setTimeout(() => {
-                    this.freeMode()
-
-                    this.loadAudio(annos)
-
-                    if (!this.state.showOutlines)
-                        this.toggleOutlines()
-
-                    this.toggleAnnotations(this.state.isAnnotationsVisible)
-
-                }, 200)
-            })
-    };
-
-    toggleOutlines = showOutlines => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
-        annos.forEach(anno => {
-            if (showOutlines)
-                [...anno.children].forEach(r => {
-                    r.classList.remove("a9s-annotation--hidden")
-                })
-            else
-                [...anno.children].forEach(r => {
-                    if (r.classList.contains("eye")) {
-                        if (!this.state.showEyes)
-                            r.classList.add("a9s-annotation--hidden")
-                    } else
-                        r.classList.add("a9s-annotation--hidden")
-                })
-        })
-    }
-
-    toggleAnnotations = (visible) => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
-        annos.forEach(anno => {
-            [...anno.children].forEach(r => {
-                if (visible) {
-                    const isEye = r.classList.contains('eye')
-                    const showChild = isEye ? this.state.showEyes : this.state.showOutlines
-
-                    if (isEye)
-                        r.classList.remove('eye-selected')
-
-                    if (showChild) {
-                        r.classList.remove("a9s-annotation--hidden")
-                    } else {
-                        r.classList.add("a9s-annotation--hidden")
-                    }
-
-                } else {
-                    r.classList.add("a9s-annotation--hidden")
-                }
-            })
-        })
-    }
-
-    toggleAnnotationsLayer = () => {
-        this.toggleAnnotations(!this.state.isAnnotationsVisible)
-        this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
-    }
-
-    hasAudio = annotation => {
-        if (Array.isArray(annotation.body) && annotation.body.length > 0) {
-            const resource = annotation.body
-                .find(body => body.type === "SpecificResource")
-            return resource?.source?.id
-        }
-        return false
-    }
-
-    getAnnotationHTMLBody = (annotation) => {
-        if (annotation && annotation.body) {
-            if (
-                Array.isArray(annotation.body) &&
-                annotation.body.find((annoBody) => annoBody.type === "HTMLBody") &&
-                annotation.body.find((annoBody) => annoBody.type === "HTMLBody")
-                    .value !== ""
-            ) {
-                return (
-                    <div
-                        className={
-                            this.state.toolsbarOnFs
-                                ? "adno-embed-anno-fullscreen-tb-opened"
-                                : "adno-embed-anno-fullscreen"
-                        }
-                    >
-                        {this.hasAudio(annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
-                        {parse(
-                            annotation.body.find((annoBody) => annoBody.type === "HTMLBody")
-                                .value
-                        )}
-                    </div>
-                );
-            }
-        }
-    };
-
-    toggleFullScreen = () => {
-        // turn on full screen
-        if (document.fullscreenEnabled) {
-            if (!this.state.fullScreenEnabled) {
-                if (document.getElementById("adno-embed")) {
-                    document.getElementById("adno-embed").requestFullscreen();
-                    this.setState({ fullScreenEnabled: true });
-                } else {
-                    alert("Unable to turn on FullScreen");
-                }
-            } else {
-                document.exitFullscreen();
-                this.setState({ fullScreenEnabled: false });
-            }
-        } else {
-            alert("Fullscreen disabled");
-        }
-    };
-
-    toggleSound = () => {
-        const playSound = !this.state.playSound;
-
-        [...document.getElementsByTagName('audio')].map(audiTag => audiTag.volume = playSound ? 1 : 0)
-
-        this.setState({ playSound })
-    }
-
-
-    keyPressedEvents = (event) => {
-        switch (event.code) {
-            case "ArrowRight":
-                this.nextAnno();
-                break;
-            case "ArrowLeft":
-                this.previousAnno();
-                break;
-            case "KeyP":
-                this.startTimer();
-                break;
-            case "KeyE":
-                this.toggleFullScreen();
-                break;
-            case "KeyS":
-                this.toggleAnnotationsLayer();
-                break;
-            case "KeyT":
-                this.setState({ showToolbar: !this.state.showToolbar });
-                break;
-            default:
-                break;
-        }
-    };
-
-    updateFullScreenEvent = (event) => {
-        // turn off fullscreen
-        if (document.fullscreenEnabled && !document.fullscreenElement) {
-            this.setState({ fullScreenEnabled: false });
-        }
-    };
-
-    componentWillUnmount() {
-        removeEventListener("keydown", this.keyPressedEvents);
-        removeEventListener("fullscreenchange", this.updateFullScreenEvent);
-        this.unwatchResize?.();
-    }
-
-    previousAnno = () => {
-        let localCurrentID = this.state.currentID;
-
-        if (this.state.annos.length > 0) {
-            if (this.state.currentID === -1 || this.state.currentID === 0) {
-                localCurrentID = this.state.annos.length - 1;
-            } else {
-                localCurrentID = this.state.currentID - 1;
-            }
-
-            this.setState({ currentID: localCurrentID });
-
-            this.changeAnno(this.state.annos[localCurrentID]);
-
-            this.showOnlyCurrentAnnotation(this.state.annos[localCurrentID].id)
-        }
-    };
-
-    nextAnno = () => {
-        let localCurrentID = this.state.currentID;
-
-        if (this.state.annos.length > 0) {
-            if (
-                this.state.currentID === -1 ||
-                this.state.currentID === this.state.annos.length - 1
-            ) {
-                localCurrentID = 0;
-            } else {
-                localCurrentID++;
-            }
-
-            this.setState({ currentID: localCurrentID });
-
-            this.changeAnno(this.state.annos[localCurrentID]);
-
-            this.showOnlyCurrentAnnotation(this.state.annos[localCurrentID].id)
-        }
-    };
-
-    clearTimer = () => {
-        this.setState({ timer: false, selectedAnno: undefined });
-        clearInterval(this.state.intervalID)
-
-        this.cancelShowOnlyAnnotation()
-    }
-
-    showOnlyCurrentAnnotation = annotationId => {
-        const showOutlinesOrEyes = (this.state.showOutlines || this.state.showEyes) && this.state.isAnnotationsVisible
-
-        if (showOutlinesOrEyes && this.state.showCurrentAnnotation) {
-            const annos = [...document.getElementsByClassName("a9s-annotation")]
-
-            // HIDE ALL ANNOS AND EYES
-            annos.forEach(anno => {
-                const id = anno.getAttribute('data-id')
-                const eye = document.getElementById(`eye-${id}`);
-
-                [...anno.children].forEach(r => r.classList.add("a9s-annotation--hidden"))
-            })
-
-            const currentShapes = annos.filter(anno => parseShadowId(anno.getAttribute('data-id')).id === annotationId)
-
-            currentShapes.forEach(shape => Array.from(shape.children).forEach(r => {
-                const isEye = r.classList.contains('eye')
-                const showChild = isEye ? this.state.showEyes : this.state.showOutlines
-
-                if (showChild)
-                    r.classList.remove("a9s-annotation--hidden")
-            }))
-        }
-    }
-
-    cancelShowOnlyAnnotation = () => {
-        this.toggleAnnotations(this.state.isAnnotationsVisible)
-    }
-
-    startTimer = () => {
-        // Do not start the timer if there is no content to display
-        if (this.state.annos.length > 0) {
-            if (this.state.startbyfirstanno) {
-                this.setState({ currentID: -1 });
-
-                this.changeAnno(this.state.annos[0]);
-            } else {
-                this.automateLoading();
-            }
-
-            const delay = this.state.delay * 1000;
-
-            const interID = setTimeout(() => this.automateLoading(delay), delay);
-            this.setState({
-                timer: true,
-                intervalID: interID
-            })
-        }
-    };
-    automateLoading = timeout => {
-        let newCurrentID = this.state.currentID;
-
-        if (this.state.currentID === -1 || this.state.currentID === this.state.annos.length - 1) {
-            newCurrentID = 0;
-        } else {
-            newCurrentID++;
-        }
-
-        this.setState({ currentID: newCurrentID });
-
-        this.changeAnno(this.state.annos[newCurrentID]);
-
-        this.showOnlyCurrentAnnotation(this.state.annos[newCurrentID].id)
-
-        if (timeout) {
-            const id = this.state.annos[newCurrentID].id;
-
-            const annotation = [...document.getElementsByClassName("a9s-annotation")]
-                .find(elt => elt.getAttribute("data-id") === id)
-
-            let delay = timeout;
-            if (annotation) {
-                const duration = annotation.getElementsByTagName("audio")[0]?.duration;
-
-                if (duration) {
-                    delay = duration * 1000 + 1500
-                }
-            }
-
-            const interID = setTimeout(() => this.automateLoading(delay), delay);
-            this.setState({
-                intervalID: interID
-            })
-        }
-    };
-
-    focusAnnotation = (annotation) => {
-        applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, annotation, {
-            defaultRotation: this.state.defaultRotation,
-            transition: this.state.rotationTransition,
-            padded: true
-        })
-    }
-
-    changeAnno = (annotation) => {
-        if (annotation && annotation.id && this.AdnoAnnotorious) {
-            this.setState({ selectedAnno: annotation });
-
-            this.AdnoAnnotorious.selectAnnotation(annotation.id);
-            this.focusAnnotation(annotation)
-
-            let annotationIndex = this.state.annos.findIndex(anno => anno.id === annotation.id);
-
-            this.setState({ currentID: annotationIndex });
-
-            this.state.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
-            document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
-
-            const { currentTrack } = this.state
-
-            if (currentTrack) {
-                currentTrack.pause()
-                currentTrack.currentTime = 0;
-            }
-
-            const annos = [...document.getElementsByClassName("a9s-annotation")]
-            const annoSvg = annos.find(anno => anno.getAttribute('data-id') === annotation.id)
-
-            if (annoSvg) {
-                const audioElement = [...annoSvg.getElementsByTagName("audio")];
-
-                if (audioElement.length > 0) {
-                    const source = audioElement[0]
-
-                    source.play()
-
-                    this.setState({
-                        currentTrack: source
-                    })
-                }
-            }
-        }
-    };
-
-    loadAudio = (annosData) => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
-
-        annos.forEach(anno => {
-            const audioElement = document.createElement('audio')
-            audioElement.volume = this.state.soundMode !== 'no_sound' ? 1 : 0
-            audioElement.loop = this.props.soundMode === 'spatialization' ? true : false
-
-            const type = [...anno.children][0].tagName
-            const tileSize = document.getElementById('adno-embed').clientWidth / 5
-
-            let x, y = 0;
-            if (type === "ellipse" || type == "circle") {
-                x = anno.children[0].getAttribute("cx") - tileSize / 2;
-                y = anno.children[0].getAttribute("cy") - tileSize / 2
-
-            } else if (type === "rect") {
-                x = anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2
-                y = anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2
-
-
-            } else if (type === "path" || type === "polygon") {
-                const bbox = anno.getBBox();
-
-                const centerX = bbox.x + bbox.width / 2;
-                const centerY = bbox.y + bbox.height / 2;
-
-                x = centerX - tileSize / 2
-                y = centerY - tileSize / 2
-            }
-
-            audioElement.setAttribute('x', x / this.openSeadragon.viewport._contentSize.x)
-            audioElement.setAttribute('y', y / this.openSeadragon.viewport._contentSize.y)
-
-            const id = anno.getAttribute("data-id")
-            const annotation = annosData.find(anno => anno.id === id);
-
-            if (annotation && annotation.body && Array.isArray(annotation.body)) {
-                const track = annotation.body.find(body => body.type === "SpecificResource")
-
-                if (track) {
-                    const sourceElement = document.createElement('source')
-                    sourceElement.src = track.source?.id
-                    audioElement.appendChild(sourceElement)
-
-                    const unimplemented = document.createElement("p")
-                    unimplemented.textContent = "Your browser doesn't support the HTML5 audio element"
-                    audioElement.appendChild(unimplemented)
-
-                    anno.appendChild(audioElement)
-
-                    setTimeout(() => {
-                        this.playSound(audioElement.cloneNode(true), this.state.soundMode)
-                    }, 1000)
-                }
-            }
-
-        })
-    }
-
-    toggleAudioElementLoopAttribute = looping => {
-        [...document.getElementsByClassName("a9s-annotation")]
-            .forEach(annotation => {
-                const audioElement = annotation.getElementsByTagName("audio")[0];
-
-                if (audioElement)
-                    audioElement.loop = looping
-            });
-    }
-
-    applySound = soundMode => {
-        if (soundMode === 'spatialization') {
-            this.state.audioContexts.forEach(r => r.resume())
-            this.toggleAudioElementLoopAttribute(true)
-        } else if (soundMode === 'no_spatialization' || soundMode === 'no_sound') {
-            this.state.audioContexts.forEach(r => r.suspend())
-            this.toggleAudioElementLoopAttribute(false)
-
-            if (soundMode === 'no_sound') {
-                [...document.getElementsByClassName("a9s-annotation")]
-                    .forEach(annotation => {
-                        const audioElement = annotation.getElementsByTagName("audio")[0];
-
-                        if (audioElement) {
-                            audioElement.currentTime = 0;
-                            audioElement.pause()
-                        }
-                    });
-            }
-        }
-        else {
-            if (this.state.currentTrack) {
-                this.state.currentTrack.currentTime = 0;
-                this.state.currentTrack.play()
-            }
-        }
-    }
-
-    playSound = (audioElement, soundMode) => {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        const track = new MediaElementAudioSourceNode(audioCtx, {
-            mediaElement: audioElement,
-        });
-
-        const posX = 0;
-        const posY = window.innerHeight / 2;
-        const posZ = 300;
-
-        const panner = new PannerNode(audioCtx, {
-            panningModel: "HRTF",
-            distanceModel: "linear",
-            positionX: posX,
-            positionY: posY,
-            positionZ: posZ,
-            orientationX: 0.0,
-            orientationY: 0.0,
-            orientationZ: -1.0,
-            refDistance: 1,
-            maxDistance: 20_000,
-            rolloffFactor: 10,
-            coneInnerAngle: 40,
-            coneOuterAngle: 50,
-            coneOuterGain: 0.4,
-        })
-
-        track
-            .connect(panner)
-            .connect(audioCtx.destination)
-
-        const viewer = this.openSeadragon;
-
-        function updateSoundPosition(svgElement) {
-            const viewportCenter = viewer.viewport.getCenter(true);
-
-            const x = Number(svgElement.getAttribute('x'))
-            const y = Number(svgElement.getAttribute('y'))
-
-            panner.positionX.value = -((viewportCenter.x - x) * 200);
-            panner.positionY.value = -(((viewportCenter.y * 2) - y) * 200)
-        }
-
-        viewer.addHandler('animation', () => updateSoundPosition(audioElement));
-        viewer.addHandler('pan', () => updateSoundPosition(audioElement));
-        viewer.addHandler('zoom', () => updateSoundPosition(audioElement));
-
-        audioElement.crossOrigin = "anonymous";
-        audioElement.play()
-
-        if (soundMode !== 'spatialization')
-            audioCtx.suspend()
-
-        this.setState({
-            audioContexts: [...this.state.audioContexts, audioCtx]
-        })
     }
 
     getAdnoProject = (url) => {
         const IPFS_GATEWAY = process.env.IPFS_GATEWAY;
 
         const regexCID = /^(Qm[1-9A-HJ-NP-Za-km-z]{44}|b[A-Za-z2-7]{58,})$/;
-
-        // const GRANTED_IMG_EXTENSIONS =
-        //     process.env.GRANTED_IMG_EXTENSIONS.split(",");
 
         const isIpfsUrl = url.match(regexCID) || url.startsWith(IPFS_GATEWAY);
         if (isIpfsUrl && !url.startsWith(IPFS_GATEWAY)) url = IPFS_GATEWAY + url;
@@ -785,30 +171,7 @@ class AdnoEmbed extends Component {
                                         imported_project.hasOwnProperty("source") &&
                                         imported_project.hasOwnProperty("total")
                                     ) {
-                                        // if the project has imported settings, override current settings
-                                        if (imported_project.hasOwnProperty("adno_settings")) {
-                                            this.setState({ ...imported_project.adno_settings }, () => {
-                                                this.overrideSettings();
-                                            });
-                                        }
-
-                                        this.setState({ isLoaded: true })
-
-                                        this.setState({ title: imported_project.title })
-                                        if (imported_project.hasOwnProperty("description")) {
-                                            this.setState({ description: imported_project.description })
-                                        }
-                                        if (imported_project.hasOwnProperty("creator")) {
-                                            this.setState({ creator: imported_project.creator })
-                                        }
-                                        if (imported_project.hasOwnProperty("editor")) {
-                                            this.setState({ editor: imported_project.editor })
-                                        }
-                                        if (imported_project.hasOwnProperty("rights")) {
-                                            this.setState({ rights: imported_project.rights })
-                                        }
-
-                                        const selectedTags = imported_project.adno_settings.tags || [];
+                                        const selectedTags = imported_project.adno_settings?.tags || [];
 
                                         let annos = [...imported_project.first.items];
 
@@ -845,23 +208,17 @@ class AdnoEmbed extends Component {
                                             }
                                         });
 
-                                        const GRANTED_IMG_EXTENSIONS =
-                                            process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
-
-                                        const tileSources = GRANTED_IMG_EXTENSIONS.includes(
-                                            get_url_extension(imported_project.source)
-                                        )
-                                            ? {
-                                                type: "image",
-                                                url: imported_project.source,
-                                            }
-                                            : [imported_project.source];
-
-                                        this.setState({ navigatorImgUrl: imported_project.source });
-                                        this.displayViewer(tileSources, annos);
-
-                                        // Add annotations to the state
-                                        this.setState({ annos });
+                                        this.setState({
+                                            ...(imported_project.adno_settings || {}),
+                                            title: imported_project.title,
+                                            description: imported_project.description,
+                                            creator: imported_project.creator,
+                                            editor: imported_project.editor,
+                                            rights: imported_project.rights,
+                                            source: imported_project.source,
+                                            annos,
+                                            isLoaded: true
+                                        }, this.overrideSettings);
                                     } else {
                                         Swal.fire({
                                             title: `projet adno INVALIDE`,
@@ -882,113 +239,15 @@ class AdnoEmbed extends Component {
                                         extractIIIFContent(imported_project, {
                                             overrideSettings: this.overrideSettings,
                                             setState: (opts, callback) => this.setState({ ...opts }, callback),
-                                            displayViewer: this.displayViewer,
                                             props: this.props
                                         })
-                                        // this.overrideSettings();
-
-                                        // let resultLink = null;
-
-                                        // if (imported_project.items && imported_project.items.length > 0) {
-                                        //     const canvas = imported_project.items[0];
-
-                                        //     // Extract painting annotation (the image)
-                                        //     if (canvas.items && canvas.items.length > 0) {
-                                        //         const paintingPage = canvas.items[0];
-                                        //         if (paintingPage.items && paintingPage.items.length > 0) {
-                                        //             const paintingAnno = paintingPage.items[0];
-                                        //             if (paintingAnno.body) {
-                                        //                 if (paintingAnno.body.service && paintingAnno.body.service.length > 0) {
-                                        //                     resultLink = paintingAnno.body.service[0].id + "/info.json";
-                                        //                 } else if (paintingAnno.body.id) {
-                                        //                     resultLink = paintingAnno.body.id;
-                                        //                 }
-                                        //             }
-                                        //         }
-                                        //     }
-                                        // }
-
-                                        // let annos = this.extractIIIFv3Annotations(imported_project);
-
-                                        // const optSettings = this.getMetadataFromIIIF(imported_project.metadata, "adno_settings")
-
-                                        // let adnoSettings = {}
-                                        // if (optSettings) {
-                                        //     try {
-                                        //         adnoSettings = JSON.parse(atob(optSettings))
-                                        //     } catch (err) {
-                                        //         console.log(err)
-                                        //     }
-                                        // }
-
-                                        // const title = this.getMetadataFromIIIF(imported_project.metadata, 'title')
-                                        // const description = this.getMetadataFromIIIF(imported_project.metadata, 'description')
-                                        // const creator = this.getMetadataFromIIIF(imported_project.metadata, 'creator')
-                                        // const editor = this.getMetadataFromIIIF(imported_project.metadata, 'editor')
-                                        // const rights = this.getMetadataFromIIIF(imported_project.metadata, 'rights')
-
-
-                                        // const selectedTags = adnoSettings?.tags || [];
-
-                                        // if (selectedTags.length > 0)
-                                        //     annos = annos
-                                        //         .map(annotation => ({
-                                        //             ...annotation,
-                                        //             tags: buildTagsList(annotation).map(tag => tag.value)
-                                        //         }))
-                                        //         .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
-
-                                        // if (resultLink) {
-                                        //     const GRANTED_IMG_EXTENSIONS =
-                                        //         process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
-
-                                        //     const tileSources = GRANTED_IMG_EXTENSIONS.includes(
-                                        //         get_url_extension(resultLink)
-                                        //     )
-                                        //         ? {
-                                        //             type: "image",
-                                        //             url: resultLink,
-                                        //         }
-                                        //         : [resultLink];
-
-                                        //     this.setState({
-                                        //         ...adnoSettings,
-                                        //         annos,
-                                        //         title,
-                                        //         description,
-                                        //         creator,
-                                        //         editor,
-                                        //         rights,
-                                        //         isLoaded: true
-                                        //     }, () => {
-                                        //         this.overrideSettings()
-                                        //         this.displayViewer(tileSources, annos);
-                                        //     });
-                                        // } else {
-                                        //     Swal.fire({
-                                        //         title: this.props.t("errors.unable_reading_manifest"),
-                                        //         showCancelButton: true,
-                                        //         showConfirmButton: false,
-                                        //         cancelButtonText: "OK",
-                                        //         icon: "warning",
-                                        //     });
-                                        // }
                                     } else {
                                         console.log("projet non adno INVALIDE");
                                     }
                                 }
                             })
                     } else {
-                        this.overrideSettings();
-
-                        const tileSources = {
-                            type: "image",
-                            url,
-                        };
-
-                        this.setState({ isLoaded: true, navigatorImgUrl: url });
-
-                        this.displayViewer(tileSources, []);
+                        this.setState({ isLoaded: true, source: url }, this.overrideSettings);
                     }
                 } else {
                     Swal.fire({
@@ -997,23 +256,12 @@ class AdnoEmbed extends Component {
                         showConfirmButton: false,
                         icon: "error",
                     });
-                    // throw new Error(this.props.t('errors.unable_access_file'))
                 }
             })
-        // .catch((err) => {
-        //     Swal.fire({
-        //         title: err.message,
-        //         showCancelButton: false,
-        //         showConfirmButton: false,
-        //         icon: "warning",
-        //     });
-        // });
     };
 
     render() {
-        const showAnnotationsButton = this.state.showOutlines || this.state.showEyes
-
-        if (!this.state.isLoaded)
+        if (!this.state.isLoaded || !this.state.settingsReady)
             return <div className="loader">
                 <InfinitySpin
                     width='200'
@@ -1023,168 +271,36 @@ class AdnoEmbed extends Component {
             </div>
 
         return (
-            <div id="adno-embed" style={{ position: 'relative' }}>
-
-                {this.state.showNavigator && this.state.viewerReady && (
-                    <AdnoNavigator
-                        viewer={this.openSeadragon}
-                        imageRatio={this.state.imageRatio}
-                        layout={this.state.navigatorLayout}
-                        imgUrl={this.state.navigatorImgUrl}
-                    />
-                )}
-
-                {
-                    this.state.selectedAnno && this.state.selectedAnno.body &&
-                    this.getAnnotationHTMLBody(this.state.selectedAnno)
-                }
-
-                <div className={(this.state.fullScreenEnabled ? this.state.toolsbarOnFs : this.state.showToolbar) ? "toolbar-on" : "toolbar-off"}>
-                    <div className="osd-bar">
-                        <div className="osd-buttons-bar">
-
-                            {
-                                this.state.annos.length > 0 &&
-                                <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.state.timer ? this.clearTimer() : this.startTimer()}>
-                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t(`visualizer.${this.state.timer ? 'pause' : 'play'}`)}>
-                                        <FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" />
-                                    </div>
-                                </button>
-                            }
-
-                            <button id="home-button" className="toolbarButton toolbaractive">
-                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_view')}>
-                                    <FontAwesomeIcon icon={faHouse} size="lg" />
-                                </div>
-                            </button>
-
-                            {
-                                this.state.annos.length > 0 &&
-                                <>
-                                    {showAnnotationsButton && <button id="set-visible" className="toolbarButton toolbaractive" onClick={() => this.toggleAnnotationsLayer()}>
-                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.toggle_annotations')}>
-                                            <FontAwesomeIcon icon={this.state.isAnnotationsVisible ? faEyeSlash : faEye} size="lg" />
-                                        </div>
-                                    </button>}
-
-                                    <button id="previousAnno" className="toolbarButton toolbaractive" onClick={() => this.previousAnno()}>
-                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.previous_annotation')}>
-                                            <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                                        </div>
-                                    </button>
-                                    <button id="nextAnno" className="toolbarButton toolbaractive" onClick={() => this.nextAnno()}>
-                                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.next_annotation')}>
-                                            <FontAwesomeIcon icon={faArrowRight} size="lg" />
-                                        </div>
-                                    </button>
-                                </>
-                            }
-
-                            {
-                                this.state.rotation &&
-                                <button id="rotate"
-                                    className="toolbarButton toolbaractive"
-                                    onClick={() => this.openSeadragon.viewport.setRotation(this.openSeadragon.viewport.degrees + 90)}>
-                                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.rotation')}>
-                                        <FontAwesomeIcon icon={faRotate} size="lg" />
-                                    </div>
-                                </button>
-                            }
-
-                            <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
-                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
-                                    <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} size="lg" />
-                                </div>
-                            </button>
-
-                            <button id="info" className="toolbarButton toolbaractive">
-                                <label htmlFor="info-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.info')}
-                                    style={{ display: 'block' }}>
-                                    <FontAwesomeIcon icon={faCircleInfo} size="lg" />
-                                </label>
-                            </button>
-
-                            <button id="help" className="toolbarButton toolbaractive">
-                                <label htmlFor="help-modal" className="tooltip tooltip-bottom z-50 cursor-pointer" data-tip={this.props.t('visualizer.help')}
-                                    style={{ display: 'block' }}>
-                                    <FontAwesomeIcon icon={faQuestion} size="lg" />
-                                </label>
-                            </button>
-
-                            <input type="checkbox" id="info-modal" className="modal-toggle" />
-                            <div className="modal">
-                                <div className="modal-box" style={{ "color": "initial" }}>
-                                    <div className="modal-action mt-0 justify-end">
-                                        <button className="btn btn-square btn-sm">
-                                            <label htmlFor="info-modal" className="cursor-pointer">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                            </label>
-                                        </button>
-                                    </div>
-                                    <h3 className="font-bold text-2xl py-4">{this.state.title}</h3>
-                                    {
-                                        this.state.description &&
-                                        <>
-                                            <p className="py-4">{this.state.description}</p>
-                                        </>
-                                    }
-                                    <dl className="divide-y">
-                                        {
-                                            this.state.creator &&
-                                            <>
-                                                <div className="flex py-2">
-                                                    <dt className="font-medium px-2">{this.props.t('project.author')} :</dt>
-                                                    <dd>{this.state.creator}</dd>
-                                                </div>
-                                            </>
-                                        }
-                                        {
-                                            this.state.editor &&
-                                            <>
-                                                <div className="flex py-2">
-                                                    <dt className="font-medium px-2">{this.props.t('project.editor')} :</dt>
-                                                    <dd>{this.state.editor}</dd>
-                                                </div>
-                                            </>
-                                        }
-                                        {
-                                            this.state.rights &&
-                                            <>
-                                                <div className="flex py-2">
-                                                    <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
-                                                    <dd>{this.state.rights}</dd>
-                                                </div>
-                                            </>
-                                        }
-                                    </dl>
-                                </div>
-                            </div>
-
-                            <input type="checkbox" id="help-modal" className="modal-toggle" />
-                            <div className="modal">
-                                <div className="modal-box" style={{ "color": "initial" }}>
-                                    <div className="modal-action mt-0 justify-end">
-                                        <button className="btn btn-square btn-sm">
-                                            <label htmlFor="help-modal" className="cursor-pointer">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                            </label>
-                                        </button>
-                                    </div>
-                                    <h3 className="font-bold text-2xl py-4">{this.props.t('visualizer.help_title')}</h3>
-                                    <ul className="list-disc">
-                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>P</code> {this.props.t('visualizer.help_or')} <code>p</code> {this.props.t('visualizer.help_key_p')}</li>
-                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>E</code> {this.props.t('visualizer.help_or')} <code>e</code> {this.props.t('visualizer.help_key_e')}</li>
-                                        <li className="py-2">{this.props.t('visualizer.help_key')} <code>esc</code> {this.props.t('visualizer.help_key_escape')}</li>
-                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>S</code> {this.props.t('visualizer.help_or')} <code>s</code>{this.props.t('visualizer.help_key_s')}</li>
-                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>T</code>{this.props.t('visualizer.help_or')} <code>t</code> {this.props.t('visualizer.help_key_t')}</li>
-                                        <li className="py-2">{this.props.t('visualizer.help_key_plural')} <code>←</code> {this.props.t('visualizer.help_and')} <code>→</code> {this.props.t('visualizer.help_key_arrows')}</li>
-                                    </ul>
-                                    <p className="py-4">{this.props.t('visualizer.help_doc')} <a className="adno-link" href="https://adno.app/" target="_blank"><FontAwesomeIcon icon={faExternalLink} size="lg" /></a></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div id="adno-embed">
+                <OpenView
+                    selectedProject={this.embeddedProject()}
+                    annos={this.state.annos}
+                    selectedAnno={this.state.selectedAnno}
+                    selectedTargetIndex={this.state.selectedTargetIndex}
+                    changeSelectedAnno={this.changeSelectedAnno}
+                    initialAnnotationsVisible={this.state.isAnnotationsVisible}
+                    permanentOverlay
+                    contentPosition="floating"
+                    multiviewDisposition={this.state.multiviewDisposition}
+                    showToolbar={this.state.showToolbar}
+                    changeShowToolbar={this.changeShowToolbar}
+                    toolsbarOnFs={this.state.toolsbarOnFs}
+                    showNavigator={this.state.showNavigator}
+                    rotation={this.state.rotation}
+                    defaultRotation={this.state.defaultRotation}
+                    rotationTransition={this.state.rotationTransition}
+                    startbyfirstanno={this.state.startbyfirstanno}
+                    shouldAutoPlayAnnotations={this.state.shouldAutoPlayAnnotations}
+                    timerDelay={this.state.delay}
+                    showOutlines={this.state.showOutlines}
+                    showCurrentAnnotation={this.state.showCurrentAnnotation}
+                    showEyes={this.state.showEyes}
+                    soundMode={this.state.soundMode}
+                    outlineWidth={this.state.outlineWidth}
+                    outlineColor={this.state.outlineColor}
+                    outlineColorFocus={this.state.outlineColorFocus}
+                    updateAutoplayId={() => { }}
+                    setAudioContexts={() => { }} />
             </div>
         )
     }

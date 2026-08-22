@@ -139,18 +139,6 @@ export function extractIIIFContent(imported_project, options) {
                 );
         }
 
-        const GRANTED_IMG_EXTENSIONS =
-            process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
-
-        const tileSources = GRANTED_IMG_EXTENSIONS.includes(
-            get_url_extension(resultLink)
-        )
-            ? {
-                type: "image",
-                url: resultLink,
-            }
-            : [resultLink];
-
         options.setState({
             ...adnoSettings,
             annos,
@@ -159,11 +147,9 @@ export function extractIIIFContent(imported_project, options) {
             creator,
             editor,
             rights,
+            source: resultLink,
             isLoaded: true
-        }, () => {
-            options.overrideSettings();
-            options.displayViewer(tileSources, annos);
-        });
+        }, options.overrideSettings);
 
     } else {
         Swal.fire({
@@ -358,10 +344,4 @@ export function buildTagsList(annotation) {
     }
 
     return tags;
-}
-
-export function get_url_extension(url) {
-    if (!url) return '';
-    const match = url.match(/\.([^./?#]+)(?:[?#]|$)/);
-    return match ? match[1].toLowerCase() : '';
 }
