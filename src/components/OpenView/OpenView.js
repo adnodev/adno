@@ -29,7 +29,7 @@ class OpenView extends Component {
             timer: false,
             intervalID: 0,
             fullScreenEnabled: false,
-            isAnnotationsVisible: true,
+            isAnnotationsVisible: this.props.initialAnnotationsVisible !== false,
             currentTrack: undefined,
             soundMode: this.props.soundMode,
             audioContexts: [],
@@ -139,7 +139,7 @@ class OpenView extends Component {
                 setTimeout(() => {
                     this.freeMode()
                     this.loadAudio()
-                    this.toggleOutlines(this.props.showOutlines)
+                    this.toggleAnnotations(this.state.isAnnotationsVisible)
 
                     this.automaticStart()
                 }, 200)
@@ -289,7 +289,7 @@ class OpenView extends Component {
     }
 
     showOnlyCurrentAnnotation = annotationId => {
-        const showOutlinesOrEyes = (this.props.showOutlines || this.props.showEyes) && this.props.isAnnotationsVisible
+        const showOutlinesOrEyes = (this.props.showOutlines || this.props.showEyes) && this.state.isAnnotationsVisible
 
         if (showOutlinesOrEyes && this.props.showCurrentAnnotation) {
             const annos = annotationShapes()
@@ -365,20 +365,20 @@ class OpenView extends Component {
                 }
             }
 
-            if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                const container = document.getElementById("annotations_list");
-                const el = document.getElementById(`anno_card_${annotation.id}`);
+            const container = document.getElementById("annotations_list");
+            const card = document.getElementById(`anno_card_${annotation.id}`);
 
+            if (container && card) {
                 container.scrollTo({
-                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                    top: card.offsetTop - container.clientHeight / 2 + card.clientHeight / 2,
                     behavior: "smooth"
                 });
-
-                this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
-                document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
-
-                this.paintGroups()
             }
+
+            this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+            document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
+
+            this.paintGroups()
         }
     }
 
@@ -778,7 +778,6 @@ class OpenView extends Component {
     workspaceSide = () => this.props.contentPosition === 'right' ? 'left' : 'right'
 
     getAnnotationHTMLBody = (annotation) => {
-        console.log(annotation)
         if (annotation && annotation.body) {
             if (Array.isArray(annotation.body) &&
                 annotation.body.find(annoBody => annoBody.type === "HTMLBody") &&
@@ -795,9 +794,7 @@ class OpenView extends Component {
     render() {
         const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
 
-        return <div className="flex flex-col flex-grow relative" style={{
-            maxHeight: 'calc(100vh - 58px)'
-        }}>
+        return <div className="open-view flex flex-col flex-grow relative">
             {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
                 <AdnoNavigator
                     viewer={this.openSeadragon}
@@ -954,7 +951,7 @@ class OpenView extends Component {
             </div>
             <div id="adno-osd" style={{ position: 'relative' }} >
                 {
-                    this.isFloating() && this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
+                    this.isFloating() && (this.props.permanentOverlay || this.state.fullScreenEnabled) && this.props.selectedAnno && this.props.selectedAnno.body &&
                     this.getAnnotationHTMLBody(this.props.selectedAnno)
                 }
 
