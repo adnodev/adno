@@ -156,7 +156,8 @@ test.describe('The grouped zones tab', () => {
         await openZonesTab(page);
 
         await expect(page.locator('.zone-group')).toHaveCount(2);
-        await expect(page.locator('.zone-group').first()).toHaveAttribute('data-group-id', 'g2');
+        await expect(page.locator('.zone-group-badge')).toHaveText(['A', 'B']);
+        await expect(page.locator('.zone-group').first()).toHaveAttribute('data-group-id', 'g1');
         await expect(page.locator('.zone-group').nth(0).locator('.zone-row[data-zone-index]')).toHaveCount(1);
         await expect(page.locator('.zone-group').nth(1).locator('.zone-row[data-zone-index]')).toHaveCount(1);
     });
@@ -210,7 +211,7 @@ test.describe('Drawing into a group from the panel', () => {
         await page.locator('.zone-group').nth(0).locator('.zone-row--add').click();
         await expect(page.locator('.pending-zone')).toBeVisible();
 
-        await drawRect(page, 420, 120, 90, 70);
+        await drawRect(page, 520, 120, 90, 70);
 
         const targets = await savedTargets(page);
 

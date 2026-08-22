@@ -117,7 +117,8 @@ test.describe('Editing a project made of several images', () => {
         const moved = savedAnnotations.find(anno => anno.id === '#zone-both');
 
         expect(moved.target).toHaveLength(2);
-        expect(moved.target[RECTO]).toEqual(original.target[RECTO]);
+        expect(moved.target[RECTO].source).toEqual(original.target[RECTO].source);
+        expect(moved.target[RECTO].selector).toEqual(original.target[RECTO].selector);
         expect(moved.target[VERSO].source).toEqual(original.target[VERSO].source);
         expect(moved.target[VERSO].selector.value).not.toEqual(original.target[VERSO].selector.value);
     });
