@@ -62,7 +62,7 @@ async function openViewer(page, project) {
     await seedProject(page, project);
     await page.goto(`${BASE_URL}/#/project/${PROJECT_ID}/view`);
     await page.waitForSelector('.a9s-annotation', { timeout: 30000 });
-    await page.locator('.anno-card').first().locator('[data-icon="bullseye"]').click();
+    await page.locator('.anno-card').first().click();
     await page.waitForTimeout(1500);
 }
 

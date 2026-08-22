@@ -14,7 +14,7 @@ async function openViewer(page) {
 }
 
 async function selectAnnotationFromSidebar(page, annoId) {
-    await page.locator(`[id="anno_card_${annoId}"]`).locator('button').last().click();
+    await page.locator(`[id="anno_card_${annoId}"]`).locator('.adno-card-body').click();
 }
 
 test.afterEach(async ({ page }) => {

@@ -68,7 +68,7 @@ async function openViewer(page, project) {
  * @param {number} index
  */
 function focus(page, index) {
-    return page.locator('.anno-card').nth(index).locator('[data-icon="bullseye"]').click();
+    return page.locator('.anno-card').nth(index).click();
 }
 
 test.afterEach(async ({ page }) => {

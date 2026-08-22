@@ -1,17 +1,4 @@
 // @ts-check
-//
-// Per-annotation reading orientation.
-//
-// The Exultet roll case: text and illuminations are head-to-tail on the same
-// support, so an annotation must be able to carry the angle it should be read
-// at. Two presentations are possible, and an annotation picks one:
-//
-//   - turn   -> the viewport rotates to the annotation's angle,
-//   - cutout -> the viewport stays put and the region is shown upright aside.
-//
-// Everything here runs offline: the fixture embeds its image as a data URI, so
-// no IIIF server is involved (the IIIF cutout URL path is unit-covered by the
-// selector itself; here the CSS fallback is what gets exercised).
 
 const { test, expect } = require('@playwright/test');
 const { BASE_URL, clearProjectsDB, seedProject } = require('../helpers');
@@ -46,7 +33,7 @@ function rotationOf(page) {
  * @param {number} index
  */
 function focus(page, index) {
-    return page.locator('.anno-card').nth(index).locator('[data-icon="bullseye"]').click();
+    return page.locator('.anno-card').nth(index).click();
 }
 
 /**
@@ -91,9 +78,6 @@ test.describe('Reading orientation', () => {
         await focus(page, UPRIGHT);
         await expect.poll(() => rotationOf(page)).toBe(0);
 
-        // This is the whole anti-Prezi claim: rotation and translation are never
-        // composed. Sample while the viewer is moving — the angle must not have
-        // budged yet.
         await focus(page, UPSIDE_DOWN);
 
         for (let tick = 0; tick < 5; tick++) {
@@ -112,8 +96,6 @@ test.describe('Reading orientation', () => {
         await expect(page.locator('.cutout-panel')).toBeVisible({ timeout: 10000 });
         await expect(page.locator('.cutout-body canvas')).toBeVisible();
 
-        // It carries an angle, but a cutout must not rotate the viewport: that
-        // is the point of showing it aside rather than turning the whole image.
         expect(await rotationOf(page)).toBe(0);
     });
 
@@ -146,9 +128,6 @@ test.describe('The cutout panel', () => {
         await expect(page.locator('.cutout-pill')).toBeVisible();
         await expect(page.locator('.cutout-panel')).toBeHidden();
 
-        // Closing it used to be a dead end: the only way back was to walk to
-        // another annotation and return. Minimised, the state has to survive
-        // that walk rather than undo it.
         await focus(page, UPRIGHT);
         await expect(page.locator('.cutout-pill')).toHaveCount(0);
 
