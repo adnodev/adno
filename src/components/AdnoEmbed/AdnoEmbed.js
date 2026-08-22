@@ -74,6 +74,10 @@ class AdnoEmbed extends Component {
 
         const soundMode = checkQueryParamValue("sound_mode", "soundMode", false)
 
+        const contentPosition = query.has("content_position")
+            ? query.get("content_position")
+            : this.state.contentPosition || 'left'
+
         const outlineWidth = query.has("outlineWidth")
             ? query.get("outlineWidth")
             : this.state.outlineWidth ? this.state.outlineWidth : "outline-1px";
@@ -102,6 +106,7 @@ class AdnoEmbed extends Component {
             outlineColor,
             outlineColorFocus,
             showCurrentAnnotation,
+            contentPosition,
             settingsReady: true
         }
 
@@ -280,7 +285,7 @@ class AdnoEmbed extends Component {
                     changeSelectedAnno={this.changeSelectedAnno}
                     initialAnnotationsVisible={this.state.isAnnotationsVisible}
                     permanentOverlay
-                    contentPosition="floating"
+                    contentPosition={this.state.contentPosition}
                     multiviewDisposition={this.state.multiviewDisposition}
                     showToolbar={this.state.showToolbar}
                     changeShowToolbar={this.changeShowToolbar}

@@ -39,6 +39,7 @@ function LinkGenerator({ t }) {
         appendBooleanParam(params, "show_only_current_annotation", settings.showCurrentAnnotation)
         appendBooleanParam(params, "show_eyes", settings.showEyes)
         appendBooleanParam(params, "toolbar", settings.displayToolbar)
+        appendBooleanParam(params, "content_position", settings.contentPosition)
 
         if (settings.soundMode !== 'no_sound')
             appendBooleanParam(params, "sound_mode", settings.soundMode)

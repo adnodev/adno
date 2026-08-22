@@ -69,17 +69,19 @@ test.describe('The embedded viewer, served offline', () => {
     test('walks the annotations from the toolbar', async ({ page }) => {
         await openEmbed(page);
 
-        await page.locator('#nextAnno').click();
-        await page.waitForTimeout(1200);
-        await expect(overlay(page)).toContainText('ANNOTATION ONE');
+        const margin = page.locator('#adno-content-margin');
 
         await page.locator('#nextAnno').click();
         await page.waitForTimeout(1200);
-        await expect(overlay(page)).toContainText('ANNOTATION TWO');
+        await expect(margin).toContainText('ANNOTATION ONE');
+
+        await page.locator('#nextAnno').click();
+        await page.waitForTimeout(1200);
+        await expect(margin).toContainText('ANNOTATION TWO');
 
         await page.locator('#previousAnno').click();
         await page.waitForTimeout(1200);
-        await expect(overlay(page)).toContainText('ANNOTATION ONE');
+        await expect(margin).toContainText('ANNOTATION ONE');
     });
 
     test('frames the selected annotation', async ({ page }) => {
@@ -94,6 +96,30 @@ test.describe('The embedded viewer, served offline', () => {
         await page.waitForTimeout(1500);
 
         expect(await width()).toBeGreaterThan(home * 1.5);
+    });
+
+    test('anchors the content margin where the url asks for it', async ({ page }) => {
+        await openEmbed(page, '&content_position=right');
+
+        await page.locator('#nextAnno').click();
+        await page.waitForTimeout(1200);
+
+        const margin = page.locator('#adno-content-margin');
+
+        await expect(margin).toBeVisible();
+        await expect(margin).toHaveClass(/content-margin--right/);
+        await expect(margin).toContainText('ANNOTATION ONE');
+        await expect(overlay(page)).toHaveCount(0);
+    });
+
+    test('floats the content over the image when asked to', async ({ page }) => {
+        await openEmbed(page, '&content_position=floating');
+
+        await page.locator('#nextAnno').click();
+        await page.waitForTimeout(1200);
+
+        await expect(overlay(page)).toContainText('ANNOTATION ONE');
+        await expect(page.locator('#adno-content-margin')).toHaveCount(0);
     });
 
     test('carries the project metadata in the info modal', async ({ page }) => {
