@@ -1,7 +1,7 @@
 import { Component } from "react"
 
 import { applyGroupColors } from "../../Utils/groups"
-import { frameGroup } from "../../Utils/viewport"
+import { CROSS_ORIGIN, frameGroup } from "../../Utils/viewport"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
 
 import { GroupOverlay } from "./GroupOverlay"
@@ -17,7 +17,7 @@ class GroupPanel extends Component {
         this.viewer = OpenSeadragon({
             id: this.props.elementId,
             tileSources: imageTileSource(images[index]),
-            crossOriginPolicy: 'Anonymous',
+            crossOriginPolicy: this.props.crossOriginPolicy ?? CROSS_ORIGIN,
             showNavigationControl: false,
             maxImageCacheCount: TILE_CACHE
         })

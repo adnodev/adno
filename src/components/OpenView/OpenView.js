@@ -5,7 +5,7 @@ import parse from 'html-react-parser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils";
-import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
+import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
 import { cutoutGroupIds, getAnnotationCutout } from "../../Utils/cutout";
 import { projectImages } from "../../Utils/images";
 import { parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
@@ -54,6 +54,8 @@ class OpenView extends Component {
         }
     }
 
+    crossOrigin = () => this.props.crossOriginPolicy ?? CROSS_ORIGIN
+
     marginOffset = () => {
         if (this.state.fullScreenEnabled || !this.props.showToolbar) {
             return 0
@@ -89,7 +91,7 @@ class OpenView extends Component {
             showNavigator: false,
             tileSources: tileSources,
             prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-            crossOriginPolicy: 'Anonymous'
+            crossOriginPolicy: this.crossOrigin()
         })
 
         this.openSeadragon.addOnceHandler('open', () => {
@@ -970,6 +972,7 @@ class OpenView extends Component {
                         activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
                         disposition={this.props.multiviewDisposition || 'row'}
                         side={this.workspaceSide()}
+                        crossOriginPolicy={this.crossOrigin()}
                         translate={this.props.t} />
                 }
 
@@ -981,6 +984,7 @@ class OpenView extends Component {
                         annotation={this.state.cutoutAnno}
                         groupId={groupId}
                         contentPosition={this.marginPosition()}
+                        crossOriginPolicy={this.crossOrigin()}
                         styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
                         view={this.cutoutViewFor(groupId)}
                         setView={(view) => this.setCutoutView(groupId, view)} />

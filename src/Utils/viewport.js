@@ -4,6 +4,8 @@ import { annotationShapes } from "./utils"
 import { parseShadowId } from "./targets"
 import { groupBox, groupRotation, groupShadows } from "./groups"
 
+export const CROSS_ORIGIN = 'Anonymous'
+
 const PENDING_TURN = "adnoPendingTurn"
 const LAST_VIEW = "adnoLastView"
 const PAN_TIMEOUT = 1500

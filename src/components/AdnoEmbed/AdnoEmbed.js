@@ -284,6 +284,7 @@ class AdnoEmbed extends Component {
                     selectedTargetIndex={this.state.selectedTargetIndex}
                     changeSelectedAnno={this.changeSelectedAnno}
                     initialAnnotationsVisible={this.state.isAnnotationsVisible}
+                    crossOriginPolicy={false}
                     permanentOverlay
                     contentPosition={this.state.contentPosition}
                     multiviewDisposition={this.state.multiviewDisposition}

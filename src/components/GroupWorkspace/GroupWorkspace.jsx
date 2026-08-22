@@ -11,7 +11,7 @@ function workspaceClasses(variant, disposition, side) {
         .join(" ")
 }
 
-export function GroupWorkspace({ project, annotation, activeGroupId, variant, disposition, side, translate }) {
+export function GroupWorkspace({ project, annotation, activeGroupId, variant, disposition, side, crossOriginPolicy, translate }) {
     const groups = deriveGroups(annotation)
 
     if (groups.length < 2) {
@@ -28,6 +28,7 @@ export function GroupWorkspace({ project, annotation, activeGroupId, variant, di
                         project={project}
                         annotation={annotation}
                         group={group}
+                        crossOriginPolicy={crossOriginPolicy}
                         translate={translate} />
                 )}
         </div>

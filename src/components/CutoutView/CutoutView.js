@@ -6,7 +6,7 @@ import { faCropSimple, faDownLeftAndUpRightToCenter, faMinus, faUpDown, faUpRigh
 import { withTranslation } from "react-i18next";
 
 import { groupRotation } from "../../Utils/groups";
-import { frameGroup } from "../../Utils/viewport";
+import { CROSS_ORIGIN, frameGroup } from "../../Utils/viewport";
 
 import "./CutoutView.css";
 
@@ -34,7 +34,7 @@ class CutoutView extends Component {
             tileSources: project.manifest_url
                 ? [project.manifest_url]
                 : { type: 'image', url: project.img_url },
-            crossOriginPolicy: 'Anonymous',
+            crossOriginPolicy: this.props.crossOriginPolicy ?? CROSS_ORIGIN,
             showNavigationControl: false,
             maxImageCacheCount: TILE_CACHE
         });
