@@ -61,7 +61,8 @@ export function findImage(images, id) {
 }
 
 export function imageIndexForSource(images, source) {
-    const index = (images || []).findIndex(image => image.source === source)
+    const list = images || []
+    const index = list.findIndex(image => image.source === source)
 
-    return index === -1 ? 0 : index
+    return index === -1 && list.length === 1 ? 0 : index
 }
