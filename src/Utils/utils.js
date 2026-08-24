@@ -8,45 +8,11 @@ const SECONDARY_VIEWERS = '.cutout-panel, .group-panel'
 const EYE_PROBES = 24
 const PATH_SAMPLES = 64
 
-export function findInfoJsonFromManifest(url) {
-  return fetch(url)
-    .then(rep => rep.json())
-    .then(result => {
-      var resultLink = ""
-
-      for (let index = 0; index < 7; index++) {
-        resultLink += result.sequences[0].canvases[0].images[0].resource["@id"].split("/")[index]
-
-        if (index === 0) {
-          resultLink += "//"
-        } else {
-          resultLink += "/"
-        }
-
-      }
-
-      resultLink += "info.json"
-
-
-      return resultLink;
-    })
-}
-
 export const stripHtml = (html) => {
   let tmp = document.createElement("DIV");
   tmp.innerHTML = html;
   return tmp.textContent || tmp.innerText || "";
 }
-
-export const isValidUrl = (url) => {
-  try {
-    new URL(url);
-  } catch (e) {
-    console.error(e);
-    return false;
-  }
-  return true;
-};
 
 export const get_url_extension = (url) => {
   if (url.includes('?url=https'))
@@ -85,32 +51,6 @@ export const buildJsonProjectWithImg = (id, title, desc, img) => {
     "creator": "",
     "settings": defaultProjectSettings()
   }
-}
-
-export const buildProjectAdnoFormat = (title, description, manifest) => {
-  return (
-    {
-      "@context": "http://www.w3.org/ns/anno.jsonld",
-      "id": v7(),
-      "type": "AnnotationCollection",
-      "title": title,
-      "description": description,
-      "date": createDate(),
-      "modified": createDate(),
-      "source": manifest,
-      "editor": "",
-      "creator": "",
-      "format": "Adno",
-      "total": 0,
-      "first": {
-        "id": "http://example.org/page1",
-        "type": "AnnotationPage",
-        "startIndex": 0,
-        "items": []
-      },
-      "settings": defaultProjectSettings()
-    }
-  )
 }
 
 export const createExportProjectJsonFile = async (projectID) => {
@@ -234,10 +174,6 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
   }
 }
 
-
-export function checkProjectAttributes(imported_project) {
-  return imported_project.hasOwnProperty('id') && imported_project.hasOwnProperty('title') && imported_project.hasOwnProperty('description') && imported_project.hasOwnProperty('creation_date') && imported_project.hasOwnProperty('last_update') && imported_project.hasOwnProperty('manifest_url')
-}
 
 export function createDate() {
   return new Date().toISOString();

@@ -56,10 +56,6 @@ export function imageThumbnail(image, height) {
     return `${image.source.replace(/\/info\.json$/, '')}/full/,${height}/0/default.jpg`
 }
 
-export function findImage(images, id) {
-    return (images || []).find(image => image.id === id) || null
-}
-
 export function imageIndexForSource(images, source) {
     const list = images || []
     const index = list.findIndex(image => image.source === source)

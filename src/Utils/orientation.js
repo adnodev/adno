@@ -1,4 +1,4 @@
-import { getTargets, withTargets } from "./targets"
+import { getTargets } from "./targets"
 
 const IMAGE_API_SELECTOR = "ImageApiSelector"
 
@@ -44,10 +44,6 @@ export function withTargetRotation(target, degrees) {
         ...target,
         selector: cleared ? selector : { ...selector, refinedBy: buildRotationSelector(degrees) }
     }
-}
-
-export function withAnnotationRotation(annotation, degrees) {
-    return withTargets(annotation, getTargets(annotation).map(target => withTargetRotation(target, degrees)))
 }
 
 export function preserveTargetRotation(previousTarget, newTarget) {
