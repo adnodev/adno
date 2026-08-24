@@ -120,6 +120,24 @@
     font-size: 14px;
 }
 
+#openseadragon1 .a9s-annotation .a9s-outer{
+    stroke-width: 6px;
+}
+
+#openseadragon1 .a9s-annotation .a9s-inner{
+    stroke-width: 4px;
+}
+
+.editor-group-badge{
+    position: absolute;
+    z-index: 2;
+    top: 56px;
+    left: 10px;
+    font-size: 13px;
+    padding: 4px 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
 .editor-stage{
     display: flex;
     flex-direction: column;

@@ -17,12 +17,13 @@ import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
 import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport"
 import { preserveTargetRotation } from "../../Utils/orientation"
-import { activeGroupId, buildTargetId, preserveTargetId, scheduleGroupColors, targetGroupId } from "../../Utils/groups"
+import { activeGroupId, buildTargetId, deriveGroups, preserveTargetId, scheduleGroupColors, targetGroupId } from "../../Utils/groups"
 import { imageTileSource, projectImages } from "../../Utils/images"
 import { addTarget, getTargets, parseShadowId, pickTargetOnImage, replaceTargetAt, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 import { ImageFilmstrip } from "../ImageFilmstrip/ImageFilmstrip"
 import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
+import { GroupBadge } from "../GroupWorkspace/GroupOverlay"
 
 class AdnoEditor extends Component {
     constructor(props) {
@@ -65,6 +66,8 @@ class AdnoEditor extends Component {
             showRotationControl: true,
             showFullPageControl: false,
         });
+
+        window.__adnoViewer = this.openSeadragon
 
         if (this.props.onViewerReady) {
             this.props.onViewerReady(this.openSeadragon)
@@ -176,6 +179,7 @@ class AdnoEditor extends Component {
     componentWillUnmount() {
         this.unwatchResize?.()
         cancelAnimationFrame(this._paintFrame)
+        cancelAnimationFrame(this._navFrame)
     }
 
     images = () => projectImages(this.props.selectedProject)
@@ -263,6 +267,8 @@ class AdnoEditor extends Component {
         const shadow = toShadow(annotation, picked.target, picked.index)
 
         this.AdnoAnnotorious.selectAnnotation(shadow.id)
+
+        this.AdnoAnnotorious._app.current.annotationLayer.selectedShape?.mouseTracker?.setTracking(false)
 
         applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
             defaultRotation: this.props.defaultRotation,
@@ -352,7 +358,21 @@ class AdnoEditor extends Component {
     }
 
 
+    activeGroup = () => {
+        const groups = deriveGroups(this.props.selectedAnno)
+
+        if (groups.length < 2) {
+            return null
+        }
+
+        const id = activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)
+
+        return groups.find(group => group.id === id) || null
+    }
+
     render() {
+        const group = this.activeGroup()
+
         return <>
             <div className="editor-stage">
                 <div className="editor-split">
@@ -369,6 +389,13 @@ class AdnoEditor extends Component {
                             <div id="toolbar-container"></div>
                             <div id="toolbar-osd"></div>
                         </div>
+                        {group &&
+                            <GroupBadge className="editor-group-badge"
+                                letter={group.letter}
+                                color={group.color}
+                                count={group.targets.length}
+                                translate={this.props.t} />
+                        }
                         {this.state.viewerReady && (
                             <AdnoNavigator
                                 viewer={this.openSeadragon}
