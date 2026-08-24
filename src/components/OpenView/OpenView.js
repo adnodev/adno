@@ -1,18 +1,18 @@
-import { Component, createRef } from "react";
+import { Component, createRef } from "react"
 import { withRouter } from "react-router-dom";
 import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
-import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils";
-import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
-import { cutoutGroupIds, getAnnotationCutout } from "../../Utils/cutout";
-import { projectImages } from "../../Utils/images";
-import { parseShadowId, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
-import { activeGroupId, applyGroupColors } from "../../Utils/groups";
-import CutoutView from "../CutoutView/CutoutView";
-import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace";
-import { ContentMargin, hasMarginContent } from "./ContentMargin";
+import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons"
+import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils"
+import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Utils/viewport"
+import { cutoutGroupIds, getAnnotationCutout } from "../../Utils/cutout"
+import { projectImages } from "../../Utils/images"
+import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
+import { activeGroupId, scheduleGroupColors } from "../../Utils/groups"
+import CutoutView from "../CutoutView/CutoutView"
+import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
+import { ContentMargin, hasMarginContent } from "./ContentMargin"
 
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
@@ -135,7 +135,7 @@ class OpenView extends Component {
         const shadows = toShadowAnnotations(this.props.annos, projectImages(project), 0)
 
         // Generate dataURI and load annotations into Annotorious
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))));
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))))
         this.AdnoAnnotorious.loadAnnotations(dataURI)
             .then(() => {
                 setTimeout(() => {
@@ -322,9 +322,7 @@ class OpenView extends Component {
                 this.props.changeSelectedAnno(annotation, targetIndex)
             }
 
-            const onImage = targetsOnImage(annotation, projectImages(this.props.selectedProject), 0)
-            const wanted = onImage.find(item => item.index === targetIndex)
-            const picked = wanted || onImage[0]
+            const picked = pickTargetOnImage(annotation, projectImages(this.props.selectedProject), 0, targetIndex)
             const shadow = picked ? toShadow(annotation, picked.target, picked.index) : annotation
 
             this.AdnoAnnotorious.selectAnnotation(shadow.id)
@@ -367,8 +365,8 @@ class OpenView extends Component {
                 }
             }
 
-            const container = document.getElementById("annotations_list");
-            const card = document.getElementById(`anno_card_${annotation.id}`);
+            const container = document.getElementById("annotations_list")
+            const card = document.getElementById(`anno_card_${annotation.id}`)
 
             if (container && card) {
                 container.scrollTo({
@@ -385,11 +383,7 @@ class OpenView extends Component {
     }
 
     paintGroups = () => {
-        cancelAnimationFrame(this._paintFrame)
-        this._paintFrame = requestAnimationFrame(() => {
-            applyGroupColors(this.openSeadragon.element, this.props.selectedAnno)
-            this.tintSelectedCard()
-        })
+        this._paintFrame = scheduleGroupColors(this._paintFrame, this.openSeadragon.element, this.props.selectedAnno, this.tintSelectedCard)
     }
 
     tintSelectedCard = () => {
@@ -615,7 +609,7 @@ class OpenView extends Component {
 
     reloadAnnotationsFromProps = () => {
         const shadows = toShadowAnnotations(this.props.annos, projectImages(this.props.selectedProject), 0)
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))));
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))))
         if (this.AdnoAnnotorious) {
             this.AdnoAnnotorious.loadAnnotations(dataURI)
 

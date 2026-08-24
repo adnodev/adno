@@ -1,86 +1,76 @@
-import { Component, createRef } from "react";
+import { Component, createRef } from "react"
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCropSimple, faDownLeftAndUpRightToCenter, faMinus, faUpDown, faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCropSimple, faDownLeftAndUpRightToCenter, faMinus, faUpDown, faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons"
 
-import { withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next"
 
-import { groupRotation } from "../../Utils/groups";
-import { CROSS_ORIGIN, frameGroup } from "../../Utils/viewport";
+import { groupRotation } from "../../Utils/groups"
+import { imageTileSource, projectImages } from "../../Utils/images"
+import { frameGroup, mountReadOnlyViewer } from "../../Utils/viewport"
 
-import "./CutoutView.css";
+import "./CutoutView.css"
 
-const TILE_CACHE = 40;
-const CASCADE_STEP = 26;
+const CASCADE_STEP = 26
 
 const SIZES = [
     { name: 'default', icon: faDownLeftAndUpRightToCenter, label: 'annotation.cutout_size_default' },
     { name: 'tall', icon: faUpDown, label: 'annotation.cutout_size_tall' },
     { name: 'full', icon: faUpRightAndDownLeftFromCenter, label: 'annotation.cutout_size_full' }
-];
+]
 
 class CutoutView extends Component {
     constructor(props) {
-        super(props);
-        this.panelRef = createRef();
-        this.drag = null;
+        super(props)
+        this.panelRef = createRef()
+        this.drag = null
     }
 
     componentDidMount() {
-        const project = this.props.project;
-
-        this.viewer = OpenSeadragon({
-            id: this.props.elementId,
-            tileSources: project.manifest_url
-                ? [project.manifest_url]
-                : { type: 'image', url: project.img_url },
-            crossOriginPolicy: this.props.crossOriginPolicy ?? CROSS_ORIGIN,
-            showNavigationControl: false,
-            maxImageCacheCount: TILE_CACHE
-        });
-
-        this.annotorious = OpenSeadragon.Annotorious(this.viewer, {
-            readOnly: true,
-            disableEditor: true,
+        const images = projectImages(this.props.project)
+        const { viewer, annotorious } = mountReadOnlyViewer(this.props.elementId, imageTileSource(images[0]), this.props.crossOriginPolicy, {
             formatters: () => this.props.styles
-        });
+        })
 
-        this.viewer.addOnceHandler('open', this.frameAnnotation);
-        this.viewer.addHandler('after-resize', this.frameAnnotation);
+        this.viewer = viewer
+        this.annotorious = annotorious
+
+        this.viewer.addOnceHandler('open', this.frameAnnotation)
+        this.viewer.addHandler('after-resize', this.frameAnnotation)
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.annotation !== this.props.annotation || prevProps.groupId !== this.props.groupId) {
-            this.frameAnnotation();
+            this.frameAnnotation()
         }
     }
 
     componentWillUnmount() {
-        this.annotorious.destroy();
-        this.viewer.destroy();
+        this.annotorious.destroy()
+        this.viewer.destroy()
     }
 
     frameAnnotation = () => {
-        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.groupId);
+        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.groupId)
     }
 
     dragSpot = (event) => {
-        const { grabX, grabY, width, height, frame } = this.drag;
+        const { grabX, grabY, width, height, frame } = this.drag
 
         return {
             left: Math.min(Math.max(event.clientX - grabX - frame.left, 0), frame.width - width),
             top: Math.min(Math.max(event.clientY - grabY - frame.top, 0), frame.height - height)
-        };
+        }
     }
 
     startDrag = (event) => {
         if (event.target.closest('.cutout-btn')) {
-            return;
+            return
         }
 
-        const panel = this.panelRef.current;
-        const box = panel.getBoundingClientRect();
-        const frame = panel.parentElement.getBoundingClientRect();
+        const panel = this.panelRef.current
+        const box = panel.getBoundingClientRect()
+        const frame = panel.parentElement.getBoundingClientRect()
 
         this.drag = {
             grabX: event.clientX - box.left,
@@ -88,56 +78,56 @@ class CutoutView extends Component {
             width: box.width,
             height: box.height,
             frame
-        };
+        }
 
-        event.currentTarget.setPointerCapture(event.pointerId);
+        event.currentTarget.setPointerCapture(event.pointerId)
     }
 
     moveDrag = (event) => {
         if (!this.drag) {
-            return;
+            return
         }
 
-        const spot = this.dragSpot(event);
-        const panel = this.panelRef.current;
+        const spot = this.dragSpot(event)
+        const panel = this.panelRef.current
 
-        panel.style.left = `${spot.left}px`;
-        panel.style.top = `${spot.top}px`;
-        panel.style.bottom = 'auto';
+        panel.style.left = `${spot.left}px`
+        panel.style.top = `${spot.top}px`
+        panel.style.bottom = 'auto'
     }
 
     endDrag = (event) => {
         if (!this.drag) {
-            return;
+            return
         }
 
-        const spot = this.dragSpot(event);
+        const spot = this.dragSpot(event)
 
-        this.drag = null;
-        event.currentTarget.releasePointerCapture(event.pointerId);
-        this.props.setView({ ...this.props.view, position: spot });
+        this.drag = null
+        event.currentTarget.releasePointerCapture(event.pointerId)
+        this.props.setView({ ...this.props.view, position: spot })
     }
 
     anchor = () => ({ '--cutout-step': `${(this.props.rank || 0) * CASCADE_STEP}px` })
 
     dodge = (prefix) => {
-        const position = this.props.contentPosition;
+        const position = this.props.contentPosition
 
-        return position === 'left' || position === 'bottom' ? `${prefix}--dodge-${position}` : '';
+        return position === 'left' || position === 'bottom' ? `${prefix}--dodge-${position}` : ''
     }
 
     resize = (size) => {
-        this.props.setView({ ...this.props.view, size, position: null });
+        this.props.setView({ ...this.props.view, size, position: null })
     }
 
     render() {
-        const rotation = groupRotation(this.props.annotation, this.props.groupId);
-        const { minimized, size, position } = this.props.view;
+        const rotation = groupRotation(this.props.annotation, this.props.groupId)
+        const { minimized, size, position } = this.props.view
 
-        const classes = ["cutout-panel", `cutout-panel--${size}`, this.dodge("cutout-panel")].filter(Boolean);
+        const classes = ["cutout-panel", `cutout-panel--${size}`, this.dodge("cutout-panel")].filter(Boolean)
 
         if (minimized) {
-            classes.push("cutout-panel--minimized");
+            classes.push("cutout-panel--minimized")
         }
 
         return (
@@ -193,4 +183,4 @@ class CutoutView extends Component {
     }
 }
 
-export default withTranslation()(CutoutView);
+export default withTranslation()(CutoutView)

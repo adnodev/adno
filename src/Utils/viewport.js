@@ -1,17 +1,18 @@
 import { normalizeAngle, resolveRotation, shortestDelta } from "./orientation"
 import { getAnnotationCutout } from "./cutout"
 import { annotationShapes } from "./utils"
-import { parseShadowId } from "./targets"
+import { parseShadowId, unionBoxes } from "./targets"
 import { groupBox, groupRotation, groupShadows } from "./groups"
 
 export const CROSS_ORIGIN = 'Anonymous'
 
-const PENDING_TURN = "adnoPendingTurn"
-const LAST_VIEW = "adnoLastView"
+const PENDING_TURN = 'adnoPendingTurn'
+const LAST_VIEW = 'adnoLastView'
 const PAN_TIMEOUT = 1500
 const ANGLE_EPSILON = 0.5
 const BOUNDS_PADDING = 0.08
 const GROUP_PADDING = 0.06
+const TILE_CACHE = 40
 
 function prefersReducedMotion() {
     return typeof window.matchMedia === "function"
@@ -33,25 +34,20 @@ export function annotationBounds(viewer, annotationId, padding = 0) {
         .map(item => item.getBBox())
         .filter(box => box.width && box.height)
 
-    if (boxes.length === 0) {
+    const box = unionBoxes(boxes)
+
+    if (!box) {
         return null
     }
 
-    const left = Math.min(...boxes.map(box => box.x))
-    const top = Math.min(...boxes.map(box => box.y))
-    const right = Math.max(...boxes.map(box => box.x + box.width))
-    const bottom = Math.max(...boxes.map(box => box.y + box.height))
-
-    const width = right - left
-    const height = bottom - top
-    const marginX = width * padding
-    const marginY = height * padding
+    const marginX = box.width * padding
+    const marginY = box.height * padding
 
     return viewer.viewport.imageToViewportRectangle(
-        left - marginX,
-        top - marginY,
-        width + marginX * 2,
-        height + marginY * 2
+        box.x - marginX,
+        box.y - marginY,
+        box.width + marginX * 2,
+        box.height + marginY * 2
     )
 }
 
@@ -169,4 +165,22 @@ export function frameGroup(viewer, annotorious, annotation, groupId) {
     ), true)
 
     return true
+}
+
+export function mountReadOnlyViewer(elementId, tileSources, crossOriginPolicy, options) {
+    const viewer = OpenSeadragon({
+        id: elementId,
+        tileSources,
+        crossOriginPolicy: crossOriginPolicy ?? CROSS_ORIGIN,
+        showNavigationControl: false,
+        maxImageCacheCount: TILE_CACHE
+    })
+
+    const annotorious = OpenSeadragon.Annotorious(viewer, {
+        readOnly: true,
+        disableEditor: true,
+        ...options
+    })
+
+    return { viewer, annotorious }
 }

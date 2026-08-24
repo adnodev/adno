@@ -1,4 +1,4 @@
-import { getTargets, replaceTargetAt, shadowId, targetBox, toShadow, withTargets } from "./targets"
+import { getTargets, replaceTargetAt, shadowId, targetBox, toShadow, unionBoxes, withTargets } from "./targets"
 import { annotationShapes } from "./utils"
 import { getTargetRotation, withTargetRotation } from "./orientation"
 
@@ -82,18 +82,7 @@ function groupTargets(annotation, groupId) {
 }
 
 export function groupBox(annotation, groupId) {
-    const boxes = groupTargets(annotation, groupId).map(targetBox).filter(Boolean)
-
-    if (boxes.length === 0) {
-        return null
-    }
-
-    const left = Math.min(...boxes.map(box => box.x))
-    const top = Math.min(...boxes.map(box => box.y))
-    const right = Math.max(...boxes.map(box => box.x + box.width))
-    const bottom = Math.max(...boxes.map(box => box.y + box.height))
-
-    return { x: left, y: top, width: right - left, height: bottom - top }
+    return unionBoxes(groupTargets(annotation, groupId).map(targetBox).filter(Boolean))
 }
 
 export function groupRotation(annotation, groupId) {
@@ -177,6 +166,18 @@ export function applyGroupColors(root, annotation) {
     const colors = annotation ? groupColorsById(annotation) : {}
 
     annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute('data-id')]))
+}
+
+export function scheduleGroupColors(previous, element, annotation, after) {
+    cancelAnimationFrame(previous)
+
+    return requestAnimationFrame(() => {
+        applyGroupColors(element, annotation)
+
+        if (after) {
+            after()
+        }
+    })
 }
 
 export function groupShadows(annotation, groupId) {

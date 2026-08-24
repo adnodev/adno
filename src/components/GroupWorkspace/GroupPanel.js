@@ -1,12 +1,10 @@
 import { Component } from "react"
 
-import { applyGroupColors } from "../../Utils/groups"
-import { CROSS_ORIGIN, frameGroup } from "../../Utils/viewport"
+import { scheduleGroupColors } from "../../Utils/groups"
+import { frameGroup, mountReadOnlyViewer } from "../../Utils/viewport"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
 
 import { GroupOverlay } from "./GroupOverlay"
-
-const TILE_CACHE = 40
 
 class GroupPanel extends Component {
     componentDidMount() {
@@ -14,19 +12,12 @@ class GroupPanel extends Component {
         const first = this.props.group.targets[0]
         const index = imageIndexForSource(images, first ? first.target.source : null)
 
-        this.viewer = OpenSeadragon({
-            id: this.props.elementId,
-            tileSources: imageTileSource(images[index]),
-            crossOriginPolicy: this.props.crossOriginPolicy ?? CROSS_ORIGIN,
-            showNavigationControl: false,
-            maxImageCacheCount: TILE_CACHE
-        })
-
-        this.annotorious = OpenSeadragon.Annotorious(this.viewer, {
-            readOnly: true,
-            disableEditor: true,
+        const { viewer, annotorious } = mountReadOnlyViewer(this.props.elementId, imageTileSource(images[index]), this.props.crossOriginPolicy, {
             disableSelect: true
         })
+
+        this.viewer = viewer
+        this.annotorious = annotorious
 
         this.viewer.addOnceHandler('open', this.refresh)
         this.viewer.addHandler('after-resize', this.refresh)
@@ -51,9 +42,7 @@ class GroupPanel extends Component {
             return
         }
 
-        cancelAnimationFrame(this._paintFrame)
-        this._paintFrame = requestAnimationFrame(() =>
-            applyGroupColors(this.viewer.element, annotation))
+        this._paintFrame = scheduleGroupColors(this._paintFrame, this.viewer.element, annotation)
     }
 
     render() {

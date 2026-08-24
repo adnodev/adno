@@ -15,14 +15,14 @@ import "./AdnoEditor.css";
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
-import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport";
-import { preserveTargetRotation } from "../../Utils/orientation";
-import { activeGroupId, applyGroupColors, buildTargetId, preserveTargetId, targetGroupId } from "../../Utils/groups";
-import { imageTileSource, projectImages } from "../../Utils/images";
-import { addTarget, getTargets, parseShadowId, replaceTargetAt, targetsOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets";
+import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport"
+import { preserveTargetRotation } from "../../Utils/orientation"
+import { activeGroupId, buildTargetId, preserveTargetId, scheduleGroupColors, targetGroupId } from "../../Utils/groups"
+import { imageTileSource, projectImages } from "../../Utils/images"
+import { addTarget, getTargets, parseShadowId, pickTargetOnImage, replaceTargetAt, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
-import { ImageFilmstrip } from '../ImageFilmstrip/ImageFilmstrip';
-import { GroupWorkspace } from '../GroupWorkspace/GroupWorkspace';
+import { ImageFilmstrip } from "../ImageFilmstrip/ImageFilmstrip"
+import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
 
 class AdnoEditor extends Component {
     constructor(props) {
@@ -170,7 +170,7 @@ class AdnoEditor extends Component {
         })
 
         // Event triggered when resizing an annotation shape
-        this.AdnoAnnotorious.on('changeSelectionTarget', this.applyTargetEdit);
+        this.AdnoAnnotorious.on('changeSelectionTarget', this.applyTargetEdit)
     }
 
     componentWillUnmount() {
@@ -213,9 +213,7 @@ class AdnoEditor extends Component {
     }
 
     paintGroups = () => {
-        cancelAnimationFrame(this._paintFrame)
-        this._paintFrame = requestAnimationFrame(() =>
-            applyGroupColors(this.openSeadragon.element, this.props.selectedAnno))
+        this._paintFrame = scheduleGroupColors(this._paintFrame, this.openSeadragon.element, this.props.selectedAnno)
     }
 
     openImage = (index) => {
@@ -256,9 +254,7 @@ class AdnoEditor extends Component {
             return
         }
 
-        const onImage = targetsOnImage(annotation, this.images(), this.props.currentImageIndex)
-        const wanted = onImage.find(item => item.index === this.props.selectedTargetIndex)
-        const picked = wanted || onImage[0]
+        const picked = pickTargetOnImage(annotation, this.images(), this.props.currentImageIndex, this.props.selectedTargetIndex)
 
         if (!picked) {
             return

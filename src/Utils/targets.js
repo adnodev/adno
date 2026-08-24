@@ -26,6 +26,19 @@ function boxOfPoints(points) {
     return { x: left, y: top, width: Math.max(...xs) - left, height: Math.max(...ys) - top }
 }
 
+export function unionBoxes(boxes) {
+    if (boxes.length === 0) {
+        return null
+    }
+
+    const left = Math.min(...boxes.map(box => box.x))
+    const top = Math.min(...boxes.map(box => box.y))
+    const right = Math.max(...boxes.map(box => box.x + box.width))
+    const bottom = Math.max(...boxes.map(box => box.y + box.height))
+
+    return { x: left, y: top, width: right - left, height: bottom - top }
+}
+
 export function targetShape(target) {
     const selector = target ? target.selector : null
     const value = selector ? selector.value || '' : ''
@@ -152,6 +165,12 @@ export function targetsOnImage(annotation, images, imageIndex) {
         .filter(({ target }) => imageIndexForSource(images, target && target.source) === imageIndex)
 }
 
+export function pickTargetOnImage(annotation, images, imageIndex, targetIndex) {
+    const onImage = targetsOnImage(annotation, images, imageIndex)
+
+    return onImage.find(item => item.index === targetIndex) || onImage[0] || null
+}
+
 export function toShadow(annotation, target, index) {
     return {
         ...annotation,
@@ -164,11 +183,6 @@ export function toShadowAnnotations(annotations, images, imageIndex) {
     return (annotations || []).flatMap(annotation =>
         targetsOnImage(annotation, images, imageIndex)
             .map(({ target, index }) => toShadow(annotation, target, index)))
-}
-
-export function toAllShadows(annotations) {
-    return (annotations || []).flatMap(annotation =>
-        getTargets(annotation).map((target, index) => toShadow(annotation, target, index)))
 }
 
 export function zoneCountsByImage(annotations, images) {
