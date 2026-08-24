@@ -4,6 +4,8 @@ import { projectDB } from "../services/db";
 import { projectImages } from "./images"
 import { v7 } from "uuid";
 
+export { buildTagsList } from "./tags"
+
 const SECONDARY_VIEWERS = '.cutout-panel, .group-panel'
 const EYE_PROBES = 24
 const PATH_SAMPLES = 64
@@ -19,10 +21,6 @@ export const get_url_extension = (url) => {
     return get_url_extension(url.split(/[#?]/)[1].replace('url=', ''));
   else
     return url.split(/[#?]/)[0].split('.').pop().trim();
-}
-
-export const buildTagsList = (annotation) => {
-  return Array.isArray(annotation.body) ? annotation.body.filter(anno_body => anno_body.purpose === "tagging") : []
 }
 
 export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {

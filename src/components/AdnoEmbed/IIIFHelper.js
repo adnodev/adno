@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import { buildTagsList } from "../../Utils/tags"
 
 export function extractIIIFContent(imported_project, options) {
     options.overrideSettings();
@@ -327,21 +328,3 @@ export function getMetadataFromIIIF(metadata, key) {
     return extractLanguageValue(entry.value);
 }
 
-export function buildTagsList(annotation) {
-    const tags = [];
-
-    if (annotation.body) {
-        const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
-
-        bodies.forEach(body => {
-            if (body.purpose === 'tagging' || body.motivation === 'tagging') {
-                tags.push({
-                    value: body.value || body.id,
-                    label: body.value || body.id
-                });
-            }
-        });
-    }
-
-    return tags;
-}
