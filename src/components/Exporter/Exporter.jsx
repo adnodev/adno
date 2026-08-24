@@ -21,7 +21,7 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
 
     const closeModal = () => ref.current.checked = false
 
-    const downloadIIIF = () => exportIIIF().then(manifest => generateInputFilesView(manifest, selectedProject))
+    const downloadIIIF = () => exportIIIF().then(manifest => downloadManifest(manifest, selectedProject))
 
     return <>
         <input type="checkbox" ref={ref} className="modal-toggle" />
@@ -51,7 +51,7 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
                     <label className="btn btn-success" onClick={downloadIIIF}>
                         {translate('navbar.export_project_to_iiif')}
                     </label>
-                    ou
+                    {translate('navbar.export_project_or')}
                     <label className="btn btn-success">
                         {selectedProject &&
                             selectedProject.id &&
@@ -59,18 +59,20 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
                         }
                     </label>
                 </div>
-                <a id="downloadAnchorElem" className="hidden"></a>
             </div>
         </div >
     </>
 })
 
-function generateInputFilesView(manifest, selectedProject) {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(manifest, null, 4));
-    const elt = document.getElementById('downloadAnchorElem');
-    elt.setAttribute("href", dataStr);
-    elt.setAttribute("download", `${selectedProject.title}.json`);
-    elt.click();
+function downloadManifest(manifest, selectedProject) {
+    const link = document.createElement("a")
+
+    link.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(manifest, null, 4))
+    link.download = `${selectedProject.title}.json`
+
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
 }
 
 export function Exporter({ translate, selectedProject, separatedModal, btn, ...props }) {

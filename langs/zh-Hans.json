@@ -229,7 +229,8 @@
         "share_project_desc1": "请先下载您的项目文件。若要分享，可以通过电子邮件发送，或上传至网站、文件服务器或 IPFS 星际文件系统，再分享其 URL 或 IPFS CID。",
         "share_project_desc2": "将 Adno 项目上传至网络后，可在网页中插入 iframe 标签来展示项目。",
         "share_project_desc3": "如需更多信息，请前往 Adno 的官方文档。",
-        "export_project_to": "导出为"
+        "export_project_to": "导出为",
+        "export_project_or": "或"
     },
     "new_project": {
         "add_info": "填写项目信息"

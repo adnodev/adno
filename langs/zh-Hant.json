@@ -229,7 +229,8 @@
         "share_project_desc1": "請先下載您的專案檔案。若要分享，可以透過電子郵件傳送，或上傳至網站、檔案伺服器或 IPFS 星際檔案系統，再分享其 URL 或 IPFS CID。",
         "share_project_desc2": "將 Adno 專案上傳至網路後，可在網頁中插入 iframe 標籤來顯示專案。",
         "share_project_desc3": "如需更多資訊，請前往 Adno 的官方文件。",
-        "export_project_to": "匯出為"
+        "export_project_to": "匯出為",
+        "export_project_or": "或"
     },
     "new_project": {
         "add_info": "填寫您的專案資訊"
