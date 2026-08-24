@@ -185,10 +185,7 @@
         "del_annotation_confirmation": "標註已成功刪除",
         "project_edit_success": "您的專案已成功更新！",
         "settings_updated_success": "設定已成功更新！",
-        "adno_proj_detected": "已偵測到 Adno 專案，是否要匯入？",
-        "old_version": "一個或多個專案是以舊版 Adno 建立的",
-        "update_old_version": "更新至最新版本",
-        "version_updated": "恭喜，您的 Adno 專案已是最新版本"
+        "adno_proj_detected": "已偵測到 Adno 專案，是否要匯入？"
     },
     "annotation": {
         "no_content": "尚無內容",
@@ -239,7 +236,6 @@
         "error_found": "發現錯誤",
         "unable_reading_file": "無法讀取此類型的檔案！",
         "unable_access_file": "無法存取此檔案！請重試或選擇其他檔案。",
-        "manifest_picture_not_found": "找不到您輸入的清單或圖片。",
         "wrong_url": "您輸入的網址無效！請輸入指向 IIIF 清單、IIIF 圖片、JPG 或 PNG 圖片，或 Adno 專案檔案的連結。",
         "no_url": "未提供網址",
         "unknown_characters": "無法讀取標註（包含不允許的字元）",

@@ -185,10 +185,7 @@
         "del_annotation_confirmation": "L'annotation a bien été supprimée",
         "project_edit_success": "Projet édité avec succés !",
         "settings_updated_success": "Paramètres mis à jour avec succés !",
-        "adno_proj_detected": "Projet Adno détecté, voulez-vous l'importer ?",
-        "old_version": "Un ou plusieurs projets ont été fait avec une version obsolète d’Adno",
-        "update_old_version": "Mettre à jour vers la dernière version",
-        "version_updated": "Félicitations, vos projets Adno sont à jour"
+        "adno_proj_detected": "Projet Adno détecté, voulez-vous l'importer ?"
     },
     "annotation": {
         "no_content": "aucun contenu",
@@ -239,7 +236,6 @@
         "error_found": "Erreur détectée",
         "unable_reading_file": "Impossible de lire cette sorte de fichier !",
         "unable_access_file": "Impossible d'accéder à ce fichier ! Ré-essayer ou sélectionner un autre fichier",
-        "manifest_picture_not_found": "Erreur - Le manifeste ou l'image que vous avez entré est introuvable",
         "wrong_url": "L'URL renseignée n'est pas valide ! Indiquez un lien vers un manifeste ou une image IIIF, une image JPG, PNG, ou encore un fichier d'un projet Adno",
         "no_url": "Aucune URL n'a été fournie",
         "unknown_characters": "Impossible de lire les annotations (Caractères interdits)",

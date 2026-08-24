@@ -185,10 +185,7 @@
         "del_annotation_confirmation": "Annotation deleted successfully",
         "project_edit_success": "Your project have been updated successfully !",
         "settings_updated_success": "Settings updated successfully !",
-        "adno_proj_detected": "Adno project detected, would you like to import it ?",
-        "old_version": "One or more projects were made with an obsolete version of Adno",
-        "update_old_version": "Update to the latest version of Adno",
-        "version_updated": "Congratulations, your Adno projects are now up to date"
+        "adno_proj_detected": "Adno project detected, would you like to import it ?"
     },
     "annotation": {
         "no_content": "no content yet",
@@ -239,7 +236,6 @@
         "error_found": "An error have been found",
         "unable_reading_file": "Unable to read this type of file!",
         "unable_access_file": "Unable to reach this file! Please try again or select another file",
-        "manifest_picture_not_found": "The manifest or the picture you have entered has not been found",
         "wrong_url": "The URL you have entered is not valid",
         "no_url": "No URL was provided",
         "unknown_characters": "Unable to read annotations (Forbidden characters)",

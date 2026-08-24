@@ -185,10 +185,7 @@
         "del_annotation_confirmation": "标注已成功删除",
         "project_edit_success": "项目已成功更新！",
         "settings_updated_success": "设置已成功更新！",
-        "adno_proj_detected": "已检测到 Adno 项目，是否导入？",
-        "old_version": "一个或多个项目是使用旧版 Adno 创建的",
-        "update_old_version": "更新至最新版本",
-        "version_updated": "恭喜，您的 Adno 项目已是最新版本"
+        "adno_proj_detected": "已检测到 Adno 项目，是否导入？"
     },
     "annotation": {
         "no_content": "暂无内容",
@@ -239,7 +236,6 @@
         "error_found": "发现错误",
         "unable_reading_file": "无法读取此类型的文件！",
         "unable_access_file": "无法访问此文件！请重试或选择其他文件。",
-        "manifest_picture_not_found": "未找到您输入的清单或图片。",
         "wrong_url": "您输入的网址无效！请输入指向 IIIF 清单、IIIF 图片、JPG 或 PNG 图片，或 Adno 项目文件的链接。",
         "no_url": "未提供网址",
         "unknown_characters": "无法读取标注（包含不允许的字符）",

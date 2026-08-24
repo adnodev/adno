@@ -69,7 +69,6 @@
     },
     "errors": {
         "error_found": "Error detectado",
-        "manifest_picture_not_found": "Error: No se encuentra el manifiesto o la imagen que ha ingresado",
         "no_iiif": "Proyecto no IIIF detectado, por favor proporcione un proyecto IIIF",
         "no_title": "Por favor, dé un título a su proyecto",
         "no_url": "No se proporcionó ninguna URL",
@@ -108,12 +107,9 @@
         "del_annotation_confirmation": "La anotación ha sido eliminada correctamente",
         "delete_project": "¿Realmente desea eliminar este proyecto?",
         "duplicate_project": "¿Realmente desea duplicar este proyecto?",
-        "old_version": "Uno o varios proyectos se han hecho con una versión obsoleta de Adno",
         "project_edit_success": "¡Proyecto editado con éxito!",
         "projects_list_up_to_date": "El listado de proyectos ha sido actualizado",
-        "settings_updated_success": "¡Configuraciones actualizadas con éxito!",
-        "update_old_version": "Actualizar a la última versión",
-        "version_updated": "Felicidades, tus proyectos Adno ahora están actualizados"
+        "settings_updated_success": "¡Configuraciones actualizadas con éxito!"
     },
     "navbar": {
         "back_home": "Volver a inicio",
