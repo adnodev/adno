@@ -1,14 +1,14 @@
-import { Component, createRef } from 'react';
+import { Component, createRef } from "react"
 
 // Import FontAwesome
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Select from 'react-select/creatable';
 
 // Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
-import './AdnoMarkdown.css';
+import "./AdnoMarkdown.css"
 
 // import { Editor } from '@toast-ui/react-editor';
 
@@ -21,11 +21,11 @@ import '@toast-ui/editor/dist/i18n/es-es';
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
-import { normalizeAngle } from '../../Utils/orientation';
-import { withGroupCutout } from '../../Utils/cutout';
-import { getTargets, removeTargetAt } from '../../Utils/targets';
-import { movedTargetIndex, moveTarget, moveTargetToGroup, nextGroupId, targetIndexOf, withGroupOrder, withGroupRotation } from '../../Utils/groups';
-import { ZoneGroups } from './ZoneGroups';
+import { normalizeAngle } from "../../Utils/orientation"
+import { withGroupCutout } from "../../Utils/cutout"
+import { getTargets, removeTargetAt } from "../../Utils/targets"
+import { movedTargetIndex, moveTarget, moveTargetToGroup, nextGroupId, targetIndexOf, withGroupOrder, withGroupRotation } from "../../Utils/groups"
+import { ZoneGroups } from "./ZoneGroups"
 
 const locale = navigator.language;
 

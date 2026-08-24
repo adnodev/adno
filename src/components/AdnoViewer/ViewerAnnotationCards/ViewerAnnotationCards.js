@@ -6,7 +6,7 @@ import "./ViewerAnnotationCards.css";
 
 // Import Components
 import OneCardView from './OneCardView/OneCardView';
-import { buildTagsList, stripHtml } from '../../../Utils/utils';
+import { buildTagsList, stripHtml } from "../../../Utils/utils"
 import { withTranslation } from 'react-i18next';
 
 const RAIL_SUMMARY_LENGTH = 90

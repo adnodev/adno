@@ -6,16 +6,16 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faDownLong, faEdit, faPlus, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons";
+import { faBullseye, faDownLong, faEdit, faPlus, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons"
 
 // Import SweetAlert
 import Swal from "sweetalert2";
 
-import { AnnotationBadges } from "../../AnnotationBadges/AnnotationBadges";
+import { AnnotationBadges } from "../../AnnotationBadges/AnnotationBadges"
 
 // Import Utils 
 import { buildTagsList } from "../../../Utils/utils";
-import { getTargets } from "../../../Utils/targets";
+import { getTargets } from "../../../Utils/targets"
 
 //Imports CSS
 import "./AnnotationCards.css";

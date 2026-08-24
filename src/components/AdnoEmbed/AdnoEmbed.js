@@ -1,17 +1,17 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next"
 import { InfinitySpin } from 'react-loader-spinner'
 import Swal from "sweetalert2";
 
-import { buildTagsList, enhancedFetch, get_url_extension } from "../../Utils/utils";
-import { extractIIIFContent } from "./IIIFHelper";
-import OpenView from "../OpenView/OpenView";
+import { buildTagsList, enhancedFetch, get_url_extension } from "../../Utils/utils"
+import { extractIIIFContent } from "./IIIFHelper"
+import OpenView from "../OpenView/OpenView"
 
 // Import Style
 import "./AdnoEmbed.css";
 
-const IMAGE_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
+const IMAGE_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS?.split(",") || []
 
 class AdnoEmbed extends Component {
     constructor(props) {
@@ -28,7 +28,7 @@ class AdnoEmbed extends Component {
     }
 
     componentDidMount() {
-        const query = new URLSearchParams(this.props.location.search);
+        const query = new URLSearchParams(this.props.location.search)
 
         this.getAdnoProject(query.get("url"))
     }
@@ -176,7 +176,7 @@ class AdnoEmbed extends Component {
                                         imported_project.hasOwnProperty("source") &&
                                         imported_project.hasOwnProperty("total")
                                     ) {
-                                        const selectedTags = imported_project.adno_settings?.tags || [];
+                                        const selectedTags = imported_project.adno_settings?.tags || []
 
                                         let annos = [...imported_project.first.items];
 
@@ -223,7 +223,7 @@ class AdnoEmbed extends Component {
                                             source: imported_project.source,
                                             annos,
                                             isLoaded: true
-                                        }, this.overrideSettings);
+                                        }, this.overrideSettings)
                                     } else {
                                         Swal.fire({
                                             title: `projet adno INVALIDE`,
@@ -252,7 +252,7 @@ class AdnoEmbed extends Component {
                                 }
                             })
                     } else {
-                        this.setState({ isLoaded: true, source: url }, this.overrideSettings);
+                        this.setState({ isLoaded: true, source: url }, this.overrideSettings)
                     }
                 } else {
                     Swal.fire({

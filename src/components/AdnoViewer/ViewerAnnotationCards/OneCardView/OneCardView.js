@@ -2,19 +2,19 @@ import { Component } from "react";
 
 // Import Utils
 import { buildTagsList } from "../../../../Utils/utils";
-import { primaryTarget } from "../../../../Utils/targets";
+import { primaryTarget } from "../../../../Utils/targets"
 
 // Import Html Parser
 import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand } from "@fortawesome/free-solid-svg-icons";
+import { faExpand } from "@fortawesome/free-solid-svg-icons"
 
 // Add translations
 import { withTranslation } from "react-i18next";
 
-import { AnnotationBadges } from "../../../AnnotationBadges/AnnotationBadges";
+import { AnnotationBadges } from "../../../AnnotationBadges/AnnotationBadges"
 
 class OneCardView extends Component {
     constructor(props) {

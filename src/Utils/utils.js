@@ -4,6 +4,8 @@ import { projectDB } from "../services/db";
 import { v7 } from "uuid";
 
 const SECONDARY_VIEWERS = '.cutout-panel, .group-panel'
+const EYE_PROBES = 24
+const PATH_SAMPLES = 64
 
 export function findInfoJsonFromManifest(url) {
   return fetch(url)
@@ -344,9 +346,6 @@ export function annotationShapes(root) {
       return !panel || Boolean(root && panel.contains(root))
     })
 }
-
-const EYE_PROBES = 24
-const PATH_SAMPLES = 64
 
 function outlinePoints(geometry) {
   const points = []

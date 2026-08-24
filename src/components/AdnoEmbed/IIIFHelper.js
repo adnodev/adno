@@ -149,7 +149,7 @@ export function extractIIIFContent(imported_project, options) {
             rights,
             source: resultLink,
             isLoaded: true
-        }, options.overrideSettings);
+        }, options.overrideSettings)
 
     } else {
         Swal.fire({
@@ -223,7 +223,7 @@ export function extractIIIFv3Annotations(manifest) {
                 annotationPage.items.forEach(anno => {
                     // Fix FragmentSelector conformsTo for commenting annotations
                     if (anno.motivation === "commenting") {
-                        anno.target = withMediaFrags(anno.target);
+                        anno.target = withMediaFrags(anno.target)
                     }
                     annotations.push(anno);
                 });
@@ -267,7 +267,7 @@ export function extractIIIFv2Annotations(manifest) {
 
                         // Fix FragmentSelector conformsTo for commenting annotations
                         if (converted.motivation === "commenting") {
-                            converted.target = withMediaFrags(converted.target);
+                            converted.target = withMediaFrags(converted.target)
                         }
 
                         annotations.push(converted);

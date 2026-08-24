@@ -1,8 +1,8 @@
 import Swal from "sweetalert2"
 import { buildJsonProjectWithManifest, enhancedFetch, migrateTextBody } from "../../Utils/utils";
 import { projectDB } from "../../services/db";
-import { withImages } from "../../Utils/images";
-import { extractLanguageValue } from "../AdnoEmbed/IIIFHelper";
+import { withImages } from "../../Utils/images"
+import { extractLanguageValue } from "../AdnoEmbed/IIIFHelper"
 import { v7 } from 'uuid'
 
 

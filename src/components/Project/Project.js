@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react"
 import { useParams, useHistory } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next"
 import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
-import { ensureTargetGroups } from "../../Utils/groups";
+import { ensureTargetGroups } from "../../Utils/groups"
 import { exportToIIIF } from "../../services/iiif/exporter";
 import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
@@ -18,7 +18,7 @@ import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnn
 import ProjectSettings from "./ProjectSettings";
 import AdnoMdEditor from "../AdnoMarkdown/AdnoMdEditor";
 import AdnoMdViewer from "../AdnoMarkdown/AdnoMdViewer";
-import { SidebarControl } from "./SidebarControl";
+import { SidebarControl } from "./SidebarControl"
 
 import "./Project.css";
 import "./Sidebar.css";
@@ -26,9 +26,9 @@ import "./Sidebar.css";
 const Project = ({ editMode }) => {
     const { id } = useParams();
     const history = useHistory();
-    const { t } = useTranslation();
+    const { t } = useTranslation()
 
-    const viewerRef = useRef(null);
+    const viewerRef = useRef(null)
 
     const [state, setState] = useState({
         annotations: [],
@@ -84,8 +84,8 @@ const Project = ({ editMode }) => {
             ...prev,
             selectedAnnotationId: annotation ? annotation.id : null,
             selectedTargetIndex: targetIndex
-        }));
-    };
+        }))
+    }
 
     const handleChanges = (arr) => {
         setState(prevState => {
@@ -137,8 +137,8 @@ const Project = ({ editMode }) => {
         });
     };
 
-    const { annotations, settings } = state;
-    const selectedAnnotation = annotations.find(annotation => annotation.id === state.selectedAnnotationId) || null;
+    const { annotations, settings } = state
+    const selectedAnnotation = annotations.find(annotation => annotation.id === state.selectedAnnotationId) || null
     const settingsTags = settings.tags || [];
     const viewerAnnotations = settingsTags.length > 0
         ? annotations.filter(annotation => {

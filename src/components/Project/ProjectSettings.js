@@ -14,7 +14,7 @@ import "./ProjectSettings.css";
 import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select/creatable';
-import { buildTagsList, CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/utils";
+import { buildTagsList, CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/utils"
 
 const QUARTER_TURNS = [0, 90, 180, 270]
 
