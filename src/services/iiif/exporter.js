@@ -256,28 +256,6 @@ const formatCoordinates = (text) => {
     });
 };
 
-// const formatSvgCircle = (text) => {
-//     return text.replace(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/g, (match, cx, cy, r) => {
-//         return `<circle cx="${Math.round(cx)}" cy="${Math.round(cy)}" r="${Math.round(r)}"`;
-//     });
-// };
-
-// const formatSvgPolygon = (text) => {
-//     return text.replace(/<polygon points="([\d.,\s]+)"/g, (match, points) => {
-//         const roundedPoints = points.split(" ").map(point => {
-//             return point.split(",").map(coord => Math.round(parseFloat(coord))).join(",");
-//         }).join(" ");
-//         return `<polygon points="${roundedPoints}"`;
-//     });
-// };
-
-// const formatSvgEllipse = (text) => {
-//     return text.replace(/<ellipse cx="([\d.]+)" cy="([\d.]+)" rx="([\d.]+)" ry="([\d.]+)"/g, (match, cx, cy, rx, ry) => {
-//         return `<ellipse cx="${Math.round(cx)}" cy="${Math.round(cy)}" rx="${Math.round(rx)}" ry="${Math.round(ry)}"`;
-//     });
-// };
-
-
 const formatSvgCircleToPath = (text) => {
     return text.replace(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/g, (match, cx, cy, r) => {
         const x = Math.round(cx);

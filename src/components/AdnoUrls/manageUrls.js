@@ -132,20 +132,6 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     } else {
         return Promise.reject(`${translation('errors.wrong_url')}: ${url}`)
     }
-    // .catch(() => {
-    //     Swal.fire({
-    //         title: `${translation('errors.wrong_url')}: ${url}`,
-    //         showCancelButton: false,
-    //         showConfirmButton: true,
-    //         confirmButtonText: 'OK',
-    //         icon: 'error',
-    //     })
-    //         .then((result) => {
-    //             if (result.isConfirmed) {
-    //                 window.location.href = ""
-    //             }
-    //         })
-    // })
 }
 
 export function readProjectFromIIIFFormat(props, manifest, translation) {

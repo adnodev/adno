@@ -2,7 +2,6 @@ import { Component } from "react";
 
 // Import Utils
 import { buildTagsList } from "../../../../Utils/utils";
-import { primaryTarget } from "../../../../Utils/targets"
 
 // Import Html Parser
 import parse from 'html-react-parser';
@@ -22,14 +21,9 @@ class OneCardView extends Component {
 
         this.state = {
             fullView: false,
-            url: "",
             annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && parse(this.props.annotation.body[0].value)
         }
     }
-
-    // componentDidMount() {
-    //     this.buildExternalLink()
-    // }
 
     getAnnotationHTMLBody = () => {
         let annotation = this.props.annotation
@@ -45,51 +39,9 @@ class OneCardView extends Component {
         }
     }
 
-    buildExternalLink = () => {
-        const target = primaryTarget(this.props.annotation)
-
-        if (target && target.selector.type === "FragmentSelector" && this.props.project.manifest_url) {
-
-            let coordinates = target.selector.value.replace("xywh=pixel:", "")
-
-            let coord_left = Math.round(coordinates.split(",")[0])
-            let coord_top = Math.round(coordinates.split(",")[1])
-            let coord_width = Math.round(coordinates.split(",")[2])
-            let coord_height = Math.round(coordinates.split(",")[3])
-
-            let newCoordinates = `${coord_left},${coord_top},${coord_width},${coord_height}`
-
-            let url_full = `${target.source}/${newCoordinates}/full/0/default.jpg`
-            let url_max = `${target.source}/${newCoordinates}/max/0/default.jpg`
-
-            fetch(url_full)
-                .then(res => {
-                    if (res.ok) {
-                        this.setState({ url: url_full })
-                    } else {
-                        fetch(url_max)
-                            .then(res => {
-                                if (res.ok) {
-                                    this.setState({ url: url_max })
-                                }
-                            })
-                    }
-                })
-                .catch(() => {
-                    fetch(url_max)
-                        .then(res => {
-                            if (res.ok) {
-                                this.setState({ url: url_max })
-                            }
-                        })
-                })
-        }
-    }
-
     render() {
         return (
             <div className="anno-card-body">
-                {/* <h6 className="card-subtitle mb-2 text-muted"> {buildTagsList(this.props.annotation)} </h6> */}
                 <AnnotationBadges annotation={this.props.annotation} translate={this.props.t} />
 
                 <div className="card-tags-list">
@@ -120,9 +72,6 @@ class OneCardView extends Component {
                             <FontAwesomeIcon icon={faExpand} />
                         </div>
                     </button>}
-
-                    {/* Afficher la redirection vers la zone de l'annotation */}
-                    {/* {this.state.url && <a href={this.state.url} className="btn btn-outline btn-success btn-sm btn-show-more" target="_blank"> <FontAwesomeIcon icon={faArrowUpRightFromSquare} /></a>} */}
                 </div>
             </div >
         )

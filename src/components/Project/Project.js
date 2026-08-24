@@ -273,9 +273,6 @@ const Project = ({ editMode }) => {
                     </div>
                 )}
 
-                {/* <div className={annotations.length > 0 && settings.sidebarEnabled ? "adno-viewer-rightbar-with-annos" : ""}> */}
-                {/* <div className="col">
-                    <div className="card"> */}
                 {editMode ? (
                     <AdnoEditor
                         selectedProject={state.selectedProject}
@@ -328,9 +325,6 @@ const Project = ({ editMode }) => {
                         outlineColorFocus={settings.outlineColorFocus}
                     />
                 )}
-                {/* </div>
-                </div> */}
-                {/* </div> */}
             </div>
         </div>
     );
