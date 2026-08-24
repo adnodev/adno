@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
+import { projectImages } from "./images"
 import { v7 } from "uuid";
 
 const SECONDARY_VIEWERS = '.cutout-panel, .group-panel'
@@ -115,6 +116,7 @@ export const buildProjectAdnoFormat = (title, description, manifest) => {
 export const createExportProjectJsonFile = async (projectID) => {
 
   const project = await projectDB.get(projectID)
+  const images = projectImages(project)
 
   const finalProject =
   {
@@ -129,7 +131,8 @@ export const createExportProjectJsonFile = async (projectID) => {
     "rights": project.rights || "",
     "date": project.creation_date,
     "modified": project.last_update,
-    "source": project.manifest_url ? project.manifest_url : project.img_url,
+    "source": images.length > 0 ? images[0].source : "",
+    "images": images,
     "format": "Adno",
     "total": project.annotations && project.annotations.length ? project.annotations.length : 0,
     "first": {

@@ -58,7 +58,10 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                                 let title = manifest.title || manifest.label
                                                 let desc = manifest.description || manifest.subject
 
-                                                let project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
+                                                let base = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
+                                                let project = manifest.images && manifest.images.length > 0
+                                                    ? withImages(base, manifest.images)
+                                                    : base
 
                                                 projectDB.add(projectID, {
                                                     id: projectID,
