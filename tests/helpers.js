@@ -65,13 +65,11 @@ async function seedProject(page, project) {
 }
 
 /**
- * Read a project back from IndexedDB, to assert on what actually got persisted.
- *
  * @param {import('@playwright/test').Page} page
- * @param {string} id
+ * @param {string=} id
  * @returns {Promise<any>}
  */
-async function readProject(page, id) {
+function readStore(page, id) {
     return page.evaluate((projectId) => new Promise((resolve) => {
         const req = indexedDB.open('ProjectsDB', 1);
         req.onerror = () => resolve(null);
@@ -81,11 +79,23 @@ async function readProject(page, id) {
                 resolve(null);
                 return;
             }
-            const get = db.transaction(['projects'], 'readonly').objectStore('projects').get(projectId);
-            get.onsuccess = () => resolve(get.result || null);
-            get.onerror = () => resolve(null);
+            const store = db.transaction(['projects'], 'readonly').objectStore('projects');
+            const query = projectId ? store.get(projectId) : store.getAll();
+            query.onsuccess = () => resolve(query.result || null);
+            query.onerror = () => resolve(null);
         };
     }), id);
+}
+
+/**
+ * Read a project back from IndexedDB, to assert on what actually got persisted.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} id
+ * @returns {Promise<any>}
+ */
+async function readProject(page, id) {
+    return readStore(page, id);
 }
 
 /**
@@ -96,20 +106,7 @@ async function readProject(page, id) {
  * @returns {Promise<any[]>}
  */
 async function readProjects(page) {
-    return page.evaluate(() => new Promise((resolve) => {
-        const req = indexedDB.open('ProjectsDB', 1);
-        req.onerror = () => resolve([]);
-        req.onsuccess = () => {
-            const db = req.result;
-            if (!db.objectStoreNames.contains('projects')) {
-                resolve([]);
-                return;
-            }
-            const all = db.transaction(['projects'], 'readonly').objectStore('projects').getAll();
-            all.onsuccess = () => resolve(all.result || []);
-            all.onerror = () => resolve([]);
-        };
-    }));
+    return (await readStore(page)) || [];
 }
 
 module.exports = { BASE_URL, clearProjectsDB, readProject, readProjects, seedProject };
