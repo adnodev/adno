@@ -75,25 +75,24 @@ function downloadManifest(manifest, selectedProject) {
     document.body.removeChild(link)
 }
 
-export function Exporter({ translate, selectedProject, separatedModal, btn, ...props }) {
+export function Exporter({ translate, selectedProject, exportIIIF }) {
 
     const ref = useRef()
 
     return <>
-        {btn ? btn :
-            <div className="tooltip tooltip-bottom z-50" data-tip={translate('navbar.download_project')}>
-                <button className="btn navbar-button btn-neutral">
-                    <label htmlFor="my-modal" style={{ "background": "none", "border": "none" }} onClick={() => {
-                        ref.current?.click()
-                    }}>
-                        <FontAwesomeIcon icon={faDownload} size="xl" /> </label>
-                </button>
-            </div>}
+        <div className="tooltip tooltip-bottom z-50" data-tip={translate('navbar.download_project')}>
+            <button className="btn navbar-button btn-neutral">
+                <label htmlFor="my-modal" style={{ "background": "none", "border": "none" }} onClick={() => {
+                    ref.current?.click()
+                }}>
+                    <FontAwesomeIcon icon={faDownload} size="xl" /> </label>
+            </button>
+        </div>
 
-        {!separatedModal && <ExporterModal
+        <ExporterModal
             translate={translate}
             selectedProject={selectedProject}
-            exportIIIF={props.exportIIIF}
-            ref={ref} />}
+            exportIIIF={exportIIIF}
+            ref={ref} />
     </>
 }

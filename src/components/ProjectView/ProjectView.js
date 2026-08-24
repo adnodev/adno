@@ -15,7 +15,7 @@ import "./ProjectView.css";
 
 // Add Internationalization
 import { withTranslation } from "react-i18next";
-import { Exporter, ExporterModal } from "../Exporter/Exporter";
+import { ExporterModal } from "../Exporter/Exporter";
 import { exportToIIIF } from "../../services/iiif/exporter";
 import { projectDB } from "../../services/db";
 
@@ -260,23 +260,11 @@ class ProjectView extends Component {
                                 }}><FontAwesomeIcon icon={faCopy} /></button>
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.download')}>
-                            <Exporter
-                                translate={this.props.t}
-                                selectedProject={this.props.project}
-                                exportIIIF={() => exportToIIIF(exportedProject)}
-                                separatedModal
-                                btn={<>
-                                    <button type="button" className="btn btn-md btn-outline me-2"
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            this.modalRef.current?.click()
-                                        }}>
-                                        <label htmlFor="#" style={{ pointerEvents: 'none' }}>
-                                            <FontAwesomeIcon icon={faDownload} />
-                                        </label>
-                                    </button>
-                                </>}
-                            />
+                            <button type="button" className="btn btn-md btn-outline me-2"
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    this.modalRef.current?.click()
+                                }}> <FontAwesomeIcon icon={faDownload} /> </button>
                         </div>
                         <div className="tooltip" data-tip={this.props.t('project.delete')}>
                             <button type="button" className="btn btn-md btn-outline btn-error"
