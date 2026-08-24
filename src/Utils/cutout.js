@@ -43,3 +43,7 @@ export function cutoutGroupIds(annotation) {
 
     return cutouts ? Object.keys(cutouts).filter(key => cutouts[key]) : []
 }
+
+export function cutoutKey(groupId) {
+    return groupId || 'all'
+}

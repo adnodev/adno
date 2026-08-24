@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons"
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils"
 import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Utils/viewport"
-import { cutoutGroupIds, getAnnotationCutout } from "../../Utils/cutout"
+import { cutoutGroupIds, cutoutKey, getAnnotationCutout } from "../../Utils/cutout"
 import { projectImages } from "../../Utils/images"
 import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import { activeGroupId, scheduleGroupColors } from "../../Utils/groups"
@@ -761,10 +761,10 @@ class OpenView extends Component {
     }
 
     cutoutViewFor = (groupId) =>
-        this.state.cutoutViews[groupId || 'all'] || { minimized: false, size: 'default', position: null }
+        this.state.cutoutViews[cutoutKey(groupId)] || { minimized: false, size: 'default', position: null }
 
     setCutoutView = (groupId, view) => {
-        this.setState({ cutoutViews: { ...this.state.cutoutViews, [groupId || 'all']: view } })
+        this.setState({ cutoutViews: { ...this.state.cutoutViews, [cutoutKey(groupId)]: view } })
     }
 
     marginPosition = () => this.props.contentPosition || 'left'
@@ -971,8 +971,8 @@ class OpenView extends Component {
                 }
 
                 {this.cutoutGroups().map((groupId, rank) =>
-                    <CutoutView key={groupId || 'all'}
-                        elementId={`cutout-osd-${groupId || 'all'}`}
+                    <CutoutView key={cutoutKey(groupId)}
+                        elementId={`cutout-osd-${cutoutKey(groupId)}`}
                         rank={rank}
                         project={this.props.selectedProject}
                         annotation={this.state.cutoutAnno}

@@ -75,7 +75,7 @@ function applyDrop(source, spot, groups, moveZone, regroupZone, orderGroups) {
     regroupZone(source.index, spot.id)
 }
 
-function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone, removeZone, addZone, setRotation, captureRotation, setCutout, translate }) {
+function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions, translate }) {
     const rotation = groupRotation(annotation, group.id)
     const cutout = getGroupCutout(annotation, group.id)
     const isFreeAngle = rotation !== null && !QUARTER_TURNS.includes(rotation)
@@ -95,7 +95,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone
 
                 <select className="select select-xs zone-group-rotation"
                     value={rotation === null ? '' : String(rotation)}
-                    onChange={event => setRotation(group.id, event.target.value === '' ? null : Number(event.target.value))}>
+                    onChange={event => actions.setRotation(group.id, event.target.value === '' ? null : Number(event.target.value))}>
                     <option value="">{translate('editor.orientation_inherit')}</option>
                     {QUARTER_TURNS.map(degrees => <option key={degrees} value={degrees}>{degrees}&deg;</option>)}
                     {isFreeAngle && <option value={rotation}>{rotation}&deg;</option>}
@@ -104,7 +104,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone
                 <button type="button"
                     className="btn btn-xs"
                     aria-label={translate('editor.orientation_capture')}
-                    onClick={() => captureRotation(group.id)}>
+                    onClick={() => actions.captureRotation(group.id)}>
                     <FontAwesomeIcon icon={faCrosshairs} />
                 </button>
 
@@ -112,7 +112,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone
                     <input type="checkbox"
                         className="toggle toggle-xs"
                         checked={cutout}
-                        onChange={() => setCutout(group.id, !cutout)} />
+                        onChange={() => actions.setCutout(group.id, !cutout)} />
                     <span>{translate('editor.cutout')}</span>
                 </label>
             </div>
@@ -124,14 +124,14 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone
                         draggable="true"
                         data-zone-index={index}
                         data-zone-group={group.id}
-                        onClick={() => pickZone(index)}>
+                        onClick={() => actions.pickZone(index)}>
                         <ZonePreview target={target} />
                         <button type="button"
                             className="btn btn-xs btn-outline btn-error"
                             disabled={total < 2}
                             onClick={event => {
                                 event.stopPropagation()
-                                removeZone(index)
+                                actions.removeZone(index)
                             }}>
                             <div className="tooltip tooltip-left z-50" data-tip={translate('annotation.delete_zone')}>
                                 <FontAwesomeIcon icon={faTrash} />
@@ -143,7 +143,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone
                 <button type="button"
                     className="zone-row zone-row--add"
                     aria-label={translate('annotation.add_zone')}
-                    onClick={() => addZone(group.id)}>
+                    onClick={() => actions.addZone(group.id)}>
                     <FontAwesomeIcon icon={faPlus} />
                 </button>
             </div>
@@ -154,6 +154,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, pickZone
 export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, orderGroups, setRotation, captureRotation, setCutout, translate }) {
     const groups = withDraft(deriveGroups(annotation), draftGroupId)
     const total = getTargets(annotation).length
+    const actions = { pickZone, removeZone, addZone, setRotation, captureRotation, setCutout }
 
     const startDrag = (event) => {
         const source = dragSource(event.target)
@@ -198,12 +199,7 @@ export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pick
                     annotation={annotation}
                     total={total}
                     selectedTargetIndex={selectedTargetIndex}
-                    pickZone={pickZone}
-                    removeZone={removeZone}
-                    addZone={addZone}
-                    setRotation={setRotation}
-                    captureRotation={captureRotation}
-                    setCutout={setCutout}
+                    actions={actions}
                     translate={translate} />
             )}
 
