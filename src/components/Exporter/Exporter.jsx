@@ -21,6 +21,8 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
 
     const closeModal = () => ref.current.checked = false
 
+    const downloadIIIF = () => exportIIIF().then(manifest => generateInputFilesView(manifest, selectedProject))
+
     return <>
         <input type="checkbox" ref={ref} className="modal-toggle" />
         <div className="modal">
@@ -46,10 +48,7 @@ export const ExporterModal = forwardRef(({ translate, selectedProject, exportIII
                 <p className="my-3 text-center font-bold">{translate('navbar.export_project_to')}</p>
                 <div className="flex gap-3 justify-center items-center">
 
-                    <label className="btn btn-success" onClick={() => {
-                        exportIIIF()
-                    }
-                    }>
+                    <label className="btn btn-success" onClick={downloadIIIF}>
                         {translate('navbar.export_project_to_iiif')}
                     </label>
                     ou
@@ -78,11 +77,6 @@ export function Exporter({ translate, selectedProject, separatedModal, btn, ...p
 
     const ref = useRef()
 
-    const exportIIIF = () => {
-        return props.exportIIIF()
-            .then(manifest => generateInputFilesView(manifest, selectedProject))
-    }
-
     return <>
         {btn ? btn :
             <div className="tooltip tooltip-bottom z-50" data-tip={translate('navbar.download_project')}>
@@ -97,7 +91,7 @@ export function Exporter({ translate, selectedProject, separatedModal, btn, ...p
         {!separatedModal && <ExporterModal
             translate={translate}
             selectedProject={selectedProject}
-            exportIIIF={exportIIIF}
+            exportIIIF={props.exportIIIF}
             ref={ref} />}
     </>
 }
