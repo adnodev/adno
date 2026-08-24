@@ -5,12 +5,30 @@ export function DownloadLink({ selectedProject, translate }) {
     const [href, setHref] = useState("");
 
     useEffect(() => {
-        if (!selectedProject) return;
+        if (!selectedProject) return
 
-        createExportProjectJsonFile(selectedProject.id).then(url => {
-            setHref(url);
-        });
-    }, [selectedProject]);
+        let url = null
+        let released = false
+
+        createExportProjectJsonFile(selectedProject.id).then(created => {
+            url = created
+
+            if (released) {
+                URL.revokeObjectURL(created)
+                return
+            }
+
+            setHref(created)
+        })
+
+        return () => {
+            released = true
+
+            if (url) {
+                URL.revokeObjectURL(url)
+            }
+        }
+    }, [selectedProject])
 
     return (
         <a
