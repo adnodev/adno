@@ -1,6 +1,6 @@
 import { enhancedFetch } from "../../Utils/utils"
 import { getTargets } from "../../Utils/targets"
-import { projectImages } from "../../Utils/images"
+import { imageIndexForSource, projectImages } from "../../Utils/images"
 
 const EXCLUDED_METADATA = ['settings', 'id', 'manifest_url', 'img_url', 'images', 'annotations']
 
@@ -13,10 +13,7 @@ export const exportToIIIF = async (state) => {
 
     const adnoSettings = btoa(JSON.stringify(settings, null, 4));
 
-    const image = projectImages(selectedProject)[0]
-    const isIIIF = image && image.type === 'iiif'
-    const imageId = image ? image.source.replace(/\/info\.json$/, '') : ''
-    const { width, height } = await imageSize(image)
+    const images = await Promise.all(projectImages(selectedProject).map(sizedImage))
 
     const content = {
         "@context": "http://iiif.io/api/presentation/3/context.json",
@@ -59,84 +56,92 @@ export const exportToIIIF = async (state) => {
                 selectedProject.description
             ]
         },
-        "items": [
-            {
-                "id": `https://example.com/canvas-1`,
-                "type": "Canvas",
-                "height": height,
-                "width": width,
-                "items": [
-                    {
-                        "id": `https://example.com/annotation-page/canvas-1/annopage-1`,
-                        "type": "AnnotationPage",
-                        "items": [
-                            {
-                                "id": `https://example.com/annotation/canvas-1/annopage-1/anno-1`,
-                                "type": "Annotation",
-                                "motivation": "painting",
-                                "body": {
-                                    "id": imageId,
-                                    "type": "Image",
-                                    "format": imageFormat(imageId),
-                                    ...(isIIIF ? {
-                                        "service": [
-                                            {
-                                                "id": imageId,
-                                                "type": "ImageService3",
-                                                "profile": "level1"
-                                            }
-                                        ]
-                                    } : {}),
-                                    "height": height,
-                                    "width": width,
-                                },
-                                "target": `https://example.com/canvas-1`
-                            },
-                        ]
-                    }
-                ],
-                "annotations": [
-                    {
-                        "id": `https://example.com/canvas-1/annopage-2`,
-                        "type": "AnnotationPage",
-                        "items": annotations.map((annotation, idx) => {
-                            // const bodies = annotation.body
-                            //     .map(body => {
-                            //         if (body.type === 'HTMLBody') {
-                            //             return {
-                            //                 ...body,
-                            //                 format: 'text/html'
-                            //             }
-                            //         }
-                            //         return body
-                            //     })
-
-                            // const hasHTMLBody = bodies.find(b => b.type === 'HTMLBody')
-
-                            return {
-                                "id": `https://example.com/canvas-1/annopage-2/anno-${idx}`,
-                                "type": "Annotation",
-                                "motivation": "commenting",
-                                // "body": hasHTMLBody ? hasHTMLBody : bodies,
-                                body: annotation.body,
-                                ...extractTargetAndSelector(annotation)
-                            }
-                        })
-                    }
-                ]
-            }
-        ]
+        "items": images.map((image, index) =>
+            exportCanvas(image, index, images, annotationsOnCanvas(annotations, images, index)))
     }
 
     return content
 }
 
-async function imageSize(image) {
-    if (!image) {
-        return {}
+function canvasId(index) {
+    return `https://example.com/canvas-${index + 1}`
+}
+
+function canvasIndexOf(annotation, images) {
+    const first = getTargets(annotation)[0]
+
+    return Math.max(imageIndexForSource(images, first && first.source), 0)
+}
+
+function annotationsOnCanvas(annotations, images, index) {
+    return (annotations || []).filter(annotation => canvasIndexOf(annotation, images) === index)
+}
+
+function exportCanvas(image, index, images, annotations) {
+    const id = canvasId(index)
+    const number = index + 1
+    const imageId = image.source.replace(/\/info\.json$/, '')
+
+    return {
+        "id": id,
+        "type": "Canvas",
+        ...(image.label ? { "label": { "none": [image.label] } } : {}),
+        "height": image.height,
+        "width": image.width,
+        "items": [
+            {
+                "id": `https://example.com/annotation-page/canvas-${number}/annopage-1`,
+                "type": "AnnotationPage",
+                "items": [
+                    {
+                        "id": `https://example.com/annotation/canvas-${number}/annopage-1/anno-1`,
+                        "type": "Annotation",
+                        "motivation": "painting",
+                        "body": {
+                            "id": imageId,
+                            "type": "Image",
+                            "format": imageFormat(imageId),
+                            ...(image.type === 'iiif' ? {
+                                "service": [
+                                    {
+                                        "id": imageId,
+                                        "type": "ImageService3",
+                                        "profile": "level1"
+                                    }
+                                ]
+                            } : {}),
+                            "height": image.height,
+                            "width": image.width,
+                        },
+                        "target": id
+                    },
+                ]
+            }
+        ],
+        "annotations": [
+            {
+                "id": `https://example.com/canvas-${number}/annopage-2`,
+                "type": "AnnotationPage",
+                "items": annotations.map((annotation, idx) => ({
+                    "id": `https://example.com/canvas-${number}/annopage-2/anno-${idx}`,
+                    "type": "Annotation",
+                    "motivation": "commenting",
+                    body: annotation.body,
+                    ...extractTargetAndSelector(annotation, images)
+                }))
+            }
+        ]
+    }
+}
+
+async function sizedImage(image) {
+    if (image.width && image.height) {
+        return image
     }
 
-    return image.type === 'iiif' ? infoSize(image.source) : measureImage(image.source)
+    const probed = image.type === 'iiif' ? await infoSize(image.source) : await measureImage(image.source)
+
+    return { ...image, ...probed }
 }
 
 async function infoSize(source) {
@@ -166,16 +171,17 @@ function imageFormat(source) {
     return /\.png$/i.test(source) ? 'image/png' : 'image/jpeg'
 }
 
-function extractTargetAndSelector(annotation) {
-    const targets = getTargets(annotation).map(exportTarget)
+function extractTargetAndSelector(annotation, images) {
+    const targets = getTargets(annotation).map(target => exportTarget(target, images))
 
     return { target: targets.length === 1 ? targets[0] : targets }
 }
 
-function exportTarget(target) {
+function exportTarget(target, images) {
 
     const { selector } = target
     const value = selector.value
+    const source = canvasId(Math.max(imageIndexForSource(images, target.source), 0))
 
     if (value.startsWith('xywh')) {
         // point "xywh=pixel:1085.033935546875,388.39544677734375,0,0"
@@ -184,7 +190,7 @@ function exportTarget(target) {
         const coordinates = formatCoordinates(value);
         return {
             type: "SpecificResource",
-            source: "https://example.com/canvas-1",
+            source,
             selector: {
                 "type": "FragmentSelector",
                 "value": coordinates,
@@ -196,7 +202,7 @@ function exportTarget(target) {
         //<svg><circle cx=\"6651.482267818101\" cy=\"485.07000879322743\" r=\"434.5177321818993\"></circle></svg>
         return {
             type: "SpecificResource",
-            source: `https://example.com/canvas-1`,
+            source,
             selector: {
                 ...selector,
                 value: formatSvgCircleToPath(value)
@@ -205,7 +211,7 @@ function exportTarget(target) {
     } else if (value.includes('ellipse')) {
         return {
             type: "SpecificResource",
-            source: `https://example.com/canvas-1`,
+            source,
             selector: {
                 ...selector,
                 value: formatSvgEllipseToPath(value)
@@ -215,7 +221,7 @@ function exportTarget(target) {
         // <svg><polygon points=\"712.383056640625,1071.79345703125 1086.5421142578125,1162.2012939453125 1004.058837890625,1548.3990478515625 622.3629760742188,1518.2855224609375 425.7992248535156,1259.4378662109375\" /></svg>
         return {
             type: "SpecificResource",
-            source: `https://example.com/canvas-1`,
+            source,
             selector: {
                 ...selector,
                 value: formatSvgPolygonToPath(value)
@@ -224,7 +230,7 @@ function exportTarget(target) {
     } else {
         return {
             type: "SpecificResource",
-            source: `https://example.com/canvas-1`,
+            source,
             selector: {
                 ...selector,
                 value: formatSvgPath(value)
