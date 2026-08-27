@@ -280,6 +280,7 @@ const Project = ({ editMode }) => {
                         changeImage={(index) => setState(prev => ({ ...prev, currentImageIndex: index }))}
                         pendingZone={state.pendingZone}
                         endPendingZone={() => setState(prev => ({ ...prev, pendingZone: null }))}
+                        editingAnnotation={state.updateAnnotation}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}

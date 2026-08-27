@@ -98,10 +98,15 @@ class AdnoEditor extends Component {
         this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
             const image = this.images()[this.props.currentImageIndex]
             const pending = this.props.pendingZone
-            const pendingId = pending ? pending.annotationId : null
+            const editing = !pending && this.props.editingAnnotation ? this.props.selectedAnno : null
+            const pendingId = pending ? pending.annotationId : (editing ? editing.id : null)
             const host = pendingId ? this.props.annotations.find(anno => anno.id === pendingId) : null
             const siblings = getTargets(host)
-            const groupId = (pending && pending.groupId) || targetGroupId(siblings[siblings.length - 1])
+            const hostSelected = host && this.props.selectedAnno && host.id === this.props.selectedAnno.id
+            const groupId = (pending && pending.groupId)
+                || (hostSelected
+                    ? activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)
+                    : targetGroupId(siblings[siblings.length - 1]))
             const target = {
                 ...newAnnotation.target,
                 ...(image ? { source: image.source } : {}),
