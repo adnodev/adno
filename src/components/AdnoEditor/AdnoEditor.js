@@ -22,7 +22,6 @@ import { imageTileSource, projectImages } from "../../Utils/images"
 import { addTarget, getTargets, parseShadowId, pickTargetOnImage, replaceTargetAt, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 import { ImageFilmstrip } from "../ImageFilmstrip/ImageFilmstrip"
-import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
 import { GroupBadge } from "../GroupWorkspace/GroupOverlay"
 
 class AdnoEditor extends Component {
@@ -380,49 +379,42 @@ class AdnoEditor extends Component {
 
         return <>
             <div className="editor-stage">
-                <div className="editor-split">
-                    <div className="editor-viewer">
-                        {this.props.pendingZone &&
-                            <div className="pending-zone">
-                                <span>{this.props.t('editor.add_zone_hint')}</span>
-                                <button className="btn btn-xs" onClick={() => this.props.endPendingZone()}>
-                                    {this.props.t('editor.add_zone_cancel')}
-                                </button>
-                            </div>
-                        }
-                        <div id="openseadragon1">
-                            <div id="toolbar-container"></div>
-                            <div id="toolbar-osd"></div>
-                        </div>
-                        {group &&
-                            <GroupBadge className="editor-group-badge"
-                                letter={group.letter}
-                                color={group.color}
-                                count={group.targets.length}
-                                translate={this.props.t} />
-                        }
-                        {this.state.viewerReady && (
-                            <AdnoNavigator
-                                viewer={this.openSeadragon}
-                                imageRatio={this.state.imageRatio}
-                                layout={this.state.navigatorLayout}
-                                imgUrl={this.state.navigatorImgUrl}
-                            />
-                        )}
-                        {
-                            this.state.isMovingItem &&
-                            <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
-                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
-                                    <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
-                                </div>
+                <div className="editor-viewer">
+                    {this.props.pendingZone &&
+                        <div className="pending-zone">
+                            <span>{this.props.t('editor.add_zone_hint')}</span>
+                            <button className="btn btn-xs" onClick={() => this.props.endPendingZone()}>
+                                {this.props.t('editor.add_zone_cancel')}
                             </button>
-                        }
+                        </div>
+                    }
+                    <div id="openseadragon1">
+                        <div id="toolbar-container"></div>
+                        <div id="toolbar-osd"></div>
                     </div>
-                    <GroupWorkspace
-                        project={this.props.selectedProject}
-                        annotation={this.props.selectedAnno}
-                        activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
-                        translate={this.props.t} />
+                    {group &&
+                        <GroupBadge className="editor-group-badge"
+                            letter={group.letter}
+                            color={group.color}
+                            count={group.targets.length}
+                            translate={this.props.t} />
+                    }
+                    {this.state.viewerReady && (
+                        <AdnoNavigator
+                            viewer={this.openSeadragon}
+                            imageRatio={this.state.imageRatio}
+                            layout={this.state.navigatorLayout}
+                            imgUrl={this.state.navigatorImgUrl}
+                        />
+                    )}
+                    {
+                        this.state.isMovingItem &&
+                        <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
+                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
+                                <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
+                            </div>
+                        </button>
+                    }
                 </div>
                 <ImageFilmstrip
                     images={this.images()}
