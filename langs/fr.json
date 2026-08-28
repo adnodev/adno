@@ -110,6 +110,8 @@
         "audio_track": "Piste audio (URL)",
         "audio_creator": "Créateur de la piste audio (Crédit)",
         "md_save": "Enregistrer",
+        "unsaved_changes": "Enregistrer les modifications ?",
+        "unsaved_discard": "Ignorer",
         "fullpage": "Mettre en plein écran",
         "home": "Aller à l'accueil",
         "zoom_in": "Zoomer",

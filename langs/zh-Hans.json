@@ -110,6 +110,8 @@
         "audio_track": "音频轨道（URL）",
         "audio_creator": "音频创作者（版权信息）",
         "md_save": "保存",
+        "unsaved_changes": "保存更改？",
+        "unsaved_discard": "放弃",
         "fullpage": "切换全屏",
         "home": "返回主页",
         "zoom_in": "放大",

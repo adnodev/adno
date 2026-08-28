@@ -87,6 +87,48 @@ const Project = ({ editMode }) => {
         }))
     }
 
+    const mdGuard = useRef(null)
+
+    const guardLeavingEditor = (proceed) => {
+        if (!mdGuard.current) {
+            proceed()
+            return
+        }
+
+        mdGuard.current().then(ok => ok && proceed())
+    }
+
+    const changeAnnoGuarded = (annotation, targetIndex = 0) => {
+        if (!state.updateAnnotation || (annotation && annotation.id === state.selectedAnnotationId)) {
+            selectAnnotation(annotation, targetIndex)
+            return
+        }
+
+        guardLeavingEditor(() => setState(prev => ({
+            ...prev,
+            updateAnnotation: false,
+            pendingZone: null,
+            selectedAnnotationId: annotation ? annotation.id : null,
+            selectedTargetIndex: targetIndex
+        })))
+    }
+
+    const openRichEditor = (annotation) => {
+        const open = () => setState(prev => ({
+            ...prev,
+            updateAnnotation: true,
+            selectedAnnotationId: annotation.id,
+            selectedTargetIndex: 0
+        }))
+
+        if (state.updateAnnotation && annotation.id !== state.selectedAnnotationId) {
+            guardLeavingEditor(open)
+            return
+        }
+
+        open()
+    }
+
     const handleChanges = (arr) => {
         setState(prevState => {
             const { past, future, ...state } = prevState;
@@ -163,7 +205,7 @@ const Project = ({ editMode }) => {
                 selectedProject={state.selectedProject}
                 showProjectMetadatas={() => setState(prev => ({ ...prev, showProjectMetadatas: true }))}
                 editMode={editMode}
-                changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
+                changeSelectedAnno={(newSelectedAnno) => changeAnnoGuarded(newSelectedAnno)}
                 showEditorSettings={() => setState(prev => ({ ...prev, showSettings: true }))}
                 autoplayID={state.autoplayID}
                 exportIIIF={() => exportToIIIF(state)}
@@ -205,8 +247,10 @@ const Project = ({ editMode }) => {
 
             {state.updateAnnotation && selectedAnnotation && (
                 <AdnoMdEditor
+                    key={selectedAnnotation.id}
                     updateAnnos={(annos) => handleChanges({ annotations: annos })}
                     closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false, pendingZone: null }))}
+                    registerGuard={(fn) => { mdGuard.current = fn }}
                     selectedAnnotation={selectedAnnotation}
                     selectedProjectId={id}
                     annotations={annotations}
@@ -232,16 +276,11 @@ const Project = ({ editMode }) => {
                         <AnnotationCards
                             updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
                             selectedProject={state.selectedProject}
-                            openRichEditor={(annotation) => setState(prev => ({
-                                ...prev,
-                                updateAnnotation: true,
-                                selectedAnnotationId: annotation.id,
-                                selectedTargetIndex: 0
-                            }))}
+                            openRichEditor={openRichEditor}
                             annotations={annotations}
                             updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                             selectedAnno={selectedAnnotation}
-                            changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
+                            changeSelectedAnno={(newSelectedAnno) => changeAnnoGuarded(newSelectedAnno)}
                             pendingZone={state.pendingZone}
                             startPendingZone={(annotationId, groupId) => setState(prev => ({ ...prev, pendingZone: { annotationId, groupId } }))}
                         />
@@ -285,7 +324,7 @@ const Project = ({ editMode }) => {
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}
                         selectedTargetIndex={state.selectedTargetIndex}
-                        changeSelectedAnno={selectAnnotation}
+                        changeSelectedAnno={changeAnnoGuarded}
                         rotation={settings.rotation}
                         defaultRotation={settings.defaultRotation}
                         rotationTransition={settings.rotationTransition}

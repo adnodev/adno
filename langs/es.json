@@ -35,6 +35,8 @@
         "home": "Ir a inicio",
         "md_add_tag": "Agregar una palabra clave",
         "md_save": "Guardar",
+        "unsaved_changes": "¿Guardar los cambios?",
+        "unsaved_discard": "Descartar",
         "next_page": "Página siguiente",
         "placeholder": "Agregue su texto aquí",
         "previous_page": "Página anterior",

@@ -110,6 +110,8 @@
         "audio_track": "Audio Track (URL)",
         "audio_creator": "Audio Creator (Credit)",
         "md_save": "Save",
+        "unsaved_changes": "Save your changes?",
+        "unsaved_discard": "Discard",
         "fullpage": "Toggle full page",
         "home": "Go home",
         "zoom_in": "Zoom in",

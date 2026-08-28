@@ -143,6 +143,53 @@ class AdnoMdEditor extends Component {
                 "image",
             ]]
         })
+
+        this._initialMarkdown = this.editor.getMarkdown()
+        this._initialTags = this.tagsSignature()
+        this._initialAudio = this.audioSignature()
+
+        if (this.props.registerGuard) {
+            this.props.registerGuard(this.confirmLeave)
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.props.registerGuard) {
+            this.props.registerGuard(null)
+        }
+    }
+
+    tagsSignature = () => this.state.selectedTags.map(({ label }) => label).join('\n')
+
+    audioSignature = () => `${this.state.audioTrack || ''}\n${this.state.audioCreator || ''}`
+
+    isDirty = () => this.editor.getMarkdown() !== this._initialMarkdown
+        || this.tagsSignature() !== this._initialTags
+        || this.audioSignature() !== this._initialAudio
+
+    confirmLeave = () => {
+        if (!this.isDirty()) {
+            return Promise.resolve(true)
+        }
+
+        return Swal.fire({
+            title: this.props.t('editor.unsaved_changes'),
+            showCancelButton: true,
+            confirmButtonText: this.props.t('editor.md_save'),
+            cancelButtonText: this.props.t('editor.unsaved_discard'),
+            icon: 'warning'
+        }).then(result => {
+            if (result.isConfirmed) {
+                this.saveMD()
+                return true
+            }
+
+            return result.dismiss === Swal.DismissReason.cancel
+        })
+    }
+
+    requestClose = () => {
+        this.confirmLeave().then(ok => ok && this.props.closeMdEditor())
     }
 
     saveMD = () => {
@@ -357,7 +404,7 @@ class AdnoMdEditor extends Component {
                             <button type="button"
                                 className="rich-card-close"
                                 aria-label={this.props.t('buttons.close')}
-                                onClick={() => this.props.closeMdEditor()}>
+                                onClick={() => this.requestClose()}>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>

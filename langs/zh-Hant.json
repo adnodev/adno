@@ -110,6 +110,8 @@
         "audio_track": "音訊軌道（URL）",
         "audio_creator": "音訊製作者（版權聲明）",
         "md_save": "儲存",
+        "unsaved_changes": "儲存變更？",
+        "unsaved_discard": "放棄",
         "fullpage": "切換全螢幕",
         "home": "返回首頁",
         "zoom_in": "放大",
