@@ -6,7 +6,7 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faDownLong, faEdit, faPlus, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons"
+import { faDownLong, faEdit, faPlus, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons"
 
 // Import SweetAlert
 import Swal from "sweetalert2";
@@ -116,7 +116,7 @@ class AnnotationCards extends Component {
 
                             return (
                                 <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}
-                                    onClick={() => this.props.openRichEditor(annotation)}>
+                                    onClick={() => this.props.changeSelectedAnno(annotation)}>
 
                                     <div className="anno-card-body">
 
@@ -142,13 +142,6 @@ class AnnotationCards extends Component {
                                             <button className="btn btn-sm" onClick={() => this.props.openRichEditor(annotation)}>
                                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.edit')}>
                                                     <FontAwesomeIcon icon={faEdit} />
-                                                </div>
-                                            </button>
-                                            <button type="button"
-                                                onClick={() => this.props.changeSelectedAnno(annotation)}
-                                                className="btn btn-sm btn-show-more">
-                                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.target')}>
-                                                    <FontAwesomeIcon icon={faBullseye} />
                                                 </div>
                                             </button>
                                             <button type="button"
