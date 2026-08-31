@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCrosshairs, faGripVertical, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faCrosshairs, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import { deriveGroups, groupColor, groupLetter, groupRotation } from "../../Utils/groups"
 import { getGroupCutout } from "../../Utils/cutout"
@@ -24,13 +24,7 @@ function withDraft(groups, draftGroupId) {
 function dragSource(node) {
     const chip = node.closest('[data-zone-index]')
 
-    if (chip) {
-        return { kind: 'zone', index: Number(chip.getAttribute('data-zone-index')) }
-    }
-
-    const grip = node.closest('[data-group-grip]')
-
-    return grip ? { kind: 'group', id: grip.getAttribute('data-group-grip') } : null
+    return chip ? { kind: 'zone', index: Number(chip.getAttribute('data-zone-index')) } : null
 }
 
 function dropTarget(node) {
@@ -49,24 +43,7 @@ function dropTarget(node) {
     return card ? { kind: 'group', id: card.getAttribute('data-group-id') } : null
 }
 
-function orderWith(groups, movedId, beforeId) {
-    return groups
-        .map(group => group.id)
-        .filter(id => id !== movedId)
-        .flatMap(id => id === beforeId ? [movedId, id] : [id])
-}
-
-function applyDrop(source, spot, groups, moveZone, regroupZone, orderGroups) {
-    if (source.kind === 'group') {
-        const before = spot.kind === 'group' ? spot.id : spot.groupId
-
-        if (before && before !== source.id) {
-            orderGroups(orderWith(groups, source.id, before))
-        }
-
-        return
-    }
-
+function applyDrop(source, spot, moveZone, regroupZone) {
     if (spot.kind === 'zone') {
         moveZone(source.index, spot.index, spot.groupId)
         return
@@ -83,13 +60,6 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
     return (
         <div className="zone-group" data-group-id={group.id} style={{ borderLeftColor: group.color }}>
             <div className="zone-group-head">
-                <span className="zone-group-grip"
-                    draggable="true"
-                    data-group-grip={group.id}
-                    aria-label={translate('editor.move_group')}>
-                    <FontAwesomeIcon icon={faGripVertical} />
-                </span>
-
                 <span className="zone-group-badge" style={{ background: group.color }}>{group.letter}</span>
                 <span className="zone-group-count">&middot;&nbsp;{group.targets.length}</span>
 
@@ -151,7 +121,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
     )
 }
 
-export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, orderGroups, setRotation, captureRotation, setCutout, translate }) {
+export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, setRotation, captureRotation, setCutout, translate }) {
     const groups = withDraft(deriveGroups(annotation), draftGroupId)
     const total = getTargets(annotation).length
     const actions = { pickZone, removeZone, addZone, setRotation, captureRotation, setCutout }
@@ -184,7 +154,7 @@ export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pick
         }
 
         event.preventDefault()
-        applyDrop(JSON.parse(raw), spot, groups, moveZone, regroupZone, orderGroups)
+        applyDrop(JSON.parse(raw), spot, moveZone, regroupZone)
     }
 
     return (

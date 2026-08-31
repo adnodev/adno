@@ -130,15 +130,6 @@ export function targetIndexOf(annotation, target) {
     return Math.max(0, getTargets(annotation).findIndex(item => item === target))
 }
 
-export function withGroupOrder(annotation, order) {
-    const groups = deriveGroups(annotation)
-    const ranked = order.map(id => groups.find(group => group.id === id)).filter(Boolean)
-    const rest = groups.filter(group => !order.includes(group.id))
-
-    return withTargets(annotation, [...ranked, ...rest]
-        .flatMap(group => group.targets.map(entry => entry.target)))
-}
-
 function colorParts(shape) {
     const inner = shape.getElementsByClassName('a9s-inner')
 

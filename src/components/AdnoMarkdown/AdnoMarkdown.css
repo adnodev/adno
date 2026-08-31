@@ -1257,16 +1257,6 @@
   align-self: flex-start;
 }
 
-.zone-group-grip {
-  color: #a1a1aa;
-  cursor: grab;
-  padding: 0 2px;
-}
-
-.zone-group-grip:active {
-  cursor: grabbing;
-}
-
 .zone-row[draggable="true"] {
   cursor: grab;
 }

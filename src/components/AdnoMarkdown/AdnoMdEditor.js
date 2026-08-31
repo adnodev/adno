@@ -24,7 +24,7 @@ import { projectDB } from '../../services/db';
 import { normalizeAngle } from "../../Utils/orientation"
 import { withGroupCutout } from "../../Utils/cutout"
 import { getTargets, removeTargetAt } from "../../Utils/targets"
-import { movedTargetIndex, moveTarget, moveTargetToGroup, nextGroupId, targetIndexOf, withGroupOrder, withGroupRotation } from "../../Utils/groups"
+import { movedTargetIndex, moveTarget, moveTargetToGroup, nextGroupId, targetIndexOf, withGroupRotation } from "../../Utils/groups"
 import { ZoneGroups } from "./ZoneGroups"
 
 const locale = navigator.language;
@@ -42,7 +42,7 @@ const AUDIO_TYPES = [
 
 const TABS = [
     { name: 'editor', label: 'editor.tabs.editor', hint: 'editor.editor_hint' },
-    { name: 'zones', label: 'editor.tabs.zones', hint: 'editor.zones_hint' },
+    { name: 'zones', label: 'editor.tabs.zones' },
     { name: 'tags', label: 'editor.tabs.tags', hint: 'tags_infos' },
     { name: 'audio', label: 'editor.tabs.audio', hint: 'editor.audio_hint' }
 ]
@@ -350,15 +350,6 @@ class AdnoMdEditor extends Component {
             : targetIndexOf(next, current))
     }
 
-    orderGroups = (order) => {
-        const annotation = this.props.selectedAnnotation
-        const current = getTargets(annotation)[this.props.selectedTargetIndex]
-        const next = withGroupOrder(annotation, order)
-
-        this.persist(next)
-        this.props.changeSelectedAnno(next, targetIndexOf(next, current))
-    }
-
     setGroupRotation = (groupId, degrees) => {
         this.persist(withGroupRotation(this.props.selectedAnnotation, groupId, degrees))
     }
@@ -410,7 +401,7 @@ class AdnoMdEditor extends Component {
                         </div>
                     </div>
 
-                    <div className="rich-card-hint">{this.props.t(current.hint)}</div>
+                    {current.hint && <div className="rich-card-hint">{this.props.t(current.hint)}</div>}
 
                     <div className="rich-card-pane">
                         <div id="editor" style={{ display: tab === 'editor' ? 'block' : 'none' }}></div>
@@ -426,7 +417,6 @@ class AdnoMdEditor extends Component {
                                 addZone={this.addZone}
                                 moveZone={this.moveZone}
                                 regroupZone={this.regroupZone}
-                                orderGroups={this.orderGroups}
                                 setRotation={this.setGroupRotation}
                                 captureRotation={this.captureGroupRotation}
                                 setCutout={this.setGroupCutout}
