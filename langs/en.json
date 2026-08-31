@@ -131,7 +131,7 @@
         "empty_list": "No options",
         "orientation_inherit": "Project default",
         "orientation_capture": "Use current view",
-        "cutout": "Show as a cutout",
+        "cutout": "As a cutout",
         "images": "Images",
         "previous_image": "Previous image",
         "next_image": "Next image",

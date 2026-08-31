@@ -1230,6 +1230,12 @@
   padding: 0 6px;
   border: 1px solid #d4d4d8;
   border-radius: 4px;
+}
+
+.zone-group-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin-left: auto;
 }
 

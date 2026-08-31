@@ -131,7 +131,7 @@
         "empty_list": "无选项",
         "orientation_inherit": "项目默认值",
         "orientation_capture": "使用当前视图",
-        "cutout": "以裁切图显示",
+        "cutout": "裁切图",
         "images": "图像",
         "previous_image": "上一幅图像",
         "next_image": "下一幅图像",

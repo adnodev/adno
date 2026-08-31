@@ -63,28 +63,34 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
                 <span className="zone-group-badge" style={{ background: group.color }}>{group.letter}</span>
                 <span className="zone-group-count">&middot;&nbsp;{group.targets.length}</span>
 
-                <select className="select select-xs zone-group-rotation"
-                    value={rotation === null ? '' : String(rotation)}
-                    onChange={event => actions.setRotation(group.id, event.target.value === '' ? null : Number(event.target.value))}>
-                    <option value="">{translate('editor.orientation_inherit')}</option>
-                    {QUARTER_TURNS.map(degrees => <option key={degrees} value={degrees}>{degrees}&deg;</option>)}
-                    {isFreeAngle && <option value={rotation}>{rotation}&deg;</option>}
-                </select>
+                <span className="zone-group-actions">
+                    <div className="tooltip tooltip-bottom z-50" data-tip={translate('annotation.orientation')}>
+                        <select className="select select-xs zone-group-rotation"
+                            value={rotation === null ? '' : String(rotation)}
+                            onChange={event => actions.setRotation(group.id, event.target.value === '' ? null : Number(event.target.value))}>
+                            <option value="">{translate('editor.orientation_inherit')}</option>
+                            {QUARTER_TURNS.map(degrees => <option key={degrees} value={degrees}>{degrees}&deg;</option>)}
+                            {isFreeAngle && <option value={rotation}>{rotation}&deg;</option>}
+                        </select>
+                    </div>
 
-                <button type="button"
-                    className="btn btn-xs"
-                    aria-label={translate('editor.orientation_capture')}
-                    onClick={() => actions.captureRotation(group.id)}>
-                    <FontAwesomeIcon icon={faCrosshairs} />
-                </button>
+                    <button type="button"
+                        className="btn btn-xs"
+                        aria-label={translate('editor.orientation_capture')}
+                        onClick={() => actions.captureRotation(group.id)}>
+                        <div className="tooltip tooltip-bottom z-50" data-tip={translate('editor.orientation_capture')}>
+                            <FontAwesomeIcon icon={faCrosshairs} />
+                        </div>
+                    </button>
 
-                <label className="zone-group-cutout">
-                    <input type="checkbox"
-                        className="toggle toggle-xs"
-                        checked={cutout}
-                        onChange={() => actions.setCutout(group.id, !cutout)} />
-                    <span>{translate('editor.cutout')}</span>
-                </label>
+                    <label className="zone-group-cutout">
+                        <input type="checkbox"
+                            className="toggle toggle-xs"
+                            checked={cutout}
+                            onChange={() => actions.setCutout(group.id, !cutout)} />
+                        <span>{translate('editor.cutout')}</span>
+                    </label>
+                </span>
             </div>
 
             <div className="zone-list">
