@@ -102,14 +102,21 @@ async function savedTargets(page) {
 }
 
 /**
- * Open the annotation panel and switch to its Zones tab, which is the second
- * of the four tabs in the strip.
+ * Open the annotation panel through its edit button and switch to the Zones
+ * tab, which is the second of the four tabs in the strip.
  *
  * @param {import('@playwright/test').Page} page
  */
-async function openZonesTab(page) {
-    await page.locator('.anno-card').first().click();
+async function openPanel(page) {
+    await page.locator('.anno-card button:has([data-icon="pen-to-square"])').click();
     await expect(page.locator('.rich-card-editor')).toBeVisible();
+}
+
+/**
+ * @param {import('@playwright/test').Page} page
+ */
+async function openZonesTab(page) {
+    await openPanel(page);
     await page.locator('.rich-card-tab').nth(1).click();
     await expect(page.locator('.zone-groups')).toBeVisible();
 }
@@ -225,7 +232,7 @@ test.describe('Drawing into a group from the panel', () => {
     test('every zone of the current annotation is stroked with its group colour', async ({ page }) => {
         await openEditor(page);
 
-        await page.locator('.anno-card').first().locator('[data-icon="bullseye"]').click();
+        await page.locator('.anno-card').first().click();
         await page.waitForTimeout(1200);
 
         const strokes = await page.locator('#openseadragon1 .a9s-annotation').evaluateAll(
@@ -238,31 +245,69 @@ test.describe('Drawing into a group from the panel', () => {
     });
 });
 
-test.describe('The edit workspace split by group', () => {
+test.describe('The edit view stays whole', () => {
 
-    test('every group but the active one gets a read-only panel', async ({ page }) => {
+    test('selecting a two-group annotation keeps a single viewer', async ({ page }) => {
         await openEditor(page);
 
-        await page.locator('.anno-card').first().locator('[data-icon="bullseye"]').click();
+        await page.locator('.anno-card').first().click();
         await page.waitForTimeout(1200);
 
-        await expect(page.locator('.group-panel')).toHaveCount(1);
-        await expect(page.locator('#group-osd-g2 canvas')).toBeVisible();
-        await expect(page.locator('.group-overlay-badge')).toContainText('B');
+        await expect(page.locator('.group-panel')).toHaveCount(0);
+        await expect(page.locator('.editor-group-badge')).toContainText('A');
+    });
+});
+
+test.describe('Drawing while the panel is open', () => {
+
+    test('a drawn zone joins the active group instead of spawning an annotation', async ({ page }) => {
+        await openEditor(page);
+        await openPanel(page);
+
+        await drawRect(page, 420, 120, 90, 70);
+
+        const targets = await savedTargets(page);
+
+        expect(targets.map(target => target.id)).toEqual([
+            `g1@${ANNOTATION_ID}`,
+            `g2@${ANNOTATION_ID}`,
+            `g1@${ANNOTATION_ID}`
+        ]);
+        await expect(page.locator('.rich-card-editor')).toBeVisible();
+    });
+});
+
+test.describe('The save guard', () => {
+
+    test('closing a dirty panel asks and saving writes the changes', async ({ page }) => {
+        await openEditor(page);
+        await openPanel(page);
+
+        await page.locator('.rich-card-tab').nth(3).click();
+        await page.locator('#track').fill('https://example.org/reading.mp3');
+
+        await page.locator('.rich-card-close').click();
+        await expect(page.locator('.swal2-popup')).toBeVisible();
+
+        await page.locator('.swal2-confirm').click();
+        await page.waitForTimeout(800);
+
+        await expect(page.locator('.rich-card-editor')).toHaveCount(0);
+
+        const saved = await readProject(page, PROJECT_ID);
+        const audio = saved.annotations[0].body.find((/** @type {any} */ body) => body.type === 'SpecificResource');
+
+        expect(audio.source.id).toEqual('https://example.org/reading.mp3');
     });
 
-    test('the workspace disappears once a single group is left', async ({ page }) => {
+    test('a pristine panel closes without asking', async ({ page }) => {
         await openEditor(page);
+        await openPanel(page);
 
-        await page.locator('.anno-card').first().locator('[data-icon="bullseye"]').click();
-        await expect(page.locator('.group-panel')).toHaveCount(1);
+        await page.locator('.rich-card-close').click();
 
-        await openZonesTab(page);
-        await page.locator('.zone-group').nth(1).locator('.btn-error').click();
-        await page.waitForTimeout(1000);
-
-        await expect(page.locator('.zone-group')).toHaveCount(1);
-        await expect(page.locator('.group-panel')).toHaveCount(0);
+        await expect(page.locator('.swal2-popup')).toHaveCount(0);
+        await expect(page.locator('.rich-card-editor')).toHaveCount(0);
     });
 });
 
@@ -314,16 +359,11 @@ test.describe('Dragging zones and groups', () => {
         await expect(page.locator('.zone-group')).toHaveCount(1);
     });
 
-    test('dragging a group by its grip rewrites the array as contiguous runs', async ({ page }) => {
+    test('groups offer no reorder handle any more', async ({ page }) => {
         await openEditor(page);
         await openZonesTab(page);
 
-        await dragOnto(page, '[data-group-grip="g2"]', '.zone-group[data-group-id="g1"]');
-
-        const targets = await savedTargets(page);
-
-        expect(targets.map(item => item.id)).toEqual([`g2@${ANNOTATION_ID}`, `g1@${ANNOTATION_ID}`]);
-        expect(targets[0].selector.value).toEqual('xywh=pixel:260,200,140,100');
-        await expect(page.locator('.zone-group').first()).toHaveAttribute('data-group-id', 'g2');
+        await expect(page.locator('[data-group-grip]')).toHaveCount(0);
+        await expect(page.locator('.zone-group').first()).toHaveAttribute('data-group-id', 'g1');
     });
 });
