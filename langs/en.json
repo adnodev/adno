@@ -61,8 +61,8 @@
         "settings": {
             "delay": "Delay between 2 annotations (in seconds)",
             "outline_width": "Annotations outline width",
-            "outline_color": "Annotation outline color",
-            "outline_focus": "Color of annotation outline with focus",
+            "outline_color": "Annotation outline color (reading)",
+            "outline_focus": "Outline color of the current annotation (reading)",
             "navigator": "Annotations Map browser",
             "fullscreen": "Show toolbar in full screen mode",
             "annos_nav": "Show list of annotations in sidebar",

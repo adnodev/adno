@@ -61,8 +61,8 @@
         "settings": {
             "delay": "两个标注之间的延迟时间（秒）",
             "outline_width": "标注轮廓线宽",
-            "outline_color": "标注轮廓颜色",
-            "outline_focus": "当前标注的轮廓颜色",
+            "outline_color": "标注轮廓颜色（阅读）",
+            "outline_focus": "当前标注的轮廓颜色（阅读）",
             "navigator": "标注地图浏览器",
             "fullscreen": "全屏模式下显示工具栏",
             "annos_nav": "在边栏显示标注列表",

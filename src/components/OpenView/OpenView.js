@@ -9,7 +9,7 @@ import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Util
 import { cutoutGroupIds, cutoutKey, getAnnotationCutout } from "../../Utils/cutout"
 import { projectImages } from "../../Utils/images"
 import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
-import { activeGroupId, scheduleGroupColors } from "../../Utils/groups"
+import { activeGroupId, applyAnnotationColor } from "../../Utils/groups"
 import CutoutView from "../CutoutView/CutoutView"
 import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
 import { ContentMargin, hasMarginContent } from "./ContentMargin"
@@ -378,18 +378,28 @@ class OpenView extends Component {
             this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
             document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
 
-            this.paintGroups()
+            this.paintSelection()
         }
     }
 
-    paintGroups = () => {
-        this._paintFrame = scheduleGroupColors(this._paintFrame, this.openSeadragon.element, this.props.selectedAnno, this.tintSelectedCard)
+    paintSelection = () => {
+        cancelAnimationFrame(this._paintFrame)
+
+        this._paintFrame = requestAnimationFrame(() => {
+            applyAnnotationColor(this.openSeadragon.element, this.props.selectedAnno, this.focusColor())
+            this.tintSelectedCard()
+        })
+    }
+
+    focusColor = () => {
+        const name = (this.props.outlineColorFocus || '').replace('outline-focus-', '')
+        const style = window.getComputedStyle(document.body)
+
+        return style.getPropertyValue(`--outline-${name}`).trim() || '#fde047'
     }
 
     tintSelectedCard = () => {
-        const name = (this.props.outlineColorFocus || '').replace('outline-focus-', '')
-        const style = window.getComputedStyle(document.body)
-        const color = style.getPropertyValue(`--outline-${name}`).trim() || '#fde047'
+        const color = this.focusColor()
 
         document.documentElement.style.setProperty('--selected-anno-border-color', color)
         document.documentElement.style.setProperty('--selected-anno-background-color', `${color}1c`)

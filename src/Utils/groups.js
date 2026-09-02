@@ -171,6 +171,12 @@ export function scheduleGroupColors(previous, element, annotation, after) {
     })
 }
 
+export function applyAnnotationColor(root, annotation, color) {
+    const ids = annotation ? groupShadows(annotation).map(shadow => shadow.id) : []
+
+    annotationShapes(root).forEach(shape => paintShape(shape, ids.includes(shape.getAttribute('data-id')) ? color : null))
+}
+
 export function groupShadows(annotation, groupId) {
     return getTargets(annotation)
         .map((target, index) => ({ target, index }))
