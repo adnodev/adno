@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { useParams, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next"
 import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
-import { ensureTargetGroups } from "../../Utils/groups"
+import { ensureTargetGroups, groupPalette } from "../../Utils/groups"
 import { exportToIIIF } from "../../services/iiif/exporter";
 import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
@@ -251,6 +251,7 @@ const Project = ({ editMode }) => {
                     updateAnnos={(annos) => handleChanges({ annotations: annos })}
                     closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false, pendingZone: null }))}
                     registerGuard={(fn) => { mdGuard.current = fn }}
+                    groupColors={groupPalette(settings)}
                     selectedAnnotation={selectedAnnotation}
                     selectedProjectId={id}
                     annotations={annotations}
@@ -320,6 +321,7 @@ const Project = ({ editMode }) => {
                         pendingZone={state.pendingZone}
                         endPendingZone={() => setState(prev => ({ ...prev, pendingZone: null }))}
                         editingAnnotation={state.updateAnnotation}
+                        groupColors={groupPalette(settings)}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}

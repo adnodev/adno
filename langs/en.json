@@ -63,6 +63,7 @@
             "outline_width": "Annotations outline width",
             "outline_color": "Annotation outline color (reading)",
             "outline_focus": "Outline color of the current annotation (reading)",
+            "group_colors": "Group outline colors (editing)",
             "navigator": "Annotations Map browser",
             "fullscreen": "Show toolbar in full screen mode",
             "annos_nav": "Show list of annotations in sidebar",

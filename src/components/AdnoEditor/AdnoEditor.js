@@ -221,7 +221,7 @@ class AdnoEditor extends Component {
     }
 
     paintGroups = () => {
-        this._paintFrame = scheduleGroupColors(this._paintFrame, this.openSeadragon.element, this.props.selectedAnno)
+        this._paintFrame = scheduleGroupColors(this._paintFrame, this.openSeadragon.element, this.props.selectedAnno, this.props.groupColors)
     }
 
     openImage = (index) => {
@@ -363,7 +363,7 @@ class AdnoEditor extends Component {
 
 
     activeGroup = () => {
-        const groups = deriveGroups(this.props.selectedAnno)
+        const groups = deriveGroups(this.props.selectedAnno, this.props.groupColors)
 
         if (groups.length < 2) {
             return null

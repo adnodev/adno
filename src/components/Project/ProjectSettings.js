@@ -15,13 +15,15 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select/creatable';
 import { buildTagsList, CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/utils"
+import { groupLetter, groupPalette } from "../../Utils/groups"
 
 const QUARTER_TURNS = [0, 90, 180, 270]
+const GROUP_COLOR_KEYS = ['groupColorA', 'groupColorB', 'groupColorC', 'groupColorD']
 
 const PARAMETERS_BY_TAB = {
     'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'contentPosition', 'multiviewDisposition', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
     'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
-    'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
+    'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus', 'groupColorA'],
 }
 
 class ProjectSettings extends Component {
@@ -215,6 +217,26 @@ class ProjectSettings extends Component {
                                         className="h-4 w-4 p-4 border-8 border-slate-200 checked:border-slate-800 radio bg-black checked:bg-black rounded-lg cursor-pointer"
                                         checked={this.state.settings.outlineColorFocus === "outline-focus-black"} onChange={(e) => this.setState({ settings: { ...this.state.settings, outlineColorFocus: e.target.value } })}
                                     />
+                                </div>
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('groupColorA') && <>
+                            <label className="form-control w-full mt-4">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.group_colors')}</span>
+                                </div>
+                                <div className="flex space-x-4 w-fit items-center">
+                                    {GROUP_COLOR_KEYS.map((key, index) =>
+                                        <label key={key} className="flex items-center gap-2 cursor-pointer">
+                                            <span className="label-text font-medium">{groupLetter(index)}</span>
+                                            <input type="color"
+                                                className="h-8 w-10 cursor-pointer"
+                                                value={groupPalette(this.state.settings)[index]}
+                                                onChange={(e) => this.setState({ settings: { ...this.state.settings, [key]: e.target.value } })}
+                                            />
+                                        </label>
+                                    )}
                                 </div>
                             </label>
                         </>}

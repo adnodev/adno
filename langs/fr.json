@@ -63,6 +63,7 @@
             "outline_width": "Épaisseur des annotations",
             "outline_color": "Couleur des contours des annotations (lecture)",
             "outline_focus": "Couleur du contour de l'annotation courante (lecture)",
+            "group_colors": "Couleurs des contours des groupes (édition)",
             "navigator": "Navigateur d'ensemble",
             "fullscreen": "Afficher barre outils en mode plein écran",
             "annos_nav": "Afficher la liste des annotations latéralement",

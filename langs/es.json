@@ -192,6 +192,7 @@
             "no_spatialization": "Las anotaciones de audio se reproducirán individualmente",
             "outline_color": "Color de los contornos de las anotaciones (lectura)",
             "outline_focus": "Color del contorno de la anotación actual (lectura)",
+            "group_colors": "Colores de los contornos de los grupos (edición)",
             "outline_width": "Grosor de las anotaciones",
             "save": "Guardar",
             "show_eyes": "Mostrar un icono dentro de las formas",

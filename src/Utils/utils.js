@@ -222,7 +222,11 @@ export function defaultProjectSettings() {
     soundMode: 'no_sound',
     showCurrentAnnotation: false,
     contentPosition: 'left',
-    multiviewDisposition: 'row'
+    multiviewDisposition: 'row',
+    groupColorA: '#2451C4',
+    groupColorB: '#C4622A',
+    groupColorC: '#1F9E6D',
+    groupColorD: '#A23DBB'
   }
 }
 

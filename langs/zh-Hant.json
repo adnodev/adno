@@ -63,6 +63,7 @@
             "outline_width": "標註外框線條寬度",
             "outline_color": "標註外框顏色（閱讀）",
             "outline_focus": "當前標註的外框顏色（閱讀）",
+            "group_colors": "群組外框顏色（編輯）",
             "navigator": "標註地圖瀏覽器",
             "fullscreen": "全螢幕模式下顯示工具列",
             "annos_nav": "在側邊欄顯示標註清單",

@@ -8,7 +8,7 @@ import { ZonePreview } from "./ZonePreview"
 
 const QUARTER_TURNS = [0, 90, 180, 270]
 
-function withDraft(groups, draftGroupId) {
+function withDraft(groups, draftGroupId, palette) {
     if (!draftGroupId || groups.some(group => group.id === draftGroupId)) {
         return groups
     }
@@ -16,7 +16,7 @@ function withDraft(groups, draftGroupId) {
     return [...groups, {
         id: draftGroupId,
         letter: groupLetter(groups.length),
-        color: groupColor(groups.length),
+        color: groupColor(groups.length, palette),
         targets: []
     }]
 }
@@ -127,8 +127,8 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
     )
 }
 
-export function ZoneGroups({ annotation, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, setRotation, captureRotation, setCutout, translate }) {
-    const groups = withDraft(deriveGroups(annotation), draftGroupId)
+export function ZoneGroups({ annotation, groupColors, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, setRotation, captureRotation, setCutout, translate }) {
+    const groups = withDraft(deriveGroups(annotation, groupColors), draftGroupId, groupColors)
     const total = getTargets(annotation).length
     const actions = { pickZone, removeZone, addZone, setRotation, captureRotation, setCutout }
 

@@ -51,11 +51,15 @@ export function groupLetter(rank) {
     return LETTERS[rank % LETTERS.length]
 }
 
-export function groupColor(rank) {
-    return PALETTE[rank % PALETTE.length]
+export function groupColor(rank, palette = PALETTE) {
+    return palette[rank % palette.length]
 }
 
-export function deriveGroups(annotation) {
+export function groupPalette(settings) {
+    return PALETTE.map((color, index) => (settings ? settings[`groupColor${LETTERS[index]}`] : null) || color)
+}
+
+export function deriveGroups(annotation, palette = PALETTE) {
     return getTargets(annotation)
         .map((target, index) => ({ target, index }))
         .reduce((groups, entry) => {
@@ -71,7 +75,7 @@ export function deriveGroups(annotation) {
             return [...groups, {
                 id,
                 letter: groupLetter(groups.length),
-                color: groupColor(groups.length),
+                color: groupColor(groups.length, palette),
                 targets: [entry]
             }]
         }, [])
@@ -148,27 +152,21 @@ function paintShape(shape, color) {
     })
 }
 
-function groupColorsById(annotation) {
-    return deriveGroups(annotation).reduce((colors, group) => group.targets.reduce(
+function groupColorsById(annotation, palette) {
+    return deriveGroups(annotation, palette).reduce((colors, group) => group.targets.reduce(
         (acc, entry) => ({ ...acc, [shadowId(annotation.id, entry.index)]: group.color }), colors), {})
 }
 
-export function applyGroupColors(root, annotation) {
-    const colors = annotation ? groupColorsById(annotation) : {}
+export function applyGroupColors(root, annotation, palette) {
+    const colors = annotation ? groupColorsById(annotation, palette) : {}
 
     annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute('data-id')]))
 }
 
-export function scheduleGroupColors(previous, element, annotation, after) {
+export function scheduleGroupColors(previous, element, annotation, palette) {
     cancelAnimationFrame(previous)
 
-    return requestAnimationFrame(() => {
-        applyGroupColors(element, annotation)
-
-        if (after) {
-            after()
-        }
-    })
+    return requestAnimationFrame(() => applyGroupColors(element, annotation, palette))
 }
 
 export function applyAnnotationColor(root, annotation, color) {
