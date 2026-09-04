@@ -9,7 +9,7 @@ import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Util
 import { cutoutGroupIds, cutoutKey, getAnnotationCutout } from "../../Utils/cutout"
 import { projectImages } from "../../Utils/images"
 import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
-import { activeGroupId, applyAnnotationColor } from "../../Utils/groups"
+import { activeGroupId, applyAnnotationColor, groupShadows } from "../../Utils/groups"
 import CutoutView from "../CutoutView/CutoutView"
 import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
 import { ContentMargin, hasMarginContent } from "./ContentMargin"
@@ -324,13 +324,15 @@ class OpenView extends Component {
 
             const picked = pickTargetOnImage(annotation, projectImages(this.props.selectedProject), 0, targetIndex)
             const shadow = picked ? toShadow(annotation, picked.target, picked.index) : annotation
+            const groupId = activeGroupId(annotation, picked ? picked.index : 0)
 
             this.AdnoAnnotorious.selectAnnotation(shadow.id)
 
             applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
                 defaultRotation: this.props.defaultRotation,
                 transition: this.props.rotationTransition,
-                padded: true
+                padded: true,
+                only: groupShadows(annotation, groupId).map(item => item.id)
             })
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)

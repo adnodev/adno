@@ -25,11 +25,12 @@ function isSettled(viewport) {
         && viewport.zoomSpring.isAtTargetValue()
 }
 
-export function annotationBounds(viewer, annotationId, padding = 0) {
+export function annotationBounds(viewer, annotationId, padding = 0, only = null) {
     const wanted = parseShadowId(annotationId).id
 
     const boxes = annotationShapes(viewer.element)
         .filter(item => parseShadowId(item.getAttribute('data-id')).id === wanted)
+        .filter(item => !only || only.includes(item.getAttribute('data-id')))
         .filter(item => typeof item.getBBox === "function")
         .map(item => item.getBBox())
         .filter(box => box.width && box.height)
@@ -62,14 +63,14 @@ function cancelPendingTurn(viewer) {
 }
 
 export function applyAnnotationView(viewer, annotorious, annotation, options = {}) {
-    const { defaultRotation = 0, transition = "turn", padded = false } = options
+    const { defaultRotation = 0, transition = "turn", padded = false, only = null } = options
     const viewport = viewer.viewport
 
     cancelPendingTurn(viewer)
 
     viewer[LAST_VIEW] = { annotation, options }
 
-    const bounds = annotationBounds(viewer, annotation.id, padded ? BOUNDS_PADDING : 0)
+    const bounds = annotationBounds(viewer, annotation.id, padded ? BOUNDS_PADDING : 0, only)
 
     if (!bounds) {
         annotorious.fitBounds(annotation.id)
