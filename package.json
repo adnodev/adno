@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "sh -c 'vite build --base ${PUBLIC_URL:-/}'",
     "build-local": "vite build --base=./",
+    "typecheck": "tsc --noEmit",
     "test": "npm run dev & npx playwright test ; npx playwright show-report",
     "sbom": "cyclonedx-npm --output-format JSON --output-file sbom.json"
   },
@@ -52,6 +53,7 @@
     "path-browserify": "1.0.1",
     "process": "0.11.10",
     "rimraf": "6.0.1",
+    "typescript": "^5.9.3",
     "vite": "6.1.0"
   }
 }
