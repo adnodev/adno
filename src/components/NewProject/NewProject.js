@@ -2,7 +2,8 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 import ProjectSettings from "../Project/ProjectSettings";
 
-import { buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, enhancedFetch, defaultProjectSettings, diffProjectSettings } from "../../Utils/utils";
+import { buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, enhancedFetch, diffProjectSettings } from "../../Utils/utils";
+import { defaultProjectSettings } from "../../Utils/project";
 
 // Import popup alerts
 import Swal from "sweetalert2";

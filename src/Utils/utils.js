@@ -2,6 +2,7 @@ import Swal from "sweetalert2";
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
 import { projectImages } from "./images"
+import { defaultProjectSettings } from "./project"
 import { v7 } from "uuid";
 
 export { buildTagsList } from "./tags"
@@ -195,39 +196,6 @@ export function diffProjectSettings(a, b) {
   }
 
   return diff;
-}
-
-export const CONTENT_POSITIONS = ['floating', 'left', 'bottom', 'right']
-export const MULTIVIEW_LAYOUTS = ['row', 'column']
-
-// Set default settings for any ADNO project
-export function defaultProjectSettings() {
-  return {
-    delay: 5,
-    showNavigator: true,
-    toolsbarOnFs: true,
-    sidebarEnabled: true,
-    startbyfirstanno: false,
-    shouldAutoPlayAnnotations: false,
-    rotation: false,
-    defaultRotation: 0,
-    rotationTransition: "turn",
-    displayToolbar: true,
-    tags: [],
-    outlineWidth: "outline-1px",
-    outlineColor: "outline-white",
-    outlineColorFocus: "outline-focus-yellow",
-    showOutlines: true,
-    showEyes: false,
-    soundMode: 'no_sound',
-    showCurrentAnnotation: false,
-    contentPosition: 'left',
-    multiviewDisposition: 'row',
-    groupColorA: '#2451C4',
-    groupColorB: '#C4622A',
-    groupColorC: '#1F9E6D',
-    groupColorD: '#A23DBB'
-  }
 }
 
 export function migrateTextBody(annotation) {

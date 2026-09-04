@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react"
 import { useParams, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next"
-import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
+import { buildTagsList } from "../../Utils/utils";
+import { defaultProjectSettings } from "../../Utils/project";
 import { ensureTargetGroups, groupPalette } from "../../Utils/groups"
 import { exportToIIIF } from "../../services/iiif/exporter";
 import { InfinitySpin } from 'react-loader-spinner'

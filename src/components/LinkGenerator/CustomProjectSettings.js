@@ -2,7 +2,7 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select';
 
-import { CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/utils"
+import { CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/project"
 
 function CustomProjectSettings({ t, settings, setSettings }) {
 

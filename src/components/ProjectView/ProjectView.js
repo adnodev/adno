@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Import popup alerts
 import Swal from 'sweetalert2';
 
-import { enhancedFetch, migrateTextBody, buildJsonProjectWithManifest, defaultProjectSettings } from "../../Utils/utils";
+import { enhancedFetch, migrateTextBody, buildJsonProjectWithManifest } from "../../Utils/utils";
+import { defaultProjectSettings } from "../../Utils/project";
 
 // Import CSS
 import "./ProjectView.css";

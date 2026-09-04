@@ -2,7 +2,7 @@ import './LinkGenerator.css'
 import { useEffect, useState } from "react"
 import { withTranslation } from "react-i18next"
 
-import { defaultProjectSettings } from '../../Utils/utils';
+import { defaultProjectSettings } from '../../Utils/project';
 import CustomProjectSettings from './CustomProjectSettings';
 import CopyButton from './CopyButton';
 
