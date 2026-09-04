@@ -9,7 +9,8 @@ import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Util
 import { cutoutGroupIds, cutoutKey, getAnnotationCutout } from "../../Utils/cutout"
 import { projectImages } from "../../Utils/images"
 import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
-import { activeGroupId, applyAnnotationColor, groupShadows } from "../../Utils/groups"
+import { activeGroupId, applyAnnotationColor, deriveGroups, groupShadows } from "../../Utils/groups"
+import { mosaicLayout } from "../../Utils/mosaic"
 import CutoutView from "../CutoutView/CutoutView"
 import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
 import { ContentMargin, hasMarginContent } from "./ContentMargin"
@@ -86,7 +87,7 @@ class OpenView extends Component {
         }
 
         this.openSeadragon = OpenSeadragon({
-            id: 'adno-osd',
+            id: 'adno-osd-viewer',
             homeButton: "home-button",
             showNavigator: false,
             tileSources: tileSources,
@@ -182,7 +183,7 @@ class OpenView extends Component {
             annos.forEach(anno => {
                 const svgElement = getEye()
 
-                const tileSize = document.getElementById('adno-osd').clientWidth / 5
+                const tileSize = document.getElementById('adno-osd-viewer').clientWidth / 5
 
                 svgElement.style.fill = "#000"
                 svgElement.style.stroke = "#000"
@@ -678,7 +679,7 @@ class OpenView extends Component {
             audioElement.loop = this.props.soundMode === 'spatialization' ? true : false
 
             const type = [...anno.children][0].tagName
-            const tileSize = document.getElementById('adno-osd').clientWidth / 5
+            const tileSize = document.getElementById('adno-osd-viewer').clientWidth / 5
 
             let x, y = 0;
             if (type === "ellipse" || type == "circle") {
@@ -783,7 +784,10 @@ class OpenView extends Component {
 
     isFloating = () => this.marginPosition() === 'floating'
 
-    workspaceSide = () => this.props.contentPosition === 'right' ? 'left' : 'right'
+    mosaic = () => mosaicLayout(
+        deriveGroups(this.props.selectedAnno).length,
+        this.props.mosaicRotation,
+        this.props.mosaicRatio)
 
     getAnnotationHTMLBody = (annotation) => {
         if (annotation && annotation.body) {
@@ -801,6 +805,7 @@ class OpenView extends Component {
 
     render() {
         const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
+        const layout = this.mosaic()
 
         return <div className="open-view flex flex-col flex-grow relative">
             {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
@@ -970,17 +975,24 @@ class OpenView extends Component {
                         offsetTop={this.marginOffset()} />
                 }
 
-                {this.props.selectedAnno &&
-                    <GroupWorkspace
-                        variant="reader"
-                        project={this.props.selectedProject}
-                        annotation={this.props.selectedAnno}
-                        activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
-                        disposition={this.props.multiviewDisposition || 'row'}
-                        side={this.workspaceSide()}
-                        crossOriginPolicy={this.crossOrigin()}
-                        translate={this.props.t} />
-                }
+                <div className={`adno-mosaic adno-mosaic--${this.marginPosition()}`}
+                    style={{
+                        gridTemplateColumns: layout.columns,
+                        gridTemplateRows: layout.rows,
+                        gridTemplateAreas: layout.areas
+                    }}>
+                    <div id="adno-osd-viewer" style={{ gridArea: layout.names[0] }}></div>
+
+                    {this.props.selectedAnno &&
+                        <GroupWorkspace
+                            project={this.props.selectedProject}
+                            annotation={this.props.selectedAnno}
+                            activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
+                            areaNames={layout.names.slice(1)}
+                            crossOriginPolicy={this.crossOrigin()}
+                            translate={this.props.t} />
+                    }
+                </div>
 
                 {this.cutoutGroups().map((groupId, rank) =>
                     <CutoutView key={cutoutKey(groupId)}

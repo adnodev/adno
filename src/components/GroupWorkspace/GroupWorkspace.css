@@ -1,17 +1,7 @@
-.group-workspace {
-    display: flex;
-    flex-direction: column;
-    flex: 0 0 auto;
-    width: 260px;
-    gap: 8px;
-    padding: 8px 8px 8px 0;
-    overflow: auto;
-}
-
 .group-panel {
     position: relative;
-    flex: 1 1 0;
-    min-height: 150px;
+    min-width: 0;
+    min-height: 0;
     border: 1px solid #d4d4d8;
     border-radius: 6px;
     overflow: hidden;
@@ -88,35 +78,4 @@
     right: -1px;
     border-bottom-width: 2px;
     border-right-width: 2px;
-}
-
-.group-workspace--reader {
-    position: absolute;
-    z-index: 35;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 8px;
-}
-
-.group-workspace--reader.group-workspace--column {
-    top: 0;
-    bottom: 0;
-    width: 240px;
-    flex-direction: column;
-}
-
-.group-workspace--reader.group-workspace--column.group-workspace--right {
-    right: 0;
-}
-
-.group-workspace--reader.group-workspace--column.group-workspace--left {
-    left: 0;
-}
-
-.group-workspace--reader.group-workspace--row {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 190px;
-    width: auto;
-    flex-direction: row;
 }

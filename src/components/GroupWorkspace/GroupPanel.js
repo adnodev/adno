@@ -10,7 +10,7 @@ class GroupPanel extends Component {
     componentDidMount() {
         const images = projectImages(this.props.project)
         const first = this.props.group.targets[0]
-        const index = imageIndexForSource(images, first ? first.target.source : null)
+        const index = imageIndexForSource(images, first?.target.source)
 
         const { viewer, annotorious } = mountReadOnlyViewer(this.props.elementId, imageTileSource(images[index]), this.props.crossOriginPolicy, {
             disableSelect: true
@@ -47,7 +47,7 @@ class GroupPanel extends Component {
 
     render() {
         return (
-            <div className="group-panel">
+            <div className="group-panel" style={{ gridArea: this.props.area }}>
                 <div id={this.props.elementId} className="group-panel-body"></div>
                 <GroupOverlay
                     letter={this.props.group.letter}
