@@ -1,4 +1,4 @@
-import { imageIndexForSource } from "./images"
+import { imageIndexForSource, type ImageIndex, type ProjectImage } from "./images"
 
 const SHADOW_SEPARATOR = '#t:'
 const XYWH = /xywh=(?:pixel:)?([\d.]+),([\d.]+),([\d.]+),([\d.]+)/
@@ -7,11 +7,78 @@ const ELLIPSE = /<ellipse[^>]*cx="([-\d.]+)"[^>]*cy="([-\d.]+)"[^>]*rx="([-\d.]+
 const POINTS = /points="([^"]+)"/
 const PATH = /\sd="([^"]+)"/
 
-function boxAround(x, y, radiusX, radiusY) {
+export type AnnotationId = string
+
+export type ShadowId = string
+
+export type TargetIndex = number
+
+export type Box = {
+    x: number,
+    y: number,
+    width: number,
+    height: number
+}
+
+export type Rect = Box & { kind: 'rect' }
+
+export type Circle = {
+    kind: 'circle',
+    cx: number,
+    cy: number,
+    r: number
+}
+
+export type Ellipse = {
+    kind: 'ellipse',
+    cx: number,
+    cy: number,
+    rx: number,
+    ry: number
+}
+
+export type Polygon = {
+    kind: 'polygon',
+    points: string
+}
+
+export type Path = {
+    kind: 'path',
+    d: string
+}
+
+export type Shape = Rect | Circle | Ellipse | Polygon | Path
+
+export type Selector = {
+    type?: string,
+    value?: string,
+    refinedBy?: { type?: string, rotation?: string }
+}
+
+export type Target = {
+    id?: string,
+    source?: string,
+    selector?: Selector
+}
+
+export type Annotation = {
+    id: AnnotationId,
+    target?: Target | Target[],
+    [key: string]: unknown
+}
+
+export type TargetEntry = {
+    target: Target,
+    index: TargetIndex
+}
+
+export type ShadowAnnotation = Annotation & { target: Target }
+
+function boxAround(x: number, y: number, radiusX: number, radiusY: number): Box {
     return { x: x - radiusX, y: y - radiusY, width: radiusX * 2, height: radiusY * 2 }
 }
 
-function boxOfPoints(points) {
+function boxOfPoints(points: string): Box | null {
     const numbers = points.replace(/[A-Za-z]/g, ' ').trim().split(/[\s,]+/).map(parseFloat).filter(value => !isNaN(value))
     const xs = numbers.filter((_, index) => index % 2 === 0)
     const ys = numbers.filter((_, index) => index % 2 === 1)
@@ -26,7 +93,7 @@ function boxOfPoints(points) {
     return { x: left, y: top, width: Math.max(...xs) - left, height: Math.max(...ys) - top }
 }
 
-export function unionBoxes(boxes) {
+export function unionBoxes(boxes: Box[]) {
     if (boxes.length === 0) {
         return null
     }
@@ -39,7 +106,7 @@ export function unionBoxes(boxes) {
     return { x: left, y: top, width: right - left, height: bottom - top }
 }
 
-export function targetShape(target) {
+export function targetShape(target: Target | null): Shape | null {
     const selector = target ? target.selector : null
     const value = selector ? selector.value || '' : ''
 
@@ -84,7 +151,7 @@ export function targetShape(target) {
     return path ? { kind: 'path', d: path[1] } : null
 }
 
-export function targetBox(target) {
+export function targetBox(target: Target | null): Box | null {
     const shape = targetShape(target)
 
     if (!shape) {
@@ -106,7 +173,7 @@ export function targetBox(target) {
     return boxOfPoints(shape.kind === 'polygon' ? shape.points : shape.d)
 }
 
-export function getTargets(annotation) {
+export function getTargets(annotation: Annotation | null): Target[] {
     const target = annotation ? annotation.target : null
 
     if (!target) {
@@ -116,11 +183,11 @@ export function getTargets(annotation) {
     return Array.isArray(target) ? target : [target]
 }
 
-export function primaryTarget(annotation) {
+export function primaryTarget(annotation: Annotation | null): Target | null {
     return getTargets(annotation)[0] || null
 }
 
-export function withTargets(annotation, targets) {
+export function withTargets(annotation: Annotation, targets: Target[]): Annotation {
     if (!targets || targets.length === 0) {
         const { target, ...rest } = annotation
         return rest
@@ -132,24 +199,28 @@ export function withTargets(annotation, targets) {
     }
 }
 
-export function addTarget(annotation, target) {
+export function addTarget(annotation: Annotation, target: Target): Annotation {
     return withTargets(annotation, [...getTargets(annotation), target])
 }
 
-export function removeTargetAt(annotation, index) {
+export function removeTargetAt(annotation: Annotation, index: TargetIndex): Annotation {
     return withTargets(annotation, getTargets(annotation).filter((_, i) => i !== index))
 }
 
-export function replaceTargetAt(annotation, index, target) {
+export function replaceTargetAt(annotation: Annotation, index: TargetIndex, target: Target): Annotation {
     return withTargets(annotation, getTargets(annotation).map((current, i) => i === index ? target : current))
 }
 
-export function shadowId(id, index) {
+export function shadowId(id: AnnotationId, index: TargetIndex): ShadowId {
     return index > 0 ? `${id}${SHADOW_SEPARATOR}${index}` : id
 }
 
-export function parseShadowId(shadowedId) {
-    const at = typeof shadowedId === 'string' ? shadowedId.lastIndexOf(SHADOW_SEPARATOR) : -1
+export function parseShadowId(shadowedId: ShadowId | null): { id: AnnotationId | null, index: TargetIndex } {
+    if (typeof shadowedId !== 'string') {
+        return { id: shadowedId, index: 0 }
+    }
+
+    const at = shadowedId.lastIndexOf(SHADOW_SEPARATOR)
     const suffix = at === -1 ? '' : shadowedId.slice(at + SHADOW_SEPARATOR.length)
 
     if (!/^\d+$/.test(suffix)) {
@@ -159,19 +230,19 @@ export function parseShadowId(shadowedId) {
     return { id: shadowedId.slice(0, at), index: parseInt(suffix, 10) }
 }
 
-export function targetsOnImage(annotation, images, imageIndex) {
+export function targetsOnImage(annotation: Annotation, images: ProjectImage[], imageIndex: ImageIndex): TargetEntry[] {
     return getTargets(annotation)
         .map((target, index) => ({ target, index }))
         .filter(({ target }) => imageIndexForSource(images, target && target.source) === imageIndex)
 }
 
-export function pickTargetOnImage(annotation, images, imageIndex, targetIndex) {
+export function pickTargetOnImage(annotation: Annotation, images: ProjectImage[], imageIndex: ImageIndex, targetIndex: TargetIndex): TargetEntry | null {
     const onImage = targetsOnImage(annotation, images, imageIndex)
 
     return onImage.find(item => item.index === targetIndex) || onImage[0] || null
 }
 
-export function toShadow(annotation, target, index) {
+export function toShadow(annotation: Annotation, target: Target, index: TargetIndex): ShadowAnnotation {
     return {
         ...annotation,
         id: shadowId(annotation.id, index),
@@ -179,13 +250,13 @@ export function toShadow(annotation, target, index) {
     }
 }
 
-export function toShadowAnnotations(annotations, images, imageIndex) {
+export function toShadowAnnotations(annotations: Annotation[], images: ProjectImage[], imageIndex: ImageIndex): ShadowAnnotation[] {
     return (annotations || []).flatMap(annotation =>
         targetsOnImage(annotation, images, imageIndex)
             .map(({ target, index }) => toShadow(annotation, target, index)))
 }
 
-export function zoneCountsByImage(annotations, images) {
+export function zoneCountsByImage(annotations: Annotation[], images: ProjectImage[]): number[] {
     const counts = (images || []).map(() => 0)
 
     for (const annotation of annotations || []) {
