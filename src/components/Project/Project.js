@@ -352,7 +352,8 @@ const Project = ({ editMode }) => {
                         spatialization={settings.spatialization}
                         showEyes={settings.showEyes}
                         contentPosition={settings.contentPosition}
-                        multiviewDisposition={settings.multiviewDisposition}
+                        mosaicRatio={settings.mosaicRatio}
+                        mosaicRotation={settings.mosaicRotation}
                         annos={viewerAnnotations}
                         selectedAnno={selectedAnnotation}
                         selectedTargetIndex={state.selectedTargetIndex}

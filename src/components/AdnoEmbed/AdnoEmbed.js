@@ -78,6 +78,14 @@ class AdnoEmbed extends Component {
             ? query.get("content_position")
             : this.state.contentPosition || 'left'
 
+        const mosaicRatio = query.has("mosaic_ratio")
+            ? query.get("mosaic_ratio")
+            : this.state.mosaicRatio || '1/2'
+
+        const mosaicRotation = query.has("mosaic_rotation")
+            ? Number(query.get("mosaic_rotation"))
+            : this.state.mosaicRotation || 0
+
         const outlineWidth = query.has("outlineWidth")
             ? query.get("outlineWidth")
             : this.state.outlineWidth ? this.state.outlineWidth : "outline-1px";
@@ -107,6 +115,8 @@ class AdnoEmbed extends Component {
             outlineColorFocus,
             showCurrentAnnotation,
             contentPosition,
+            mosaicRatio,
+            mosaicRotation,
             settingsReady: true
         }
 
@@ -287,7 +297,8 @@ class AdnoEmbed extends Component {
                     crossOriginPolicy={false}
                     permanentOverlay
                     contentPosition={this.state.contentPosition}
-                    multiviewDisposition={this.state.multiviewDisposition}
+                    mosaicRatio={this.state.mosaicRatio}
+                    mosaicRotation={this.state.mosaicRotation}
                     showToolbar={this.state.showToolbar}
                     changeShowToolbar={this.changeShowToolbar}
                     toolsbarOnFs={this.state.toolsbarOnFs}

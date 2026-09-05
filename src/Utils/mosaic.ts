@@ -1,10 +1,24 @@
 import { normalizeAngle } from "./orientation"
+import type { MosaicRatio, MosaicRotation } from "./project"
 
 const QUARTER_TURN = 90
 const NAMES = ['a', 'b', 'c', 'd']
 const LARGEST = 4
 
-const MOSAICS = {
+type MosaicShape = {
+    areas: string[],
+    '1/2': [string, string],
+    '2/3': [string, string]
+}
+
+export type MosaicLayout = {
+    columns: string,
+    rows: string,
+    areas: string,
+    names: string[]
+}
+
+const MOSAICS: Record<number, MosaicShape[]> = {
     1: [
         { areas: ['a'], '1/2': ['1fr', '1fr'], '2/3': ['1fr', '1fr'] }
     ],
@@ -28,11 +42,11 @@ const MOSAICS = {
     ]
 }
 
-export function mosaicCount(groups) {
+export function mosaicCount(groups: number): number {
     return Math.min(Math.max(groups, 1), LARGEST)
 }
 
-export function mosaicLayout(groups, rotation = 0, ratio = '1/2') {
+export function mosaicLayout(groups: number, rotation: MosaicRotation = 0, ratio: MosaicRatio = '1/2'): MosaicLayout {
     const count = mosaicCount(groups)
     const shapes = MOSAICS[count]
     const shape = shapes[Math.round(normalizeAngle(rotation) / QUARTER_TURN) % shapes.length]

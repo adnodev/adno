@@ -9,6 +9,14 @@ export const MULTIVIEW_LAYOUTS = ['row', 'column'] as const
 
 export type MultiviewLayout = typeof MULTIVIEW_LAYOUTS[number]
 
+export const MOSAIC_RATIOS = ['1/2', '2/3'] as const
+
+export type MosaicRatio = typeof MOSAIC_RATIOS[number]
+
+export const MOSAIC_ROTATIONS = [0, 90, 180, 270] as const
+
+export type MosaicRotation = typeof MOSAIC_ROTATIONS[number]
+
 export type SoundMode = 'no_sound' | 'no_spatialization' | 'spatialization'
 
 export type RotationTransition = 'turn' | 'instant'
@@ -33,7 +41,8 @@ export type ProjectSettings = {
     soundMode: SoundMode,
     showCurrentAnnotation: boolean,
     contentPosition: ContentPosition,
-    multiviewDisposition: MultiviewLayout,
+    mosaicRatio: MosaicRatio,
+    mosaicRotation: MosaicRotation,
     groupColorA: string,
     groupColorB: string,
     groupColorC: string,
@@ -76,7 +85,8 @@ export function defaultProjectSettings(): ProjectSettings {
         soundMode: 'no_sound',
         showCurrentAnnotation: false,
         contentPosition: 'left',
-        multiviewDisposition: 'row',
+        mosaicRatio: '1/2',
+        mosaicRotation: 0,
         groupColorA: '#2451C4',
         groupColorB: '#C4622A',
         groupColorC: '#1F9E6D',
