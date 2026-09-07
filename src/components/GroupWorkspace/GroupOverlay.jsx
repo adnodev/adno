@@ -8,21 +8,19 @@ export function GroupBadge({ letter, color, count, translate, className }) {
     )
 }
 
-export function GroupOverlay({ letter, color, count, translate }) {
+export function GroupOverlay({ letter, count, translate }) {
     return (
         <div className="group-overlay">
             <GroupBadge letter={letter}
-                color={color}
                 count={count}
                 translate={translate}
                 className="group-overlay-badge" />
 
             {count > 1 &&
-                <div className="group-overlay-frame" style={{ borderColor: color }}>
+                <div className="group-overlay-frame">
                     {CORNERS.map(corner =>
                         <span key={corner}
-                            className={`group-overlay-corner group-overlay-corner--${corner}`}
-                            style={{ borderColor: color }} />
+                            className={`group-overlay-corner group-overlay-corner--${corner}`} />
                     )}
                 </div>
             }

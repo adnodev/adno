@@ -134,7 +134,9 @@
                 }
             },
             "adno": {
-                "cutout": true
+                "cutouts": {
+                    "g1": true
+                }
             }
         }
     ]

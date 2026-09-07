@@ -1,6 +1,7 @@
 import { Component } from "react"
 
-import { scheduleGroupColors } from "../../Utils/groups"
+import { withTranslation } from "react-i18next"
+
 import { frameGroup, mountReadOnlyViewer } from "../../Utils/viewport"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
 
@@ -13,7 +14,8 @@ class GroupPanel extends Component {
         const index = imageIndexForSource(images, first?.target.source)
 
         const { viewer, annotorious } = mountReadOnlyViewer(this.props.elementId, imageTileSource(images[index]), this.props.crossOriginPolicy, {
-            disableSelect: true
+            disableSelect: true,
+            formatters: () => this.props.styles
         })
 
         this.viewer = viewer
@@ -30,19 +32,12 @@ class GroupPanel extends Component {
     }
 
     componentWillUnmount() {
-        cancelAnimationFrame(this._paintFrame)
         this.annotorious.destroy()
         this.viewer.destroy()
     }
 
     refresh = () => {
-        const { annotation, group } = this.props
-
-        if (!frameGroup(this.viewer, this.annotorious, annotation, group.id)) {
-            return
-        }
-
-        this._paintFrame = scheduleGroupColors(this._paintFrame, this.viewer.element, annotation)
+        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.group.id, { defaultRotation: this.props.defaultRotation })
     }
 
     render() {
@@ -51,12 +46,11 @@ class GroupPanel extends Component {
                 <div id={this.props.elementId} className="group-panel-body"></div>
                 <GroupOverlay
                     letter={this.props.group.letter}
-                    color={this.props.group.color}
                     count={this.props.group.targets.length}
-                    translate={this.props.translate} />
+                    translate={this.props.t} />
             </div>
         )
     }
 }
 
-export default GroupPanel
+export default withTranslation()(GroupPanel)

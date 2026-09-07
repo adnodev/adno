@@ -51,7 +51,7 @@ class CutoutView extends Component {
     }
 
     frameAnnotation = () => {
-        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.groupId)
+        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.groupId, { defaultRotation: this.props.defaultRotation })
     }
 
     dragSpot = (event) => {

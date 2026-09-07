@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons"
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils"
 import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Utils/viewport"
-import { cutoutGroupIds, cutoutKey, getAnnotationCutout } from "../../Utils/cutout"
+import { cutoutGroupIds } from "../../Utils/cutout"
 import { projectImages } from "../../Utils/images"
 import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import { activeGroupId, applyAnnotationColor, deriveGroups, groupShadows } from "../../Utils/groups"
@@ -55,6 +55,8 @@ class OpenView extends Component {
     }
 
     crossOrigin = () => this.props.crossOriginPolicy ?? CROSS_ORIGIN
+
+    annoStyles = () => this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus
 
     marginOffset = () => {
         if (this.state.fullScreenEnabled || !this.props.showToolbar) {
@@ -111,9 +113,7 @@ class OpenView extends Component {
         OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
         OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
-        const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
-
-        const annoFormatter = () => annoStyles;
+        const annoFormatter = () => this.annoStyles();
 
         this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
             locale: 'auto',
@@ -332,13 +332,13 @@ class OpenView extends Component {
                 defaultRotation: this.props.defaultRotation,
                 transition: this.props.rotationTransition,
                 padded: true,
-                only: groupShadows(annotation, groupId).map(item => item.id)
+                shadowIds: groupShadows(annotation, groupId).map(item => item.id)
             })
 
             let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
             this.setState({
                 currentID: annotationIndex,
-                cutoutAnno: getAnnotationCutout(annotation) ? annotation : null
+                cutoutAnno: cutoutGroupIds(annotation).length > 0 ? annotation : null
             })
 
             if (this.props.soundMode === 'no_spatialization') {
@@ -649,8 +649,7 @@ class OpenView extends Component {
                 prevProps.outlineColor !== this.props.outlineColor ||
                 prevProps.outlineColorFocus !== this.props.outlineColorFocus
             ) {
-                const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
-                this.AdnoAnnotorious.formatters = [() => annoStyles]
+                this.AdnoAnnotorious.formatters = [() => this.annoStyles()]
 
                 this.reloadAnnotationsFromProps()
             }
@@ -760,23 +759,13 @@ class OpenView extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
-    cutoutGroups = () => {
-        const annotation = this.state.cutoutAnno
-
-        if (!annotation) {
-            return []
-        }
-
-        const groups = cutoutGroupIds(annotation)
-
-        return groups.length > 0 ? groups : [null]
-    }
+    cutoutGroups = () => cutoutGroupIds(this.state.cutoutAnno)
 
     cutoutViewFor = (groupId) =>
-        this.state.cutoutViews[cutoutKey(groupId)] || { minimized: false, size: 'default', position: null }
+        this.state.cutoutViews[groupId] || { minimized: false, size: 'default', position: null }
 
     setCutoutView = (groupId, view) => {
-        this.setState({ cutoutViews: { ...this.state.cutoutViews, [cutoutKey(groupId)]: view } })
+        this.setState({ cutoutViews: { ...this.state.cutoutViews, [groupId]: view } })
     }
 
     marginPosition = () => this.props.contentPosition || 'left'
@@ -973,18 +962,20 @@ class OpenView extends Component {
                             activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
                             areaNames={layout.names.slice(1)}
                             crossOriginPolicy={this.crossOrigin()}
-                            translate={this.props.t} />
+                            defaultRotation={this.props.defaultRotation}
+                            styles={this.annoStyles()} />
                     }
 
                     {this.cutoutGroups().map((groupId, rank) =>
-                        <CutoutView key={cutoutKey(groupId)}
-                            elementId={`cutout-osd-${cutoutKey(groupId)}`}
+                        <CutoutView key={groupId}
+                            elementId={`cutout-osd-${groupId}`}
                             rank={rank}
                             project={this.props.selectedProject}
                             annotation={this.state.cutoutAnno}
                             groupId={groupId}
                             crossOriginPolicy={this.crossOrigin()}
-                            styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
+                            defaultRotation={this.props.defaultRotation}
+                            styles={this.annoStyles()}
                             view={this.cutoutViewFor(groupId)}
                             setView={(view) => this.setCutoutView(groupId, view)} />
                     )}

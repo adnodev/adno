@@ -1,4 +1,5 @@
 import { imageIndexForSource, type ImageIndex, type ProjectImage } from "./images"
+import type { GroupId } from "./groups"
 
 const SHADOW_SEPARATOR = '#t:'
 const XYWH = /xywh=(?:pixel:)?([\d.]+),([\d.]+),([\d.]+),([\d.]+)/
@@ -61,9 +62,16 @@ export type Target = {
     selector?: Selector
 }
 
+export type Cutouts = Record<GroupId, boolean>
+
+export type AnnotationAdno = {
+    cutouts?: Cutouts
+}
+
 export type Annotation = {
     id: AnnotationId,
     target?: Target | Target[],
+    adno?: AnnotationAdno,
     [key: string]: unknown
 }
 
@@ -183,10 +191,6 @@ export function getTargets(annotation: Annotation | null): Target[] {
     return Array.isArray(target) ? target : [target]
 }
 
-export function primaryTarget(annotation: Annotation | null): Target | null {
-    return getTargets(annotation)[0] || null
-}
-
 export function withTargets(annotation: Annotation, targets: Target[]): Annotation {
     if (!targets || targets.length === 0) {
         const { target, ...rest } = annotation
@@ -230,7 +234,7 @@ export function parseShadowId(shadowedId: ShadowId | null): { id: AnnotationId |
     return { id: shadowedId.slice(0, at), index: parseInt(suffix, 10) }
 }
 
-export function targetsOnImage(annotation: Annotation, images: ProjectImage[], imageIndex: ImageIndex): TargetEntry[] {
+function targetsOnImage(annotation: Annotation, images: ProjectImage[], imageIndex: ImageIndex): TargetEntry[] {
     return getTargets(annotation)
         .map((target, index) => ({ target, index }))
         .filter(({ target }) => imageIndexForSource(images, target && target.source) === imageIndex)
