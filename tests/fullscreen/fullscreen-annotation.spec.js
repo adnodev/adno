@@ -31,7 +31,7 @@ test.describe('Plein écran — zone de contenu de l\'annotation', () => {
 
         await page.locator('#toggle-fullscreen').click();
 
-        const zone = page.locator('#adno-osd-anno-fullscreen');
+        const zone = page.locator('#adno-content-margin');
         await expect(zone).toBeVisible({ timeout: 5000 });
         await expect(zone).toContainText(CONTENT_1);
     });
@@ -44,7 +44,7 @@ test.describe('Plein écran — zone de contenu de l\'annotation', () => {
         await page.keyboard.press('ArrowRight');
         await page.keyboard.press('ArrowRight');
 
-        const zone = page.locator('#adno-osd-anno-fullscreen');
+        const zone = page.locator('#adno-content-margin');
         await expect(zone).toBeVisible({ timeout: 5000 });
         await expect(zone).toContainText(CONTENT_2);
     });
@@ -55,7 +55,7 @@ test.describe('Plein écran — zone de contenu de l\'annotation', () => {
         await selectAnnotationFromSidebar(page, fixture.annotations[0].id);
         await page.locator('#toggle-fullscreen').click();
 
-        const zone = page.locator('#adno-osd-anno-fullscreen');
+        const zone = page.locator('#adno-content-margin');
         await expect(zone).toContainText(CONTENT_1);
 
         await page.keyboard.press('ArrowRight');

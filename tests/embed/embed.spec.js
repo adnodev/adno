@@ -29,13 +29,6 @@ async function openEmbed(page, params = '') {
     await page.waitForTimeout(1500);
 }
 
-/**
- * @param {import('@playwright/test').Page} page
- */
-function overlay(page) {
-    return page.locator('[class*="anno-fullscreen"]');
-}
-
 test.describe('The embedded viewer, served offline', () => {
 
     test('opens the project image inside the embed', async ({ page }) => {
@@ -109,7 +102,7 @@ test.describe('The embedded viewer, served offline', () => {
         await expect(margin).toBeVisible();
         await expect(margin).toHaveClass(/content-margin--right/);
         await expect(margin).toContainText('ANNOTATION ONE');
-        await expect(overlay(page)).toHaveCount(0);
+        await expect(page.locator('.content-margin--floating')).toHaveCount(0);
     });
 
     test('floats the content over the image when asked to', async ({ page }) => {
@@ -118,8 +111,8 @@ test.describe('The embedded viewer, served offline', () => {
         await page.locator('#nextAnno').click();
         await page.waitForTimeout(1200);
 
-        await expect(overlay(page)).toContainText('ANNOTATION ONE');
-        await expect(page.locator('#adno-content-margin')).toHaveCount(0);
+        await expect(page.locator('#adno-content-margin')).toContainText('ANNOTATION ONE');
+        await expect(page.locator('#adno-content-margin')).toHaveClass(/content-margin--floating/);
     });
 
     test('carries the project metadata in the info modal', async ({ page }) => {
