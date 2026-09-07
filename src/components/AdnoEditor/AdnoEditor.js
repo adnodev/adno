@@ -66,8 +66,6 @@ class AdnoEditor extends Component {
             showFullPageControl: false,
         });
 
-        window.__adnoViewer = this.openSeadragon
-
         if (this.props.onViewerReady) {
             this.props.onViewerReady(this.openSeadragon)
         }

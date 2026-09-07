@@ -3,10 +3,9 @@ import { faCrosshairs, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons
 
 import { deriveGroups, groupColor, groupLetter, groupRotation } from "../../Utils/groups"
 import { getGroupCutout } from "../../Utils/cutout"
+import { QUARTER_TURNS } from "../../Utils/orientation"
 import { getTargets } from "../../Utils/targets"
 import { ZonePreview } from "./ZonePreview"
-
-const QUARTER_TURNS = [0, 90, 180, 270]
 
 function withDraft(groups, draftGroupId, palette) {
     if (!draftGroupId || groups.some(group => group.id === draftGroupId)) {

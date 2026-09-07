@@ -42,7 +42,7 @@ const MOSAICS: Record<number, MosaicShape[]> = {
     ]
 }
 
-export function mosaicCount(groups: number): number {
+function mosaicCount(groups: number): number {
     return Math.min(Math.max(groups, 1), LARGEST)
 }
 

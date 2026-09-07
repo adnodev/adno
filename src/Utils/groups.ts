@@ -1,12 +1,16 @@
 import { getTargets, replaceTargetAt, shadowId, targetBox, toShadow, unionBoxes, withTargets, type Annotation, type AnnotationId, type Box, type ShadowAnnotation, type ShadowId, type Target, type TargetEntry, type TargetIndex } from "./targets"
 import { annotationShapes } from "./utils"
-import type { ProjectSettings } from "./project"
+import { defaultProjectSettings, type ProjectSettings } from "./project"
 import { getTargetRotation, withTargetRotation } from "./orientation"
 
 const GROUP_SEPARATOR = '@'
 const GROUP_PATTERN = /^g(\d+)$/
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-const PALETTE = ['#2451C4', '#C4622A', '#1F9E6D', '#A23DBB']
+
+export const GROUP_COLOR_KEYS = ['groupColorA', 'groupColorB', 'groupColorC', 'groupColorD'] as const
+
+const DEFAULT_SETTINGS = defaultProjectSettings()
+const PALETTE = GROUP_COLOR_KEYS.map(key => DEFAULT_SETTINGS[key])
 
 const FIRST_GROUP = 'g1'
 
@@ -72,10 +76,8 @@ export function groupColor(rank: number, palette: GroupPalette = PALETTE): strin
     return palette[rank % palette.length]
 }
 
-const GROUP_COLOR_KEYS = ['groupColorA', 'groupColorB', 'groupColorC', 'groupColorD'] as const
-
 export function groupPalette(settings: Partial<ProjectSettings> | undefined): GroupPalette {
-    return PALETTE.map((color, index) => (settings ? settings[GROUP_COLOR_KEYS[index]] : null) || color)
+    return GROUP_COLOR_KEYS.map((key, index) => (settings ? settings[key] : null) || PALETTE[index])
 }
 
 export function deriveGroups(annotation: Annotation | null, palette: GroupPalette = PALETTE): Group[] {
@@ -184,7 +186,7 @@ function groupColorsById(annotation: Annotation, palette?: GroupPalette): Record
         (acc, entry) => ({ ...acc, [shadowId(annotation.id, entry.index)]: group.color }), colors), {})
 }
 
-export function applyGroupColors(root: Element | undefined, annotation: Annotation | null, palette?: GroupPalette): void {
+function applyGroupColors(root: Element | undefined, annotation: Annotation | null, palette?: GroupPalette): void {
     const colors = annotation ? groupColorsById(annotation, palette) : {}
 
     annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute('data-id')]))

@@ -2,6 +2,8 @@ import { getTargets } from "./targets"
 
 const IMAGE_API_SELECTOR = "ImageApiSelector"
 
+export const QUARTER_TURNS = [0, 90, 180, 270]
+
 export function normalizeAngle(degrees) {
     const angle = Number(degrees) % 360
     return angle < 0 ? angle + 360 : angle
@@ -29,7 +31,7 @@ export function getAnnotationRotation(annotation) {
     return getTargetRotation(getTargets(annotation)[0])
 }
 
-export function buildRotationSelector(degrees) {
+function buildRotationSelector(degrees) {
     return {
         "type": IMAGE_API_SELECTOR,
         "rotation": String(normalizeAngle(degrees))

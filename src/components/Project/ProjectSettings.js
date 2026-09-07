@@ -18,10 +18,8 @@ import { buildTagsList } from "../../Utils/utils"
 import { maxGroupCount } from "../../Utils/groups"
 import { MosaicPicker } from "../MosaicPicker/MosaicPicker"
 import { ContentPositionPicker } from "../ContentPositionPicker/ContentPositionPicker"
-import { groupLetter, groupPalette } from "../../Utils/groups"
-
-const QUARTER_TURNS = [0, 90, 180, 270]
-const GROUP_COLOR_KEYS = ['groupColorA', 'groupColorB', 'groupColorC', 'groupColorD']
+import { GROUP_COLOR_KEYS, groupLetter, groupPalette } from "../../Utils/groups"
+import { QUARTER_TURNS } from "../../Utils/orientation"
 
 const PARAMETERS_BY_TAB = {
     'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'contentPosition', 'mosaicRatio', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
