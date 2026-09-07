@@ -40,6 +40,8 @@ function LinkGenerator({ t }) {
         appendBooleanParam(params, "show_eyes", settings.showEyes)
         appendBooleanParam(params, "toolbar", settings.displayToolbar)
         appendBooleanParam(params, "content_position", settings.contentPosition)
+        appendBooleanParam(params, "mosaic_ratio", settings.mosaicRatio)
+        appendBooleanParam(params, "mosaic_rotation", settings.mosaicRotation)
 
         if (settings.soundMode !== 'no_sound')
             appendBooleanParam(params, "sound_mode", settings.soundMode)
