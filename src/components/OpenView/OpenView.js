@@ -938,11 +938,15 @@ class OpenView extends Component {
                 </div>
             </div>
             <div id="adno-osd" style={{ position: 'relative' }} >
-                {hasMarginContent(this.props.selectedAnno) &&
+                {(!this.props.selectedAnno || hasMarginContent(this.props.selectedAnno)) &&
                     <ContentMargin
                         annotation={this.props.selectedAnno}
+                        project={this.props.selectedProject}
                         position={this.marginPosition()}
-                        offsetTop={this.marginOffset()} />
+                        offsetTop={this.marginOffset()}
+                        canStart={this.props.annos.length > 0}
+                        onStart={() => this.changeAnno(this.props.annos[0])}
+                        translate={this.props.t} />
                 }
 
                 <div className={`adno-mosaic adno-mosaic--${this.marginPosition()}`}

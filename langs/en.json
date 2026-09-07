@@ -148,6 +148,7 @@
         "pause": "Pause",
         "play": "Play",
         "reset_view": "Reset view",
+        "start_tour": "Start the tour",
         "toggle_annotations": "Hide/show annotations",
         "sidebar_control": "Sidebar control",
         "sidebar_expanded": "Expanded",

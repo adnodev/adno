@@ -242,6 +242,7 @@
         "play": "Reproducir",
         "previous_annotation": "Anotación anterior",
         "reset_view": "Vista inicial",
+        "start_tour": "Comenzar la visita",
         "rotation": "Girar 90 grados",
         "toggle_annotations": "Mostrar/ocultar las anotaciones",
         "sidebar_control": "Columna de anotaciones",

@@ -26,12 +26,32 @@ export function hasMarginContent(annotation) {
     return Boolean(htmlBody(annotation)) || Boolean(audioSource(annotation)) || buildTagsList(annotation).length > 0
 }
 
-export function ContentMargin({ annotation, position, offsetTop }) {
+export function ContentMargin({ annotation, project, position, offsetTop, canStart, onStart, translate }) {
     const html = htmlBody(annotation)
     const tags = buildTagsList(annotation)
     const track = audioSource(annotation)
 
     const anchored = position === 'left' || position === 'right'
+
+    if (!annotation) {
+        return (
+            <div id="adno-content-margin"
+                className={`content-margin content-margin--${position}`}
+                style={anchored ? { top: `${offsetTop}px` } : null}>
+                <h2 className="content-margin-title">{project && project.title}</h2>
+
+                {project && project.description &&
+                    <p className="content-margin-intro">{project.description}</p>
+                }
+
+                {canStart &&
+                    <button type="button" className="btn btn-outline content-margin-start" onClick={onStart}>
+                        {translate('visualizer.start_tour')}
+                    </button>
+                }
+            </div>
+        )
+    }
 
     return (
         <div id="adno-content-margin"
