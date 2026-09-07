@@ -2,8 +2,8 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select';
 
-import { CONTENT_POSITIONS } from "../../Utils/project"
 import { MosaicPicker } from "../MosaicPicker/MosaicPicker"
+import { ContentPositionPicker } from "../ContentPositionPicker/ContentPositionPicker"
 
 function CustomProjectSettings({ t, settings, setSettings }) {
 
@@ -245,11 +245,10 @@ function CustomProjectSettings({ t, settings, setSettings }) {
         <label className="label">
             <span className="label-text">{t('project.settings.content_position')}</span>
         </label>
-        <select className="input input-bordered w-full"
-            value={settings.contentPosition || 'left'}
-            onChange={(e) => setSettings({ ...settings, contentPosition: e.target.value })}>
-            {CONTENT_POSITIONS.map(position => <option key={position} value={position}>{t('project.settings.content_position_' + position)}</option>)}
-        </select>
+        <ContentPositionPicker
+            position={settings.contentPosition}
+            translate={t}
+            onChange={(contentPosition) => setSettings({ ...settings, contentPosition })} />
 
         <label className="label">
             <span className="label-text">{t('project.settings.mosaic_layout')}</span>

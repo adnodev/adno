@@ -15,9 +15,9 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select/creatable';
 import { buildTagsList } from "../../Utils/utils"
-import { CONTENT_POSITIONS } from "../../Utils/project"
 import { maxGroupCount } from "../../Utils/groups"
 import { MosaicPicker } from "../MosaicPicker/MosaicPicker"
+import { ContentPositionPicker } from "../ContentPositionPicker/ContentPositionPicker"
 import { groupLetter, groupPalette } from "../../Utils/groups"
 
 const QUARTER_TURNS = [0, 90, 180, 270]
@@ -409,20 +409,21 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('contentPosition') && <>
-                            <label className="form-control w-full mt-4">
+                            <div className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.content_position')}</span>
                                 </div>
-                                <select className="select select-bordered"
-                                    value={this.state.settings.contentPosition || "left"}
-                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, contentPosition: e.target.value } })}>
-                                    {CONTENT_POSITIONS.map(position => <option key={position} value={position}>{this.props.t('project.settings.content_position_' + position)}</option>)}
-                                </select>
-                            </label>
+                                <ContentPositionPicker
+                                    position={this.state.settings.contentPosition}
+                                    translate={this.props.t}
+                                    onChange={(contentPosition) => this.setState({
+                                        settings: { ...this.state.settings, contentPosition }
+                                    })} />
+                            </div>
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('mosaicRatio') && <>
-                            <div className="form-control w-full mt-4">
+                            <div className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.mosaic_layout')}</span>
                                 </div>

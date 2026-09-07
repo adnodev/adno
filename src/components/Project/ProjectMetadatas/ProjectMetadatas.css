@@ -36,12 +36,14 @@
     gap: 1rem;
 }
 
-.propject-metadatas--grid label {
+.propject-metadatas--grid label,
+.propject-metadatas--grid .form-control {
     margin: 0;
     display: inherit;
 }
 
-.propject-metadatas--grid label>div:first-child {
+.propject-metadatas--grid label>div:first-child,
+.propject-metadatas--grid .form-control>div:first-child {
     padding: 0;
 }
 
