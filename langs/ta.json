@@ -93,9 +93,7 @@
             "content_position_left": "இடது ஓரம்",
             "content_position_bottom": "கீழ் ஓரம்",
             "content_position_right": "வலது ஓரம்",
-            "multiview_disposition": "பகுதிக் குழுக்களின் அமைப்பு",
-            "multiview_row": "அருகருகே",
-            "multiview_column": "அடுக்கி"
+            "mosaic_layout": "மொசைக் அமைப்பு"
         }
     },
     "files": {

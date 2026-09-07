@@ -211,9 +211,7 @@
             "content_position_left": "Margen izquierdo",
             "content_position_bottom": "Margen inferior",
             "content_position_right": "Margen derecho",
-            "multiview_disposition": "Disposición de los grupos de zonas",
-            "multiview_row": "Lado a lado",
-            "multiview_column": "Apilados"
+            "mosaic_layout": "Disposición del mosaico"
         },
         "title": "Título",
         "advanced": "Avanzado"

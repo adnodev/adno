@@ -93,9 +93,7 @@
             "content_position_left": "左側邊欄",
             "content_position_bottom": "底部邊欄",
             "content_position_right": "右側邊欄",
-            "multiview_disposition": "區域群組佈局",
-            "multiview_row": "並排",
-            "multiview_column": "堆疊"
+            "mosaic_layout": "馬賽克佈局"
         }
     },
     "files": {

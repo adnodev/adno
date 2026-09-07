@@ -93,9 +93,7 @@
             "content_position_left": "Left margin",
             "content_position_bottom": "Bottom margin",
             "content_position_right": "Right margin",
-            "multiview_disposition": "Zone group layout",
-            "multiview_row": "Side by side",
-            "multiview_column": "Stacked"
+            "mosaic_layout": "Mosaic layout"
         }
     },
     "files": {

@@ -100,6 +100,10 @@ export function deriveGroups(annotation: Annotation | null, palette: GroupPalett
         }, [])
 }
 
+export function maxGroupCount(annotations: Annotation[]): number {
+    return (annotations || []).reduce((max, annotation) => Math.max(max, deriveGroups(annotation).length), 0)
+}
+
 function groupTargets(annotation: Annotation | null, groupId?: GroupId): Target[] {
     return getTargets(annotation).filter(target => !groupId || targetGroupId(target) === groupId)
 }

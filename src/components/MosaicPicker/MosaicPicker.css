@@ -1,0 +1,51 @@
+.mosaic-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mosaic-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mosaic-picker-ratio {
+    width: 28px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #52525b;
+}
+
+.mosaic-preview {
+    display: grid;
+    width: 72px;
+    height: 52px;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid #d4d4d8;
+    border-radius: 4px;
+    background: #fff;
+}
+
+.mosaic-preview:hover {
+    border-color: #a1a1aa;
+}
+
+.mosaic-preview--selected {
+    border-color: #2451c4;
+    box-shadow: 0 0 0 1px #2451c4;
+}
+
+.mosaic-preview-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 2px;
+    background: #e4e4e7;
+    font-size: 9px;
+    line-height: 1;
+    color: #52525b;
+}

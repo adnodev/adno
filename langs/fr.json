@@ -93,9 +93,7 @@
             "content_position_left": "Marge à gauche",
             "content_position_bottom": "Marge en bas",
             "content_position_right": "Marge à droite",
-            "multiview_disposition": "Disposition des groupes de zones",
-            "multiview_row": "Côte à côte",
-            "multiview_column": "Empilés"
+            "mosaic_layout": "Disposition de la mosaïque"
         }
     },
     "files": {

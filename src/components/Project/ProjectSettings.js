@@ -15,14 +15,16 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select/creatable';
 import { buildTagsList } from "../../Utils/utils"
-import { CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/project"
+import { CONTENT_POSITIONS } from "../../Utils/project"
+import { maxGroupCount } from "../../Utils/groups"
+import { MosaicPicker } from "../MosaicPicker/MosaicPicker"
 import { groupLetter, groupPalette } from "../../Utils/groups"
 
 const QUARTER_TURNS = [0, 90, 180, 270]
 const GROUP_COLOR_KEYS = ['groupColorA', 'groupColorB', 'groupColorC', 'groupColorD']
 
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'contentPosition', 'multiviewDisposition', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
+    'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'contentPosition', 'mosaicRatio', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
     'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
     'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus', 'groupColorA'],
 }
@@ -419,17 +421,19 @@ class ProjectSettings extends Component {
                             </label>
                         </>}
 
-                        {PARAMETERS_BY_TAB[this.state.tab].includes('multiviewDisposition') && <>
-                            <label className="form-control w-full mt-4">
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('mosaicRatio') && <>
+                            <div className="form-control w-full mt-4">
                                 <div className="label font-medium">
-                                    <span className="label-text">{this.props.t('project.settings.multiview_disposition')}</span>
+                                    <span className="label-text">{this.props.t('project.settings.mosaic_layout')}</span>
                                 </div>
-                                <select className="select select-bordered"
-                                    value={this.state.settings.multiviewDisposition || "row"}
-                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, multiviewDisposition: e.target.value } })}>
-                                    {MULTIVIEW_LAYOUTS.map(layout => <option key={layout} value={layout}>{this.props.t('project.settings.multiview_' + layout)}</option>)}
-                                </select>
-                            </label>
+                                <MosaicPicker
+                                    ratio={this.state.settings.mosaicRatio}
+                                    rotation={this.state.settings.mosaicRotation}
+                                    groups={maxGroupCount(this.props.annotations)}
+                                    onChange={(mosaicRatio, mosaicRotation) => this.setState({
+                                        settings: { ...this.state.settings, mosaicRatio, mosaicRotation }
+                                    })} />
+                            </div>
                         </>}
                     </div>
 

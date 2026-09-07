@@ -2,7 +2,8 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select';
 
-import { CONTENT_POSITIONS, MULTIVIEW_LAYOUTS } from "../../Utils/project"
+import { CONTENT_POSITIONS } from "../../Utils/project"
+import { MosaicPicker } from "../MosaicPicker/MosaicPicker"
 
 function CustomProjectSettings({ t, settings, setSettings }) {
 
@@ -251,13 +252,12 @@ function CustomProjectSettings({ t, settings, setSettings }) {
         </select>
 
         <label className="label">
-            <span className="label-text">{t('project.settings.multiview_disposition')}</span>
+            <span className="label-text">{t('project.settings.mosaic_layout')}</span>
         </label>
-        <select className="input input-bordered w-full"
-            value={settings.multiviewDisposition || 'row'}
-            onChange={(e) => setSettings({ ...settings, multiviewDisposition: e.target.value })}>
-            {MULTIVIEW_LAYOUTS.map(layout => <option key={layout} value={layout}>{t('project.settings.multiview_' + layout)}</option>)}
-        </select>
+        <MosaicPicker
+            ratio={settings.mosaicRatio}
+            rotation={settings.mosaicRotation}
+            onChange={(mosaicRatio, mosaicRotation) => setSettings({ ...settings, mosaicRatio, mosaicRotation })} />
 
     </>
 }

@@ -5,10 +5,6 @@ export const CONTENT_POSITIONS = ['floating', 'left', 'bottom', 'right'] as cons
 
 export type ContentPosition = typeof CONTENT_POSITIONS[number]
 
-export const MULTIVIEW_LAYOUTS = ['row', 'column'] as const
-
-export type MultiviewLayout = typeof MULTIVIEW_LAYOUTS[number]
-
 export const MOSAIC_RATIOS = ['1/2', '2/3'] as const
 
 export type MosaicRatio = typeof MOSAIC_RATIOS[number]
