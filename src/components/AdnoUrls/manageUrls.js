@@ -167,10 +167,9 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
         const sourceByCanvas = new Map(canvases.map(({ canvas, image }) => [canvas.id, image.source]))
 
         const images = canvases.map(({ canvas, image }) => ({
+            ...image,
             id: canvas.id,
-            source: image.source,
-            label: extractLanguageValue(canvas.label) || '',
-            type: image.type
+            label: extractLanguageValue(canvas.label) || ''
         }))
 
         const project = withImages({
@@ -218,6 +217,13 @@ function buildImportedAnnotations(annotation, sourceByCanvas) {
     return []
 }
 
+function canvasSize(painted, canvas) {
+    const width = painted.width || canvas.width
+    const height = painted.height || canvas.height
+
+    return width && height ? { width, height } : {}
+}
+
 function canvasImage(canvas) {
     const painted = canvas.items?.[0]?.items?.[0]?.body
 
@@ -225,13 +231,14 @@ function canvasImage(canvas) {
         return null
     }
 
+    const size = canvasSize(painted, canvas)
     const service = painted.service?.[0]?.id || painted.service?.[0]?.['@id']
 
     if (service) {
-        return { source: service.endsWith('info.json') ? service : `${service}/info.json`, type: 'iiif' }
+        return { source: service.endsWith('info.json') ? service : `${service}/info.json`, type: 'iiif', ...size }
     }
 
-    return painted.id ? { source: painted.id, type: 'image' } : null
+    return painted.id ? { source: painted.id, type: 'image', ...size } : null
 }
 
 function remapTargetSource(target, sourceByCanvas) {

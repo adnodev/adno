@@ -9,7 +9,9 @@ export type ProjectImage = {
     source: string,
     type: ImageType,
     id?: string,
-    label?: string
+    label?: string,
+    width?: number,
+    height?: number
 }
 
 export type ImageIndex = number
