@@ -295,7 +295,6 @@ class AdnoEmbed extends Component {
                     changeSelectedAnno={this.changeSelectedAnno}
                     initialAnnotationsVisible={this.state.isAnnotationsVisible}
                     crossOriginPolicy={false}
-                    permanentOverlay
                     contentPosition={this.state.contentPosition}
                     mosaicRatio={this.state.mosaicRatio}
                     mosaicRotation={this.state.mosaicRotation}

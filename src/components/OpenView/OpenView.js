@@ -1,6 +1,5 @@
 import { Component, createRef } from "react"
 import { withRouter } from "react-router-dom";
-import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons"
@@ -557,10 +556,10 @@ class OpenView extends Component {
     }
 
     resetFullscreenAnnotationScrolling = () => {
-        const fullscreenAnnotation = document.getElementById('adno-osd-anno-fullscreen');
+        const content = document.getElementById('adno-content-margin');
 
-        if (fullscreenAnnotation)
-            fullscreenAnnotation.scrollTop = 0;
+        if (content)
+            content.scrollTop = 0;
     }
 
     toggleFullScreen = () => {
@@ -782,40 +781,16 @@ class OpenView extends Component {
 
     marginPosition = () => this.props.contentPosition || 'left'
 
-    isFloating = () => this.marginPosition() === 'floating'
-
     mosaic = () => mosaicLayout(
         deriveGroups(this.props.selectedAnno).length,
         this.props.mosaicRotation,
         this.props.mosaicRatio)
-
-    getAnnotationHTMLBody = (annotation) => {
-        if (annotation && annotation.body) {
-            if (Array.isArray(annotation.body) &&
-                annotation.body.find(annoBody => annoBody.type === "HTMLBody") &&
-                annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
-                return (
-                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"} id="adno-osd-anno-fullscreen">
-                        {parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
-                    </div>
-                )
-            }
-        }
-    }
 
     render() {
         const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
         const layout = this.mosaic()
 
         return <div className="open-view flex flex-col flex-grow relative">
-            {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
-                <AdnoNavigator
-                    viewer={this.openSeadragon}
-                    imageRatio={this.state.imageRatio}
-                    layout={this.state.navigatorLayout}
-                    imgUrl={this.state.navigatorImgUrl}
-                />
-            )}
             <div ref={this.toolbarRef}
                 className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"}
                 style={{
@@ -963,12 +938,7 @@ class OpenView extends Component {
                 </div>
             </div>
             <div id="adno-osd" style={{ position: 'relative' }} >
-                {
-                    this.isFloating() && (this.props.permanentOverlay || this.state.fullScreenEnabled) && this.props.selectedAnno && this.props.selectedAnno.body &&
-                    this.getAnnotationHTMLBody(this.props.selectedAnno)
-                }
-
-                {!this.isFloating() && hasMarginContent(this.props.selectedAnno) &&
+                {hasMarginContent(this.props.selectedAnno) &&
                     <ContentMargin
                         annotation={this.props.selectedAnno}
                         position={this.marginPosition()}
@@ -982,6 +952,15 @@ class OpenView extends Component {
                         gridTemplateAreas: layout.areas
                     }}>
                     <div id="adno-osd-viewer" style={{ gridArea: layout.names[0] }}></div>
+
+                    {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
+                        <AdnoNavigator
+                            viewer={this.openSeadragon}
+                            imageRatio={this.state.imageRatio}
+                            layout={this.state.navigatorLayout}
+                            imgUrl={this.state.navigatorImgUrl}
+                        />
+                    )}
 
                     {this.props.selectedAnno &&
                         <GroupWorkspace

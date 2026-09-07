@@ -59,21 +59,7 @@ class OneCardView extends Component {
                 <div className="adno-card-body">
                     {this.getAnnotationHTMLBody()}
                 </div>
-
-
-                <div className="btn-line-one-card">
-
-                    {this.state.annoBody && this.props.contentPosition === 'floating' && <button type="button" className="btn btn-outline btn-sm btn-show-more bg-white"
-                        onClick={event => {
-                            event.stopPropagation()
-                            this.props.openFullAnnotationView(this.props.annotation)
-                        }}>
-                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.read_more')}>
-                            <FontAwesomeIcon icon={faExpand} />
-                        </div>
-                    </button>}
-                </div>
-            </div >
+            </div>
         )
     }
 }

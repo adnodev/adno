@@ -10,7 +10,7 @@
     --adno-view-color: #A3B18A; /* Lime 500 */
 
     --adno-margin-width: clamp(360px, 26vw, 520px);
-    --adno-margin-height: 38%;
+    --adno-margin-height: 20%;
 }
 
 #app {

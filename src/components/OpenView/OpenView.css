@@ -45,42 +45,6 @@
     display: none;
 }
 
-.adno-osd-anno-fullscreen {
-    position: absolute;
-    z-index: 10000;
-    top: 64px;
-    left: 2%;
-    width: 24vw;
-    height: auto;
-    background: rgb(255, 255, 255);
-    color: #71719d;
-    border-radius: 2px;
-    padding: 10px;
-    overflow: auto;
-    resize: both;
-    min-width: 15vw;
-    max-height: calc(100% - 16vh);
-    font-size: large;
-}
-
-.adno-osd-anno-fullscreen-tb-opened {
-    position: absolute;
-    z-index: 10000;
-    top: 8%;
-    left: 2%;
-    width: 24vw;
-    height: auto;
-    background: rgb(255, 255, 255);
-    color: #71719d;
-    border-radius: 2px;
-    padding: 10px;
-    overflow: auto;
-    resize: both;
-    min-width: 15vw;
-    max-height: calc(100% - 16vh);
-    font-size: large;
-}
-
 .adno-timer-osd {
     text-align: center;
 }
@@ -143,6 +107,18 @@
     gap: 10px;
 }
 
+.content-margin--floating {
+    top: 4rem;
+    left: 1.5rem;
+    width: 22rem;
+    max-width: calc(100% - 3rem);
+    max-height: calc(100% - 8rem);
+    border: 1px solid #d4d4d8;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    resize: both;
+}
+
 .content-margin--left {
     top: 0;
     left: 0;
@@ -163,7 +139,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    max-height: var(--adno-margin-height);
+    height: var(--adno-margin-height);
     border-top: 1px solid #d4d4d8;
 }
 
