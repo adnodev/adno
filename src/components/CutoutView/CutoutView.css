@@ -1,12 +1,12 @@
 .cutout-panel {
     position: absolute;
-    bottom: calc(12px + var(--cutout-step, 0px));
-    left: calc(12px + var(--cutout-step, 0px));
+    bottom: calc(0.75rem + var(--cutout-step, 0px));
+    left: calc(0.75rem + var(--cutout-step, 0px));
     z-index: 10000;
     display: flex;
     flex-direction: column;
-    min-width: 240px;
-    min-height: 200px;
+    max-width: calc(100% - 1.5rem);
+    max-height: calc(100% - 1.5rem);
     overflow: hidden;
     border-radius: 6px;
     background: #fff;
@@ -14,18 +14,18 @@
 }
 
 .cutout-panel--default {
-    width: 30vw;
-    height: 38vh;
+    width: 24rem;
+    height: 18rem;
 }
 
 .cutout-panel--tall {
-    width: 30vw;
-    height: calc(100% - 24px);
+    width: 24rem;
+    height: calc(100% - 1.5rem);
 }
 
 .cutout-panel--full {
-    width: calc(100% - 24px);
-    height: calc(100% - 24px);
+    width: calc(100% - 1.5rem);
+    height: calc(100% - 1.5rem);
 }
 
 .cutout-panel--minimized {
@@ -116,14 +116,4 @@
         right: 12px;
         width: auto;
     }
-}
-
-.cutout-panel--dodge-left,
-.cutout-pill--dodge-left {
-    left: calc(var(--adno-margin-width) + 12px + var(--cutout-step, 0px));
-}
-
-.cutout-panel--dodge-bottom,
-.cutout-pill--dodge-bottom {
-    bottom: calc(var(--adno-margin-height) + 12px + var(--cutout-step, 0px));
 }

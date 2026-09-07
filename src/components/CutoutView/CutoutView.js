@@ -110,12 +110,6 @@ class CutoutView extends Component {
 
     anchor = () => ({ '--cutout-step': `${(this.props.rank || 0) * CASCADE_STEP}px` })
 
-    dodge = (prefix) => {
-        const position = this.props.contentPosition
-
-        return position === 'left' || position === 'bottom' ? `${prefix}--dodge-${position}` : ''
-    }
-
     resize = (size) => {
         this.props.setView({ ...this.props.view, size, position: null })
     }
@@ -124,7 +118,7 @@ class CutoutView extends Component {
         const rotation = groupRotation(this.props.annotation, this.props.groupId)
         const { minimized, size, position } = this.props.view
 
-        const classes = ["cutout-panel", `cutout-panel--${size}`, this.dodge("cutout-panel")].filter(Boolean)
+        const classes = ["cutout-panel", `cutout-panel--${size}`]
 
         if (minimized) {
             classes.push("cutout-panel--minimized")
@@ -171,7 +165,7 @@ class CutoutView extends Component {
 
                 {minimized &&
                     <button type="button"
-                        className={["cutout-pill", this.dodge("cutout-pill")].filter(Boolean).join(" ")}
+                        className="cutout-pill"
                         style={this.anchor()}
                         aria-label={this.props.t('annotation.cutout_expand')}
                         onClick={() => this.props.setView({ ...this.props.view, minimized: false })}>

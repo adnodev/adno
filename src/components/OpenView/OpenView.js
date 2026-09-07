@@ -975,21 +975,20 @@ class OpenView extends Component {
                             crossOriginPolicy={this.crossOrigin()}
                             translate={this.props.t} />
                     }
-                </div>
 
-                {this.cutoutGroups().map((groupId, rank) =>
-                    <CutoutView key={cutoutKey(groupId)}
-                        elementId={`cutout-osd-${cutoutKey(groupId)}`}
-                        rank={rank}
-                        project={this.props.selectedProject}
-                        annotation={this.state.cutoutAnno}
-                        groupId={groupId}
-                        contentPosition={this.marginPosition()}
-                        crossOriginPolicy={this.crossOrigin()}
-                        styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
-                        view={this.cutoutViewFor(groupId)}
-                        setView={(view) => this.setCutoutView(groupId, view)} />
-                )}
+                    {this.cutoutGroups().map((groupId, rank) =>
+                        <CutoutView key={cutoutKey(groupId)}
+                            elementId={`cutout-osd-${cutoutKey(groupId)}`}
+                            rank={rank}
+                            project={this.props.selectedProject}
+                            annotation={this.state.cutoutAnno}
+                            groupId={groupId}
+                            crossOriginPolicy={this.crossOrigin()}
+                            styles={this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus}
+                            view={this.cutoutViewFor(groupId)}
+                            setView={(view) => this.setCutoutView(groupId, view)} />
+                    )}
+                </div>
             </div>
         </div>
     }
