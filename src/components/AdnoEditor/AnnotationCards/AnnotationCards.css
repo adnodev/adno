@@ -23,31 +23,21 @@
     white-space: pre-wrap;
 }
 
-.adno-card-selected-body{
-    width: 276px;
-    min-height: 70px;
-    text-overflow: ellipsis;
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
-    overflow: hidden;
-    white-space: pre-wrap;
-}
-
-.adno-card-body h1, .adno-card-selected-body h1 {
+.adno-card-body h1 {
   font-size: 1.25rem;   /* 20px */
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
-.adno-card-body h2, .adno-card-selected-body h2 {
+.adno-card-body h2 {
   font-size: 1.125rem;  /* 18px */
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.01em;
 }
 
-.adno-card-body h3, .adno-card-selected-body h3 {
+.adno-card-body h3 {
   font-size: 0.75rem;   /* 12px */
   font-weight: 600;
   line-height: 1.3;

@@ -56,7 +56,7 @@ class OneCardView extends Component {
                     }
                 </div>
 
-                <div className={this.props.selectedAnno && this.props.selectedAnno.id === this.props.annotation.id ? "adno-card-selected-body" : "adno-card-body"}>
+                <div className="adno-card-body">
                     {this.getAnnotationHTMLBody()}
                 </div>
 

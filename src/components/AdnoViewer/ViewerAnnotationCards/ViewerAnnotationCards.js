@@ -60,8 +60,7 @@ class ViewerAnnotationCards extends Component {
                                             openFullAnnotationView={(annotation) => this.props.openFullAnnotationView(annotation)}
                                             project={this.props.selectedProject}
                                             annotation={annotation}
-                                            contentPosition={this.props.contentPosition}
-                                            selectedAnno={this.props.selectedAnno} />
+                                            contentPosition={this.props.contentPosition} />
                                     </div>
                                 )
                             })}
