@@ -91,9 +91,9 @@ class ProjectSettings extends Component {
                         <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} translate={this.props.t} />
                     </div>
 
-                    <div className={`project-metadatas ${this.state.tab === 'viewer' ? 'propject-metadatas--grid' : ''}`}>
+                    <div className={`project-metadatas ${this.state.tab === 'viewer' ? 'project-metadatas--grid' : ''}`}>
                         {PARAMETERS_BY_TAB[this.state.tab].includes('tags') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.tags')}</span>
                                 </div>
@@ -113,7 +113,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('delay') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.delay')}</span>
                                 </div>
@@ -123,7 +123,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineWidth') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.outline_width')}</span>
                                 </div>
@@ -139,7 +139,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineColor') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.outline_color')}</span>
                                 </div>
@@ -182,7 +182,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineColorFocus') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.outline_focus')}</span>
                                 </div>
@@ -225,7 +225,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('groupColorA') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.group_colors')}</span>
                                 </div>
@@ -245,7 +245,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('startbyfirstanno') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.begin_first_anno')}</span>
                                 </div>
@@ -255,7 +255,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('shouldAutoPlayAnnotations') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.should_auto_play_annotations')}</span>
                                 </div>
@@ -265,7 +265,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showNavigator') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.navigator')}</span>
                                 </div>
@@ -275,7 +275,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('displayToolbar') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
                                 </div>
@@ -285,7 +285,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showOutlines') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.show_outlines')}</span>
                                 </div>
@@ -301,7 +301,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('toolsbarOnFs') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
                                 </div>
@@ -311,7 +311,7 @@ class ProjectSettings extends Component {
                         </>}
                         
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showCurrentAnnotation') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.show_only_current_annotation')}</span>
                                 </div>
@@ -327,7 +327,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showEyes') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.show_eyes')}</span>
                                 </div>
@@ -343,7 +343,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('soundMode') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.annotation_sound')}</span>
                                 </div>
@@ -362,7 +362,7 @@ class ProjectSettings extends Component {
 
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('sidebarEnabled') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.annos_nav')}</span>
                                 </div>
@@ -372,7 +372,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('rotation') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.enable_rota')}</span>
                                 </div>
@@ -382,7 +382,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('defaultRotation') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.default_rotation')}</span>
                                 </div>
@@ -395,7 +395,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('rotationTransition') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.rotation_transition')}</span>
                                 </div>
