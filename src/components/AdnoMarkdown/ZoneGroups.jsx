@@ -1,8 +1,12 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCrosshairs, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { useState } from "react"
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCheck, faCopy, faCrosshairs, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+
+import { copyToClipboard } from "../../Utils/clipboard"
 import { deriveGroups, groupColor, groupLetter, groupRotation } from "../../Utils/groups"
 import { getGroupCutout } from "../../Utils/cutout"
+import { imageApiUrl } from "../../Utils/imageApi"
 import { QUARTER_TURNS } from "../../Utils/orientation"
 import { getTargets } from "../../Utils/targets"
 import { ZonePreview } from "./ZonePreview"
@@ -51,10 +55,19 @@ function applyDrop(source, spot, moveZone, regroupZone) {
     regroupZone(source.index, spot.id)
 }
 
-function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions, translate }) {
+function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, actions, translate }) {
+    const [orientedCopy, setOrientedCopy] = useState(true)
+    const [copiedZone, setCopiedZone] = useState(null)
+
     const rotation = groupRotation(annotation, group.id)
     const cutout = getGroupCutout(annotation, group.id)
     const isFreeAngle = rotation !== null && !QUARTER_TURNS.includes(rotation)
+
+    const copyZoneUrl = (url, index) => {
+        copyToClipboard(url)
+        setCopiedZone(index)
+        setTimeout(() => setCopiedZone(null), 2000)
+    }
 
     return (
         <div className="zone-group" data-group-id={group.id} style={{ borderLeftColor: group.color }}>
@@ -82,6 +95,16 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
                         </div>
                     </button>
 
+                    {rotation !== null &&
+                        <label className="zone-group-oriented">
+                            <input type="checkbox"
+                                className="toggle toggle-xs"
+                                checked={orientedCopy}
+                                onChange={() => setOrientedCopy(!orientedCopy)} />
+                            <span>{translate('annotation.copy_oriented')}</span>
+                        </label>
+                    }
+
                     <label className="zone-group-cutout">
                         <input type="checkbox"
                             className="toggle toggle-xs"
@@ -93,14 +116,30 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
             </div>
 
             <div className="zone-list">
-                {group.targets.map(({ target, index }) =>
-                    <div className={index === selectedTargetIndex ? "zone-row zone-row--current" : "zone-row"}
+                {group.targets.map(({ target, index }) => {
+                    const url = imageApiUrl(target, images || [], orientedCopy ? rotation : null)
+
+                    return <div className={index === selectedTargetIndex ? "zone-row zone-row--current" : "zone-row"}
                         key={`zone-${index}`}
                         draggable="true"
                         data-zone-index={index}
                         data-zone-group={group.id}
                         onClick={() => actions.pickZone(index)}>
                         <ZonePreview target={target} />
+
+                        {url &&
+                            <button type="button"
+                                className="btn btn-xs btn-outline"
+                                onClick={event => {
+                                    event.stopPropagation()
+                                    copyZoneUrl(url, index)
+                                }}>
+                                <div className="tooltip tooltip-left z-50" data-tip={translate('annotation.copy_zone_url')}>
+                                    <FontAwesomeIcon icon={copiedZone === index ? faCheck : faCopy} />
+                                </div>
+                            </button>
+                        }
+
                         <button type="button"
                             className="btn btn-xs btn-outline btn-error"
                             disabled={total < 2}
@@ -113,7 +152,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
                             </div>
                         </button>
                     </div>
-                )}
+                })}
 
                 <button type="button"
                     className="zone-row zone-row--add"
@@ -126,7 +165,7 @@ function ZoneGroupCard({ group, annotation, total, selectedTargetIndex, actions,
     )
 }
 
-export function ZoneGroups({ annotation, groupColors, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, setRotation, captureRotation, setCutout, translate }) {
+export function ZoneGroups({ annotation, groupColors, images, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, setRotation, captureRotation, setCutout, translate }) {
     const groups = withDraft(deriveGroups(annotation, groupColors), draftGroupId, groupColors)
     const total = getTargets(annotation).length
     const actions = { pickZone, removeZone, addZone, setRotation, captureRotation, setCutout }
@@ -172,6 +211,7 @@ export function ZoneGroups({ annotation, groupColors, draftGroupId, selectedTarg
                 <ZoneGroupCard key={group.id}
                     group={group}
                     annotation={annotation}
+                    images={images}
                     total={total}
                     selectedTargetIndex={selectedTargetIndex}
                     actions={actions}

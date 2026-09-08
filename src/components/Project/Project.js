@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next"
 import { buildTagsList } from "../../Utils/utils";
 import { defaultProjectSettings } from "../../Utils/project";
 import { ensureTargetGroups, groupPalette } from "../../Utils/groups"
+import { projectImages } from "../../Utils/images"
 import { exportToIIIF } from "../../services/iiif/exporter";
 import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
@@ -253,6 +254,7 @@ const Project = ({ editMode }) => {
                     closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false, pendingZone: null }))}
                     registerGuard={(fn) => { mdGuard.current = fn }}
                     groupColors={groupPalette(settings)}
+                    images={projectImages(state.selectedProject)}
                     selectedAnnotation={selectedAnnotation}
                     selectedProjectId={id}
                     annotations={annotations}

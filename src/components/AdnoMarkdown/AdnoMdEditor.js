@@ -410,6 +410,7 @@ class AdnoMdEditor extends Component {
                             <ZoneGroups
                                 annotation={this.props.selectedAnnotation}
                                 groupColors={this.props.groupColors}
+                                images={this.props.images}
                                 draftGroupId={this.state.draftGroupId}
                                 selectedTargetIndex={this.props.selectedTargetIndex}
                                 pickZone={index => this.props.changeSelectedAnno(this.props.selectedAnnotation, index)}

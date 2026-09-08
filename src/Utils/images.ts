@@ -1,6 +1,6 @@
 import type { Project } from "./project"
 
-const IIIF_TYPE = 'iiif'
+export const IIIF_TYPE = 'iiif'
 const IMAGE_TYPE = 'image'
 
 export type ImageType = typeof IIIF_TYPE | typeof IMAGE_TYPE
