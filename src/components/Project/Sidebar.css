@@ -43,6 +43,10 @@
 .sidebar .closebtn {
   color: #f1f1f1;
 }
+.sidebar-opened-w-modal:has(.sidebar-menu) {
+  overflow: visible;
+}
+
 .sidebar--collapsed,
 .sidebar--hover {
   min-width: 46px;

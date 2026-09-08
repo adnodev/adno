@@ -53,12 +53,12 @@ test.describe('Editing a project made of several images', () => {
     test('only the zones of the current image are drawn', async ({ page }) => {
         await openEditor(page, fixture);
 
-        expect(await drawnIds(page)).toEqual(['#zone-recto', '#zone-both']);
+        expect((await drawnIds(page)).sort()).toEqual(['#zone-both', '#zone-recto']);
 
         await page.locator('[data-image-index="1"]').click();
 
         await expect(page.locator('.filmstrip-count')).toHaveText('2/2');
-        expect(await drawnIds(page)).toEqual(['#zone-verso', '#zone-both#t:1']);
+        expect((await drawnIds(page)).sort()).toEqual(['#zone-both#t:1', '#zone-verso']);
     });
 
     test('the arrow keys walk through the images', async ({ page }) => {
@@ -106,8 +106,7 @@ test.describe('Editing a project made of several images', () => {
         await page.mouse.move(box.x + box.width / 2 + 40, box.y + box.height / 2 + 30, { steps: 10 });
         await page.mouse.up();
 
-        await page.locator('.move-btn').click();
-        await page.locator('.swal2-confirm').click();
+        await page.waitForTimeout(500);
 
         const saved = await readProject(page, fixture.id);
         /** @type {any[]} */

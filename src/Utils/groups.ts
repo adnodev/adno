@@ -186,10 +186,20 @@ function groupColorsById(annotation: Annotation, palette?: GroupPalette): Record
         (acc, entry) => ({ ...acc, [shadowId(annotation.id, entry.index)]: group.color }), colors), {})
 }
 
+export function shapeId(shape: Element & { annotation?: { id?: string } }): string {
+    return shape.getAttribute('data-id') || shape.annotation?.id || ''
+}
+
 function applyGroupColors(root: Element | undefined, annotation: Annotation | null, palette?: GroupPalette): void {
     const colors = annotation ? groupColorsById(annotation, palette) : {}
+    const isolated = getTargets(annotation).length > 1
 
-    annotationShapes(root).forEach(shape => paintShape(shape, colors[shape.getAttribute('data-id')]))
+    annotationShapes(root).forEach(shape => {
+        const color = colors[shapeId(shape)]
+
+        paintShape(shape, color)
+        shape.classList.toggle('a9s-muted', isolated && !color)
+    })
 }
 
 export function scheduleGroupColors(previous: number | undefined, element: Element, annotation: Annotation | null, palette?: GroupPalette): number {

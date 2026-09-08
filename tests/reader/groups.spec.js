@@ -1,7 +1,7 @@
 // @ts-check
 
 const { test, expect } = require('@playwright/test');
-const { BASE_URL, clearProjectsDB, seedProject } = require('../helpers');
+const { BASE_URL, clearProjectsDB, expandSidebar, seedProject } = require('../helpers');
 
 const canvas = require('../multitarget/multitarget.fixture.json');
 
@@ -62,6 +62,7 @@ async function openViewer(page, project) {
     await seedProject(page, project);
     await page.goto(`${BASE_URL}/#/project/${PROJECT_ID}/view`);
     await page.waitForSelector('.a9s-annotation', { timeout: 30000 });
+    await expandSidebar(page);
     await page.locator('.anno-card').first().click();
     await page.waitForTimeout(1500);
 }

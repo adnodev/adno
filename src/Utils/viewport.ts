@@ -2,7 +2,7 @@ import { normalizeAngle, resolveRotation, shortestDelta } from "./orientation"
 import { getGroupCutout } from "./cutout"
 import { annotationShapes } from "./utils"
 import { getTargets, parseShadowId, unionBoxes, type Annotation, type Box, type ShadowAnnotation, type ShadowId } from "./targets"
-import { groupBox, groupRotation, groupShadows, targetGroupId, type GroupId } from "./groups"
+import { groupBox, groupRotation, groupShadows, shapeId, targetGroupId, type GroupId } from "./groups"
 import type { TileSource } from "./images"
 import type { RotationTransition } from "./project"
 
@@ -12,6 +12,7 @@ const PAN_TIMEOUT = 1500
 const ANGLE_EPSILON = 0.5
 const BOUNDS_PADDING = 0.08
 const GROUP_PADDING = 0.06
+const EXIT_MARGIN = 40
 const TILE_CACHE = 40
 
 type Spring = {
@@ -32,6 +33,9 @@ type OsdViewport = {
     getRotation(): number,
     setRotation(degrees: number, immediately?: boolean): void,
     fitBounds(bounds: ViewportRect, immediately?: boolean): void,
+    getBounds(): ViewportRect,
+    panTo(center: { x: number, y: number }, immediately?: boolean): void,
+    viewportToViewerElementRectangle(rect: ViewportRect): ViewportRect,
     imageToViewportRectangle(x: number, y: number, width: number, height: number): ViewportRect
 }
 
@@ -39,6 +43,9 @@ export type Viewer = {
     element: Element,
     viewport: OsdViewport,
     isOpen(): boolean,
+    addOverlay(options: { element: HTMLElement, location: ViewportRect }): void,
+    updateOverlay(element: HTMLElement, location: ViewportRect): void,
+    removeOverlay(element: HTMLElement): void,
     addHandler(event: string, handler: () => void): void,
     addOnceHandler(event: string, handler: () => void): void,
     removeHandler(event: string, handler: () => void): void,
@@ -70,11 +77,13 @@ type LastView = {
 
 declare const OpenSeadragon: {
     (options: Record<string, unknown>): Viewer,
-    Annotorious(viewer: Viewer, options: Record<string, unknown>): Annotorious
+    Annotorious(viewer: Viewer, options: Record<string, unknown>): Annotorious,
+    Rect: new (x: number, y: number, width: number, height: number) => ViewportRect
 }
 
 const pendingTurns = new WeakMap<Viewer, PendingTurn>()
 const lastViews = new WeakMap<Viewer, LastView>()
+const workspaces = new WeakMap<Viewer, HTMLElement>()
 
 function prefersReducedMotion(): boolean {
     return typeof window.matchMedia === "function"
@@ -103,8 +112,8 @@ function annotationBounds(viewer: Viewer, annotationId: ShadowId, padding = 0, s
     const wanted = parseShadowId(annotationId).id
 
     const boxes = annotationShapes(viewer.element)
-        .filter(item => parseShadowId(item.getAttribute('data-id')).id === wanted)
-        .filter(item => !shadowIds || shadowIds.includes(item.getAttribute('data-id')))
+        .filter(item => parseShadowId(shapeId(item)).id === wanted)
+        .filter(item => !shadowIds || shadowIds.includes(shapeId(item)))
         .filter(item => typeof item.getBBox === "function")
         .map(item => item.getBBox())
         .filter(box => box.width && box.height)
@@ -116,6 +125,77 @@ function annotationBounds(viewer: Viewer, annotationId: ShadowId, padding = 0, s
     }
 
     return paddedRect(viewer.viewport, box, padding)
+}
+
+function overlaps(a: ViewportRect, b: ViewportRect): boolean {
+    return a.x < b.x + b.width
+        && b.x < a.x + a.width
+        && a.y < b.y + b.height
+        && b.y < a.y + a.height
+}
+
+export function revealAnnotation(viewer: Viewer, annotationId: ShadowId, shadowIds: ShadowId[] | null = null): void {
+    const bounds = annotationBounds(viewer, annotationId, 0, shadowIds)
+
+    if (!bounds || overlaps(bounds, viewer.viewport.getBounds())) {
+        return
+    }
+
+    viewer.viewport.panTo({
+        x: bounds.x + bounds.width / 2,
+        y: bounds.y + bounds.height / 2
+    })
+}
+
+export function isInsideAnnotation(viewer: Viewer, annotationId: ShadowId, pixel: { x: number, y: number }): boolean {
+    const bounds = annotationBounds(viewer, annotationId)
+
+    if (!bounds) {
+        return false
+    }
+
+    const rect = viewer.viewport.viewportToViewerElementRectangle(bounds)
+
+    return pixel.x >= rect.x - EXIT_MARGIN
+        && pixel.x <= rect.x + rect.width + EXIT_MARGIN
+        && pixel.y >= rect.y - EXIT_MARGIN
+        && pixel.y <= rect.y + rect.height + EXIT_MARGIN
+}
+
+export function showWorkspace(viewer: Viewer, annotationId: ShadowId): void {
+    const bounds = annotationBounds(viewer, annotationId)
+
+    if (!bounds) {
+        hideWorkspace(viewer)
+        return
+    }
+
+    const location = new OpenSeadragon.Rect(bounds.x, bounds.y, bounds.width, bounds.height)
+    const existing = workspaces.get(viewer)
+
+    if (existing) {
+        viewer.updateOverlay(existing, location)
+        return
+    }
+
+    const element = document.createElement('div')
+
+    element.className = 'workspace-frame'
+    element.style.setProperty('--exit-margin', `${EXIT_MARGIN}px`)
+
+    viewer.addOverlay({ element, location })
+    workspaces.set(viewer, element)
+}
+
+export function hideWorkspace(viewer: Viewer): void {
+    const element = workspaces.get(viewer)
+
+    if (!element) {
+        return
+    }
+
+    viewer.removeOverlay(element)
+    workspaces.delete(viewer)
 }
 
 function cancelPendingTurn(viewer: Viewer): void {

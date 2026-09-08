@@ -109,4 +109,19 @@ async function readProjects(page) {
     return (await readStore(page)) || [];
 }
 
-module.exports = { BASE_URL, clearProjectsDB, readProject, readProjects, seedProject };
+/**
+ * @param {import('@playwright/test').Page} page
+ */
+async function expandSidebar(page) {
+    const control = page.locator('.sidebar-control-btn');
+
+    if (await control.count() === 0) {
+        return;
+    }
+
+    await control.click({ timeout: 30000 });
+    await page.locator('.sidebar-menu-item').first().click();
+    await page.waitForSelector('.anno-card', { timeout: 30000 });
+}
+
+module.exports = { BASE_URL, clearProjectsDB, expandSidebar, readProject, readProjects, seedProject };

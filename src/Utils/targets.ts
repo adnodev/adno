@@ -254,10 +254,17 @@ export function toShadow(annotation: Annotation, target: Target, index: TargetIn
     }
 }
 
+function targetArea(target: Target): number {
+    const box = targetBox(target)
+
+    return box ? box.width * box.height : 0
+}
+
 export function toShadowAnnotations(annotations: Annotation[], images: ProjectImage[], imageIndex: ImageIndex): ShadowAnnotation[] {
     return (annotations || []).flatMap(annotation =>
         targetsOnImage(annotation, images, imageIndex)
             .map(({ target, index }) => toShadow(annotation, target, index)))
+        .sort((a, b) => targetArea(b.target) - targetArea(a.target))
 }
 
 export function zoneCountsByImage(annotations: Annotation[], images: ProjectImage[]): number[] {

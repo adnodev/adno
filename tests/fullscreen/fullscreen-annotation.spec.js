@@ -1,6 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-const { BASE_URL, clearProjectsDB, seedProject } = require('../helpers');
+const { BASE_URL, clearProjectsDB, expandSidebar, seedProject } = require('../helpers');
 const fixture = require('./project.fixture.json');
 
 const CONTENT_1 = 'CONTENU_ANNOTATION_1';
@@ -9,6 +9,7 @@ const CONTENT_2 = 'CONTENU_ANNOTATION_2';
 async function openViewer(page) {
     await seedProject(page, fixture);
     await page.goto(`${BASE_URL}/#/project/${fixture.id}/view`);
+    await expandSidebar(page);
     await expect(page.locator(`[id="anno_card_${fixture.annotations[0].id}"]`))
         .toBeVisible({ timeout: 30000 });
 }

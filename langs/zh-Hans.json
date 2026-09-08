@@ -104,7 +104,6 @@
         "close": "关闭"
     },
     "editor": {
-        "approve_changes": "确认更改",
         "md_add_tag": "添加标签",
         "audio_track": "音频轨道（URL）",
         "audio_creator": "音频创作者（版权信息）",
@@ -179,7 +178,6 @@
         "projects_list_up_to_date": "项目列表已更新",
         "duplicate_project": "确定要复制此项目吗？",
         "confirm_duplication": "是，复制此项目",
-        "annotation_moved": "标注已成功移动",
         "ask_delete": "确定要删除此标注吗？",
         "confirm_del_annotation": "是，删除此标注",
         "del_annotation_confirmation": "标注已成功删除",

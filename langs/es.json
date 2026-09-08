@@ -29,7 +29,6 @@
     },
     "create_project": "Crea un proyecto nuevo",
     "editor": {
-        "approve_changes": "Aprobar los cambios",
         "audio_creator": "Creador de la pista de audio (Crédito)",
         "audio_track": "Pista de audio (URL)",
         "flip": "Voltear horizontalmente",
@@ -99,7 +98,6 @@
     },
     "modal": {
         "adno_proj_detected": "Proyecto Adno detectado, ¿le gustaŕia importarlo?",
-        "annotation_moved": "Anotación movida con éxito",
         "ask_delete": "¿Realmente desea eliminar esta anotación?",
         "cancel": "Cancelar",
         "confirm_del_annotation": "Sí, eliminar esta anotación",

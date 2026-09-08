@@ -104,7 +104,6 @@
         "close": "Fermer"
     },
     "editor": {
-        "approve_changes": "Valider les modifications",
         "md_add_tag": "Ajouter un mot clé",
         "audio_track": "Piste audio (URL)",
         "audio_creator": "Créateur de la piste audio (Crédit)",
@@ -179,7 +178,6 @@
         "projects_list_up_to_date": "La liste des projets a bien été mise à jour",
         "duplicate_project": "Voulez-vous vraiment dupliquer ce projet ?",
         "confirm_duplication": "Dupliquer mon projet",
-        "annotation_moved": "Annotation déplacée avec succès",
         "ask_delete": "Voulez-vous vraiment supprimer cette annotation ?",
         "confirm_del_annotation": "Oui, supprimer cette annotation",
         "del_annotation_confirmation": "L'annotation a bien été supprimée",

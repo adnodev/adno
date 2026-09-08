@@ -1,21 +1,12 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
 
-// Import FontAwesome for all icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-
-// Import SweetAlert
-import Swal from "sweetalert2";
-
-// Import CSS
 import "./AdnoEditor.css";
 
-// Add translations
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
-import { applyAnnotationView, watchViewerResize } from "../../Utils/viewport"
+import { hideWorkspace, isInsideAnnotation, revealAnnotation, showWorkspace, watchViewerResize } from "../../Utils/viewport"
 import { preserveTargetRotation } from "../../Utils/orientation"
 import { activeGroupId, buildTargetId, deriveGroups, preserveTargetId, scheduleGroupColors, targetGroupId } from "../../Utils/groups"
 import { imageTileSource, projectImages } from "../../Utils/images"
@@ -28,7 +19,6 @@ class AdnoEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isMovingItem: false,
             pending: null,
             imageRatio: null,
             navigatorLayout: null,
@@ -66,6 +56,8 @@ class AdnoEditor extends Component {
             showFullPageControl: false,
         });
 
+        this.openSeadragon.gestureSettingsMouse.clickToZoom = false
+
         if (this.props.onViewerReady) {
             this.props.onViewerReady(this.openSeadragon)
         }
@@ -73,6 +65,25 @@ class AdnoEditor extends Component {
         this.openSeadragon.addOnceHandler('open', () => {
             this.refreshNavigator()
             this.syncShadows()
+        });
+
+        this.openSeadragon.addHandler('canvas-click', (event) => {
+            const { clientX, clientY } = event.originalEvent
+            const shape = document.elementFromPoint(clientX, clientY)?.closest('.a9s-annotation')
+            const selected = this.props.selectedAnno
+
+            this._clickedShadowId = shape ? shape.getAttribute('data-id') : null
+            this._clickInside = Boolean(selected) && isInsideAnnotation(this.openSeadragon, selected.id, event.position)
+
+            if (!event.quick || shape || !selected || this.props.pendingZone) {
+                return
+            }
+
+            if (this._clickInside) {
+                setTimeout(() => this.changeAnno(this.props.selectedAnno))
+            } else {
+                this.props.changeSelectedAnno(null)
+            }
         });
 
         this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
@@ -162,8 +173,22 @@ class AdnoEditor extends Component {
 
         // Event triggered when user click on an annotation
         this.AdnoAnnotorious.on('selectAnnotation', (shadow) => {
-            const { id, index } = parseShadowId(shadow.id)
+            const clicked = this._clickedShadowId
+            const isolated = getTargets(this.props.selectedAnno).length > 1
+
+            if (!clicked && isolated && this._clickInside) {
+                this.changeAnno(this.props.selectedAnno)
+                return
+            }
+
+            const { id, index } = parseShadowId(clicked || shadow.id)
             const annotation = this.props.annotations.find(anno => anno.id === id)
+            const current = this.props.selectedAnno
+
+            if (current && id === current.id && index === this.props.selectedTargetIndex) {
+                this.changeAnno(current)
+                return
+            }
 
             if (this.state.pending && this.state.pending.id !== id) {
                 this.syncShadows()
@@ -176,9 +201,12 @@ class AdnoEditor extends Component {
 
         // Event triggered when resizing an annotation shape
         this.AdnoAnnotorious.on('changeSelectionTarget', this.applyTargetEdit)
+
+        document.addEventListener('pointerup', this.commitPending, true)
     }
 
     componentWillUnmount() {
+        document.removeEventListener('pointerup', this.commitPending, true)
         this.unwatchResize?.()
         cancelAnimationFrame(this._paintFrame)
         cancelAnimationFrame(this._navFrame)
@@ -204,18 +232,24 @@ class AdnoEditor extends Component {
         }
     }
 
+    shadowsOf = (annotations) => toShadowAnnotations(annotations, this.images(), this.props.currentImageIndex)
+
+    signatureOf = (shadows) => JSON.stringify(shadows.map(shadow => [shadow.id, shadow.target]))
+
     syncShadows = () => {
-        const shadows = toShadowAnnotations(this.currentAnnotations(), this.images(), this.props.currentImageIndex)
-        const signature = JSON.stringify(shadows.map(shadow => [shadow.id, shadow.target]))
+        const shadows = this.shadowsOf(this.currentAnnotations())
+        const signature = this.signatureOf(shadows)
 
         if (signature === this._shadowSignature) {
-            return
+            return false
         }
 
         this._shadowSignature = signature
 
         this.AdnoAnnotorious.setAnnotations(shadows)
         this.paintGroups()
+
+        return true
     }
 
     paintGroups = () => {
@@ -240,6 +274,7 @@ class AdnoEditor extends Component {
             this.syncShadows()
         })
 
+        hideWorkspace(this.openSeadragon)
         this.openSeadragon.open(imageTileSource(image))
     }
 
@@ -257,6 +292,9 @@ class AdnoEditor extends Component {
 
     changeAnno = (annotation) => {
         if (!annotation) {
+            this.AdnoAnnotorious.cancelSelected()
+            hideWorkspace(this.openSeadragon)
+            this.paintGroups()
             return
         }
 
@@ -272,11 +310,13 @@ class AdnoEditor extends Component {
 
         this.AdnoAnnotorious._app.current.annotationLayer.selectedShape?.mouseTracker?.setTracking(false)
 
-        applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
-            defaultRotation: this.props.defaultRotation,
-            transition: this.props.rotationTransition,
-            padded: true
-        })
+        revealAnnotation(this.openSeadragon, shadow.id)
+
+        if (getTargets(annotation).length > 1) {
+            showWorkspace(this.openSeadragon, shadow.id)
+        } else {
+            hideWorkspace(this.openSeadragon)
+        }
 
         this.scrollToCard(annotation.id)
         this.paintGroups()
@@ -303,9 +343,12 @@ class AdnoEditor extends Component {
         const target = preserveTargetId(previous, preserveTargetRotation(previous, newTarget))
 
         this.setState({
-            isMovingItem: true,
             pending: { id, annotation: replaceTargetAt(base, index, target) }
         })
+    }
+
+    commitPending = () => {
+        setTimeout(this.savePending)
     }
 
     savePending = () => {
@@ -317,26 +360,11 @@ class AdnoEditor extends Component {
 
         const newAnnos = this.currentAnnotations()
 
+        this._shadowSignature = this.signatureOf(this.shadowsOf(newAnnos))
         this.props.updateAnnos(newAnnos)
-        this.setState({ isMovingItem: false, pending: null })
+        this.setState({ pending: null })
 
         return projectDB.updateAnnotations(this.props.match.params.id, newAnnos).then(() => true)
-    }
-
-    validateMove = () => {
-        this.savePending().then(saved => {
-            if (!saved) {
-                return
-            }
-
-            Swal.fire({
-                title: this.props.t('modal.annotation_moved'),
-                showCancelButton: false,
-                showConfirmButton: true,
-                confirmButtonText: 'OK',
-                icon: 'success'
-            })
-        })
     }
 
     componentDidUpdate(prevProps) {
@@ -346,16 +374,15 @@ class AdnoEditor extends Component {
         }
 
         const rebuilt = prevProps.annotations !== this.props.annotations
+        const redrawn = rebuilt && this.syncShadows()
 
-        if (rebuilt) {
-            this.syncShadows()
-        }
-
-        const selectionChanged = prevProps.selectedAnno !== this.props.selectedAnno
+        const selectionChanged = (prevProps.selectedAnno && prevProps.selectedAnno.id) !== (this.props.selectedAnno && this.props.selectedAnno.id)
             || prevProps.selectedTargetIndex !== this.props.selectedTargetIndex
 
-        if (rebuilt || selectionChanged) {
+        if (redrawn || selectionChanged) {
             this.changeAnno(this.props.selectedAnno)
+        } else if (rebuilt && getTargets(this.props.selectedAnno).length > 1) {
+            showWorkspace(this.openSeadragon, this.props.selectedAnno.id)
         }
     }
 
@@ -386,7 +413,7 @@ class AdnoEditor extends Component {
                             </button>
                         </div>
                     }
-                    <div id="openseadragon1">
+                    <div id="openseadragon1" className={this.props.pendingZone ? "drawing" : ""}>
                         <div id="toolbar-container"></div>
                         <div id="toolbar-osd"></div>
                     </div>
@@ -405,14 +432,6 @@ class AdnoEditor extends Component {
                             imgUrl={this.state.navigatorImgUrl}
                         />
                     )}
-                    {
-                        this.state.isMovingItem &&
-                        <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
-                            <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
-                                <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
-                            </div>
-                        </button>
-                    }
                 </div>
                 <ImageFilmstrip
                     images={this.images()}

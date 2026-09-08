@@ -38,7 +38,7 @@ const Project = ({ editMode }) => {
         currentImageIndex: 0,
         pendingZone: null,
         sidebarOpened: true,
-        sidebarMode: 'expanded',
+        sidebarMode: 'collapsed',
         updateAnnotation: false,
         showProjectMetadatas: false,
         showSettings: false,
@@ -150,6 +150,8 @@ const Project = ({ editMode }) => {
     };
 
     const undo = () => {
+        const restored = state.past[state.past.length - 1];
+
         setState(prevState => {
             const { past, future, ...present } = prevState;
             if (past.length === 0) return prevState;
@@ -163,9 +165,15 @@ const Project = ({ editMode }) => {
                 ...previousState
             };
         });
+
+        if (restored) {
+            projectDB.updateAnnotations(id, restored.annotations);
+        }
     };
 
     const redo = () => {
+        const restored = state.future[0];
+
         setState(prevState => {
             const { past, future, ...present } = prevState;
             if (future.length === 0) return prevState;
@@ -179,6 +187,10 @@ const Project = ({ editMode }) => {
                 ...nextState
             };
         });
+
+        if (restored) {
+            projectDB.updateAnnotations(id, restored.annotations);
+        }
     };
 
     const { annotations, settings } = state

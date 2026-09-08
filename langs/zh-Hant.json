@@ -104,7 +104,6 @@
         "close": "關閉"
     },
     "editor": {
-        "approve_changes": "確認變更",
         "md_add_tag": "新增標籤",
         "audio_track": "音訊軌道（URL）",
         "audio_creator": "音訊製作者（版權聲明）",
@@ -179,7 +178,6 @@
         "projects_list_up_to_date": "專案清單已更新",
         "duplicate_project": "確定要複製此專案嗎？",
         "confirm_duplication": "是，複製此專案",
-        "annotation_moved": "標註已成功移動",
         "ask_delete": "確定要刪除此標註嗎？",
         "confirm_del_annotation": "是，刪除此標註",
         "del_annotation_confirmation": "標註已成功刪除",
