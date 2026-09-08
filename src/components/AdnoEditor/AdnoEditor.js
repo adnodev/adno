@@ -10,6 +10,7 @@ import { hideWorkspace, isInsideAnnotation, revealAnnotation, showWorkspace, wat
 import { preserveTargetRotation } from "../../Utils/orientation"
 import { activeGroupId, buildTargetId, deriveGroups, preserveTargetId, scheduleGroupColors, targetGroupId } from "../../Utils/groups"
 import { imageTileSource, projectImages } from "../../Utils/images"
+import { rememberImageApi } from "../../Utils/imageApi"
 import { addTarget, getTargets, parseShadowId, pickTargetOnImage, replaceTargetAt, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 import { ImageFilmstrip } from "../ImageFilmstrip/ImageFilmstrip"
@@ -65,6 +66,12 @@ class AdnoEditor extends Component {
         this.openSeadragon.addOnceHandler('open', () => {
             this.refreshNavigator()
             this.syncShadows()
+        });
+
+        this.openSeadragon.addHandler('open', () => {
+            const image = this.images()[this.props.currentImageIndex]
+
+            rememberImageApi(image && image.source, this.openSeadragon.world.getItemAt(0)?.source)
         });
 
         this.openSeadragon.addHandler('canvas-click', (event) => {
