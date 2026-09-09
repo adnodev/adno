@@ -205,8 +205,7 @@
         "cutout_title": "Upright cutout",
         "add_zone": "Add a zone",
         "delete_zone": "Delete this zone",
-        "copy_zone_url": "Copy the IIIF url of this zone",
-        "copy_oriented": "with orientation"
+        "copy_zone_url": "Copy the IIIF url of this zone"
     },
     "navbar": {
         "edit_mode": "edit",

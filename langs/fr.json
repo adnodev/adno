@@ -205,8 +205,7 @@
         "cutout_title": "Découpe redressée",
         "add_zone": "Ajouter une zone",
         "delete_zone": "Supprimer cette zone",
-        "copy_zone_url": "Copier l'URL IIIF de cette zone",
-        "copy_oriented": "avec l'orientation"
+        "copy_zone_url": "Copier l'URL IIIF de cette zone"
     },
     "navbar": {
         "edit_mode": "édition",

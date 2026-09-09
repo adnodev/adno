@@ -205,8 +205,7 @@
         "cutout_title": "已摆正的裁切图",
         "add_zone": "添加区域",
         "delete_zone": "删除该区域",
-        "copy_zone_url": "复制该区域的 IIIF 链接",
-        "copy_oriented": "包含方向"
+        "copy_zone_url": "复制该区域的 IIIF 链接"
     },
     "navbar": {
         "edit_mode": "编辑",

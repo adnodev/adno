@@ -1239,8 +1239,7 @@
   margin-left: auto;
 }
 
-.zone-group-cutout,
-.zone-group-oriented {
+.zone-group-cutout {
   display: inline-flex;
   align-items: center;
   gap: 4px;

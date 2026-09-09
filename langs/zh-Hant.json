@@ -205,8 +205,7 @@
         "cutout_title": "已擺正的裁切圖",
         "add_zone": "新增區域",
         "delete_zone": "刪除該區域",
-        "copy_zone_url": "複製該區域的 IIIF 連結",
-        "copy_oriented": "包含方向"
+        "copy_zone_url": "複製該區域的 IIIF 連結"
     },
     "navbar": {
         "edit_mode": "編輯",

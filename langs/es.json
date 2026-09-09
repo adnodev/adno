@@ -19,8 +19,7 @@
         "cutout_title": "Recorte enderezado",
         "add_zone": "Añadir una zona",
         "delete_zone": "Eliminar esta zona",
-        "copy_zone_url": "Copiar la URL IIIF de esta zona",
-        "copy_oriented": "con la orientación"
+        "copy_zone_url": "Copiar la URL IIIF de esta zona"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {

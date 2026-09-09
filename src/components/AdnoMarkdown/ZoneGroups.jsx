@@ -56,7 +56,6 @@ function applyDrop(source, spot, moveZone, regroupZone) {
 }
 
 function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, actions, translate }) {
-    const [orientedCopy, setOrientedCopy] = useState(true)
     const [copiedZone, setCopiedZone] = useState(null)
 
     const rotation = groupRotation(annotation, group.id)
@@ -95,16 +94,6 @@ function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, 
                         </div>
                     </button>
 
-                    {rotation !== null &&
-                        <label className="zone-group-oriented">
-                            <input type="checkbox"
-                                className="toggle toggle-xs"
-                                checked={orientedCopy}
-                                onChange={() => setOrientedCopy(!orientedCopy)} />
-                            <span>{translate('annotation.copy_oriented')}</span>
-                        </label>
-                    }
-
                     <label className="zone-group-cutout">
                         <input type="checkbox"
                             className="toggle toggle-xs"
@@ -117,7 +106,7 @@ function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, 
 
             <div className="zone-list">
                 {group.targets.map(({ target, index }) => {
-                    const url = imageApiUrl(target, images || [], orientedCopy ? rotation : null)
+                    const url = imageApiUrl(target, images || [], rotation)
 
                     return <div className={index === selectedTargetIndex ? "zone-row zone-row--current" : "zone-row"}
                         key={`zone-${index}`}
