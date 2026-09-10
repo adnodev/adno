@@ -60,6 +60,10 @@ Enjoy using Adno !
 
 [LICENCE](https://github.com/adnodev/adno/blob/main/LICENCE)
 
+## Credits
+
+The Adno logos (`public/logo.png` and `public/adno.png`) were designed by **Sébastien Moinet — Antimatière**.
+
 ## For developpers
 
 If you want to contribute to Adno here are few steps to start 

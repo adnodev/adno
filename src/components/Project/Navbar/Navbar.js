@@ -15,11 +15,8 @@ class Navbar extends Component {
     render() {
         return (
             <div className="navbar bg-base-300 text-neutral-content">
-                <Link to={"/"} className="project-navbar-link" title={this.props.t('navbar.back_home')}
-                    style={{
-                        color: '#004B6D'
-                    }}>
-                    <h1>ADNO</h1>
+                <Link to={"/"} className="project-navbar-link" title={this.props.t('navbar.back_home')}>
+                    <img className="max-h-8" src="logo.png" alt="Adno logo" />
                 </Link>
 
 

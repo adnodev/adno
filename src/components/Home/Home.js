@@ -82,17 +82,18 @@ class Home extends Component {
         // Create function which is called when clicking on the submit button
         return (
             <div className="home">
-                <div id="container_with_projects" className="adno_container">
+                <nav className="flex items-baseline p-2 px-3 gap-3">
+                    <img className="max-h-8" src="logo.png" alt="Adno logo" />
                     {
                         process.env.ADNO_TITLE ? <h1>{process.env.ADNO_TITLE}</h1> : ``
                     }
-                    {
-                        <div className="adno_title">
-                            <img className="adno_logo" src="icon2.png" alt="" />
-                            <h1>ADNO</h1>
-                            <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
-                        </div>
-                    }
+                </nav>
+                <div id="container_with_projects" className="adno_container">
+                    <div className="adno_title">
+                        <img className="adno_logo" src="adno.png" alt="Adno grand logo" />
+                        <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">BETA</div>
+                    </div>
+
                     <p className="adno_description">{this.props.t('begin_msg')}</p>
                     <div className="adno_home_selection">
                         <form id="myForm">

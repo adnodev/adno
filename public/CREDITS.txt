@@ -1,0 +1,10 @@
+Adno — asset credits
+
+Logos
+-----
+logo.png
+adno.png
+
+Designed by Sébastien Moinet — Antimatière.
+These artworks remain the property of their author and are not covered by the
+software licence of Adno (see LICENCE).
