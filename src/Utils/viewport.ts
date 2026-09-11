@@ -2,7 +2,7 @@ import { normalizeAngle, resolveRotation, shortestDelta } from "./orientation"
 import { getGroupCutout } from "./cutout"
 import { annotationShapes } from "./utils"
 import { getTargets, parseShadowId, unionBoxes, type Annotation, type Box, type ShadowAnnotation, type ShadowId } from "./targets"
-import { groupBox, groupRotation, groupShadows, shapeId, targetGroupId, type GroupId } from "./groups"
+import { deriveGroups, groupBox, groupRotation, groupShadows, shapeId, targetGroupId, type Group, type GroupId, type GroupPalette } from "./groups"
 import type { TileSource } from "./images"
 import type { RotationTransition } from "./project"
 
@@ -83,7 +83,7 @@ declare const OpenSeadragon: {
 
 const pendingTurns = new WeakMap<Viewer, PendingTurn>()
 const lastViews = new WeakMap<Viewer, LastView>()
-const workspaces = new WeakMap<Viewer, HTMLElement>()
+const workspaces = new WeakMap<Viewer, Map<GroupId, HTMLElement>>()
 
 function prefersReducedMotion(): boolean {
     return typeof window.matchMedia === "function"
@@ -147,54 +147,81 @@ export function revealAnnotation(viewer: Viewer, annotationId: ShadowId, shadowI
     })
 }
 
-export function isInsideAnnotation(viewer: Viewer, annotationId: ShadowId, pixel: { x: number, y: number }): boolean {
-    const bounds = annotationBounds(viewer, annotationId)
-
-    if (!bounds) {
-        return false
-    }
-
-    const rect = viewer.viewport.viewportToViewerElementRectangle(bounds)
-
-    return pixel.x >= rect.x - EXIT_MARGIN
-        && pixel.x <= rect.x + rect.width + EXIT_MARGIN
-        && pixel.y >= rect.y - EXIT_MARGIN
-        && pixel.y <= rect.y + rect.height + EXIT_MARGIN
+type GroupFrame = {
+    group: Group,
+    bounds: ViewportRect
 }
 
-export function showWorkspace(viewer: Viewer, annotationId: ShadowId): void {
-    const bounds = annotationBounds(viewer, annotationId)
+function groupFrames(viewer: Viewer, annotation: Annotation, palette?: GroupPalette): GroupFrame[] {
+    return deriveGroups(annotation, palette)
+        .map(group => ({
+            group,
+            bounds: annotationBounds(viewer, annotation.id, 0, groupShadows(annotation, group.id).map(shadow => shadow.id))
+        }))
+        .filter((frame): frame is GroupFrame => frame.bounds !== null)
+}
 
-    if (!bounds) {
-        hideWorkspace(viewer)
-        return
-    }
+export function isInsideAnnotation(viewer: Viewer, annotation: Annotation, pixel: { x: number, y: number }): boolean {
+    return groupFrames(viewer, annotation).some(({ bounds }) => {
+        const rect = viewer.viewport.viewportToViewerElementRectangle(bounds)
 
+        return pixel.x >= rect.x - EXIT_MARGIN
+            && pixel.x <= rect.x + rect.width + EXIT_MARGIN
+            && pixel.y >= rect.y - EXIT_MARGIN
+            && pixel.y <= rect.y + rect.height + EXIT_MARGIN
+    })
+}
+
+function placeFrame(viewer: Viewer, existing: HTMLElement | undefined, frame: GroupFrame): HTMLElement {
+    const { group, bounds } = frame
     const location = new OpenSeadragon.Rect(bounds.x, bounds.y, bounds.width, bounds.height)
-    const existing = workspaces.get(viewer)
-
-    if (existing) {
-        viewer.updateOverlay(existing, location)
-        return
-    }
-
-    const element = document.createElement('div')
+    const element = existing || document.createElement('div')
 
     element.className = 'workspace-frame'
     element.style.setProperty('--exit-margin', `${EXIT_MARGIN}px`)
+    element.style.setProperty('--group-color', group.color)
 
-    viewer.addOverlay({ element, location })
-    workspaces.set(viewer, element)
+    if (existing) {
+        viewer.updateOverlay(element, location)
+    } else {
+        viewer.addOverlay({ element, location })
+    }
+
+    return element
 }
 
-export function hideWorkspace(viewer: Viewer): void {
-    const element = workspaces.get(viewer)
+export function showWorkspace(viewer: Viewer, annotation: Annotation, palette?: GroupPalette): void {
+    const existing = workspaces.get(viewer) || new Map<GroupId, HTMLElement>()
+    const kept = new Map<GroupId, HTMLElement>()
 
-    if (!element) {
+    const frames = groupFrames(viewer, annotation, palette)
+
+    frames.forEach(frame => {
+        kept.set(frame.group.id, placeFrame(viewer, existing.get(frame.group.id), frame))
+    })
+
+    existing.forEach((element, groupId) => {
+        if (!kept.has(groupId)) {
+            viewer.removeOverlay(element)
+        }
+    })
+
+    if (kept.size === 0) {
+        workspaces.delete(viewer)
         return
     }
 
-    viewer.removeOverlay(element)
+    workspaces.set(viewer, kept)
+}
+
+export function hideWorkspace(viewer: Viewer): void {
+    const existing = workspaces.get(viewer)
+
+    if (!existing) {
+        return
+    }
+
+    existing.forEach(element => viewer.removeOverlay(element))
     workspaces.delete(viewer)
 }
 

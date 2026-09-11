@@ -131,9 +131,9 @@
     content: "";
     position: absolute;
     inset: calc(-1 * var(--exit-margin));
-    border: 2px dashed rgba(255, 255, 255, 0.85);
+    border: 2px dashed var(--group-color, rgba(255, 255, 255, 0.85));
     border-radius: 4px;
-    box-shadow: 0 0 0 200vmax rgba(0, 0, 0, 0.4);
+    background: color-mix(in srgb, var(--group-color, #ffffff) 10%, transparent);
 }
 
 .editor-group-badge{

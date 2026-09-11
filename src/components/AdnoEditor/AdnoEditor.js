@@ -80,7 +80,7 @@ class AdnoEditor extends Component {
             const selected = this.props.selectedAnno
 
             this._clickedShadowId = shape ? shape.getAttribute('data-id') : null
-            this._clickInside = Boolean(selected) && isInsideAnnotation(this.openSeadragon, selected.id, event.position)
+            this._clickInside = Boolean(selected) && isInsideAnnotation(this.openSeadragon, selected, event.position)
 
             if (!event.quick || shape || !selected || this.props.pendingZone) {
                 return
@@ -320,7 +320,7 @@ class AdnoEditor extends Component {
         revealAnnotation(this.openSeadragon, shadow.id)
 
         if (getTargets(annotation).length > 1) {
-            showWorkspace(this.openSeadragon, shadow.id)
+            showWorkspace(this.openSeadragon, annotation, this.props.groupColors)
         } else {
             hideWorkspace(this.openSeadragon)
         }
@@ -389,7 +389,7 @@ class AdnoEditor extends Component {
         if (redrawn || selectionChanged) {
             this.changeAnno(this.props.selectedAnno)
         } else if (rebuilt && getTargets(this.props.selectedAnno).length > 1) {
-            showWorkspace(this.openSeadragon, this.props.selectedAnno.id)
+            showWorkspace(this.openSeadragon, this.props.selectedAnno, this.props.groupColors)
         }
     }
 
