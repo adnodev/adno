@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheck, faCopy, faCrosshairs, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import { copyToClipboard } from "../../Utils/clipboard"
-import { deriveGroups, groupColor, groupLetter, groupRotation } from "../../Utils/groups"
+import { MAX_GROUPS, deriveGroups, groupColor, groupLetter, groupRotation } from "../../Utils/groups"
 import { getGroupCutout } from "../../Utils/cutout"
 import { imageApiUrl } from "../../Utils/imageApi"
 import { QUARTER_TURNS } from "../../Utils/orientation"
@@ -207,9 +207,11 @@ export function ZoneGroups({ annotation, groupColors, images, draftGroupId, sele
                     translate={translate} />
             )}
 
-            <button type="button" className="btn btn-sm btn-outline zone-group-add" onClick={() => addGroup()}>
-                <FontAwesomeIcon icon={faPlus} /> &nbsp; {translate('editor.add_group')}
-            </button>
+            {groups.length < MAX_GROUPS &&
+                <button type="button" className="btn btn-sm btn-outline zone-group-add" onClick={() => addGroup()}>
+                    <FontAwesomeIcon icon={faPlus} /> &nbsp; {translate('editor.add_group')}
+                </button>
+            }
         </div>
     )
 }

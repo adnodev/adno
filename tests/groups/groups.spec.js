@@ -46,9 +46,10 @@ const fixture = {
 
 /**
  * @param {import('@playwright/test').Page} page
+ * @param {any} project
  */
-async function openEditor(page) {
-    await seedProject(page, fixture);
+async function openEditor(page, project = fixture) {
+    await seedProject(page, project);
     await page.goto(`${BASE_URL}/#/project/${PROJECT_ID}/edit`);
     await page.waitForSelector('.editor-viewer', { timeout: 30000 });
     await page.waitForTimeout(1500);
@@ -192,6 +193,30 @@ test.describe('The grouped zones tab', () => {
         const saved = await readProject(page, PROJECT_ID);
 
         expect(saved.annotations[0].adno.cutouts).toEqual({ g1: true });
+    });
+
+    test('the add button goes away once four groups exist', async ({ page }) => {
+        const fourGroups = {
+            ...fixture,
+            annotations: [{
+                ...fixture.annotations[0],
+                target: ['g1', 'g2', 'g3', 'g4'].map((group, rank) => ({
+                    id: `${group}@${ANNOTATION_ID}`,
+                    source: canvas.img_url,
+                    selector: {
+                        type: 'FragmentSelector',
+                        conformsTo: 'http://www.w3.org/TR/media-frags/',
+                        value: `xywh=pixel:${40 + rank * 130},40,100,80`
+                    }
+                }))
+            }]
+        };
+
+        await openEditor(page, fourGroups);
+        await openZonesTab(page);
+
+        await expect(page.locator('.zone-group')).toHaveCount(4);
+        await expect(page.locator('.zone-group-add')).toHaveCount(0);
     });
 
     test('a group added from the panel stays out of the stored annotation', async ({ page }) => {

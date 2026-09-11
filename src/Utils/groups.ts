@@ -9,6 +9,8 @@ const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 export const GROUP_COLOR_KEYS = ['groupColorA', 'groupColorB', 'groupColorC', 'groupColorD'] as const
 
+export const MAX_GROUPS = GROUP_COLOR_KEYS.length
+
 const DEFAULT_SETTINGS = defaultProjectSettings()
 const PALETTE = GROUP_COLOR_KEYS.map(key => DEFAULT_SETTINGS[key])
 
