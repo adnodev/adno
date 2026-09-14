@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next"
 
 import { frameGroup, mountReadOnlyViewer } from "../../Utils/viewport"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
+import { annotationShapes } from "../../Utils/utils"
 
 import { GroupOverlay } from "./GroupOverlay"
 
@@ -21,23 +22,39 @@ class GroupPanel extends Component {
         this.viewer = viewer
         this.annotorious = annotorious
 
-        this.viewer.addOnceHandler('open', this.refresh)
-        this.viewer.addHandler('after-resize', this.refresh)
+        this.viewer.addOnceHandler('open', this.reframe)
+        this.viewer.addHandler('after-resize', this.reframe)
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.annotation !== this.props.annotation || prevProps.group !== this.props.group) {
-            this.refresh()
+        if (prevProps.annotation !== this.props.annotation || prevProps.group.id !== this.props.group.id) {
+            this.frame(this.props.transition)
+        } else if (prevProps.outlinesVisible !== this.props.outlinesVisible) {
+            this.applyOutlines()
         }
     }
 
     componentWillUnmount() {
+        cancelAnimationFrame(this._outlinesFrame)
         this.annotorious.destroy()
         this.viewer.destroy()
     }
 
-    refresh = () => {
-        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.group.id, { defaultRotation: this.props.defaultRotation })
+    frame = (transition) => {
+        frameGroup(this.viewer, this.annotorious, this.props.annotation, this.props.group.id, {
+            defaultRotation: this.props.defaultRotation,
+            transition
+        })
+
+        cancelAnimationFrame(this._outlinesFrame)
+        this._outlinesFrame = requestAnimationFrame(this.applyOutlines)
+    }
+
+    reframe = () => this.frame()
+
+    applyOutlines = () => {
+        annotationShapes(this.viewer.element).forEach(shape =>
+            [...shape.children].forEach(part => part.classList.toggle('a9s-annotation--hidden', !this.props.outlinesVisible)))
     }
 
     render() {

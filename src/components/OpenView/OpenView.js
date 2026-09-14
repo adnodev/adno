@@ -770,6 +770,14 @@ class OpenView extends Component {
 
     marginPosition = () => this.props.contentPosition || 'left'
 
+    outlinesVisible = () => Boolean(this.props.showOutlines) && this.state.isAnnotationsVisible
+
+    activeGroup = () => {
+        const id = activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)
+
+        return deriveGroups(this.props.selectedAnno).find(group => group.id === id) || null
+    }
+
     mosaic = () => mosaicLayout(
         deriveGroups(this.props.selectedAnno).length,
         this.props.mosaicRotation,
@@ -963,6 +971,8 @@ class OpenView extends Component {
                             areaNames={layout.names.slice(1)}
                             crossOriginPolicy={this.crossOrigin()}
                             defaultRotation={this.props.defaultRotation}
+                            transition={this.props.rotationTransition}
+                            outlinesVisible={this.outlinesVisible()}
                             styles={this.annoStyles()} />
                     }
 

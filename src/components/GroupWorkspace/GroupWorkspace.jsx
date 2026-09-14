@@ -4,7 +4,7 @@ import GroupPanel from "./GroupPanel"
 
 import "./GroupWorkspace.css"
 
-export function GroupWorkspace({ project, annotation, activeGroupId, areaNames, crossOriginPolicy, defaultRotation, styles }) {
+export function GroupWorkspace({ project, annotation, activeGroupId, areaNames, crossOriginPolicy, defaultRotation, transition, outlinesVisible, styles }) {
     return deriveGroups(annotation)
         .filter(group => group.id !== activeGroupId)
         .map((group, index) => ({ group, area: areaNames[index] }))
@@ -18,6 +18,8 @@ export function GroupWorkspace({ project, annotation, activeGroupId, areaNames, 
                 area={area}
                 crossOriginPolicy={crossOriginPolicy}
                 defaultRotation={defaultRotation}
+                transition={transition}
+                outlinesVisible={outlinesVisible}
                 styles={styles} />
         )
 }

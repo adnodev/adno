@@ -235,26 +235,10 @@ function cancelPendingTurn(viewer: Viewer): void {
     }
 }
 
-export function applyAnnotationView(viewer: Viewer, annotorious: Annotorious, annotation: Annotation, options: ViewOptions = {}): void {
-    const { defaultRotation = 0, transition = "turn", padded = false, shadowIds = null } = options
+function settleView(viewer: Viewer, bounds: ViewportRect, wanted: number, transition: RotationTransition): void {
     const viewport = viewer.viewport
 
     cancelPendingTurn(viewer)
-
-    lastViews.set(viewer, { annotation, options })
-
-    const bounds = annotationBounds(viewer, annotation.id, padded ? BOUNDS_PADDING : 0, shadowIds)
-
-    if (!bounds) {
-        annotorious.fitBounds(annotation.id)
-        return
-    }
-
-    const activeGroup = targetGroupId(getTargets(annotation)[0])
-
-    const wanted = getGroupCutout(annotation, activeGroup)
-        ? normalizeAngle(defaultRotation)
-        : resolveRotation(annotation, defaultRotation)
 
     const current = viewport.getRotation()
     const delta = shortestDelta(current, wanted)
@@ -293,6 +277,29 @@ export function applyAnnotationView(viewer: Viewer, annotorious: Annotorious, an
     viewer.addOnceHandler('animation-finish', turn)
 }
 
+export function applyAnnotationView(viewer: Viewer, annotorious: Annotorious, annotation: Annotation, options: ViewOptions = {}): void {
+    const { defaultRotation = 0, transition = "turn", padded = false, shadowIds = null } = options
+
+    cancelPendingTurn(viewer)
+
+    lastViews.set(viewer, { annotation, options })
+
+    const bounds = annotationBounds(viewer, annotation.id, padded ? BOUNDS_PADDING : 0, shadowIds)
+
+    if (!bounds) {
+        annotorious.fitBounds(annotation.id)
+        return
+    }
+
+    const activeGroup = targetGroupId(getTargets(annotation)[0])
+
+    const wanted = getGroupCutout(annotation, activeGroup)
+        ? normalizeAngle(defaultRotation)
+        : resolveRotation(annotation, defaultRotation)
+
+    settleView(viewer, bounds, wanted, transition)
+}
+
 function reapplyAnnotationView(viewer: Viewer, annotorious: Annotorious): void {
     const last = lastViews.get(viewer)
 
@@ -319,8 +326,8 @@ export function watchViewerResize(viewer: Viewer, annotorious: Annotorious): () 
     }
 }
 
-export function frameGroup(viewer: Viewer, annotorious: Annotorious, annotation: Annotation, groupId: GroupId, options: { defaultRotation?: number } = {}): boolean {
-    const { defaultRotation = 0 } = options
+export function frameGroup(viewer: Viewer, annotorious: Annotorious, annotation: Annotation, groupId: GroupId, options: { defaultRotation?: number, transition?: RotationTransition } = {}): boolean {
+    const { defaultRotation = 0, transition } = options
     const box = groupBox(annotation, groupId)
 
     if (!viewer || !viewer.isOpen() || !box) {
@@ -330,10 +337,18 @@ export function frameGroup(viewer: Viewer, annotorious: Annotorious, annotation:
     annotorious.setAnnotations(groupShadows(annotation, groupId))
 
     const rotation = groupRotation(annotation, groupId)
+    const wanted = rotation === null ? normalizeAngle(defaultRotation) : rotation
     const viewport = viewer.viewport
+    const bounds = paddedRect(viewport, box, GROUP_PADDING)
 
-    viewport.setRotation(rotation === null ? normalizeAngle(defaultRotation) : rotation, true)
-    viewport.fitBounds(paddedRect(viewport, box, GROUP_PADDING), true)
+    if (transition) {
+        settleView(viewer, bounds, wanted, transition)
+        return true
+    }
+
+    cancelPendingTurn(viewer)
+    viewport.setRotation(wanted, true)
+    viewport.fitBounds(bounds, true)
 
     return true
 }
