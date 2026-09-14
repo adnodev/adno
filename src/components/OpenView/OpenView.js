@@ -12,6 +12,7 @@ import { activeGroupId, applyAnnotationColor, deriveGroups, groupShadows } from 
 import { mosaicLayout } from "../../Utils/mosaic"
 import CutoutView from "../CutoutView/CutoutView"
 import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
+import { GroupMark } from "../GroupWorkspace/GroupOverlay"
 import { ContentMargin, hasMarginContent } from "./ContentMargin"
 
 import "./OpenView.css";
@@ -786,6 +787,7 @@ class OpenView extends Component {
     render() {
         const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
         const layout = this.mosaic()
+        const activeGroup = this.outlinesVisible() ? this.activeGroup() : null
 
         return <div className="open-view flex flex-col flex-grow relative">
             <div ref={this.toolbarRef}
@@ -953,6 +955,12 @@ class OpenView extends Component {
                         gridTemplateAreas: layout.areas
                     }}>
                     <div id="adno-osd-viewer" style={{ gridArea: layout.names[0] }}></div>
+
+                    {activeGroup &&
+                        <div className="scene-mark" style={{ gridArea: layout.names[0] }}>
+                            <GroupMark letter={activeGroup.letter} count={activeGroup.targets.length} />
+                        </div>
+                    }
 
                     {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
                         <AdnoNavigator

@@ -1,7 +1,5 @@
 import { Component } from "react"
 
-import { withTranslation } from "react-i18next"
-
 import { frameGroup, mountReadOnlyViewer } from "../../Utils/viewport"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
 import { annotationShapes } from "../../Utils/utils"
@@ -64,10 +62,10 @@ class GroupPanel extends Component {
                 <GroupOverlay
                     letter={this.props.group.letter}
                     count={this.props.group.targets.length}
-                    translate={this.props.t} />
+                    showMark={this.props.outlinesVisible} />
             </div>
         )
     }
 }
 
-export default withTranslation()(GroupPanel)
+export default GroupPanel

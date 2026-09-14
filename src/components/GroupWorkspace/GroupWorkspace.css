@@ -30,7 +30,24 @@
     font-weight: 600;
 }
 
-.group-overlay-badge {
+.group-mark {
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+    pointer-events: none;
+}
+
+.group-mark sup {
+    font-size: 9px;
+    font-weight: 600;
+    margin-left: 1px;
+}
+
+.group-overlay-mark {
     position: absolute;
     top: 6px;
     left: 6px;

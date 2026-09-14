@@ -36,6 +36,15 @@
     overflow: hidden;
 }
 
+.scene-mark {
+    position: relative;
+    z-index: 1;
+    justify-self: start;
+    align-self: start;
+    margin: 6px;
+    pointer-events: none;
+}
+
 .osd-buttons-bar {
     width: 100%;
     display: flex;

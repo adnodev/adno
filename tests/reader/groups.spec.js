@@ -78,7 +78,21 @@ test.describe('Reading an annotation split across groups', () => {
 
         await expect(page.locator('.group-panel')).toHaveCount(1);
         await expect(page.locator('#group-osd-g2 canvas')).toBeVisible();
-        await expect(page.locator('.group-overlay-badge')).toContainText('B');
+        await expect(page.locator('.group-overlay-mark')).toHaveText('B2');
+        await expect(page.locator('.scene-mark')).toHaveText('A1');
+    });
+
+    test('the eye button hides the outlines and the marks of every panel', async ({ page }) => {
+        await openViewer(page, projectWith(undefined));
+
+        await expect(page.locator('.group-panel .a9s-annotation--hidden')).toHaveCount(0);
+
+        await page.locator('#set-visible').click();
+        await page.waitForTimeout(300);
+
+        await expect(page.locator('.group-panel .a9s-annotation--hidden').first()).toBeAttached();
+        await expect(page.locator('.group-overlay-mark')).toHaveCount(0);
+        await expect(page.locator('.scene-mark')).toHaveCount(0);
     });
 
     test('a cutout group draws all of its zones instead of a black square', async ({ page }) => {
