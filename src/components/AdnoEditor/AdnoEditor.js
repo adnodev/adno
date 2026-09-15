@@ -14,7 +14,7 @@ import { rememberImageApi } from "../../Utils/imageApi"
 import { addTarget, getTargets, parseShadowId, pickTargetOnImage, replaceTargetAt, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
 import { ImageFilmstrip } from "../ImageFilmstrip/ImageFilmstrip"
-import { GroupBadge } from "../GroupWorkspace/GroupOverlay"
+import { GroupLegend } from "../GroupWorkspace/GroupOverlay"
 
 class AdnoEditor extends Component {
     constructor(props) {
@@ -394,20 +394,10 @@ class AdnoEditor extends Component {
     }
 
 
-    activeGroup = () => {
-        const groups = deriveGroups(this.props.selectedAnno, this.props.groupColors)
-
-        if (groups.length < 2) {
-            return null
-        }
-
-        const id = activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)
-
-        return groups.find(group => group.id === id) || null
-    }
+    groups = () => this.props.selectedAnno ? deriveGroups(this.props.selectedAnno, this.props.groupColors) : []
 
     render() {
-        const group = this.activeGroup()
+        const groups = this.groups()
 
         return <>
             <div className="editor-stage">
@@ -424,11 +414,9 @@ class AdnoEditor extends Component {
                         <div id="toolbar-container"></div>
                         <div id="toolbar-osd"></div>
                     </div>
-                    {group &&
-                        <GroupBadge className="editor-group-badge"
-                            letter={group.letter}
-                            color={group.color}
-                            count={group.targets.length}
+                    {groups.length > 0 &&
+                        <GroupLegend groups={groups}
+                            activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
                             translate={this.props.t} />
                     }
                     {this.state.viewerReady && (

@@ -136,14 +136,28 @@
     background: color-mix(in srgb, var(--group-color, #ffffff) 10%, transparent);
 }
 
-.editor-group-badge{
+.group-legend{
     position: absolute;
     z-index: 2;
     top: 56px;
     left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    pointer-events: none;
+}
+
+.group-legend-item{
     font-size: 13px;
     padding: 4px 12px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    opacity: 0.75;
+}
+
+.group-legend-item--active{
+    opacity: 1;
+    outline: 2px solid rgba(255, 255, 255, 0.9);
 }
 
 .editor-stage{

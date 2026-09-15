@@ -279,7 +279,22 @@ test.describe('The edit view stays whole', () => {
         await page.waitForTimeout(1200);
 
         await expect(page.locator('.group-panel')).toHaveCount(0);
-        await expect(page.locator('.editor-group-badge')).toContainText('A');
+        await expect(page.locator('.group-legend-item')).toHaveCount(2);
+        await expect(page.locator('.group-legend-item--active')).toContainText('A');
+    });
+
+    test('every group of the selected annotation gets a frame in its own colour', async ({ page }) => {
+        await openEditor(page);
+
+        await page.locator('.anno-card').first().click();
+        await page.waitForTimeout(1200);
+
+        await expect(page.locator('.workspace-frame')).toHaveCount(2);
+
+        const colors = await page.locator('.workspace-frame').evaluateAll(
+            nodes => nodes.map(node => /** @type {HTMLElement} */ (node).style.getPropertyValue('--group-color')));
+
+        expect(new Set(colors).size).toEqual(2);
     });
 });
 
