@@ -12,6 +12,8 @@ Adno is a web application for viewing, editing and sharing narratives and pathwa
 6. [Keyboard shortcuts](#shortcuts-for-the-viewer)
 7. [IPFS support](#ipfs-support)
 8. [Translation](#translation)
+9. [License](#license)
+10. [Credits](#credits)
 
 ## How to start with Adno ?
 
@@ -55,14 +57,6 @@ Enjoy using Adno !
 * https://w.adno.app/#/search?url=https://free.iiifhosting.com/iiif/1c8d49343676a04fffcd92979c02e9394e48bac96f590fffbadffc9133cd06b9/info.json
 * https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/peutinger.jp2/info.json
 * https://w.adno.app/#/search?url=https://iiif.emf.fr/iiif/3/saint-savin.jpg/info.json
-
-## Licence
-
-[LICENCE](https://github.com/adnodev/adno/blob/main/LICENCE)
-
-## Credits
-
-The Adno logos (`public/logo.png` and `public/adno.png`) were designed by **Sébastien Moinet — Antimatière**.
 
 ## For developpers
 
@@ -164,3 +158,15 @@ IPFS_GATEWAY=https://ipfs.io/ipfs/
 ## Translation
 
 If Adno is not available in the language of your choice, you can contribute by adding a new language and proposing translations on the Adno section of the [Weblate platform](https://hosted.weblate.org/projects/adno/). In the same way, you can propose changes and corrections to existing translations.
+
+## License
+
+This project's source code is licensed under the MIT License — see
+[LICENSE](./LICENSE).
+
+The Adno logos are excluded from this license — see
+[public/CREDITS](./public/CREDITS.txt) for details.
+
+## Credits
+
+The Adno logos (`public/logo.png` and `public/adno.png`) were designed by **Sébastien Moinet — Antimatière**.

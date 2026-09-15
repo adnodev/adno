@@ -5,6 +5,8 @@ Logos
 logo.png
 adno.png
 
-Designed by Sébastien Moinet — Antimatière.
-These artworks remain the property of their author and are not covered by the
-software licence of Adno (see LICENCE).
+The Adno logos (public/logo.png and public/adno.png) were designed by
+Sébastien Moinet — Antimatière. They remain the property of their
+author and are not covered by the MIT License in LICENSE, which
+applies to the software only. Reuse of the logos requires permission
+from the rights holder(s).
