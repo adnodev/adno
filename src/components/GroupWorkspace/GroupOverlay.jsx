@@ -1,5 +1,3 @@
-const CORNERS = ["tl", "tr", "bl", "br"]
-
 export function GroupBadge({ letter, color, count, translate, className }) {
     return (
         <span className={["group-badge", className].filter(Boolean).join(" ")} style={{ background: color }}>
@@ -38,15 +36,6 @@ export function GroupOverlay({ letter, count, showMark }) {
                 <GroupMark letter={letter}
                     count={count}
                     className="group-overlay-mark" />
-            }
-
-            {count > 1 &&
-                <div className="group-overlay-frame">
-                    {CORNERS.map(corner =>
-                        <span key={corner}
-                            className={`group-overlay-corner group-overlay-corner--${corner}`} />
-                    )}
-                </div>
             }
         </div>
     )
