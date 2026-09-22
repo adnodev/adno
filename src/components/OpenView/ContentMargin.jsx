@@ -26,7 +26,7 @@ export function hasMarginContent(annotation) {
     return Boolean(htmlBody(annotation)) || Boolean(audioSource(annotation)) || buildTagsList(annotation).length > 0
 }
 
-export function ContentMargin({ annotation, project, position, offsetTop, canStart, onStart, translate }) {
+export function ContentMargin({ annotation, project, tags: projectTags = [], position, offsetTop, canStart, onStart, translate }) {
     const html = htmlBody(annotation)
     const tags = buildTagsList(annotation)
     const track = audioSource(annotation)
@@ -42,6 +42,14 @@ export function ContentMargin({ annotation, project, position, offsetTop, canSta
 
                 {project && project.description &&
                     <p className="content-margin-intro">{project.description}</p>
+                }
+
+                {projectTags.length > 0 &&
+                    <div className="content-margin-tags">
+                        {projectTags.map(tag =>
+                            <span key={tag} className="content-margin-tag">#{tag}</span>
+                        )}
+                    </div>
                 }
 
                 {canStart &&

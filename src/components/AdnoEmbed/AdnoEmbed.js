@@ -298,6 +298,7 @@ class AdnoEmbed extends Component {
                     contentPosition={this.state.contentPosition}
                     mosaicRatio={this.state.mosaicRatio}
                     mosaicRotation={this.state.mosaicRotation}
+                    tags={Array.isArray(this.state.tags) ? this.state.tags : []}
                     showToolbar={this.state.showToolbar}
                     changeShowToolbar={this.changeShowToolbar}
                     toolsbarOnFs={this.state.toolsbarOnFs}

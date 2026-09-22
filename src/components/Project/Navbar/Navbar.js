@@ -26,7 +26,7 @@ class Navbar extends Component {
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     display: 'block'
-                }}>{this.props.selectedProject.title}<br /> {(this.props.settings?.tags || []).map(tag => ` #${tag} `)} {this.props.selectedProject.creator && ` [ ${this.props.selectedProject.creator} ]`}
+                }}>{this.props.selectedProject.title}<br /> {this.props.selectedProject.creator && ` [ ${this.props.selectedProject.creator} ]`}
                 </strong>
 
                 {

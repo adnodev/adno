@@ -368,6 +368,7 @@ const Project = ({ editMode }) => {
                         contentPosition={settings.contentPosition}
                         mosaicRatio={settings.mosaicRatio}
                         mosaicRotation={settings.mosaicRotation}
+                        tags={settingsTags}
                         annos={viewerAnnotations}
                         selectedAnno={selectedAnnotation}
                         selectedTargetIndex={state.selectedTargetIndex}
