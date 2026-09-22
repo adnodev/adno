@@ -1,43 +1,31 @@
-import { useState, useEffect } from "react";
-import { createExportProjectJsonFile } from "../../Utils/utils";
+import { createExportProjectJsonFile } from "../../Utils/utils"
 
 export function DownloadLink({ selectedProject, translate }) {
-    const [href, setHref] = useState("");
+    const download = (event) => {
+        event.preventDefault()
 
-    useEffect(() => {
-        if (!selectedProject) return
+        createExportProjectJsonFile(selectedProject.id).then(url => {
+            const link = document.createElement("a")
 
-        let url = null
-        let released = false
+            link.href = url
+            link.download = selectedProject.title + ".json"
 
-        createExportProjectJsonFile(selectedProject.id).then(created => {
-            url = created
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
 
-            if (released) {
-                URL.revokeObjectURL(created)
-                return
-            }
-
-            setHref(created)
+            setTimeout(() => URL.revokeObjectURL(url))
         })
-
-        return () => {
-            released = true
-
-            if (url) {
-                URL.revokeObjectURL(url)
-            }
-        }
-    }, [selectedProject])
+    }
 
     return (
         <a
             id={"download_btn_" + selectedProject.id}
-            href={href}
-            download={selectedProject.title + ".json"}
+            href="#"
+            onClick={download}
             title={translate('navbar.download_project')}
         >
             Adno
         </a>
-    );
+    )
 }
