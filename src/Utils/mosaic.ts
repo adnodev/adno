@@ -15,6 +15,7 @@ export type MosaicLayout = {
     columns: string,
     rows: string,
     areas: string,
+    cells: string[][],
     names: string[]
 }
 
@@ -56,6 +57,16 @@ export function mosaicLayout(groups: number, rotation: MosaicRotation = 0, ratio
         columns,
         rows,
         areas: shape.areas.map(row => `"${row}"`).join(' '),
+        cells: shape.areas.map(row => row.split(' ')),
         names: NAMES.slice(0, count)
     }
+}
+
+export function collapsedLayout(layout: MosaicLayout): MosaicLayout {
+    const columns = layout.columns.split(' ')
+        .map((track, index) => layout.cells.some(row => row[index] === 'a') ? track : '0fr')
+    const rows = layout.rows.split(' ')
+        .map((track, index) => layout.cells[index].includes('a') ? track : '0fr')
+
+    return { ...layout, columns: columns.join(' '), rows: rows.join(' ') }
 }

@@ -10,12 +10,21 @@ export const CROSS_ORIGIN = 'Anonymous'
 
 const PAN_TIMEOUT = 1500
 const ANGLE_EPSILON = 0.5
+const SETTLE_NEAR = 0.02
+const SETTLE_DEGREES = 1
+const OSD_ANIMATION = 1.2
+const BASE_ANIMATION = 1.8
+const ANIMATION_PER_STEP = 0.35
+const MAX_ANIMATION = 4.5
 const BOUNDS_PADDING = 0.08
 const GROUP_PADDING = 0.06
 const EXIT_MARGIN = 40
 const TILE_CACHE = 40
 
 type Spring = {
+    current: { value: number },
+    target: { value: number },
+    animationTime: number,
     isAtTargetValue(): boolean
 }
 
@@ -30,6 +39,9 @@ type OsdViewport = {
     centerSpringX: Spring,
     centerSpringY: Spring,
     zoomSpring: Spring,
+    degreesSpring: Spring,
+    getContainerSize(): { x: number, y: number },
+    resize(size: { x: number, y: number }, maintain?: boolean): void,
     getRotation(): number,
     setRotation(degrees: number, immediately?: boolean): void,
     fitBounds(bounds: ViewportRect, immediately?: boolean): void,
@@ -41,7 +53,9 @@ type OsdViewport = {
 
 export type Viewer = {
     element: Element,
+    container: HTMLElement,
     viewport: OsdViewport,
+    forceRedraw(): void,
     isOpen(): boolean,
     addOverlay(options: { element: HTMLElement, location: ViewportRect }): void,
     updateOverlay(element: HTMLElement, location: ViewportRect): void,
@@ -62,7 +76,8 @@ export type ViewOptions = {
     defaultRotation?: number,
     transition?: RotationTransition,
     padded?: boolean,
-    shadowIds?: ShadowId[] | null
+    shadowIds?: ShadowId[] | null,
+    onSettled?: () => void
 }
 
 type PendingTurn = {
@@ -94,6 +109,51 @@ function isSettled(viewport: OsdViewport): boolean {
     return viewport.centerSpringX.isAtTargetValue()
         && viewport.centerSpringY.isAtTargetValue()
         && viewport.zoomSpring.isAtTargetValue()
+}
+
+function isNearlySettled(viewport: OsdViewport): boolean {
+    const gap = (spring: Spring) => Math.abs(spring.current.value - spring.target.value)
+    const zoom = viewport.zoomSpring.target.value
+    const span = SETTLE_NEAR / zoom
+
+    return gap(viewport.zoomSpring) <= SETTLE_NEAR * zoom
+        && gap(viewport.centerSpringX) <= span
+        && gap(viewport.centerSpringY) <= span
+        && gap(viewport.degreesSpring) <= SETTLE_DEGREES
+}
+
+function whenSettled(viewer: Viewer, done?: () => void): void {
+    if (!done) {
+        return
+    }
+
+    if (isNearlySettled(viewer.viewport)) {
+        done()
+        return
+    }
+
+    const check = () => {
+        if (isNearlySettled(viewer.viewport)) {
+            viewer.removeHandler('animation', check)
+            done()
+        }
+    }
+
+    viewer.addHandler('animation', check)
+}
+
+function paceAnimation(viewer: Viewer, bounds: ViewportRect): void {
+    const viewport = viewer.viewport
+    const springs = [viewport.centerSpringX, viewport.centerSpringY, viewport.zoomSpring]
+    const current = viewport.getBounds()
+    const width = Math.max(bounds.width, bounds.height * current.width / current.height)
+    const steps = Math.abs(Math.log2(width / current.width))
+    const time = Math.min(BASE_ANIMATION + steps * ANIMATION_PER_STEP, MAX_ANIMATION)
+
+    springs.forEach(spring => { spring.animationTime = time })
+
+    viewer.addOnceHandler('animation-finish', () =>
+        springs.forEach(spring => { spring.animationTime = OSD_ANIMATION }))
 }
 
 function paddedRect(viewport: OsdViewport, box: Box, padding: number): ViewportRect {
@@ -235,7 +295,7 @@ function cancelPendingTurn(viewer: Viewer): void {
     }
 }
 
-function settleView(viewer: Viewer, bounds: ViewportRect, wanted: number, transition: RotationTransition): void {
+function settleView(viewer: Viewer, bounds: ViewportRect, wanted: number, transition: RotationTransition, onSettled?: () => void): void {
     const viewport = viewer.viewport
 
     cancelPendingTurn(viewer)
@@ -245,6 +305,7 @@ function settleView(viewer: Viewer, bounds: ViewportRect, wanted: number, transi
 
     if (Math.abs(delta) < ANGLE_EPSILON) {
         viewport.fitBounds(bounds, false)
+        whenSettled(viewer, onSettled)
         return
     }
 
@@ -253,6 +314,7 @@ function settleView(viewer: Viewer, bounds: ViewportRect, wanted: number, transi
     if (transition === "instant" || prefersReducedMotion()) {
         viewport.setRotation(target, true)
         viewport.fitBounds(bounds, true)
+        onSettled?.()
         return
     }
 
@@ -264,6 +326,7 @@ function settleView(viewer: Viewer, bounds: ViewportRect, wanted: number, transi
         cancelPendingTurn(viewer)
         viewport.setRotation(target, false)
         viewport.fitBounds(bounds, false)
+        whenSettled(viewer, onSettled)
     }
 
     viewport.fitBounds(bounds, false)
@@ -297,7 +360,8 @@ export function applyAnnotationView(viewer: Viewer, annotorious: Annotorious, an
         ? normalizeAngle(defaultRotation)
         : resolveRotation(annotation, defaultRotation)
 
-    settleView(viewer, bounds, wanted, transition)
+    paceAnimation(viewer, bounds)
+    settleView(viewer, bounds, wanted, transition, options.onSettled)
 }
 
 function reapplyAnnotationView(viewer: Viewer, annotorious: Annotorious): void {
@@ -324,6 +388,37 @@ export function watchViewerResize(viewer: Viewer, annotorious: Annotorious): () 
         cancelAnimationFrame(frame)
         viewer.removeHandler('after-resize', reframe)
     }
+}
+
+export function syncViewerSize(viewer: Viewer): boolean {
+    const width = viewer.container.clientWidth
+    const height = viewer.container.clientHeight
+    const current = viewer.viewport.getContainerSize()
+
+    if (width === 0 || height === 0 || (width === current.x && height === current.y)) {
+        return false
+    }
+
+    viewer.viewport.resize({ x: width, y: height }, true)
+    viewer.forceRedraw()
+
+    return true
+}
+
+export function followContainer(viewer: Viewer, onResize: () => void): () => void {
+    const observer = new ResizeObserver(() => {
+        if (syncViewerSize(viewer)) {
+            onResize()
+        }
+    })
+
+    observer.observe(viewer.container)
+
+    return () => observer.disconnect()
+}
+
+export function followViewerSize(viewer: Viewer, annotorious: Annotorious): () => void {
+    return followContainer(viewer, () => reapplyAnnotationView(viewer, annotorious))
 }
 
 export function frameGroup(viewer: Viewer, annotorious: Annotorious, annotation: Annotation, groupId: GroupId, options: { defaultRotation?: number, transition?: RotationTransition } = {}): boolean {
@@ -353,13 +448,14 @@ export function frameGroup(viewer: Viewer, annotorious: Annotorious, annotation:
     return true
 }
 
-export function mountReadOnlyViewer(elementId: string, tileSources: TileSource | null, crossOriginPolicy: string | false | undefined, options: Record<string, unknown>): { viewer: Viewer, annotorious: Annotorious } {
+export function mountReadOnlyViewer(elementId: string, tileSources: TileSource | null, crossOriginPolicy: string | false | undefined, options: Record<string, unknown>, viewerOptions: Record<string, unknown> = {}): { viewer: Viewer, annotorious: Annotorious } {
     const viewer = OpenSeadragon({
         id: elementId,
         tileSources,
         crossOriginPolicy: crossOriginPolicy ?? CROSS_ORIGIN,
         showNavigationControl: false,
-        maxImageCacheCount: TILE_CACHE
+        maxImageCacheCount: TILE_CACHE,
+        ...viewerOptions
     })
 
     const annotorious = OpenSeadragon.Annotorious(viewer, {
