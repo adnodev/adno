@@ -5,6 +5,11 @@
     border: 1px solid #d4d4d8;
     border-radius: 6px;
     overflow: hidden;
+    visibility: hidden;
+}
+
+.group-panel--ready {
+    visibility: visible;
 }
 
 .group-panel-body {
@@ -49,51 +54,7 @@
 
 .group-overlay-mark {
     position: absolute;
-    top: 6px;
+    top: calc(var(--toolbar-offset, 0px) + 6px);
     left: 6px;
 }
 
-.group-overlay-frame {
-    position: absolute;
-    left: 8%;
-    top: 8%;
-    right: 8%;
-    bottom: 8%;
-    border: 1px dashed rgba(255, 255, 255, 0.9);
-    opacity: 0.75;
-}
-
-.group-overlay-corner {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border: 0 solid rgba(255, 255, 255, 0.9);
-}
-
-.group-overlay-corner--tl {
-    top: -1px;
-    left: -1px;
-    border-top-width: 2px;
-    border-left-width: 2px;
-}
-
-.group-overlay-corner--tr {
-    top: -1px;
-    right: -1px;
-    border-top-width: 2px;
-    border-right-width: 2px;
-}
-
-.group-overlay-corner--bl {
-    bottom: -1px;
-    left: -1px;
-    border-bottom-width: 2px;
-    border-left-width: 2px;
-}
-
-.group-overlay-corner--br {
-    bottom: -1px;
-    right: -1px;
-    border-bottom-width: 2px;
-    border-right-width: 2px;
-}

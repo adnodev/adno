@@ -1,12 +1,19 @@
 import { Component } from "react"
 
-import { frameGroup, mountReadOnlyViewer } from "../../Utils/viewport"
+import { followContainer, frameGroup, mountReadOnlyViewer } from "../../Utils/viewport"
 import { imageIndexForSource, imageTileSource, projectImages } from "../../Utils/images"
 import { annotationShapes } from "../../Utils/utils"
 
 import { GroupOverlay } from "./GroupOverlay"
 
+const REVEAL_TIMEOUT = 400
+
 class GroupPanel extends Component {
+    constructor(props) {
+        super(props)
+        this.state = { ready: false }
+    }
+
     componentDidMount() {
         const images = projectImages(this.props.project)
         const first = this.props.group.targets[0]
@@ -15,13 +22,16 @@ class GroupPanel extends Component {
         const { viewer, annotorious } = mountReadOnlyViewer(this.props.elementId, imageTileSource(images[index]), this.props.crossOriginPolicy, {
             disableSelect: true,
             formatters: () => this.props.styles
-        })
+        }, { autoResize: false })
 
         this.viewer = viewer
         this.annotorious = annotorious
 
         this.viewer.addOnceHandler('open', this.reframe)
-        this.viewer.addHandler('after-resize', this.reframe)
+        this.viewer.addOnceHandler('tile-drawn', this.reveal)
+        this._unfollow = followContainer(this.viewer, this.reframe)
+
+        this._revealTimer = setTimeout(this.reveal, REVEAL_TIMEOUT)
     }
 
     componentDidUpdate(prevProps) {
@@ -33,7 +43,9 @@ class GroupPanel extends Component {
     }
 
     componentWillUnmount() {
+        clearTimeout(this._revealTimer)
         cancelAnimationFrame(this._outlinesFrame)
+        this._unfollow()
         this.annotorious.destroy()
         this.viewer.destroy()
     }
@@ -50,6 +62,16 @@ class GroupPanel extends Component {
 
     reframe = () => this.frame()
 
+    reveal = () => {
+        clearTimeout(this._revealTimer)
+
+        if (this.state.ready) {
+            return
+        }
+
+        this.setState({ ready: true })
+    }
+
     applyOutlines = () => {
         annotationShapes(this.viewer.element).forEach(shape =>
             [...shape.children].forEach(part => part.classList.toggle('a9s-annotation--hidden', !this.props.outlinesVisible)))
@@ -57,7 +79,7 @@ class GroupPanel extends Component {
 
     render() {
         return (
-            <div className="group-panel" style={{ gridArea: this.props.area }}>
+            <div className={this.state.ready ? "group-panel group-panel--ready" : "group-panel"} style={{ gridArea: this.props.area }}>
                 <div id={this.props.elementId} className="group-panel-body"></div>
                 <GroupOverlay
                     letter={this.props.group.letter}
