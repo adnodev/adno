@@ -4,14 +4,14 @@ import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons"
 import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils"
-import { CROSS_ORIGIN, applyAnnotationView, watchViewerResize } from "../../Utils/viewport"
+import { CROSS_ORIGIN, applyAnnotationView, followViewerSize, syncViewerSize } from "../../Utils/viewport"
 import { cutoutGroupIds } from "../../Utils/cutout"
 import { projectImages } from "../../Utils/images"
 import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import { activeGroupId, applyAnnotationColor, deriveGroups, groupShadows } from "../../Utils/groups"
-import { mosaicLayout } from "../../Utils/mosaic"
+import { collapsedLayout, mosaicLayout } from "../../Utils/mosaic"
 import CutoutView from "../CutoutView/CutoutView"
-import { GroupWorkspace } from "../GroupWorkspace/GroupWorkspace"
+import { GroupWorkspace, panelEntries, panelGroups } from "../GroupWorkspace/GroupWorkspace"
 import { GroupMark } from "../GroupWorkspace/GroupOverlay"
 import { ContentMargin, hasMarginContent } from "./ContentMargin"
 
@@ -21,12 +21,13 @@ import { withTranslation } from "react-i18next";
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator'
 
 const FALLBACK_TOOLBAR = 48
+const CLOSE_WAIT = 700
+const SCENE_PAUSE = 400
 
 class OpenView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentID: -1,
             timer: false,
             intervalID: 0,
             fullScreenEnabled: false,
@@ -38,8 +39,8 @@ class OpenView extends Component {
             imageRatio: null,
             navigatorLayout: null,
             viewerReady: false,
-            cutoutAnno: null,
             cutoutViews: {},
+            openPanels: [],
             toolbarHeight: 0
         }
 
@@ -90,6 +91,7 @@ class OpenView extends Component {
 
         this.openSeadragon = OpenSeadragon({
             id: 'adno-osd-viewer',
+            autoResize: false,
             homeButton: "home-button",
             showNavigator: false,
             tileSources: tileSources,
@@ -125,7 +127,7 @@ class OpenView extends Component {
             formatters: annoFormatter
         });
 
-        this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
+        this.unwatchResize = followViewerSize(this.openSeadragon, this.AdnoAnnotorious)
 
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
             const { id, index } = parseShadowId(annotation.id)
@@ -247,26 +249,21 @@ class OpenView extends Component {
         removeEventListener("keydown", this.keyPressedEvents)
         removeEventListener("fullscreenchange", this.updateFullScreenEvent)
         this.unwatchResize?.()
+        clearTimeout(this._closeTimer)
+        clearTimeout(this._openTimer)
     }
 
     automateLoading = timeout => {
-        const { currentID } = this.state;
-        let newCurrentID = currentID;
+        const next = this.annoAt(1)
 
-        if (currentID === -1 || currentID === this.props.annos.length - 1) {
-            newCurrentID = 0
-        } else {
-            newCurrentID++;
+        if (!next) {
+            return
         }
 
-        this.setState({ currentID: newCurrentID })
-
-        this.changeAnno(this.props.annos[newCurrentID])
-
-        this.showOnlyCurrentAnnotation(this.props.annos[newCurrentID].id)
+        this.selectAnno(next)
 
         if (timeout) {
-            const id = this.props.annos[newCurrentID].id;
+            const id = next.id
 
             const annotation = annotationShapes()
                 .find(elt => elt.getAttribute("data-id") === id)
@@ -317,12 +314,61 @@ class OpenView extends Component {
         }
     }
 
+    currentIndex = () => this.props.selectedAnno
+        ? this.props.annos.findIndex(anno => anno.id === this.props.selectedAnno.id)
+        : -1
+
+    annoAt = step => {
+        const count = this.props.annos.length
+        const current = this.currentIndex()
+
+        if (current === -1) {
+            return this.props.annos[step > 0 ? 0 : count - 1]
+        }
+
+        return this.props.annos[(current + step + count) % count]
+    }
+
+    selectAnno = (annotation, targetIndex = 0) => {
+        if (!annotation) {
+            return
+        }
+
+        if (this.props.selectedAnno?.id === annotation.id && this.props.selectedTargetIndex === targetIndex) {
+            this.changeAnno(annotation, targetIndex)
+            return
+        }
+
+        this.props.changeSelectedAnno(annotation, targetIndex)
+    }
+
+    finishClose = () => {
+        this.setState({ openPanels: [] }, () => {
+            syncViewerSize(this.openSeadragon)
+            this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex)
+        })
+    }
+
+    isClosing = () => Boolean(this._shownProps)
+        && this.state.openPanels.length > 0
+        && this.panelIds(this.props).length !== this.state.openPanels.length
+
+    openPanels = annotation => {
+        if (this.props.selectedAnno?.id !== annotation.id) {
+            return
+        }
+
+        const openPanels = this.panelIds(this.props)
+
+        this._shownProps = this.props
+
+        if (openPanels.join() !== this.state.openPanels.join()) {
+            this.setState({ openPanels })
+        }
+    }
+
     changeAnno = (annotation, targetIndex = 0) => {
         if (annotation && annotation.id) {
-            if (!this.props.selectedAnno || this.props.selectedAnno.id !== annotation.id) {
-                this.props.changeSelectedAnno(annotation, targetIndex)
-            }
-
             const picked = pickTargetOnImage(annotation, projectImages(this.props.selectedProject), 0, targetIndex)
             const shadow = picked ? toShadow(annotation, picked.target, picked.index) : annotation
             const groupId = activeGroupId(annotation, picked ? picked.index : 0)
@@ -333,14 +379,14 @@ class OpenView extends Component {
                 defaultRotation: this.props.defaultRotation,
                 transition: this.props.rotationTransition,
                 padded: true,
-                shadowIds: groupShadows(annotation, groupId).map(item => item.id)
+                shadowIds: groupShadows(annotation, groupId).map(item => item.id),
+                onSettled: () => {
+                    clearTimeout(this._openTimer)
+                    this._openTimer = setTimeout(() => this.openPanels(annotation), SCENE_PAUSE)
+                }
             })
 
-            let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-            this.setState({
-                currentID: annotationIndex,
-                cutoutAnno: cutoutGroupIds(annotation).length > 0 ? annotation : null
-            })
+            this.showOnlyCurrentAnnotation(annotation.id)
 
             if (this.props.soundMode === 'no_spatialization') {
                 const { currentTrack } = this.state
@@ -483,9 +529,7 @@ class OpenView extends Component {
         // Do not start the timer if there is no content to display
         if (this.props.annos.length > 0) {
             if (this.props.startbyfirstanno) {
-                this.setState({ currentID: -1 })
-
-                this.changeAnno(this.props.annos[0])
+                this.selectAnno(this.props.annos[0])
             } else {
                 this.automateLoading()
             }
@@ -503,57 +547,13 @@ class OpenView extends Component {
     }
 
     previousAnno = () => {
-        let localCurrentID = this.state.currentID
-
-        if (this.props.annos.length > 0) {
-
-            if (this.state.currentID === -1 || this.state.currentID === 0) {
-                localCurrentID = this.props.annos.length - 1
-            } else {
-                localCurrentID = this.state.currentID - 1
-            }
-
-            this.setState({ currentID: localCurrentID })
-
-            this.changeAnno(this.props.annos[localCurrentID])
-
-            this.showOnlyCurrentAnnotation(this.props.annos[localCurrentID].id)
-
-
-            if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
-                const container = document.getElementById("annotations_list");
-                const el = document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`);
-                if (container && el) {
-                    container.scrollTo({
-                        top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
-                        behavior: "smooth"
-                    });
-                }
-            }
-
-        }
+        this.selectAnno(this.annoAt(-1))
         this.resetFullscreenAnnotationScrolling()
     }
 
     nextAnno = () => {
-        let localCurrentID = this.state.currentID
-
-        if (this.props.annos.length > 0) {
-
-            if (this.state.currentID === -1 || this.state.currentID === this.props.annos.length - 1) {
-                localCurrentID = 0
-            } else {
-                localCurrentID++;
-            }
-
-            this.setState({ currentID: localCurrentID })
-
-            this.changeAnno(this.props.annos[localCurrentID])
-
-            this.showOnlyCurrentAnnotation(this.props.annos[localCurrentID].id)
-
-            this.resetFullscreenAnnotationScrolling()
-        }
+        this.selectAnno(this.annoAt(1))
+        this.resetFullscreenAnnotationScrolling()
     }
 
     resetFullscreenAnnotationScrolling = () => {
@@ -639,7 +639,14 @@ class OpenView extends Component {
         if (this.AdnoAnnotorious) {
             if (prevProps.selectedAnno !== this.props.selectedAnno
                 || prevProps.selectedTargetIndex !== this.props.selectedTargetIndex) {
-                this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex)
+                clearTimeout(this._closeTimer)
+
+                if (this.isClosing()) {
+                    this._closeTimer = setTimeout(this.finishClose, CLOSE_WAIT + SCENE_PAUSE)
+                } else {
+                    syncViewerSize(this.openSeadragon)
+                    this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex)
+                }
             }
 
             if (prevProps.annos !== this.props.annos) {
@@ -760,7 +767,7 @@ class OpenView extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
-    cutoutGroups = () => cutoutGroupIds(this.state.cutoutAnno)
+    cutoutGroups = () => cutoutGroupIds(this.props.selectedAnno)
 
     cutoutViewFor = (groupId) =>
         this.state.cutoutViews[groupId] || { minimized: false, size: 'default', position: null }
@@ -779,14 +786,23 @@ class OpenView extends Component {
         return deriveGroups(this.props.selectedAnno).find(group => group.id === id) || null
     }
 
-    mosaic = () => mosaicLayout(
-        deriveGroups(this.props.selectedAnno).length,
-        this.props.mosaicRotation,
-        this.props.mosaicRatio)
+    mosaic = (props = this.props) => mosaicLayout(
+        props.selectedAnno
+            ? panelGroups(props.selectedAnno, activeGroupId(props.selectedAnno, props.selectedTargetIndex)).length + 1
+            : 1,
+        props.mosaicRotation,
+        props.mosaicRatio)
+
+    panelIds = (props) => props.selectedAnno
+        ? panelEntries(props.selectedAnno, activeGroupId(props.selectedAnno, props.selectedTargetIndex), this.mosaic(props).names.slice(1)).map(entry => entry.group.id)
+        : []
 
     render() {
         const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
-        const layout = this.mosaic()
+        const closing = this.isClosing()
+        const opening = !closing && this.panelIds(this.props).length > this.state.openPanels.length
+        const scene = closing ? this._shownProps : this.props
+        const layout = closing || opening ? collapsedLayout(this.mosaic(scene)) : this.mosaic(scene)
         const activeGroup = this.outlinesVisible() ? this.activeGroup() : null
 
         return <div className="open-view flex flex-col flex-grow relative">
@@ -941,10 +957,11 @@ class OpenView extends Component {
                     <ContentMargin
                         annotation={this.props.selectedAnno}
                         project={this.props.selectedProject}
+                        tags={this.props.tags}
                         position={this.marginPosition()}
                         offsetTop={this.marginOffset()}
                         canStart={this.props.annos.length > 0}
-                        onStart={() => this.changeAnno(this.props.annos[0])}
+                        onStart={() => this.selectAnno(this.props.annos[0])}
                         translate={this.props.t} />
                 }
 
@@ -952,7 +969,9 @@ class OpenView extends Component {
                     style={{
                         gridTemplateColumns: layout.columns,
                         gridTemplateRows: layout.rows,
-                        gridTemplateAreas: layout.areas
+                        gridTemplateAreas: layout.areas,
+                        gap: closing || opening ? 0 : null,
+                        '--toolbar-offset': `${this.marginOffset()}px`
                     }}>
                     <div id="adno-osd-viewer" style={{ gridArea: layout.names[0] }}></div>
 
@@ -971,11 +990,11 @@ class OpenView extends Component {
                         />
                     )}
 
-                    {this.props.selectedAnno &&
+                    {scene.selectedAnno &&
                         <GroupWorkspace
                             project={this.props.selectedProject}
-                            annotation={this.props.selectedAnno}
-                            activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
+                            annotation={scene.selectedAnno}
+                            activeGroupId={activeGroupId(scene.selectedAnno, scene.selectedTargetIndex)}
                             areaNames={layout.names.slice(1)}
                             crossOriginPolicy={this.crossOrigin()}
                             defaultRotation={this.props.defaultRotation}
@@ -989,7 +1008,7 @@ class OpenView extends Component {
                             elementId={`cutout-osd-${groupId}`}
                             rank={rank}
                             project={this.props.selectedProject}
-                            annotation={this.state.cutoutAnno}
+                            annotation={this.props.selectedAnno}
                             groupId={groupId}
                             crossOriginPolicy={this.crossOrigin()}
                             defaultRotation={this.props.defaultRotation}

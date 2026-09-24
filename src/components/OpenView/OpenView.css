@@ -15,6 +15,13 @@
     left: 0;
     display: grid;
     gap: 4px;
+    transition: grid-template-columns 0.7s ease, grid-template-rows 0.7s ease, gap 0.7s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .adno-mosaic {
+        transition: none;
+    }
 }
 
 .adno-mosaic--left {
@@ -42,6 +49,7 @@
     justify-self: start;
     align-self: start;
     margin: 6px;
+    margin-top: calc(var(--toolbar-offset, 0px) + 6px);
     pointer-events: none;
 }
 
