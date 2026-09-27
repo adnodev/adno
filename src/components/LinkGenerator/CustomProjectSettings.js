@@ -2,6 +2,9 @@ import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select';
 
+import { MosaicPicker } from "../MosaicPicker/MosaicPicker"
+import { ContentPositionPicker } from "../ContentPositionPicker/ContentPositionPicker"
+
 function CustomProjectSettings({ t, settings, setSettings }) {
 
     const soundsMode = [{
@@ -238,6 +241,22 @@ function CustomProjectSettings({ t, settings, setSettings }) {
         </label>
         <input type="checkbox" className="toggle toggle-toolsbar" checked={settings.rotation}
             onChange={() => setSettings({ ...settings, rotation: !settings.rotation })} />
+
+        <label className="label">
+            <span className="label-text">{t('project.settings.content_position')}</span>
+        </label>
+        <ContentPositionPicker
+            position={settings.contentPosition}
+            translate={t}
+            onChange={(contentPosition) => setSettings({ ...settings, contentPosition })} />
+
+        <label className="label">
+            <span className="label-text">{t('project.settings.mosaic_layout')}</span>
+        </label>
+        <MosaicPicker
+            ratio={settings.mosaicRatio}
+            rotation={settings.mosaicRotation}
+            onChange={(mosaicRatio, mosaicRotation) => setSettings({ ...settings, mosaicRatio, mosaicRotation })} />
 
     </>
 }

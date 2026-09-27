@@ -14,12 +14,17 @@ import "./ProjectSettings.css";
 import { withTranslation } from "react-i18next";
 
 import ReactSelect from 'react-select/creatable';
-import { buildTagsList } from "../../Utils/utils";
+import { buildTagsList } from "../../Utils/utils"
+import { maxGroupCount } from "../../Utils/groups"
+import { MosaicPicker } from "../MosaicPicker/MosaicPicker"
+import { ContentPositionPicker } from "../ContentPositionPicker/ContentPositionPicker"
+import { GROUP_COLOR_KEYS, groupLetter, groupPalette } from "../../Utils/groups"
+import { QUARTER_TURNS } from "../../Utils/orientation"
 
 const PARAMETERS_BY_TAB = {
-    'viewer': ['showNavigator', 'rotation', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
+    'viewer': ['showNavigator', 'rotation', 'defaultRotation', 'rotationTransition', 'contentPosition', 'mosaicRatio', 'showOutlines', 'showEyes', 'toolsbarOnFs', 'sidebarEnabled', 'displayToolbar', 'showCurrentAnnotation'],
     'navigation': ['delay', 'shouldAutoPlayAnnotations', 'startbyfirstanno', 'tags', 'soundMode'],
-    'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus'],
+    'annotation': ['outlineWidth', 'outlineColor', 'outlineColorFocus', 'groupColorA'],
 }
 
 class ProjectSettings extends Component {
@@ -84,9 +89,9 @@ class ProjectSettings extends Component {
                         <TabSelector tab={this.state.tab} setTab={tab => this.setState({ tab })} translate={this.props.t} />
                     </div>
 
-                    <div className={`project-metadatas ${this.state.tab === 'viewer' ? 'propject-metadatas--grid' : ''}`}>
+                    <div className={`project-metadatas ${this.state.tab === 'viewer' ? 'project-metadatas--grid' : ''}`}>
                         {PARAMETERS_BY_TAB[this.state.tab].includes('tags') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.tags')}</span>
                                 </div>
@@ -106,7 +111,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('delay') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.delay')}</span>
                                 </div>
@@ -116,7 +121,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineWidth') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.outline_width')}</span>
                                 </div>
@@ -132,7 +137,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineColor') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.outline_color')}</span>
                                 </div>
@@ -175,7 +180,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('outlineColorFocus') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.outline_focus')}</span>
                                 </div>
@@ -217,8 +222,28 @@ class ProjectSettings extends Component {
                             </label>
                         </>}
 
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('groupColorA') && <>
+                            <label className="form-control w-full">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.group_colors')}</span>
+                                </div>
+                                <div className="flex space-x-4 w-fit items-center">
+                                    {GROUP_COLOR_KEYS.map((key, index) =>
+                                        <label key={key} className="flex items-center gap-2 cursor-pointer">
+                                            <span className="label-text font-medium">{groupLetter(index)}</span>
+                                            <input type="color"
+                                                className="h-8 w-10 cursor-pointer"
+                                                value={groupPalette(this.state.settings)[index]}
+                                                onChange={(e) => this.setState({ settings: { ...this.state.settings, [key]: e.target.value } })}
+                                            />
+                                        </label>
+                                    )}
+                                </div>
+                            </label>
+                        </>}
+
                         {PARAMETERS_BY_TAB[this.state.tab].includes('startbyfirstanno') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.begin_first_anno')}</span>
                                 </div>
@@ -228,7 +253,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('shouldAutoPlayAnnotations') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.should_auto_play_annotations')}</span>
                                 </div>
@@ -238,7 +263,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showNavigator') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.navigator')}</span>
                                 </div>
@@ -248,7 +273,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('displayToolbar') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.toolsbar')}</span>
                                 </div>
@@ -258,7 +283,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showOutlines') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.show_outlines')}</span>
                                 </div>
@@ -274,7 +299,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('toolsbarOnFs') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.fullscreen')}</span>
                                 </div>
@@ -284,7 +309,7 @@ class ProjectSettings extends Component {
                         </>}
                         
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showCurrentAnnotation') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.show_only_current_annotation')}</span>
                                 </div>
@@ -300,7 +325,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('showEyes') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.show_eyes')}</span>
                                 </div>
@@ -316,7 +341,7 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('soundMode') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.annotation_sound')}</span>
                                 </div>
@@ -335,7 +360,7 @@ class ProjectSettings extends Component {
 
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('sidebarEnabled') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.annos_nav')}</span>
                                 </div>
@@ -345,13 +370,69 @@ class ProjectSettings extends Component {
                         </>}
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('rotation') && <>
-                            <label className="form-control w-full mt-4">
+                            <label className="form-control w-full">
                                 <div className="label font-medium">
                                     <span className="label-text">{this.props.t('project.settings.enable_rota')}</span>
                                 </div>
                                 <input type="checkbox" className="toggle toggle-toolsbar" checked={this.state.settings.rotation}
                                     onChange={() => this.setState({ settings: { ...this.state.settings, rotation: !this.state.settings.rotation } })} />
                             </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('defaultRotation') && <>
+                            <label className="form-control w-full">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.default_rotation')}</span>
+                                </div>
+                                <select className="select select-bordered"
+                                    value={this.state.settings.defaultRotation ?? 0}
+                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, defaultRotation: Number(e.target.value) } })}>
+                                    {QUARTER_TURNS.map(degrees => <option key={degrees} value={degrees}>{degrees}°</option>)}
+                                </select>
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('rotationTransition') && <>
+                            <label className="form-control w-full">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.rotation_transition')}</span>
+                                </div>
+                                <select className="select select-bordered"
+                                    value={this.state.settings.rotationTransition || 'turn'}
+                                    onChange={(e) => this.setState({ settings: { ...this.state.settings, rotationTransition: e.target.value } })}>
+                                    <option value="turn">{this.props.t('project.settings.rotation_transition_turn')}</option>
+                                    <option value="instant">{this.props.t('project.settings.rotation_transition_instant')}</option>
+                                </select>
+                            </label>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('contentPosition') && <>
+                            <div className="form-control w-full">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.content_position')}</span>
+                                </div>
+                                <ContentPositionPicker
+                                    position={this.state.settings.contentPosition}
+                                    translate={this.props.t}
+                                    onChange={(contentPosition) => this.setState({
+                                        settings: { ...this.state.settings, contentPosition }
+                                    })} />
+                            </div>
+                        </>}
+
+                        {PARAMETERS_BY_TAB[this.state.tab].includes('mosaicRatio') && <>
+                            <div className="form-control w-full">
+                                <div className="label font-medium">
+                                    <span className="label-text">{this.props.t('project.settings.mosaic_layout')}</span>
+                                </div>
+                                <MosaicPicker
+                                    ratio={this.state.settings.mosaicRatio}
+                                    rotation={this.state.settings.mosaicRotation}
+                                    groups={maxGroupCount(this.props.annotations)}
+                                    onChange={(mosaicRatio, mosaicRotation) => this.setState({
+                                        settings: { ...this.state.settings, mosaicRatio, mosaicRotation }
+                                    })} />
+                            </div>
                         </>}
                     </div>
 

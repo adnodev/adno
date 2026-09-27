@@ -1,0 +1,75 @@
+.position-picker {
+    display: flex;
+    gap: 10px;
+}
+
+.position-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.position-option-label {
+    font-size: 11px;
+    color: #52525b;
+}
+
+.position-preview {
+    position: relative;
+    display: block;
+    width: 72px;
+    height: 52px;
+    border: 1px solid #d4d4d8;
+    border-radius: 4px;
+    background: #e4e4e7;
+    overflow: hidden;
+}
+
+.position-option:hover .position-preview {
+    border-color: #a1a1aa;
+}
+
+.position-option--selected .position-preview {
+    border-color: #2451c4;
+    box-shadow: 0 0 0 1px #2451c4;
+}
+
+.position-option--selected .position-option-label {
+    color: #2451c4;
+    font-weight: 600;
+}
+
+.position-preview-margin {
+    position: absolute;
+    background: #a1a1aa;
+}
+
+.position-preview--left .position-preview-margin {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 32%;
+}
+
+.position-preview--right .position-preview-margin {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 32%;
+}
+
+.position-preview--bottom .position-preview-margin {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 38%;
+}
+
+.position-preview--floating .position-preview-margin {
+    top: 14%;
+    left: 10%;
+    width: 42%;
+    height: 48%;
+    border-radius: 2px;
+}

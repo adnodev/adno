@@ -1,17 +1,3 @@
-.move-btn{
-    z-index: 1;
-    position: absolute;
-    right: 0;
-    bottom: 30px;
-    left: 0;
-    margin: auto;
-    width: 350px;
-    background-color: var(--adno-main-color) !important;
-}
-.move-btn svg{
-    margin-right: 10px;
-}
-
 .edit-form{
     width: 70vw;
     margin: 30px auto auto auto;
@@ -104,8 +90,91 @@
     margin: 2% 0 0 8%;
 }
 
-#openseadragon1{
+.pending-zone{
+    position: absolute;
+    z-index: 2;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(113, 113, 157, 0.95);
+    color: #fff;
+    font-size: 14px;
+}
+
+#openseadragon1 .a9s-annotation .a9s-outer{
+    stroke-width: 6px;
+}
+
+#openseadragon1 .a9s-annotation .a9s-inner{
+    stroke-width: 4px;
+}
+
+#openseadragon1 .a9s-annotation.a9s-muted{
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+#openseadragon1.drawing .a9s-annotation{
+    pointer-events: none;
+}
+
+.workspace-frame{
+    pointer-events: none;
+}
+
+.workspace-frame::before{
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--exit-margin));
+    border: 2px dashed var(--group-color, rgba(255, 255, 255, 0.85));
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--group-color, #ffffff) 10%, transparent);
+}
+
+.group-legend{
+    position: absolute;
+    z-index: 2;
+    top: 56px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    pointer-events: none;
+}
+
+.group-legend-item{
+    font-size: 13px;
+    padding: 4px 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    opacity: 0.75;
+}
+
+.group-legend-item--active{
+    opacity: 1;
+    outline: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.editor-stage{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     height: calc(100vh - 58px);
+}
+
+.editor-viewer{
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+#openseadragon1{
+    height: 100%;
 }
 
 #toolbar-osd{

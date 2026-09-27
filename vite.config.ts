@@ -27,8 +27,8 @@ export default defineConfig(({ mode }) => {
       __APP_VERSION__: JSON.stringify(appVersion)
     },
     esbuild: {
-      loader: 'jsx',
-      include: /src\/.*\.jsx?$/,
+      loader: 'tsx',
+      include: /src\/.*\.[jt]sx?$/,
       exclude: []
     },
     optimizeDeps: {

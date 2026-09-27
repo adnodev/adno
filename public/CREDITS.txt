@@ -1,0 +1,12 @@
+Adno — asset credits
+
+Logos
+-----
+logo.png
+adno.png
+
+The Adno logos (public/logo.png and public/adno.png) were designed by
+Sébastien Moinet — Antimatière. They remain the property of their
+author and are not covered by the MIT License in LICENSE, which
+applies to the software only. Reuse of the logos requires permission
+from the rights holder(s).

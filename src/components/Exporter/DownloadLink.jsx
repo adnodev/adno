@@ -1,25 +1,31 @@
-import { useState, useEffect } from "react";
-import { createExportProjectJsonFile } from "../../Utils/utils";
+import { createExportProjectJsonFile } from "../../Utils/utils"
 
 export function DownloadLink({ selectedProject, translate }) {
-    const [href, setHref] = useState("");
-
-    useEffect(() => {
-        if (!selectedProject) return;
+    const download = (event) => {
+        event.preventDefault()
 
         createExportProjectJsonFile(selectedProject.id).then(url => {
-            setHref(url);
-        });
-    }, [selectedProject]);
+            const link = document.createElement("a")
+
+            link.href = url
+            link.download = selectedProject.title + ".json"
+
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+
+            setTimeout(() => URL.revokeObjectURL(url))
+        })
+    }
 
     return (
         <a
             id={"download_btn_" + selectedProject.id}
-            href={href}
-            download={selectedProject.title + ".json"}
+            href="#"
+            onClick={download}
             title={translate('navbar.download_project')}
         >
             Adno
         </a>
-    );
+    )
 }

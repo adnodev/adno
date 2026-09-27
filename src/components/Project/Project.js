@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"
 import { useParams, useHistory } from "react-router-dom";
-import { buildTagsList, defaultProjectSettings } from "../../Utils/utils";
+import { useTranslation } from "react-i18next"
+import { buildTagsList } from "../../Utils/utils";
+import { defaultProjectSettings } from "../../Utils/project";
+import { ensureTargetGroups, groupPalette } from "../../Utils/groups"
+import { projectImages } from "../../Utils/images"
 import { exportToIIIF } from "../../services/iiif/exporter";
 import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
@@ -16,6 +20,7 @@ import ViewerAnnotationCards from "../AdnoViewer/ViewerAnnotationCards/ViewerAnn
 import ProjectSettings from "./ProjectSettings";
 import AdnoMdEditor from "../AdnoMarkdown/AdnoMdEditor";
 import AdnoMdViewer from "../AdnoMarkdown/AdnoMdViewer";
+import { SidebarControl } from "./SidebarControl"
 
 import "./Project.css";
 import "./Sidebar.css";
@@ -23,11 +28,17 @@ import "./Sidebar.css";
 const Project = ({ editMode }) => {
     const { id } = useParams();
     const history = useHistory();
+    const { t } = useTranslation()
+
+    const viewerRef = useRef(null)
 
     const [state, setState] = useState({
         annotations: [],
         selectedProject: undefined,
+        currentImageIndex: 0,
+        pendingZone: null,
         sidebarOpened: true,
+        sidebarMode: 'collapsed',
         updateAnnotation: false,
         showProjectMetadatas: false,
         showSettings: false,
@@ -36,7 +47,8 @@ const Project = ({ editMode }) => {
         audioContexts: [],
         past: [],
         future: [],
-        selectedAnnotation: null,
+        selectedAnnotationId: null,
+        selectedTargetIndex: 0,
         showFullAnnotationView: false
     });
 
@@ -50,7 +62,7 @@ const Project = ({ editMode }) => {
             setState(prev => ({
                 ...prev,
                 selectedProject: project,
-                annotations: project.annotations,
+                annotations: ensureTargetGroups(project.annotations),
                 settings: project.settings || defaultProjectSettings()
             }));
         };
@@ -68,6 +80,56 @@ const Project = ({ editMode }) => {
         setState(prev => ({ ...prev, settings: newSettings }));
         await projectDB.update(id, { settings: newSettings });
     };
+
+    const selectAnnotation = (annotation, targetIndex = 0) => {
+        setState(prev => ({
+            ...prev,
+            selectedAnnotationId: annotation ? annotation.id : null,
+            selectedTargetIndex: targetIndex
+        }))
+    }
+
+    const mdGuard = useRef(null)
+
+    const guardLeavingEditor = (proceed) => {
+        if (!mdGuard.current) {
+            proceed()
+            return
+        }
+
+        mdGuard.current().then(ok => ok && proceed())
+    }
+
+    const changeAnnoGuarded = (annotation, targetIndex = 0) => {
+        if (!state.updateAnnotation || (annotation && annotation.id === state.selectedAnnotationId)) {
+            selectAnnotation(annotation, targetIndex)
+            return
+        }
+
+        guardLeavingEditor(() => setState(prev => ({
+            ...prev,
+            updateAnnotation: false,
+            pendingZone: null,
+            selectedAnnotationId: annotation ? annotation.id : null,
+            selectedTargetIndex: targetIndex
+        })))
+    }
+
+    const openRichEditor = (annotation) => {
+        const open = () => setState(prev => ({
+            ...prev,
+            updateAnnotation: true,
+            selectedAnnotationId: annotation.id,
+            selectedTargetIndex: 0
+        }))
+
+        if (state.updateAnnotation && annotation.id !== state.selectedAnnotationId) {
+            guardLeavingEditor(open)
+            return
+        }
+
+        open()
+    }
 
     const handleChanges = (arr) => {
         setState(prevState => {
@@ -88,6 +150,8 @@ const Project = ({ editMode }) => {
     };
 
     const undo = () => {
+        const restored = state.past[state.past.length - 1];
+
         setState(prevState => {
             const { past, future, ...present } = prevState;
             if (past.length === 0) return prevState;
@@ -101,9 +165,15 @@ const Project = ({ editMode }) => {
                 ...previousState
             };
         });
+
+        if (restored) {
+            projectDB.updateAnnotations(id, restored.annotations);
+        }
     };
 
     const redo = () => {
+        const restored = state.future[0];
+
         setState(prevState => {
             const { past, future, ...present } = prevState;
             if (future.length === 0) return prevState;
@@ -117,9 +187,14 @@ const Project = ({ editMode }) => {
                 ...nextState
             };
         });
+
+        if (restored) {
+            projectDB.updateAnnotations(id, restored.annotations);
+        }
     };
 
-    const { annotations, settings, selectedAnnotation } = state;
+    const { annotations, settings } = state
+    const selectedAnnotation = annotations.find(annotation => annotation.id === state.selectedAnnotationId) || null
     const settingsTags = settings.tags || [];
     const viewerAnnotations = settingsTags.length > 0
         ? annotations.filter(annotation => {
@@ -144,7 +219,7 @@ const Project = ({ editMode }) => {
                 selectedProject={state.selectedProject}
                 showProjectMetadatas={() => setState(prev => ({ ...prev, showProjectMetadatas: true }))}
                 editMode={editMode}
-                changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                changeSelectedAnno={(newSelectedAnno) => changeAnnoGuarded(newSelectedAnno)}
                 showEditorSettings={() => setState(prev => ({ ...prev, showSettings: true }))}
                 autoplayID={state.autoplayID}
                 exportIIIF={() => exportToIIIF(state)}
@@ -185,16 +260,21 @@ const Project = ({ editMode }) => {
             )}
 
             {state.updateAnnotation && selectedAnnotation && (
-                <div className="text-rich">
-                    <AdnoMdEditor
-                        updateAnnos={(annos) => handleChanges({ annotations: annos })}
-                        closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false }))}
-                        selectedAnnotation={selectedAnnotation}
-                        selectedProjectId={id}
-                        annotations={annotations}
-                        changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
-                    />
-                </div>
+                <AdnoMdEditor
+                    key={selectedAnnotation.id}
+                    updateAnnos={(annos) => handleChanges({ annotations: annos })}
+                    closeMdEditor={() => setState(prev => ({ ...prev, updateAnnotation: false, pendingZone: null }))}
+                    registerGuard={(fn) => { mdGuard.current = fn }}
+                    groupColors={groupPalette(settings)}
+                    images={projectImages(state.selectedProject)}
+                    selectedAnnotation={selectedAnnotation}
+                    selectedProjectId={id}
+                    annotations={annotations}
+                    changeSelectedAnno={selectAnnotation}
+                    selectedTargetIndex={state.selectedTargetIndex}
+                    startPendingZone={(annotationId, groupId) => setState(prev => ({ ...prev, pendingZone: { annotationId, groupId } }))}
+                    getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
+                />
             )}
 
             {state.showFullAnnotationView && (
@@ -212,54 +292,61 @@ const Project = ({ editMode }) => {
                         <AnnotationCards
                             updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
                             selectedProject={state.selectedProject}
-                            openRichEditor={(annotation) => setState(prev => ({
-                                ...prev,
-                                updateAnnotation: true,
-                                selectedAnnotation: annotation
-                            }))}
+                            openRichEditor={openRichEditor}
                             annotations={annotations}
                             updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                             selectedAnno={selectedAnnotation}
-                            changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                            changeSelectedAnno={(newSelectedAnno) => changeAnnoGuarded(newSelectedAnno)}
+                            pendingZone={state.pendingZone}
+                            startPendingZone={(annotationId, groupId) => setState(prev => ({ ...prev, pendingZone: { annotationId, groupId } }))}
                         />
                     </div>
                 )}
 
                 {annotations.length > 0 && !editMode && settings.sidebarEnabled && (
-                    <div className="sidebar-opened-w-modal">
+                    <div className={`sidebar-opened-w-modal sidebar--${state.sidebarMode}`}>
+                        <SidebarControl
+                            mode={state.sidebarMode}
+                            setMode={(sidebarMode) => setState(prev => ({ ...prev, sidebarMode }))}
+                            translate={t}
+                        />
                         <ViewerAnnotationCards
                             updateProject={(updatedProject) => setState(prev => ({ ...prev, selectedProject: updatedProject }))}
                             selectedProject={state.selectedProject}
                             annotations={viewerAnnotations}
                             selectedAnno={selectedAnnotation}
-                            changeSelectedAnno={(newSelectedAnno) => setState(prev => ({ ...prev, selectedAnnotation: newSelectedAnno }))}
+                            changeSelectedAnno={(newSelectedAnno) => selectAnnotation(newSelectedAnno)}
                             editingMode={editMode}
+                            contentPosition={settings.contentPosition}
                             openFullAnnotationView={(annotation) => setState(prev => ({
                                 ...prev,
                                 showFullAnnotationView: true,
-                                selectedAnnotation: annotation
+                                selectedAnnotationId: annotation.id,
+                                selectedTargetIndex: 0
                             }))}
                         />
                     </div>
                 )}
 
-                {/* <div className={annotations.length > 0 && settings.sidebarEnabled ? "adno-viewer-rightbar-with-annos" : ""}> */}
-                {/* <div className="col">
-                    <div className="card"> */}
                 {editMode ? (
                     <AdnoEditor
                         selectedProject={state.selectedProject}
+                        currentImageIndex={state.currentImageIndex}
+                        changeImage={(index) => setState(prev => ({ ...prev, currentImageIndex: index }))}
+                        pendingZone={state.pendingZone}
+                        endPendingZone={() => setState(prev => ({ ...prev, pendingZone: null }))}
+                        editingAnnotation={state.updateAnnotation}
+                        groupColors={groupPalette(settings)}
                         annotations={annotations}
                         updateAnnos={(updated_annos) => handleChanges({ annotations: updated_annos })}
                         selectedAnno={selectedAnnotation}
-                        openRichEditor={(annotation) => setState(prev => ({
-                            ...prev,
-                            // updateAnnotation: true,
-                            selectedAnnotation: annotation
-                        }))}
-                        changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
+                        selectedTargetIndex={state.selectedTargetIndex}
+                        changeSelectedAnno={changeAnnoGuarded}
                         rotation={settings.rotation}
+                        defaultRotation={settings.defaultRotation}
+                        rotationTransition={settings.rotationTransition}
                         showNavigator={settings.showNavigator}
+                        onViewerReady={(viewer) => { viewerRef.current = viewer }}
                     />
                 ) : (
                     <OpenView
@@ -270,16 +357,23 @@ const Project = ({ editMode }) => {
                         toolsbarOnFs={settings.toolsbarOnFs}
                         showToolbar={settings.displayToolbar}
                         rotation={settings.rotation}
+                        defaultRotation={settings.defaultRotation}
+                        rotationTransition={settings.rotationTransition}
                         timerDelay={settings.delay}
                         showOutlines={settings.showOutlines}
                         showCurrentAnnotation={settings.showCurrentAnnotation}
                         soundMode={settings.soundMode}
                         spatialization={settings.spatialization}
                         showEyes={settings.showEyes}
+                        contentPosition={settings.contentPosition}
+                        mosaicRatio={settings.mosaicRatio}
+                        mosaicRotation={settings.mosaicRotation}
+                        tags={settingsTags}
                         annos={viewerAnnotations}
                         selectedAnno={selectedAnnotation}
+                        selectedTargetIndex={state.selectedTargetIndex}
                         selectedProject={state.selectedProject}
-                        changeSelectedAnno={(anno) => setState(prev => ({ ...prev, selectedAnnotation: anno }))}
+                        changeSelectedAnno={selectAnnotation}
                         updateAutoplayId={(id) => setState(prev => ({ ...prev, autoplayID: id }))}
                         changeShowToolbar={() => setState(prev => ({
                             ...prev,
@@ -290,9 +384,6 @@ const Project = ({ editMode }) => {
                         outlineColorFocus={settings.outlineColorFocus}
                     />
                 )}
-                {/* </div>
-                </div> */}
-                {/* </div> */}
             </div>
         </div>
     );

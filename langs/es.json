@@ -8,7 +8,18 @@
         "switch_down": "Bajar la anotación",
         "switch_up": "Subir la anotación",
         "tags_list": "Filtrar las anotaciones que contienen las palabras clave",
-        "target": "Resaltar"
+        "orientation": "Orientación de lectura",
+        "cutout_expand": "Reabrir el recorte",
+        "cutout_minimize": "Minimizar el recorte",
+        "sound": "Anotación sonora",
+        "cutout_rotated": "Enderezado {{degrees}}°",
+        "cutout_size_default": "Tamaño normal",
+        "cutout_size_full": "Ocupar toda la vista",
+        "cutout_size_tall": "Toda la altura",
+        "cutout_title": "Recorte enderezado",
+        "add_zone": "Añadir una zona",
+        "delete_zone": "Eliminar esta zona",
+        "copy_zone_url": "Copiar la URL IIIF de esta zona"
     },
     "begin_msg": "Para comenzar a usar Adno, por favor ingrese la URL de un manifiesto o una imagen IIIF, una imagen estática en formato jpg o png, o un proyecto Adno",
     "buttons": {
@@ -17,16 +28,15 @@
     },
     "create_project": "Crea un proyecto nuevo",
     "editor": {
-        "approve_changes": "Aprobar los cambios",
         "audio_creator": "Creador de la pista de audio (Crédito)",
         "audio_track": "Pista de audio (URL)",
         "flip": "Voltear horizontalmente",
         "fullpage": "Poner en pantalla completa",
         "home": "Ir a inicio",
         "md_add_tag": "Agregar una palabra clave",
-        "md_delete": "Eliminar",
-        "md_delete_confirm": "Confirmar la eliminación",
         "md_save": "Guardar",
+        "unsaved_changes": "¿Guardar los cambios?",
+        "unsaved_discard": "Descartar",
         "next_page": "Página siguiente",
         "placeholder": "Agregue su texto aquí",
         "previous_page": "Página anterior",
@@ -35,15 +45,29 @@
         "tabs": {
             "audio": "Audio",
             "editor": "Editor",
-            "tags": "Palabras claves"
+            "tags": "Palabras claves",
+            "zones": "Zonas"
         },
         "zoom_in": "ampliar",
         "zoom_out": "Alejar",
-        "empty_list": "Sin opciones"
+        "empty_list": "Sin opciones",
+        "orientation_inherit": "Valor por defecto del proyecto",
+        "orientation_capture": "Usar la vista actual",
+        "cutout": "Como recorte",
+        "images": "Imágenes",
+        "previous_image": "Imagen anterior",
+        "next_image": "Imagen siguiente",
+        "collapse_images": "Plegar las imágenes",
+        "expand_images": "Mostrar las imágenes",
+        "add_zone_hint": "Dibuje una zona para añadirla a la anotación",
+        "add_zone_cancel": "Cancelar",
+        "editor_hint": "Escribe el contenido de la anotación y guarda.",
+        "audio_hint": "Asocia una pista de audio reproducida con esta anotación.",
+        "add_group": "Añadir un grupo",
+        "group_label": "Grupo {{letter}} · {{zones}} zonas"
     },
     "errors": {
         "error_found": "Error detectado",
-        "manifest_picture_not_found": "Error: No se encuentra el manifiesto o la imagen que ha ingresado",
         "no_iiif": "Proyecto no IIIF detectado, por favor proporcione un proyecto IIIF",
         "no_title": "Por favor, dé un título a su proyecto",
         "no_url": "No se proporcionó ninguna URL",
@@ -73,7 +97,6 @@
     },
     "modal": {
         "adno_proj_detected": "Proyecto Adno detectado, ¿le gustaŕia importarlo?",
-        "annotation_moved": "Anotación movida con éxito",
         "ask_delete": "¿Realmente desea eliminar esta anotación?",
         "cancel": "Cancelar",
         "confirm_del_annotation": "Sí, eliminar esta anotación",
@@ -82,12 +105,9 @@
         "del_annotation_confirmation": "La anotación ha sido eliminada correctamente",
         "delete_project": "¿Realmente desea eliminar este proyecto?",
         "duplicate_project": "¿Realmente desea duplicar este proyecto?",
-        "old_version": "Uno o varios proyectos se han hecho con una versión obsoleta de Adno",
         "project_edit_success": "¡Proyecto editado con éxito!",
         "projects_list_up_to_date": "El listado de proyectos ha sido actualizado",
-        "settings_updated_success": "¡Configuraciones actualizadas con éxito!",
-        "update_old_version": "Actualizar a la última versión",
-        "version_updated": "Felicidades, tus proyectos Adno ahora están actualizados"
+        "settings_updated_success": "¡Configuraciones actualizadas con éxito!"
     },
     "navbar": {
         "back_home": "Volver a inicio",
@@ -103,10 +123,11 @@
         "all_metadata": "Todos los metadatos",
         "undo": "Deshacer la última acción",
         "export_project_to": "Exportar en formato",
+        "export_project_or": "o",
         "view_mode": "Lectura",
         "edit_mode_help": "Modo edición",
         "view_mode_help": "Modo lectura",
-        "export_project_to_iiif": "IIIF"
+        "export_project_to_iiif": "IIIF v3"
     },
     "new_project": {
         "add_info": "Complete su proyecto"
@@ -168,8 +189,9 @@
             "navigator": "Navegador de conjunto",
             "no_sound": "Las anotaciones de audio no se reproducirán",
             "no_spatialization": "Las anotaciones de audio se reproducirán individualmente",
-            "outline_color": "Color de los contornos de las anotaciones",
-            "outline_focus": "Color del contorno de la anotación actual",
+            "outline_color": "Color de los contornos de las anotaciones (lectura)",
+            "outline_focus": "Color del contorno de la anotación actual (lectura)",
+            "group_colors": "Colores de los contornos de los grupos (edición)",
             "outline_width": "Grosor de las anotaciones",
             "save": "Guardar",
             "show_eyes": "Mostrar un icono dentro de las formas",
@@ -178,7 +200,17 @@
             "spatialization": "Las anotaciones de audio se reproducirán con un efecto de espacialización",
             "tags": "Solo se mostrarán las anotaciones que incluyan la o una de las siguientes palabras clave",
             "toolsbar": "Mostrar la barra de herramientas",
-            "visualization": "Visualización"
+            "visualization": "Visualización",
+            "default_rotation": "Orientación de lectura por defecto",
+            "rotation_transition": "Cambio de orientación",
+            "rotation_transition_turn": "Girar (encuadrar y luego rotar)",
+            "rotation_transition_instant": "Inmediato (sin animación)",
+            "content_position": "Contenido de la anotación",
+            "content_position_floating": "Panel flotante",
+            "content_position_left": "Margen izquierdo",
+            "content_position_bottom": "Margen inferior",
+            "content_position_right": "Margen derecho",
+            "mosaic_layout": "Disposición del mosaico"
         },
         "title": "Título",
         "advanced": "Avanzado"
@@ -208,8 +240,13 @@
         "pause": "Pausar",
         "play": "Reproducir",
         "previous_annotation": "Anotación anterior",
-        "reset_zoom": "Zoom",
+        "reset_view": "Vista inicial",
+        "start_tour": "Comenzar la visita",
         "rotation": "Girar 90 grados",
-        "toggle_annotations": "Mostrar/ocultar las anotaciones"
+        "toggle_annotations": "Mostrar/ocultar las anotaciones",
+        "sidebar_control": "Columna de anotaciones",
+        "sidebar_expanded": "Desplegada",
+        "sidebar_collapsed": "Plegada",
+        "sidebar_hover": "Desplegar al pasar"
     }
 }

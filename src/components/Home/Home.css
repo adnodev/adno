@@ -159,6 +159,11 @@
     font-weight: 800;
 }
 
+.adno_logo {
+    height: 3.5rem;
+    width: auto;
+}
+
 .adno_home_selection {
     display: flex;
     justify-content: center;

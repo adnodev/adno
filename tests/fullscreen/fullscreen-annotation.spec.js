@@ -1,6 +1,6 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
-const { BASE_URL, clearProjectsDB, seedProject } = require('../helpers');
+const { BASE_URL, clearProjectsDB, expandSidebar, seedProject } = require('../helpers');
 const fixture = require('./project.fixture.json');
 
 const CONTENT_1 = 'CONTENU_ANNOTATION_1';
@@ -9,12 +9,13 @@ const CONTENT_2 = 'CONTENU_ANNOTATION_2';
 async function openViewer(page) {
     await seedProject(page, fixture);
     await page.goto(`${BASE_URL}/#/project/${fixture.id}/view`);
+    await expandSidebar(page);
     await expect(page.locator(`[id="anno_card_${fixture.annotations[0].id}"]`))
         .toBeVisible({ timeout: 30000 });
 }
 
 async function selectAnnotationFromSidebar(page, annoId) {
-    await page.locator(`[id="anno_card_${annoId}"]`).locator('button').last().click();
+    await page.locator(`[id="anno_card_${annoId}"]`).locator('.adno-card-body').click();
 }
 
 test.afterEach(async ({ page }) => {
@@ -31,7 +32,7 @@ test.describe('Plein écran — zone de contenu de l\'annotation', () => {
 
         await page.locator('#toggle-fullscreen').click();
 
-        const zone = page.locator('#adno-osd-anno-fullscreen');
+        const zone = page.locator('#adno-content-margin');
         await expect(zone).toBeVisible({ timeout: 5000 });
         await expect(zone).toContainText(CONTENT_1);
     });
@@ -44,7 +45,7 @@ test.describe('Plein écran — zone de contenu de l\'annotation', () => {
         await page.keyboard.press('ArrowRight');
         await page.keyboard.press('ArrowRight');
 
-        const zone = page.locator('#adno-osd-anno-fullscreen');
+        const zone = page.locator('#adno-content-margin');
         await expect(zone).toBeVisible({ timeout: 5000 });
         await expect(zone).toContainText(CONTENT_2);
     });
@@ -55,7 +56,7 @@ test.describe('Plein écran — zone de contenu de l\'annotation', () => {
         await selectAnnotationFromSidebar(page, fixture.annotations[0].id);
         await page.locator('#toggle-fullscreen').click();
 
-        const zone = page.locator('#adno-osd-anno-fullscreen');
+        const zone = page.locator('#adno-content-margin');
         await expect(zone).toContainText(CONTENT_1);
 
         await page.keyboard.press('ArrowRight');

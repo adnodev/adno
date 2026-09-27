@@ -64,4 +64,64 @@ async function seedProject(page, project) {
     }), project);
 }
 
-module.exports = { BASE_URL, clearProjectsDB, seedProject };
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {string=} id
+ * @returns {Promise<any>}
+ */
+function readStore(page, id) {
+    return page.evaluate((projectId) => new Promise((resolve) => {
+        const req = indexedDB.open('ProjectsDB', 1);
+        req.onerror = () => resolve(null);
+        req.onsuccess = () => {
+            const db = req.result;
+            if (!db.objectStoreNames.contains('projects')) {
+                resolve(null);
+                return;
+            }
+            const store = db.transaction(['projects'], 'readonly').objectStore('projects');
+            const query = projectId ? store.get(projectId) : store.getAll();
+            query.onsuccess = () => resolve(query.result || null);
+            query.onerror = () => resolve(null);
+        };
+    }), id);
+}
+
+/**
+ * Read a project back from IndexedDB, to assert on what actually got persisted.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} id
+ * @returns {Promise<any>}
+ */
+async function readProject(page, id) {
+    return readStore(page, id);
+}
+
+/**
+ * Read every stored project. Importing generates a fresh id, so a test that
+ * imports has to find its project back by title.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @returns {Promise<any[]>}
+ */
+async function readProjects(page) {
+    return (await readStore(page)) || [];
+}
+
+/**
+ * @param {import('@playwright/test').Page} page
+ */
+async function expandSidebar(page) {
+    const control = page.locator('.sidebar-control-btn');
+
+    if (await control.count() === 0) {
+        return;
+    }
+
+    await control.click({ timeout: 30000 });
+    await page.locator('.sidebar-menu-item').first().click();
+    await page.waitForSelector('.anno-card', { timeout: 30000 });
+}
+
+module.exports = { BASE_URL, clearProjectsDB, expandSidebar, readProject, readProjects, seedProject };

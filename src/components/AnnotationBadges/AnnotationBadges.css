@@ -1,0 +1,24 @@
+.anno-card-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.anno-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.anno-badge--orientation {
+    color: #b45309;
+}
+
+.anno-badge--sound {
+    color: #71719d;
+}

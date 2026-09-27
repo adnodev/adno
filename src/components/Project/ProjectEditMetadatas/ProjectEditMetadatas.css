@@ -3,7 +3,13 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin: auto;
     display: flex;
-    height: 20%;
+    position: sticky;
+    bottom: 0;
+    padding: 12px 0;
+    background: #fff;
+}
+
+.metadata-editor-btns .btn {
+    min-width: 180px;
 }

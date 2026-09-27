@@ -61,8 +61,9 @@
         "settings": {
             "delay": "Delay between 2 annotations (in seconds)",
             "outline_width": "Annotations outline width",
-            "outline_color": "Annotation outline color",
-            "outline_focus": "Color of annotation outline with focus",
+            "outline_color": "Annotation outline color (reading)",
+            "outline_focus": "Outline color of the current annotation (reading)",
+            "group_colors": "Group outline colors (editing)",
             "navigator": "Annotations Map browser",
             "fullscreen": "Show toolbar in full screen mode",
             "annos_nav": "Show list of annotations in sidebar",
@@ -82,7 +83,17 @@
             "visualization": "Visualization",
             "navigation": "Navigation",
             "annotation": "Annotation",
-            "anno_bounds": "Are annotations visible ?"
+            "anno_bounds": "Are annotations visible ?",
+            "default_rotation": "Default reading orientation",
+            "rotation_transition": "Orientation change",
+            "rotation_transition_turn": "Turn (frame, then rotate)",
+            "rotation_transition_instant": "Instant (no animation)",
+            "content_position": "Annotation content",
+            "content_position_floating": "Floating panel",
+            "content_position_left": "Left margin",
+            "content_position_bottom": "Bottom margin",
+            "content_position_right": "Right margin",
+            "mosaic_layout": "Mosaic layout"
         }
     },
     "files": {
@@ -93,13 +104,12 @@
         "close": "Close"
     },
     "editor": {
-        "approve_changes": "Approve changes",
         "md_add_tag": "Add a new tag",
         "audio_track": "Audio Track (URL)",
         "audio_creator": "Audio Creator (Credit)",
         "md_save": "Save",
-        "md_delete": "Delete",
-        "md_delete_confirm": "Confirm deletion",
+        "unsaved_changes": "Save your changes?",
+        "unsaved_discard": "Discard",
         "fullpage": "Toggle full page",
         "home": "Go home",
         "zoom_in": "Zoom in",
@@ -113,16 +123,36 @@
         "tabs": {
             "editor": "Editor",
             "tags": "Tags",
-            "audio": "Audio"
+            "audio": "Audio",
+            "zones": "Zones"
         },
-        "empty_list": "No options"
+        "empty_list": "No options",
+        "orientation_inherit": "Project default",
+        "orientation_capture": "Use current view",
+        "cutout": "As a cutout",
+        "images": "Images",
+        "previous_image": "Previous image",
+        "next_image": "Next image",
+        "collapse_images": "Collapse images",
+        "expand_images": "Show images",
+        "add_zone_hint": "Draw a zone to add it to the annotation",
+        "add_zone_cancel": "Cancel",
+        "editor_hint": "Write the annotation content, then save.",
+        "audio_hint": "Link an audio track played alongside this annotation.",
+        "add_group": "Add a group",
+        "group_label": "Group {{letter}} · {{zones}} zones"
     },
     "visualizer": {
         "expand": "Enter full screen",
         "pause": "Pause",
         "play": "Play",
-        "reset_zoom": "Zoom",
+        "reset_view": "Reset view",
+        "start_tour": "Start the tour",
         "toggle_annotations": "Hide/show annotations",
+        "sidebar_control": "Sidebar control",
+        "sidebar_expanded": "Expanded",
+        "sidebar_collapsed": "Collapsed",
+        "sidebar_hover": "Expand on hover",
         "previous_annotation": "Go to previous annotation",
         "next_annotation": "Go to next annotation",
         "rotation": "Rotate of 90 degrees",
@@ -148,27 +178,34 @@
         "projects_list_up_to_date": "Projects list have been updated",
         "duplicate_project": "Would you really want to duplicate this project ?",
         "confirm_duplication": "Yes, duplicate this project",
-        "annotation_moved": "Annotation moved successfully",
         "ask_delete": "Would you really like to delete this annotation ?",
         "confirm_del_annotation": "Yes, delete this annotation",
         "del_annotation_confirmation": "Annotation deleted successfully",
         "project_edit_success": "Your project have been updated successfully !",
         "settings_updated_success": "Settings updated successfully !",
-        "adno_proj_detected": "Adno project detected, would you like to import it ?",
-        "old_version": "One or more projects were made with an obsolete version of Adno",
-        "update_old_version": "Update to the latest version of Adno",
-        "version_updated": "Congratulations, your Adno projects are now up to date"
+        "adno_proj_detected": "Adno project detected, would you like to import it ?"
     },
     "annotation": {
         "no_content": "no content yet",
         "read_more": "Read more",
         "edit": "Edit",
-        "target": "Focus annotation",
         "switch_down": "Switch down",
         "switch_up": "Switch up",
         "delete": "Remove annotation",
         "tags_list": "Filter annotations using tags",
-        "empty_tags_list": "The created tags will be displayed here."
+        "empty_tags_list": "The created tags will be displayed here.",
+        "orientation": "Reading orientation",
+        "cutout_expand": "Reopen the cutout",
+        "cutout_minimize": "Minimise the cutout",
+        "sound": "Sound annotation",
+        "cutout_rotated": "Straightened by {{degrees}}°",
+        "cutout_size_default": "Normal size",
+        "cutout_size_full": "Fill the view",
+        "cutout_size_tall": "Full height",
+        "cutout_title": "Upright cutout",
+        "add_zone": "Add a zone",
+        "delete_zone": "Delete this zone",
+        "copy_zone_url": "Copy the IIIF url of this zone"
     },
     "navbar": {
         "edit_mode": "edit",
@@ -179,7 +216,7 @@
         "redo": "Reapply the undone action",
         "back_home": "Back to home",
         "download_project": "Download the project",
-        "export_project_to_iiif": "IIIF",
+        "export_project_to_iiif": "IIIF v3",
         "edit_project": "Edit project metadata",
         "show_metadatas": "Show metadata",
         "all_metadata": "All metadata",
@@ -187,7 +224,8 @@
         "share_project_desc1": "First, download your project file. To share it, you can either send it by e-mail, or place it online - on a website, a file server or on the IPFS interplanetary file system - and then share its URL or IPFS CID.",
         "share_project_desc2": "Once your Adno project is online, you can make it visible on a web page by inserting an iframe tag.",
         "share_project_desc3": "For more information, visit the official Adno documentation.",
-        "export_project_to": "Export as"
+        "export_project_to": "Export as",
+        "export_project_or": "or"
     },
     "new_project": {
         "add_info": "Add information to your project"
@@ -196,7 +234,6 @@
         "error_found": "An error have been found",
         "unable_reading_file": "Unable to read this type of file!",
         "unable_access_file": "Unable to reach this file! Please try again or select another file",
-        "manifest_picture_not_found": "The manifest or the picture you have entered has not been found",
         "wrong_url": "The URL you have entered is not valid",
         "no_url": "No URL was provided",
         "unknown_characters": "Unable to read annotations (Forbidden characters)",

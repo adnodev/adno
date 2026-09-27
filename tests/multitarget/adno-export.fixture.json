@@ -1,0 +1,75 @@
+{
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "round-trip-source-id",
+    "type": "AnnotationCollection",
+    "title": "Round trip multi zone",
+    "description": "One annotation, two zones",
+    "creator": "",
+    "editor": "",
+    "rights": "",
+    "date": "2026-07-01T00:00:00.000Z",
+    "modified": "2026-07-01T00:00:00.000Z",
+    "source": "http://localhost:1234/round-trip-source.png",
+    "format": "Adno",
+    "total": 1,
+    "first": {
+        "id": "page1",
+        "type": "AnnotationPage",
+        "startIndex": 0,
+        "items": [
+            {
+                "@context": "http://www.w3.org/ns/anno.jsonld",
+                "id": "#split-across-two-zones",
+                "type": "Annotation",
+                "body": [
+                    {
+                        "type": "TextualBody",
+                        "value": "SPLIT",
+                        "purpose": "commenting"
+                    },
+                    {
+                        "type": "HTMLBody",
+                        "value": "<p>SPLIT</p>",
+                        "purpose": "commenting"
+                    }
+                ],
+                "target": [
+                    {
+                        "source": "http://localhost:1234/round-trip-source.png",
+                        "selector": {
+                            "type": "FragmentSelector",
+                            "conformsTo": "http://www.w3.org/TR/media-frags/",
+                            "value": "xywh=pixel:20,20,120,40"
+                        }
+                    },
+                    {
+                        "source": "http://localhost:1234/round-trip-source.png",
+                        "selector": {
+                            "type": "FragmentSelector",
+                            "conformsTo": "http://www.w3.org/TR/media-frags/",
+                            "value": "xywh=pixel:20,90,150,45"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "adno_settings": {
+        "delay": 5,
+        "showNavigator": false,
+        "toolsbarOnFs": true,
+        "sidebarEnabled": true,
+        "startbyfirstanno": false,
+        "shouldAutoPlayAnnotations": false,
+        "rotation": false,
+        "displayToolbar": true,
+        "tags": [],
+        "outlineWidth": "outline-1px",
+        "outlineColor": "outline-white",
+        "outlineColorFocus": "outline-focus-yellow",
+        "showOutlines": true,
+        "showEyes": false,
+        "soundMode": "no_sound",
+        "showCurrentAnnotation": false
+    }
+}

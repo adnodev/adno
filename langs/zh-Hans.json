@@ -61,8 +61,9 @@
         "settings": {
             "delay": "两个标注之间的延迟时间（秒）",
             "outline_width": "标注轮廓线宽",
-            "outline_color": "标注轮廓颜色",
-            "outline_focus": "当前标注的轮廓颜色",
+            "outline_color": "标注轮廓颜色（阅读）",
+            "outline_focus": "当前标注的轮廓颜色（阅读）",
+            "group_colors": "分组轮廓颜色（编辑）",
             "navigator": "标注地图浏览器",
             "fullscreen": "全屏模式下显示工具栏",
             "annos_nav": "在边栏显示标注列表",
@@ -82,7 +83,17 @@
             "visualization": "可视化",
             "navigation": "导航",
             "annotation": "标注",
-            "anno_bounds": "是否显示标注？"
+            "anno_bounds": "是否显示标注？",
+            "default_rotation": "默认阅读方向",
+            "rotation_transition": "方向切换",
+            "rotation_transition_turn": "旋转（先取景，再旋转）",
+            "rotation_transition_instant": "立即（无动画）",
+            "content_position": "注释内容",
+            "content_position_floating": "浮动面板",
+            "content_position_left": "左侧边栏",
+            "content_position_bottom": "底部边栏",
+            "content_position_right": "右侧边栏",
+            "mosaic_layout": "马赛克布局"
         }
     },
     "files": {
@@ -93,13 +104,12 @@
         "close": "关闭"
     },
     "editor": {
-        "approve_changes": "确认更改",
         "md_add_tag": "添加标签",
         "audio_track": "音频轨道（URL）",
         "audio_creator": "音频创作者（版权信息）",
         "md_save": "保存",
-        "md_delete": "删除",
-        "md_delete_confirm": "确认删除",
+        "unsaved_changes": "保存更改？",
+        "unsaved_discard": "放弃",
         "fullpage": "切换全屏",
         "home": "返回主页",
         "zoom_in": "放大",
@@ -113,16 +123,36 @@
         "tabs": {
             "editor": "编辑器",
             "tags": "标签",
-            "audio": "音频"
+            "audio": "音频",
+            "zones": "区域"
         },
-        "empty_list": "无选项"
+        "empty_list": "无选项",
+        "orientation_inherit": "项目默认值",
+        "orientation_capture": "使用当前视图",
+        "cutout": "裁切图",
+        "images": "图像",
+        "previous_image": "上一幅图像",
+        "next_image": "下一幅图像",
+        "collapse_images": "收起图像",
+        "expand_images": "显示图像",
+        "add_zone_hint": "绘制一个区域以添加到该批注",
+        "add_zone_cancel": "取消",
+        "editor_hint": "撰写注释内容，然后保存。",
+        "audio_hint": "关联随此注释播放的音轨。",
+        "add_group": "添加分组",
+        "group_label": "分组 {{letter}} · {{zones}} 个区域"
     },
     "visualizer": {
         "expand": "进入全屏",
         "pause": "暂停",
         "play": "播放",
-        "reset_zoom": "缩放",
+        "reset_view": "重置视图",
+        "start_tour": "开始导览",
         "toggle_annotations": "显示／隐藏标注",
+        "sidebar_control": "注释栏",
+        "sidebar_expanded": "展开",
+        "sidebar_collapsed": "收起",
+        "sidebar_hover": "悬停时展开",
         "previous_annotation": "转到上一个标注",
         "next_annotation": "转到下一个标注",
         "rotation": "旋转 90 度",
@@ -148,27 +178,34 @@
         "projects_list_up_to_date": "项目列表已更新",
         "duplicate_project": "确定要复制此项目吗？",
         "confirm_duplication": "是，复制此项目",
-        "annotation_moved": "标注已成功移动",
         "ask_delete": "确定要删除此标注吗？",
         "confirm_del_annotation": "是，删除此标注",
         "del_annotation_confirmation": "标注已成功删除",
         "project_edit_success": "项目已成功更新！",
         "settings_updated_success": "设置已成功更新！",
-        "adno_proj_detected": "已检测到 Adno 项目，是否导入？",
-        "old_version": "一个或多个项目是使用旧版 Adno 创建的",
-        "update_old_version": "更新至最新版本",
-        "version_updated": "恭喜，您的 Adno 项目已是最新版本"
+        "adno_proj_detected": "已检测到 Adno 项目，是否导入？"
     },
     "annotation": {
         "no_content": "暂无内容",
         "read_more": "阅读更多",
         "edit": "编辑",
-        "target": "聚焦标注",
         "switch_down": "下移标注",
         "switch_up": "上移标注",
         "delete": "移除标注",
         "tags_list": "按标签筛选标注",
-        "empty_tags_list": "已创建的标签将显示在此处。"
+        "empty_tags_list": "已创建的标签将显示在此处。",
+        "orientation": "阅读方向",
+        "cutout_expand": "重新打开裁切图",
+        "cutout_minimize": "最小化裁切图",
+        "sound": "声音标注",
+        "cutout_rotated": "已摆正 {{degrees}}°",
+        "cutout_size_default": "常规大小",
+        "cutout_size_full": "占满视图",
+        "cutout_size_tall": "整个高度",
+        "cutout_title": "已摆正的裁切图",
+        "add_zone": "添加区域",
+        "delete_zone": "删除该区域",
+        "copy_zone_url": "复制该区域的 IIIF 链接"
     },
     "navbar": {
         "edit_mode": "编辑",
@@ -179,7 +216,7 @@
         "redo": "重做已撤销的操作",
         "back_home": "返回主页",
         "download_project": "下载项目",
-        "export_project_to_iiif": "IIIF",
+        "export_project_to_iiif": "IIIF v3",
         "edit_project": "编辑项目元数据",
         "show_metadatas": "显示元数据",
         "all_metadata": "所有元数据",
@@ -187,7 +224,8 @@
         "share_project_desc1": "请先下载您的项目文件。若要分享，可以通过电子邮件发送，或上传至网站、文件服务器或 IPFS 星际文件系统，再分享其 URL 或 IPFS CID。",
         "share_project_desc2": "将 Adno 项目上传至网络后，可在网页中插入 iframe 标签来展示项目。",
         "share_project_desc3": "如需更多信息，请前往 Adno 的官方文档。",
-        "export_project_to": "导出为"
+        "export_project_to": "导出为",
+        "export_project_or": "或"
     },
     "new_project": {
         "add_info": "填写项目信息"
@@ -196,7 +234,6 @@
         "error_found": "发现错误",
         "unable_reading_file": "无法读取此类型的文件！",
         "unable_access_file": "无法访问此文件！请重试或选择其他文件。",
-        "manifest_picture_not_found": "未找到您输入的清单或图片。",
         "wrong_url": "您输入的网址无效！请输入指向 IIIF 清单、IIIF 图片、JPG 或 PNG 图片，或 Adno 项目文件的链接。",
         "no_url": "未提供网址",
         "unknown_characters": "无法读取标注（包含不允许的字符）",

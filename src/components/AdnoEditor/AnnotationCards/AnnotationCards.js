@@ -6,13 +6,16 @@ import parse from 'html-react-parser';
 
 // Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBullseye, faDownLong, faEdit, faTrashAlt, faUpLong, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import { faDownLong, faEdit, faPlus, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons"
 
 // Import SweetAlert
 import Swal from "sweetalert2";
 
+import { AnnotationBadges } from "../../AnnotationBadges/AnnotationBadges"
+
 // Import Utils 
 import { buildTagsList } from "../../../Utils/utils";
+import { getTargets } from "../../../Utils/targets"
 
 //Imports CSS
 import "./AnnotationCards.css";
@@ -36,15 +39,6 @@ class AnnotationCards extends Component {
         } else {
             return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
         }
-    }
-
-    hasAudio = annotation => {
-        if (Array.isArray(annotation.body) && annotation.body.length > 0) {
-            const resource = annotation.body
-                .find(body => body.type === "SpecificResource")
-            return resource?.source?.id
-        }
-        return false
     }
 
     // Function to move an annotation up one place
@@ -118,11 +112,15 @@ class AnnotationCards extends Component {
                 {
                     annotationWithTags
                         .map((annotation, index) => {
-                            return (
-                                <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}>
+                            const zones = getTargets(annotation).length
 
-                                    {this.hasAudio(annotation) && <FontAwesomeIcon icon={faVolumeHigh} />}
+                            return (
+                                <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}
+                                    onClick={() => this.props.changeSelectedAnno(annotation)}>
+
                                     <div className="anno-card-body">
+
+                                        <AnnotationBadges annotation={annotation} translate={this.props.t} />
 
                                         <div className="card-tags-list">
                                             {
@@ -140,17 +138,19 @@ class AnnotationCards extends Component {
                                             {this.getAnnotationHTMLBody(annotation)}
                                         </div>
 
-                                        <div className="btn-line-one-card">
+                                        <div className="btn-line-one-card" onClick={event => event.stopPropagation()}>
                                             <button className="btn btn-sm" onClick={() => this.props.openRichEditor(annotation)}>
                                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.edit')}>
                                                     <FontAwesomeIcon icon={faEdit} />
                                                 </div>
                                             </button>
                                             <button type="button"
-                                                onClick={() => this.props.changeSelectedAnno(annotation)}
-                                                className="btn btn-sm btn-show-more">
-                                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.target')}>
-                                                    <FontAwesomeIcon icon={faBullseye} />
+                                                id={`anno_add_zone_${annotation.id}`}
+                                                onClick={() => this.props.startPendingZone(annotation.id)}
+                                                className={this.props.pendingZone && this.props.pendingZone.annotationId === annotation.id ? "btn btn-sm btn-active" : "btn btn-sm"}>
+                                                <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.add_zone')}>
+                                                    <FontAwesomeIcon icon={faPlus} />
+                                                    {zones > 1 && <span className="zone-count">{zones}</span>}
                                                 </div>
                                             </button>
                                             {index < this.props.annotations.length - 1 ? <button className="btn btn-sm btn-outline bg-white" onClick={() => this.annoSwitchDown(index)}>

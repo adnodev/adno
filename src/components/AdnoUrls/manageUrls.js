@@ -1,6 +1,8 @@
 import Swal from "sweetalert2"
 import { buildJsonProjectWithManifest, enhancedFetch, migrateTextBody } from "../../Utils/utils";
 import { projectDB } from "../../services/db";
+import { withImages } from "../../Utils/images"
+import { extractLanguageValue } from "../AdnoEmbed/IIIFHelper"
 import { v7 } from 'uuid'
 
 
@@ -56,7 +58,10 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                                 let title = manifest.title || manifest.label
                                                 let desc = manifest.description || manifest.subject
 
-                                                let project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
+                                                let base = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
+                                                let project = manifest.images && manifest.images.length > 0
+                                                    ? withImages(base, manifest.images)
+                                                    : base
 
                                                 projectDB.add(projectID, {
                                                     id: projectID,
@@ -127,20 +132,6 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
     } else {
         return Promise.reject(`${translation('errors.wrong_url')}: ${url}`)
     }
-    // .catch(() => {
-    //     Swal.fire({
-    //         title: `${translation('errors.wrong_url')}: ${url}`,
-    //         showCancelButton: false,
-    //         showConfirmButton: true,
-    //         confirmButtonText: 'OK',
-    //         icon: 'error',
-    //     })
-    //         .then((result) => {
-    //             if (result.isConfirmed) {
-    //                 window.location.href = ""
-    //             }
-    //         })
-    // })
 }
 
 export function readProjectFromIIIFFormat(props, manifest, translation) {
@@ -169,33 +160,26 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
 
         const desc = manifest.description || manifest.subject
 
-        let manifestURL = manifest.items[0]?.items[0].items[0].body.id
+        const canvases = (manifest.items || [])
+            .map(canvas => ({ canvas, image: canvasImage(canvas) }))
+            .filter(entry => entry.image)
 
-        if (!manifestURL.endsWith('info.json'))
-            manifestURL = `${manifestURL}/info.json`
+        const sourceByCanvas = new Map(canvases.map(({ canvas, image }) => [canvas.id, image.source]))
 
-        const project = {
-            ...buildJsonProjectWithManifest(projectID, title, desc, manifestURL),
+        const images = canvases.map(({ canvas, image }) => ({
+            ...image,
+            id: canvas.id,
+            label: extractLanguageValue(canvas.label) || ''
+        }))
+
+        const project = withImages({
+            ...buildJsonProjectWithManifest(projectID, title, desc, images[0]?.source),
             settings
-        }
+        }, images)
 
-        const annotations = manifest.items[0]?.annotations[0].items.flatMap(annotation => {
-            if (annotation.body)
-                return {
-                    // "@context": "http://www.w3.org/ns/anno.jsonld",
-                    body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
-                    target: buildAnnotationTarget(annotation.target),
-                    id: annotation.id,
-                    type: 'Annotation'
-                }
-            else if (annotation.items) {
-                return annotation.items.map(item => ({
-                    ...item,
-                    body: Array.isArray(item.body) ? item.body : [item.body],
-                    target: buildAnnotationTarget(item.target),
-                }))
-            }
-        })
+        const annotations = canvases.flatMap(({ canvas }) =>
+            (canvas.annotations || []).flatMap(page =>
+                (page.items || []).flatMap(annotation => buildImportedAnnotations(annotation, sourceByCanvas))))
 
         projectDB.add(
             projectID,
@@ -212,16 +196,77 @@ export function readProjectFromIIIFFormat(props, manifest, translation) {
     }
 }
 
+function buildImportedAnnotations(annotation, sourceByCanvas) {
+    if (annotation.body) {
+        return [{
+            body: Array.isArray(annotation.body) ? annotation.body : [annotation.body],
+            target: remapTargetSource(buildAnnotationTarget(annotation.target), sourceByCanvas),
+            id: annotation.id,
+            type: 'Annotation'
+        }]
+    }
+
+    if (annotation.items) {
+        return annotation.items.map(item => ({
+            ...item,
+            body: Array.isArray(item.body) ? item.body : [item.body],
+            target: remapTargetSource(buildAnnotationTarget(item.target), sourceByCanvas)
+        }))
+    }
+
+    return []
+}
+
+function canvasSize(painted, canvas) {
+    const width = painted.width || canvas.width
+    const height = painted.height || canvas.height
+
+    return width && height ? { width, height } : {}
+}
+
+function canvasImage(canvas) {
+    const painted = canvas.items?.[0]?.items?.[0]?.body
+
+    if (!painted) {
+        return null
+    }
+
+    const size = canvasSize(painted, canvas)
+    const service = painted.service?.[0]?.id || painted.service?.[0]?.['@id']
+
+    if (service) {
+        return { source: service.endsWith('info.json') ? service : `${service}/info.json`, type: 'iiif', ...size }
+    }
+
+    return painted.id ? { source: painted.id, type: 'image', ...size } : null
+}
+
+function remapTargetSource(target, sourceByCanvas) {
+    if (Array.isArray(target)) {
+        return target.map(item => remapTargetSource(item, sourceByCanvas))
+    }
+
+    const mapped = target && target.source ? sourceByCanvas.get(target.source) : null
+
+    return mapped ? { ...target, source: mapped } : target
+}
+
 function buildAnnotationTarget(target) {
+
+    if (Array.isArray(target)) {
+        return target.map(buildAnnotationTarget)
+    }
 
     if (typeof target === 'string') {
         // "https://example.com/canvas-1#xywh=1415,406,334,626"
+        const [source, fragment] = target.split('#')
+
         return {
             type: "SpecificResource",
-            // source: "https://example.com/canvas-1",
+            source,
             selector: {
                 type: "FragmentSelector",
-                value: target.split('#')[1].replace('xywh=', 'xywh=pixel:'),
+                value: fragment.replace('xywh=', 'xywh=pixel:'),
                 conformsTo: "http://www.w3.org/TR/media-frags/"
             }
         }

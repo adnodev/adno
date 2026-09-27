@@ -1,31 +1,15 @@
 import Swal from "sweetalert2";
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
+import { projectImages } from "./images"
+import { defaultProjectSettings } from "./project"
 import { v7 } from "uuid";
 
-export function findInfoJsonFromManifest(url) {
-  return fetch(url)
-    .then(rep => rep.json())
-    .then(result => {
-      var resultLink = ""
+export { buildTagsList } from "./tags"
 
-      for (let index = 0; index < 7; index++) {
-        resultLink += result.sequences[0].canvases[0].images[0].resource["@id"].split("/")[index]
-
-        if (index === 0) {
-          resultLink += "//"
-        } else {
-          resultLink += "/"
-        }
-
-      }
-
-      resultLink += "info.json"
-
-
-      return resultLink;
-    })
-}
+const SECONDARY_VIEWERS = '.cutout-panel, .group-panel'
+const EYE_PROBES = 24
+const PATH_SAMPLES = 64
 
 export const stripHtml = (html) => {
   let tmp = document.createElement("DIV");
@@ -33,25 +17,11 @@ export const stripHtml = (html) => {
   return tmp.textContent || tmp.innerText || "";
 }
 
-export const isValidUrl = (url) => {
-  try {
-    new URL(url);
-  } catch (e) {
-    console.error(e);
-    return false;
-  }
-  return true;
-};
-
 export const get_url_extension = (url) => {
   if (url.includes('?url=https'))
     return get_url_extension(url.split(/[#?]/)[1].replace('url=', ''));
   else
     return url.split(/[#?]/)[0].split('.').pop().trim();
-}
-
-export const buildTagsList = (annotation) => {
-  return Array.isArray(annotation.body) ? annotation.body.filter(anno_body => anno_body.purpose === "tagging") : []
 }
 
 export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {
@@ -82,35 +52,10 @@ export const buildJsonProjectWithImg = (id, title, desc, img) => {
   }
 }
 
-export const buildProjectAdnoFormat = (title, description, manifest) => {
-  return (
-    {
-      "@context": "http://www.w3.org/ns/anno.jsonld",
-      "id": v7(),
-      "type": "AnnotationCollection",
-      "title": title,
-      "description": description,
-      "date": createDate(),
-      "modified": createDate(),
-      "source": manifest,
-      "editor": "",
-      "creator": "",
-      "format": "Adno",
-      "total": 0,
-      "first": {
-        "id": "http://example.org/page1",
-        "type": "AnnotationPage",
-        "startIndex": 0,
-        "items": []
-      },
-      "settings": defaultProjectSettings()
-    }
-  )
-}
-
 export const createExportProjectJsonFile = async (projectID) => {
 
   const project = await projectDB.get(projectID)
+  const images = projectImages(project)
 
   const finalProject =
   {
@@ -125,7 +70,8 @@ export const createExportProjectJsonFile = async (projectID) => {
     "rights": project.rights || "",
     "date": project.creation_date,
     "modified": project.last_update,
-    "source": project.manifest_url ? project.manifest_url : project.img_url,
+    "source": images.length > 0 ? images[0].source : "",
+    "images": images,
     "format": "Adno",
     "total": project.annotations && project.annotations.length ? project.annotations.length : 0,
     "first": {
@@ -228,10 +174,6 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
 }
 
 
-export function checkProjectAttributes(imported_project) {
-  return imported_project.hasOwnProperty('id') && imported_project.hasOwnProperty('title') && imported_project.hasOwnProperty('description') && imported_project.hasOwnProperty('creation_date') && imported_project.hasOwnProperty('last_update') && imported_project.hasOwnProperty('manifest_url')
-}
-
 export function createDate() {
   return new Date().toISOString();
 }
@@ -254,28 +196,6 @@ export function diffProjectSettings(a, b) {
   }
 
   return diff;
-}
-
-// Set default settings for any ADNO project
-export function defaultProjectSettings() {
-  return {
-    delay: 5,
-    showNavigator: true,
-    toolsbarOnFs: true,
-    sidebarEnabled: true,
-    startbyfirstanno: false,
-    shouldAutoPlayAnnotations: false,
-    rotation: false,
-    displayToolbar: true,
-    tags: [],
-    outlineWidth: "outline-1px",
-    outlineColor: "outline-white",
-    outlineColorFocus: "outline-focus-yellow",
-    showOutlines: true,
-    showEyes: false,
-    soundMode: 'no_sound',
-    showCurrentAnnotation: false
-  }
 }
 
 export function migrateTextBody(annotation) {
@@ -323,6 +243,142 @@ export async function enhancedFetch(url) {
       console.log(`An error occurred: ${error.message}`)
     }
   }
+}
+
+export function annotationShapes(root) {
+  const scope = root || document
+
+  return [...scope.getElementsByClassName("a9s-annotation")]
+    .filter(shape => {
+      const panel = shape.closest(SECONDARY_VIEWERS)
+
+      return !panel || Boolean(root && panel.contains(root))
+    })
+}
+
+function outlinePoints(geometry) {
+  const points = []
+
+  if (geometry.points && geometry.points.numberOfItems > 2) {
+    for (let i = 0; i < geometry.points.numberOfItems; i++) {
+      const point = geometry.points.getItem(i)
+      points.push({ x: point.x, y: point.y })
+    }
+
+    return points
+  }
+
+  if (geometry.tagName !== "path" || typeof geometry.getTotalLength !== "function") {
+    return null
+  }
+
+  const length = geometry.getTotalLength()
+
+  if (!length) {
+    return null
+  }
+
+  for (let i = 0; i < PATH_SAMPLES; i++) {
+    const point = geometry.getPointAtLength(length * i / PATH_SAMPLES)
+    points.push({ x: point.x, y: point.y })
+  }
+
+  return points
+}
+
+function centroidOf(points) {
+  let area = 0
+  let x = 0
+  let y = 0
+
+  for (let i = 0; i < points.length; i++) {
+    const from = points[i]
+    const to = points[(i + 1) % points.length]
+    const cross = from.x * to.y - to.x * from.y
+
+    area += cross
+    x += (from.x + to.x) * cross
+    y += (from.y + to.y) * cross
+  }
+
+  return Math.abs(area) < 1e-6 ? null : { x: x / (3 * area), y: y / (3 * area) }
+}
+
+function isInside(points, x, y) {
+  let inside = false
+
+  for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+    const from = points[i]
+    const to = points[j]
+
+    if ((from.y > y) !== (to.y > y)
+      && x < (to.x - from.x) * (y - from.y) / (to.y - from.y) + from.x) {
+      inside = !inside
+    }
+  }
+
+  return inside
+}
+
+function widestRun(points, box, y) {
+  let best = null
+  let run = null
+
+  for (let step = 0; step <= EYE_PROBES; step++) {
+    const x = box.x + box.width * step / EYE_PROBES
+
+    if (isInside(points, x, y)) {
+      run = run || { from: x, to: x }
+      run.to = x
+    } else {
+      best = run && (!best || run.to - run.from > best.to - best.from) ? run : best
+      run = null
+    }
+  }
+
+  return run && (!best || run.to - run.from > best.to - best.from) ? run : best
+}
+
+function shapeCentre(geometry, box) {
+  const boxCentre = { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+  const points = outlinePoints(geometry)
+
+  if (!points) {
+    return boxCentre
+  }
+
+  const centre = centroidOf(points) || boxCentre
+
+  if (isInside(points, centre.x, centre.y)) {
+    return centre
+  }
+
+  const run = widestRun(points, box, centre.y)
+
+  return run ? { x: (run.from + run.to) / 2, y: centre.y } : boxCentre
+}
+
+export function placeEye(shape, eye, size) {
+  const geometry = shape.children[0]
+
+  if (!geometry || typeof geometry.getBBox !== "function") {
+    return false
+  }
+
+  const box = geometry.getBBox()
+
+  if (!box.width || !box.height) {
+    return false
+  }
+
+  const centre = shapeCentre(geometry, box)
+
+  eye.setAttribute('width', size)
+  eye.setAttribute('height', size)
+  eye.setAttribute('x', centre.x - size / 2)
+  eye.setAttribute('y', centre.y - size / 2)
+
+  return true
 }
 
 export function getEye() {

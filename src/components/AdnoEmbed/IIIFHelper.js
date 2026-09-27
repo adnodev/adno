@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import { buildTagsList } from "../../Utils/tags"
 
 export function extractIIIFContent(imported_project, options) {
     options.overrideSettings();
@@ -139,18 +140,6 @@ export function extractIIIFContent(imported_project, options) {
                 );
         }
 
-        const GRANTED_IMG_EXTENSIONS =
-            process.env.GRANTED_IMG_EXTENSIONS?.split(",") || [];
-
-        const tileSources = GRANTED_IMG_EXTENSIONS.includes(
-            get_url_extension(resultLink)
-        )
-            ? {
-                type: "image",
-                url: resultLink,
-            }
-            : [resultLink];
-
         options.setState({
             ...adnoSettings,
             annos,
@@ -159,11 +148,9 @@ export function extractIIIFContent(imported_project, options) {
             creator,
             editor,
             rights,
+            source: resultLink,
             isLoaded: true
-        }, () => {
-            options.overrideSettings();
-            options.displayViewer(tileSources, annos);
-        });
+        }, options.overrideSettings)
 
     } else {
         Swal.fire({
@@ -206,6 +193,24 @@ export function findImageInObject(obj, depth = 0) {
 }
 
 
+function withMediaFrags(target) {
+    if (Array.isArray(target)) {
+        return target.map(withMediaFrags)
+    }
+
+    if (target && target.selector && target.selector.type === "FragmentSelector") {
+        return {
+            ...target,
+            selector: {
+                ...target.selector,
+                conformsTo: "http://www.w3.org/TR/media-frags/"
+            }
+        }
+    }
+
+    return target
+}
+
 export function extractIIIFv3Annotations(manifest) {
     const annotations = [];
 
@@ -219,9 +224,7 @@ export function extractIIIFv3Annotations(manifest) {
                 annotationPage.items.forEach(anno => {
                     // Fix FragmentSelector conformsTo for commenting annotations
                     if (anno.motivation === "commenting") {
-                        if (anno.target && anno.target.selector && anno.target.selector.type === "FragmentSelector") {
-                            anno.target.selector.conformsTo = "http://www.w3.org/TR/media-frags/";
-                        }
+                        anno.target = withMediaFrags(anno.target)
                     }
                     annotations.push(anno);
                 });
@@ -265,9 +268,7 @@ export function extractIIIFv2Annotations(manifest) {
 
                         // Fix FragmentSelector conformsTo for commenting annotations
                         if (converted.motivation === "commenting") {
-                            if (converted.target && converted.target.selector && converted.target.selector.type === "FragmentSelector") {
-                                converted.target.selector.conformsTo = "http://www.w3.org/TR/media-frags/";
-                            }
+                            converted.target = withMediaFrags(converted.target)
                         }
 
                         annotations.push(converted);
@@ -327,27 +328,3 @@ export function getMetadataFromIIIF(metadata, key) {
     return extractLanguageValue(entry.value);
 }
 
-export function buildTagsList(annotation) {
-    const tags = [];
-
-    if (annotation.body) {
-        const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
-
-        bodies.forEach(body => {
-            if (body.purpose === 'tagging' || body.motivation === 'tagging') {
-                tags.push({
-                    value: body.value || body.id,
-                    label: body.value || body.id
-                });
-            }
-        });
-    }
-
-    return tags;
-}
-
-export function get_url_extension(url) {
-    if (!url) return '';
-    const match = url.match(/\.([^./?#]+)(?:[?#]|$)/);
-    return match ? match[1].toLowerCase() : '';
-}

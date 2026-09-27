@@ -1,31 +1,31 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
 
-// Import FontAwesome for all icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-
-// Import SweetAlert
-import Swal from "sweetalert2";
-
-// Import CSS
 import "./AdnoEditor.css";
 
-// Add translations
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
 import { computeNavigatorInfo } from "../../Utils/utils";
+import { hideWorkspace, isInsideAnnotation, revealAnnotation, showWorkspace, watchViewerResize } from "../../Utils/viewport"
+import { preserveTargetRotation } from "../../Utils/orientation"
+import { activeGroupId, buildTargetId, deriveGroups, preserveTargetId, scheduleGroupColors, targetGroupId } from "../../Utils/groups"
+import { imageTileSource, projectImages } from "../../Utils/images"
+import { rememberImageApi } from "../../Utils/imageApi"
+import { addTarget, getTargets, parseShadowId, pickTargetOnImage, replaceTargetAt, toShadow, toShadowAnnotations } from "../../Utils/targets"
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator';
+import { ImageFilmstrip } from "../ImageFilmstrip/ImageFilmstrip"
+import { GroupLegend } from "../GroupWorkspace/GroupOverlay"
 
 class AdnoEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isMovingItem: false,
+            pending: null,
             imageRatio: null,
             navigatorLayout: null,
             viewerReady: false,
         }
+        this._openToken = 0
     }
 
     componentDidMount() {
@@ -35,16 +35,7 @@ class AdnoEditor extends Component {
             return;
         }
 
-        let tileSources = {
-            type: 'image',
-            url: selectedProject.img_url
-        }
-
-        if (selectedProject.manifest_url) {
-            tileSources = [
-                selectedProject.manifest_url
-            ]
-        }
+        const tileSources = imageTileSource(projectImages(selectedProject)[this.props.currentImageIndex || 0])
 
         OpenSeadragon.setString("Tooltips.FullPage", this.props.t('editor.fullpage'));
         OpenSeadragon.setString("Tooltips.Home", this.props.t('editor.home'));
@@ -62,14 +53,43 @@ class AdnoEditor extends Component {
             prefixUrl: 'https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/',
             // Enable rotation
             toolbar: "toolbar-osd",
-            showRotationControl: this.props.rotation,
+            showRotationControl: true,
             showFullPageControl: false,
         });
 
+        this.openSeadragon.gestureSettingsMouse.clickToZoom = false
+
+        if (this.props.onViewerReady) {
+            this.props.onViewerReady(this.openSeadragon)
+        }
+
         this.openSeadragon.addOnceHandler('open', () => {
-            const info = computeNavigatorInfo(this.openSeadragon);
-            if (info) {
-                this.setState({ ...info, viewerReady: true });
+            this.refreshNavigator()
+            this.syncShadows()
+        });
+
+        this.openSeadragon.addHandler('open', () => {
+            const image = this.images()[this.props.currentImageIndex]
+
+            rememberImageApi(image && image.source, this.openSeadragon.world.getItemAt(0)?.source)
+        });
+
+        this.openSeadragon.addHandler('canvas-click', (event) => {
+            const { clientX, clientY } = event.originalEvent
+            const shape = document.elementFromPoint(clientX, clientY)?.closest('.a9s-annotation')
+            const selected = this.props.selectedAnno
+
+            this._clickedShadowId = shape ? shape.getAttribute('data-id') : null
+            this._clickInside = Boolean(selected) && isInsideAnnotation(this.openSeadragon, selected, event.position)
+
+            if (!event.quick || shape || !selected || this.props.pendingZone) {
+                return
+            }
+
+            if (this._clickInside) {
+                setTimeout(() => this.changeAnno(this.props.selectedAnno))
+            } else {
+                this.props.changeSelectedAnno(null)
             }
         });
 
@@ -77,14 +97,13 @@ class AdnoEditor extends Component {
             locale: 'auto',
             drawOnSingleClick: true,
             allowEmpty: true,
-            disableEditor: true
+            disableEditor: true,
+            disableSelect: true
         });
 
-        const annos = this.props.annotations
+        this.unwatchResize = watchViewerResize(this.openSeadragon, this.AdnoAnnotorious)
 
-        // Generate dataURI and load annotations into Annotorious
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(annos))));
-        this.AdnoAnnotorious.loadAnnotations(dataURI)
+        this.syncShadows()
 
         Annotorious.SelectorPack(this.AdnoAnnotorious);
         Annotorious.BetterPolygon(this.AdnoAnnotorious);
@@ -92,14 +111,41 @@ class AdnoEditor extends Component {
 
         // Event triggered by using saveSelected annotorious function
         this.AdnoAnnotorious.on('createAnnotation', (newAnnotation) => {
-            const annotations = [...this.props.annotations] || []
-            annotations.push(newAnnotation)
+            const image = this.images()[this.props.currentImageIndex]
+            const pending = this.props.pendingZone
+            const editing = !pending && this.props.editingAnnotation ? this.props.selectedAnno : null
+            const pendingId = pending ? pending.annotationId : (editing ? editing.id : null)
+            const host = pendingId ? this.props.annotations.find(anno => anno.id === pendingId) : null
+            const siblings = getTargets(host)
+            const hostSelected = host && this.props.selectedAnno && host.id === this.props.selectedAnno.id
+            const groupId = (pending && pending.groupId)
+                || (hostSelected
+                    ? activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)
+                    : targetGroupId(siblings[siblings.length - 1]))
+            const target = {
+                ...newAnnotation.target,
+                ...(image ? { source: image.source } : {}),
+                id: buildTargetId(groupId, pendingId || newAnnotation.id)
+            }
+            const created = { ...newAnnotation, target }
+
+            const annotations = pendingId
+                ? this.props.annotations.map(anno => anno.id === pendingId ? addTarget(anno, target) : anno)
+                : [...this.props.annotations, created]
 
             projectDB.updateAnnotations(selectedProject.id, annotations)
                 .then(() => {
                     this.props.updateAnnos(annotations)
 
-                    this.props.openRichEditor(newAnnotation)
+                    if (!pendingId) {
+                        this.props.changeSelectedAnno(created, 0)
+                        return
+                    }
+
+                    const extended = annotations.find(anno => anno.id === pendingId)
+
+                    this.props.endPendingZone()
+                    this.props.changeSelectedAnno(extended, getTargets(extended).length - 1)
                 })
         });
 
@@ -108,121 +154,288 @@ class AdnoEditor extends Component {
             this.AdnoAnnotorious.saveSelected()
         })
 
-        // Event triggered when user click on an annotation
-        this.AdnoAnnotorious.on('selectAnnotation', (annotation) => {
-            const container = document.getElementById("annotations_list");
-            const el = document.getElementById(`anno_edit_card_${annotation.id}`);
-            if (container && el) {
-                container.scrollTo({
-                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
-                    behavior: "smooth"
-                });
+        this.AdnoAnnotorious.on('clickAnnotation', (clicked) => {
+            const pending = this.state.pending
+
+            if (!pending) {
+                return
             }
-            this.props.openRichEditor(annotation)
+
+            const selected = this.AdnoAnnotorious.getSelected()
+
+            if (!selected || selected.id === clicked.id) {
+                return
+            }
+
+            const { id, index } = parseShadowId(selected.id)
+
+            if (id !== pending.id) {
+                return
+            }
+
+            const target = getTargets(pending.annotation)[index]
+
+            this.AdnoAnnotorious.addAnnotation(toShadow(pending.annotation, target, index))
+        })
+
+        // Event triggered when user click on an annotation
+        this.AdnoAnnotorious.on('selectAnnotation', (shadow) => {
+            const clicked = this._clickedShadowId
+            const isolated = getTargets(this.props.selectedAnno).length > 1
+
+            if (!clicked && isolated && this._clickInside) {
+                this.changeAnno(this.props.selectedAnno)
+                return
+            }
+
+            const { id, index } = parseShadowId(clicked || shadow.id)
+            const annotation = this.props.annotations.find(anno => anno.id === id)
+            const current = this.props.selectedAnno
+
+            if (current && id === current.id && index === this.props.selectedTargetIndex) {
+                this.changeAnno(current)
+                return
+            }
+
+            if (this.state.pending && this.state.pending.id !== id) {
+                this.syncShadows()
+                this.savePending()
+            }
+
+            this.scrollToCard(id)
+            this.props.changeSelectedAnno(annotation || shadow, index)
         })
 
         // Event triggered when resizing an annotation shape
-        this.AdnoAnnotorious.on('changeSelectionTarget', (newTarget) => {
-            this.setState({ isMovingItem: true })
+        this.AdnoAnnotorious.on('changeSelectionTarget', this.applyTargetEdit)
 
-            const selected = this.state.selected ? { ...this.state.selected } : this.AdnoAnnotorious.getSelected();
-            selected.target = newTarget
+        document.addEventListener('pointerup', this.commitPending, true)
+    }
 
-            this.setState({ selected })
-        });
+    componentWillUnmount() {
+        document.removeEventListener('pointerup', this.commitPending, true)
+        this.unwatchResize?.()
+        cancelAnimationFrame(this._paintFrame)
+        cancelAnimationFrame(this._navFrame)
+    }
+
+    images = () => projectImages(this.props.selectedProject)
+
+    currentAnnotations = () => {
+        const pending = this.state.pending
+
+        if (!pending) {
+            return this.props.annotations
+        }
+
+        return this.props.annotations.map(anno => anno.id === pending.id ? pending.annotation : anno)
+    }
+
+    refreshNavigator = () => {
+        const info = computeNavigatorInfo(this.openSeadragon)
+
+        if (info) {
+            this.setState({ ...info, viewerReady: true })
+        }
+    }
+
+    shadowsOf = (annotations) => toShadowAnnotations(annotations, this.images(), this.props.currentImageIndex)
+
+    signatureOf = (shadows) => JSON.stringify(shadows.map(shadow => [shadow.id, shadow.target]))
+
+    syncShadows = () => {
+        const shadows = this.shadowsOf(this.currentAnnotations())
+        const signature = this.signatureOf(shadows)
+
+        if (signature === this._shadowSignature) {
+            return false
+        }
+
+        this._shadowSignature = signature
+
+        this.AdnoAnnotorious.setAnnotations(shadows)
+        this.paintGroups()
+
+        return true
+    }
+
+    paintGroups = () => {
+        this._paintFrame = scheduleGroupColors(this._paintFrame, this.openSeadragon.element, this.props.selectedAnno, this.props.groupColors)
+    }
+
+    openImage = (index) => {
+        const image = this.images()[index]
+
+        if (!image) {
+            return
+        }
+
+        const token = ++this._openToken
+
+        this.openSeadragon.addOnceHandler('open', () => {
+            if (token !== this._openToken) {
+                return
+            }
+
+            this.refreshNavigator()
+            this.syncShadows()
+        })
+
+        hideWorkspace(this.openSeadragon)
+        this.openSeadragon.open(imageTileSource(image))
+    }
+
+    scrollToCard = (id) => {
+        const container = document.getElementById("annotations_list")
+        const el = document.getElementById(`anno_edit_card_${id}`)
+
+        if (container && el) {
+            container.scrollTo({
+                top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                behavior: "smooth"
+            })
+        }
     }
 
     changeAnno = (annotation) => {
-        // If the user edits the annotation from the modal, update the current selected annotation in the state
-        this.setState({ selected: annotation })
-
-        this.AdnoAnnotorious.selectAnnotation(annotation.id)
-        this.AdnoAnnotorious.fitBounds(annotation.id)
-
-        if (annotation.id && document.getElementById(`anno_edit_card_${annotation.id}`)) {
-            const container = document.getElementById("annotations_list");
-            const el = document.getElementById(`anno_edit_card_${annotation.id}`);
-            if (container && el) {
-                container.scrollTo({
-                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
-                    behavior: "smooth"
-                });
-            }
+        if (!annotation) {
+            this.AdnoAnnotorious.cancelSelected()
+            hideWorkspace(this.openSeadragon)
+            this.paintGroups()
+            return
         }
+
+        const picked = pickTargetOnImage(annotation, this.images(), this.props.currentImageIndex, this.props.selectedTargetIndex)
+
+        if (!picked) {
+            return
+        }
+
+        const shadow = toShadow(annotation, picked.target, picked.index)
+
+        this.AdnoAnnotorious.selectAnnotation(shadow.id)
+
+        this.AdnoAnnotorious._app.current.annotationLayer.selectedShape?.mouseTracker?.setTracking(false)
+
+        revealAnnotation(this.openSeadragon, shadow.id)
+
+        if (getTargets(annotation).length > 1) {
+            showWorkspace(this.openSeadragon, annotation, this.props.groupColors)
+        } else {
+            hideWorkspace(this.openSeadragon)
+        }
+
+        this.scrollToCard(annotation.id)
+        this.paintGroups()
     }
 
-    validateMove = () => {
-        const projectId = this.props.match.params.id
+    applyTargetEdit = (newTarget) => {
+        const current = this.AdnoAnnotorious.getSelected()
 
-        const selected = this.state.selected;
+        if (!current) {
+            return
+        }
 
-        const annotations = this.props.annotations.map(anno => JSON.parse(JSON.stringify(anno)))
-        const newAnnos = annotations.map(anno => {
-            if (anno.id === selected.id) {
-                anno.target = selected.target
-            }
-            return anno;
-        });
+        const { id, index } = parseShadowId(current.id)
+        const pending = this.state.pending
+        const base = pending && pending.id === id
+            ? pending.annotation
+            : this.props.annotations.find(anno => anno.id === id)
 
-        projectDB.updateAnnotations(projectId, newAnnos)
-            .then(() => {
-                this.props.updateAnnos(newAnnos)
+        if (!base) {
+            return
+        }
 
-                this.setState({ isMovingItem: false })
+        const previous = getTargets(base)[index]
+        const target = preserveTargetId(previous, preserveTargetRotation(previous, newTarget))
 
-                Swal.fire({
-                    title: this.props.t('modal.annotation_moved'),
-                    showCancelButton: false,
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    icon: 'success'
-                })
-            })
+        this.setState({
+            pending: { id, annotation: replaceTargetAt(base, index, target) }
+        })
+    }
+
+    commitPending = () => {
+        setTimeout(this.savePending)
+    }
+
+    savePending = () => {
+        const pending = this.state.pending
+
+        if (!pending) {
+            return Promise.resolve(false)
+        }
+
+        const newAnnos = this.currentAnnotations()
+
+        this._shadowSignature = this.signatureOf(this.shadowsOf(newAnnos))
+        this.props.updateAnnos(newAnnos)
+        this.setState({ pending: null })
+
+        return projectDB.updateAnnotations(this.props.match.params.id, newAnnos).then(() => true)
     }
 
     componentDidUpdate(prevProps) {
-        // If the user clicks the target button on the annotation card it'll trigger this method     
-        if (prevProps.selectedAnno !== this.props.selectedAnno) {
-            this.changeAnno(this.props.selectedAnno)
-            this.setState({ isMovingItem: false })
+        if (prevProps.currentImageIndex !== this.props.currentImageIndex) {
+            this.openImage(this.props.currentImageIndex)
+            return
         }
 
-        if (prevProps.annotations !== this.props.annotations) {
-            // First, we update the annotations's list to the Annotorious component 
-            this.AdnoAnnotorious.setAnnotations(this.props.annotations);
+        const rebuilt = prevProps.annotations !== this.props.annotations
+        const redrawn = rebuilt && this.syncShadows()
 
-            // Then, we focus on the current selected annotation
-            if (this.props.selectedAnno) {
-                this.changeAnno(this.props.selectedAnno)
-            }
+        const selectionChanged = (prevProps.selectedAnno && prevProps.selectedAnno.id) !== (this.props.selectedAnno && this.props.selectedAnno.id)
+            || prevProps.selectedTargetIndex !== this.props.selectedTargetIndex
+
+        if (redrawn || selectionChanged) {
+            this.changeAnno(this.props.selectedAnno)
+        } else if (rebuilt && getTargets(this.props.selectedAnno).length > 1) {
+            showWorkspace(this.openSeadragon, this.props.selectedAnno, this.props.groupColors)
         }
     }
 
 
+    groups = () => this.props.selectedAnno ? deriveGroups(this.props.selectedAnno, this.props.groupColors) : []
+
     render() {
+        const groups = this.groups()
+
         return <>
-            <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 58px)' }}>
-                <div id="openseadragon1">
-                    <div id="toolbar-container"></div>
-                    <div id="toolbar-osd"></div>
-                </div>
-                {this.state.viewerReady && (
-                    <AdnoNavigator
-                        viewer={this.openSeadragon}
-                        imageRatio={this.state.imageRatio}
-                        layout={this.state.navigatorLayout}
-                        imgUrl={this.state.navigatorImgUrl}
-                    />
-                )}
-            </div>
-            {
-                this.state.isMovingItem &&
-                <button className="btn btn-lg move-btn" onClick={() => this.validateMove()}>
-                    <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('editor.approve_changes')}>
-                        <FontAwesomeIcon icon={faCheckCircle} /> {this.props.t('editor.approve_changes')}
+            <div className="editor-stage">
+                <div className="editor-viewer">
+                    {this.props.pendingZone &&
+                        <div className="pending-zone">
+                            <span>{this.props.t('editor.add_zone_hint')}</span>
+                            <button className="btn btn-xs" onClick={() => this.props.endPendingZone()}>
+                                {this.props.t('editor.add_zone_cancel')}
+                            </button>
+                        </div>
+                    }
+                    <div id="openseadragon1" className={this.props.pendingZone ? "drawing" : ""}>
+                        <div id="toolbar-container"></div>
+                        <div id="toolbar-osd"></div>
                     </div>
-                </button>
-            }
+                    {groups.length > 0 &&
+                        <GroupLegend groups={groups}
+                            activeGroupId={activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)}
+                            translate={this.props.t} />
+                    }
+                    {this.state.viewerReady && (
+                        <AdnoNavigator
+                            viewer={this.openSeadragon}
+                            imageRatio={this.state.imageRatio}
+                            layout={this.state.navigatorLayout}
+                            imgUrl={this.state.navigatorImgUrl}
+                        />
+                    )}
+                </div>
+                <ImageFilmstrip
+                    images={this.images()}
+                    annotations={this.props.annotations}
+                    currentIndex={this.props.currentImageIndex}
+                    changeImage={this.props.changeImage}
+                    translate={this.props.t}
+                />
+            </div>
         </>
     }
 }

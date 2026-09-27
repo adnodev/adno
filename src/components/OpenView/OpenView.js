@@ -1,33 +1,71 @@
-import { Component } from "react";
+import { Component, createRef } from "react"
 import { withRouter } from "react-router-dom";
-import parse from 'html-react-parser';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlassMinus, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faExpand, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons";
-import { getEye, computeNavigatorInfo } from "../../Utils/utils";
+import { faHouse, faPlay, faPause, faEye, faEyeSlash, faArrowRight, faArrowLeft, faUpRightAndDownLeftFromCenter, faRotate, faQuestion, faVolumeOff, faVolumeHigh, faCircleInfo, faExternalLink } from "@fortawesome/free-solid-svg-icons"
+import { getEye, computeNavigatorInfo, annotationShapes, placeEye } from "../../Utils/utils"
+import { CROSS_ORIGIN, applyAnnotationView, followViewerSize, syncViewerSize } from "../../Utils/viewport"
+import { cutoutGroupIds } from "../../Utils/cutout"
+import { projectImages } from "../../Utils/images"
+import { parseShadowId, pickTargetOnImage, toShadow, toShadowAnnotations } from "../../Utils/targets"
+import { activeGroupId, applyAnnotationColor, deriveGroups, groupShadows } from "../../Utils/groups"
+import { collapsedLayout, mosaicLayout } from "../../Utils/mosaic"
+import CutoutView from "../CutoutView/CutoutView"
+import { GroupWorkspace, panelEntries, panelGroups } from "../GroupWorkspace/GroupWorkspace"
+import { GroupMark } from "../GroupWorkspace/GroupOverlay"
+import { ContentMargin, hasMarginContent } from "./ContentMargin"
 
 import "./OpenView.css";
 import { withTranslation } from "react-i18next";
 
 import AdnoNavigator from '../AdnoNavigator/AdnoNavigator'
 
+const FALLBACK_TOOLBAR = 48
+const CLOSE_WAIT = 700
+const SCENE_PAUSE = 400
+
 class OpenView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentID: -1,
             timer: false,
             intervalID: 0,
             fullScreenEnabled: false,
-            isAnnotationsVisible: true,
+            isAnnotationsVisible: this.props.initialAnnotationsVisible !== false,
             currentTrack: undefined,
             soundMode: this.props.soundMode,
             audioContexts: [],
 
             imageRatio: null,
             navigatorLayout: null,
-            viewerReady: false
+            viewerReady: false,
+            cutoutViews: {},
+            openPanels: [],
+            toolbarHeight: 0
         }
+
+        this.toolbarRef = createRef()
+    }
+
+    measureToolbar = () => {
+        const bar = this.toolbarRef.current
+        const height = bar ? Math.round(bar.getBoundingClientRect().height) : 0
+
+        if (height !== this.state.toolbarHeight) {
+            this.setState({ toolbarHeight: height })
+        }
+    }
+
+    crossOrigin = () => this.props.crossOriginPolicy ?? CROSS_ORIGIN
+
+    annoStyles = () => this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus
+
+    marginOffset = () => {
+        if (this.state.fullScreenEnabled || !this.props.showToolbar) {
+            return 0
+        }
+
+        return this.state.toolbarHeight || FALLBACK_TOOLBAR
     }
 
     componentDidMount() {
@@ -52,12 +90,13 @@ class OpenView extends Component {
         }
 
         this.openSeadragon = OpenSeadragon({
-            id: 'adno-osd',
+            id: 'adno-osd-viewer',
+            autoResize: false,
             homeButton: "home-button",
             showNavigator: false,
             tileSources: tileSources,
             prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-            crossOriginPolicy: 'Anonymous'
+            crossOriginPolicy: this.crossOrigin()
         })
 
         this.openSeadragon.addOnceHandler('open', () => {
@@ -77,9 +116,7 @@ class OpenView extends Component {
         OpenSeadragon.setString("Tooltips.RotateRight", this.props.t('editor.rotate_right'));
         OpenSeadragon.setString("Tooltips.Flip", this.props.t('editor.flip'));
 
-        const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
-
-        const annoFormatter = () => annoStyles;
+        const annoFormatter = () => this.annoStyles();
 
         this.AdnoAnnotorious = OpenSeadragon.Annotorious(this.openSeadragon, {
             locale: 'auto',
@@ -90,30 +127,24 @@ class OpenView extends Component {
             formatters: annoFormatter
         });
 
+        this.unwatchResize = followViewerSize(this.openSeadragon, this.AdnoAnnotorious)
+
         this.AdnoAnnotorious.on('clickAnnotation', (annotation) => {
-            // if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-            //     document.getElementById(`anno_card_${annotation.id}`).scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            const { id, index } = parseShadowId(annotation.id)
 
-            //     this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
-            //     document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
-            // }
-
-            // this.AdnoAnnotorious.fitBounds(annotation.id)
-
-            // let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-
-            // this.setState({ currentID: annotationIndex })
-            this.props.changeSelectedAnno(annotation)
+            this.props.changeSelectedAnno(this.props.annos.find(anno => anno.id === id) || annotation, index)
         });
 
+        const shadows = toShadowAnnotations(this.props.annos, projectImages(project), 0)
+
         // Generate dataURI and load annotations into Annotorious
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))))
         this.AdnoAnnotorious.loadAnnotations(dataURI)
             .then(() => {
                 setTimeout(() => {
                     this.freeMode()
                     this.loadAudio()
-                    this.toggleOutlines(this.props.showOutlines)
+                    this.toggleAnnotations(this.state.isAnnotationsVisible)
 
                     this.automaticStart()
                 }, 200)
@@ -121,6 +152,8 @@ class OpenView extends Component {
 
         addEventListener('fullscreenchange', this.updateFullScreenEvent);
         addEventListener('keydown', this.keyPressedEvents)
+
+        this.measureToolbar()
     }
 
     automaticStart = () => {
@@ -130,7 +163,7 @@ class OpenView extends Component {
     }
 
     toggleOutlines = showOutlines => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        const annos = annotationShapes()
         annos.forEach(anno => {
             if (showOutlines)
                 [...anno.children].forEach(r => {
@@ -147,16 +180,12 @@ class OpenView extends Component {
 
     freeMode = () => {
         if (this.props.showEyes) {
-            const annos = [...document.getElementsByClassName("a9s-annotation")]
+            const annos = annotationShapes()
 
-            annos.map((anno, i) => {
+            annos.forEach(anno => {
                 const svgElement = getEye()
 
-                const tileSize = document.getElementById('adno-osd').clientWidth / 5
-
-                svgElement.setAttribute('width', tileSize);
-                svgElement.setAttribute('height', tileSize);
-
+                const tileSize = document.getElementById('adno-osd-viewer').clientWidth / 5
 
                 svgElement.style.fill = "#000"
                 svgElement.style.stroke = "#000"
@@ -164,34 +193,14 @@ class OpenView extends Component {
                 svgElement.classList.add('eye')
                 svgElement.id = `eye-${anno.getAttribute('data-id')}`;
 
-                const type = [...anno.children][0].tagName
+                if (anno.classList.contains("a9s-point")) {
+                    anno.removeAttribute("transform")
 
-                if (type === "ellipse" || type == "circle") {
-                    svgElement.setAttribute('x', anno.children[0].getAttribute("cx") - tileSize / 2);
-                    svgElement.setAttribute('y', anno.children[0].getAttribute("cy") - tileSize / 2);
+                    anno.classList.remove("a9s-point")
+                    anno.classList.remove("a9s-non-scaling")
+                }
 
-                    if (anno.classList.contains("a9s-point")) {
-                        anno.removeAttribute("transform", "")
-
-                        anno.classList.remove("a9s-point")
-                        anno.classList.remove("a9s-non-scaling")
-                    }
-
-                    anno.appendChild(svgElement)
-                } else if (type === "rect") {
-                    svgElement.setAttribute('x', anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2);
-                    svgElement.setAttribute('y', anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2);
-
-                    anno.appendChild(svgElement)
-                } else if (type === "path" || type === "polygon") {
-                    const bbox = anno.getBBox();
-
-                    const centerX = bbox.x + bbox.width / 2;
-                    const centerY = bbox.y + bbox.height / 2;
-
-                    svgElement.setAttribute('x', centerX - tileSize / 2);
-                    svgElement.setAttribute('y', centerY - tileSize / 2);
-
+                if (placeEye(anno, svgElement, tileSize)) {
                     anno.appendChild(svgElement)
                 }
 
@@ -239,28 +248,24 @@ class OpenView extends Component {
     componentWillUnmount() {
         removeEventListener("keydown", this.keyPressedEvents)
         removeEventListener("fullscreenchange", this.updateFullScreenEvent)
+        this.unwatchResize?.()
+        clearTimeout(this._closeTimer)
+        clearTimeout(this._openTimer)
     }
 
     automateLoading = timeout => {
-        const { currentID } = this.state;
-        let newCurrentID = currentID;
+        const next = this.annoAt(1)
 
-        if (currentID === -1 || currentID === this.props.annos.length - 1) {
-            newCurrentID = 0
-        } else {
-            newCurrentID++;
+        if (!next) {
+            return
         }
 
-        this.setState({ currentID: newCurrentID })
-
-        this.changeAnno(this.props.annos[newCurrentID])
-
-        this.showOnlyCurrentAnnotation(this.props.annos[newCurrentID].id)
+        this.selectAnno(next)
 
         if (timeout) {
-            const id = this.props.annos[newCurrentID].id;
+            const id = next.id
 
-            const annotation = [...document.getElementsByClassName("a9s-annotation")]
+            const annotation = annotationShapes()
                 .find(elt => elt.getAttribute("data-id") === id)
 
             let delay = timeout;
@@ -284,10 +289,10 @@ class OpenView extends Component {
     }
 
     showOnlyCurrentAnnotation = annotationId => {
-        const showOutlinesOrEyes = (this.props.showOutlines || this.props.showEyes) && this.props.isAnnotationsVisible
+        const showOutlinesOrEyes = (this.props.showOutlines || this.props.showEyes) && this.state.isAnnotationsVisible
 
         if (showOutlinesOrEyes && this.props.showCurrentAnnotation) {
-            const annos = [...document.getElementsByClassName("a9s-annotation")]
+            const annos = annotationShapes()
 
             // HIDE ALL ANNOS AND EYES
             annos.forEach(anno => {
@@ -297,29 +302,91 @@ class OpenView extends Component {
                 [...anno.children].forEach(r => r.classList.add("a9s-annotation--hidden"))
             })
 
-            const currentAnnotation = annos.find(anno => anno.getAttribute('data-id') === annotationId)
+            const currentShapes = annos.filter(anno => parseShadowId(anno.getAttribute('data-id')).id === annotationId)
 
-            Array.from(currentAnnotation.children).forEach(r => {
+            currentShapes.forEach(shape => Array.from(shape.children).forEach(r => {
                 const isEye = r.classList.contains('eye')
                 const showChild = isEye ? this.props.showEyes : this.props.showOutlines
 
                 if (showChild)
                     r.classList.remove("a9s-annotation--hidden")
-            })
+            }))
         }
     }
 
-    changeAnno = (annotation) => {
+    currentIndex = () => this.props.selectedAnno
+        ? this.props.annos.findIndex(anno => anno.id === this.props.selectedAnno.id)
+        : -1
+
+    annoAt = step => {
+        const count = this.props.annos.length
+        const current = this.currentIndex()
+
+        if (current === -1) {
+            return this.props.annos[step > 0 ? 0 : count - 1]
+        }
+
+        return this.props.annos[(current + step + count) % count]
+    }
+
+    selectAnno = (annotation, targetIndex = 0) => {
+        if (!annotation) {
+            return
+        }
+
+        if (this.props.selectedAnno?.id === annotation.id && this.props.selectedTargetIndex === targetIndex) {
+            this.changeAnno(annotation, targetIndex)
+            return
+        }
+
+        this.props.changeSelectedAnno(annotation, targetIndex)
+    }
+
+    finishClose = () => {
+        this.setState({ openPanels: [] }, () => {
+            syncViewerSize(this.openSeadragon)
+            this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex)
+        })
+    }
+
+    isClosing = () => Boolean(this._shownProps)
+        && this.state.openPanels.length > 0
+        && this.panelIds(this.props).length !== this.state.openPanels.length
+
+    openPanels = annotation => {
+        if (this.props.selectedAnno?.id !== annotation.id) {
+            return
+        }
+
+        const openPanels = this.panelIds(this.props)
+
+        this._shownProps = this.props
+
+        if (openPanels.join() !== this.state.openPanels.join()) {
+            this.setState({ openPanels })
+        }
+    }
+
+    changeAnno = (annotation, targetIndex = 0) => {
         if (annotation && annotation.id) {
-            if (!this.props.selectedAnno || this.props.selectedAnno.id !== annotation.id) {
-                this.props.changeSelectedAnno(annotation)
-            }
+            const picked = pickTargetOnImage(annotation, projectImages(this.props.selectedProject), 0, targetIndex)
+            const shadow = picked ? toShadow(annotation, picked.target, picked.index) : annotation
+            const groupId = activeGroupId(annotation, picked ? picked.index : 0)
 
-            this.AdnoAnnotorious.selectAnnotation(annotation.id)
-            this.AdnoAnnotorious.fitBounds(annotation.id)
+            this.AdnoAnnotorious.selectAnnotation(shadow.id)
 
-            let annotationIndex = this.props.annos.findIndex(anno => anno.id === annotation.id)
-            this.setState({ currentID: annotationIndex })
+            applyAnnotationView(this.openSeadragon, this.AdnoAnnotorious, shadow, {
+                defaultRotation: this.props.defaultRotation,
+                transition: this.props.rotationTransition,
+                padded: true,
+                shadowIds: groupShadows(annotation, groupId).map(item => item.id),
+                onSettled: () => {
+                    clearTimeout(this._openTimer)
+                    this._openTimer = setTimeout(() => this.openPanels(annotation), SCENE_PAUSE)
+                }
+            })
+
+            this.showOnlyCurrentAnnotation(annotation.id)
 
             if (this.props.soundMode === 'no_spatialization') {
                 const { currentTrack } = this.state
@@ -329,7 +396,7 @@ class OpenView extends Component {
                     currentTrack.currentTime = 0;
                 }
 
-                const annos = [...document.getElementsByClassName("a9s-annotation")]
+                const annos = annotationShapes()
                 const annoSvg = annos.find(anno => anno.getAttribute('data-id') === annotation.id)
 
                 if (annoSvg) {
@@ -347,45 +414,44 @@ class OpenView extends Component {
                 }
             }
 
-            if (annotation.id && document.getElementById(`anno_card_${annotation.id}`)) {
-                const container = document.getElementById("annotations_list");
-                const el = document.getElementById(`anno_card_${annotation.id}`);
+            const container = document.getElementById("annotations_list")
+            const card = document.getElementById(`anno_card_${annotation.id}`)
 
+            if (container && card) {
                 container.scrollTo({
-                    top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
+                    top: card.offsetTop - container.clientHeight / 2 + card.clientHeight / 2,
                     behavior: "smooth"
                 });
-
-                this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
-                document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
-
-                this.updateCurrentAnnotationColors(annotation.id)
             }
+
+            this.props.annos.forEach(anno => document.getElementById(`eye-${anno.id}`)?.classList.remove('eye-selected'))
+            document.getElementById(`eye-${annotation.id}`)?.classList.add('eye-selected')
+
+            this.paintSelection()
         }
     }
 
-    updateCurrentAnnotationColors = annotationId => {
-        try {
-            const eye = document.getElementById(`eye-${annotationId}`)?.parentElement?.className?.animVal;
-            const shape = [...document.getElementsByClassName('selected')][0]?.className?.animVal;
+    paintSelection = () => {
+        cancelAnimationFrame(this._paintFrame)
 
-            const className = eye ? eye : shape;
+        this._paintFrame = requestAnimationFrame(() => {
+            applyAnnotationColor(this.openSeadragon.element, this.props.selectedAnno, this.focusColor())
+            this.tintSelectedCard()
+        })
+    }
 
-            if (className) {
-                const regex = /outline-([a-zA-Z]+)/g;
-                const matches = [...className.matchAll(regex)].map(match => match[1]);
+    focusColor = () => {
+        const name = (this.props.outlineColorFocus || '').replace('outline-focus-', '')
+        const style = window.getComputedStyle(document.body)
 
-                const color = matches.filter(f => ['green', 'white', 'red', 'orange', 'yellow', 'blue', 'violet', 'black'].includes(f))[0]
+        return style.getPropertyValue(`--outline-${name}`).trim() || '#fde047'
+    }
 
-                const style = window.getComputedStyle(document.body)
+    tintSelectedCard = () => {
+        const color = this.focusColor()
 
-                document.documentElement.style.setProperty('--selected-anno-border-color',
-                    style.getPropertyValue(`--outline-${color}`) || '#fde047')
-                document.documentElement.style.setProperty('--selected-anno-background-color',
-                    `${style.getPropertyValue(`--outline-${color}`)}1c` || '#fefce8')
-            }
-
-        } catch (err) { }
+        document.documentElement.style.setProperty('--selected-anno-border-color', color)
+        document.documentElement.style.setProperty('--selected-anno-background-color', `${color}1c`)
     }
 
     playSound = (audioElement, soundMode) => {
@@ -463,9 +529,7 @@ class OpenView extends Component {
         // Do not start the timer if there is no content to display
         if (this.props.annos.length > 0) {
             if (this.props.startbyfirstanno) {
-                this.setState({ currentID: -1 })
-
-                this.changeAnno(this.props.annos[0])
+                this.selectAnno(this.props.annos[0])
             } else {
                 this.automateLoading()
             }
@@ -483,64 +547,20 @@ class OpenView extends Component {
     }
 
     previousAnno = () => {
-        let localCurrentID = this.state.currentID
-
-        if (this.props.annos.length > 0) {
-
-            if (this.state.currentID === -1 || this.state.currentID === 0) {
-                localCurrentID = this.props.annos.length - 1
-            } else {
-                localCurrentID = this.state.currentID - 1
-            }
-
-            this.setState({ currentID: localCurrentID })
-
-            this.changeAnno(this.props.annos[localCurrentID])
-
-            this.showOnlyCurrentAnnotation(this.props.annos[localCurrentID].id)
-
-
-            if (this.props.annos[localCurrentID].id && document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`)) {
-                const container = document.getElementById("annotations_list");
-                const el = document.getElementById(`anno_card_${this.props.annos[localCurrentID].id}`);
-                if (container && el) {
-                    container.scrollTo({
-                        top: el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2,
-                        behavior: "smooth"
-                    });
-                }
-            }
-
-        }
+        this.selectAnno(this.annoAt(-1))
         this.resetFullscreenAnnotationScrolling()
     }
 
     nextAnno = () => {
-        let localCurrentID = this.state.currentID
-
-        if (this.props.annos.length > 0) {
-
-            if (this.state.currentID === -1 || this.state.currentID === this.props.annos.length - 1) {
-                localCurrentID = 0
-            } else {
-                localCurrentID++;
-            }
-
-            this.setState({ currentID: localCurrentID })
-
-            this.changeAnno(this.props.annos[localCurrentID])
-
-            this.showOnlyCurrentAnnotation(this.props.annos[localCurrentID].id)
-
-            this.resetFullscreenAnnotationScrolling()
-        }
+        this.selectAnno(this.annoAt(1))
+        this.resetFullscreenAnnotationScrolling()
     }
 
     resetFullscreenAnnotationScrolling = () => {
-        const fullscreenAnnotation = document.getElementById('adno-osd-anno-fullscreen');
+        const content = document.getElementById('adno-content-margin');
 
-        if (fullscreenAnnotation)
-            fullscreenAnnotation.scrollTop = 0;
+        if (content)
+            content.scrollTop = 0;
     }
 
     toggleFullScreen = () => {
@@ -563,7 +583,7 @@ class OpenView extends Component {
     }
 
     toggleAudioElementLoopAttribute = looping => {
-        [...document.getElementsByClassName("a9s-annotation")]
+        annotationShapes()
             .forEach(annotation => {
                 const audioElement = annotation.getElementsByTagName("audio")[0];
 
@@ -581,7 +601,7 @@ class OpenView extends Component {
             this.toggleAudioElementLoopAttribute(false)
 
             if (soundMode === 'no_sound') {
-                [...document.getElementsByClassName("a9s-annotation")]
+                annotationShapes()
                     .forEach(annotation => {
                         const audioElement = annotation.getElementsByTagName("audio")[0];
 
@@ -601,21 +621,32 @@ class OpenView extends Component {
     }
 
     reloadAnnotationsFromProps = () => {
-        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(this.props.annos))));
+        const shadows = toShadowAnnotations(this.props.annos, projectImages(this.props.selectedProject), 0)
+        const dataURI = "data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(shadows))))
         if (this.AdnoAnnotorious) {
             this.AdnoAnnotorious.loadAnnotations(dataURI)
 
             this.loadAudio()
 
             setTimeout(this.freeMode, 1000)
-            setTimeout(() => this.changeAnno(this.props.selectedAnno), 1000)
+            setTimeout(() => this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex), 1000)
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
+        this.measureToolbar()
+
         if (this.AdnoAnnotorious) {
-            if (prevProps.selectedAnno !== this.props.selectedAnno) {
-                this.changeAnno(this.props.selectedAnno)
+            if (prevProps.selectedAnno !== this.props.selectedAnno
+                || prevProps.selectedTargetIndex !== this.props.selectedTargetIndex) {
+                clearTimeout(this._closeTimer)
+
+                if (this.isClosing()) {
+                    this._closeTimer = setTimeout(this.finishClose, CLOSE_WAIT + SCENE_PAUSE)
+                } else {
+                    syncViewerSize(this.openSeadragon)
+                    this.changeAnno(this.props.selectedAnno, this.props.selectedTargetIndex)
+                }
             }
 
             if (prevProps.annos !== this.props.annos) {
@@ -626,8 +657,7 @@ class OpenView extends Component {
                 prevProps.outlineColor !== this.props.outlineColor ||
                 prevProps.outlineColorFocus !== this.props.outlineColorFocus
             ) {
-                const annoStyles = this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus;
-                this.AdnoAnnotorious.formatters = [() => annoStyles]
+                this.AdnoAnnotorious.formatters = [() => this.annoStyles()]
 
                 this.reloadAnnotationsFromProps()
             }
@@ -647,7 +677,7 @@ class OpenView extends Component {
     }
 
     loadAudio = () => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        const annos = annotationShapes()
 
         annos.forEach(anno => {
             const audioElement = document.createElement('audio')
@@ -655,7 +685,7 @@ class OpenView extends Component {
             audioElement.loop = this.props.soundMode === 'spatialization' ? true : false
 
             const type = [...anno.children][0].tagName
-            const tileSize = document.getElementById('adno-osd').clientWidth / 5
+            const tileSize = document.getElementById('adno-osd-viewer').clientWidth / 5
 
             let x, y = 0;
             if (type === "ellipse" || type == "circle") {
@@ -708,7 +738,7 @@ class OpenView extends Component {
     }
 
     toggleAnnotations = (visible) => {
-        const annos = [...document.getElementsByClassName("a9s-annotation")]
+        const annos = annotationShapes()
         annos.forEach(anno => {
             [...anno.children].forEach(r => {
                 if (visible) {
@@ -737,41 +767,53 @@ class OpenView extends Component {
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
     }
 
-    getAnnotationHTMLBody = (annotation) => {
-        console.log(annotation)
-        if (annotation && annotation.body) {
-            if (Array.isArray(annotation.body) &&
-                annotation.body.find(annoBody => annoBody.type === "HTMLBody") &&
-                annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
-                return (
-                    <div className={this.props.toolsbarOnFs ? "adno-osd-anno-fullscreen-tb-opened" : "adno-osd-anno-fullscreen"} id="adno-osd-anno-fullscreen">
-                        {parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)}
-                    </div>
-                )
-            }
-        }
+    cutoutGroups = () => cutoutGroupIds(this.props.selectedAnno)
+
+    cutoutViewFor = (groupId) =>
+        this.state.cutoutViews[groupId] || { minimized: false, size: 'default', position: null }
+
+    setCutoutView = (groupId, view) => {
+        this.setState({ cutoutViews: { ...this.state.cutoutViews, [groupId]: view } })
     }
+
+    marginPosition = () => this.props.contentPosition || 'left'
+
+    outlinesVisible = () => Boolean(this.props.showOutlines) && this.state.isAnnotationsVisible
+
+    activeGroup = () => {
+        const id = activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)
+
+        return deriveGroups(this.props.selectedAnno).find(group => group.id === id) || null
+    }
+
+    mosaic = (props = this.props) => mosaicLayout(
+        props.selectedAnno
+            ? panelGroups(props.selectedAnno, activeGroupId(props.selectedAnno, props.selectedTargetIndex)).length + 1
+            : 1,
+        props.mosaicRotation,
+        props.mosaicRatio)
+
+    panelIds = (props) => props.selectedAnno
+        ? panelEntries(props.selectedAnno, activeGroupId(props.selectedAnno, props.selectedTargetIndex), this.mosaic(props).names.slice(1)).map(entry => entry.group.id)
+        : []
 
     render() {
         const showAnnotationsButton = this.props.showOutlines || this.props.showEyes
+        const closing = this.isClosing()
+        const opening = !closing && this.panelIds(this.props).length > this.state.openPanels.length
+        const scene = closing ? this._shownProps : this.props
+        const layout = closing || opening ? collapsedLayout(this.mosaic(scene)) : this.mosaic(scene)
+        const activeGroup = this.outlinesVisible() ? this.activeGroup() : null
 
-        return <div className="flex flex-col flex-grow relative" style={{
-            maxHeight: 'calc(100vh - 58px)'
-        }}>
-            {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
-                <AdnoNavigator
-                    viewer={this.openSeadragon}
-                    imageRatio={this.state.imageRatio}
-                    layout={this.state.navigatorLayout}
-                    imgUrl={this.state.navigatorImgUrl}
-                />
-            )}
-            <div className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"} style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                left: 0
-            }}>
+        return <div className="open-view flex flex-col flex-grow relative">
+            <div ref={this.toolbarRef}
+                className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    left: 0
+                }}>
                 <div className={this.state.fullScreenEnabled && this.props.toolsbarOnFs ? "osd-buttons-bar" : this.state.fullScreenEnabled && !this.props.toolsbarOnFs ? "osd-buttons-bar-hidden" : "osd-buttons-bar"}>
 
                     {
@@ -784,8 +826,8 @@ class OpenView extends Component {
                     }
 
                     <button id="home-button" className="toolbarButton toolbaractive">
-                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_zoom')}>
-                            <FontAwesomeIcon icon={faMagnifyingGlassMinus} size="lg" />
+                        <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.reset_view')}>
+                            <FontAwesomeIcon icon={faHouse} size="lg" />
                         </div>
                     </button>
 
@@ -821,7 +863,7 @@ class OpenView extends Component {
                     }
                     <button id="toggle-fullscreen" className="toolbarButton toolbaractive" onClick={() => this.toggleFullScreen()}>
                         <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('visualizer.expand')}>
-                            <FontAwesomeIcon icon={faExpand} size="lg" />
+                            <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} size="lg" />
                         </div>
                     </button>
                     <button id="info" className="toolbarButton toolbaractive">
@@ -911,10 +953,70 @@ class OpenView extends Component {
                 </div>
             </div>
             <div id="adno-osd" style={{ position: 'relative' }} >
-                {
-                    this.state.fullScreenEnabled && this.props.selectedAnno && this.props.selectedAnno.body &&
-                    this.getAnnotationHTMLBody(this.props.selectedAnno)
+                {(!this.props.selectedAnno || hasMarginContent(this.props.selectedAnno)) &&
+                    <ContentMargin
+                        annotation={this.props.selectedAnno}
+                        project={this.props.selectedProject}
+                        tags={this.props.tags}
+                        position={this.marginPosition()}
+                        offsetTop={this.marginOffset()}
+                        canStart={this.props.annos.length > 0}
+                        onStart={() => this.selectAnno(this.props.annos[0])}
+                        translate={this.props.t} />
                 }
+
+                <div className={`adno-mosaic adno-mosaic--${this.marginPosition()}`}
+                    style={{
+                        gridTemplateColumns: layout.columns,
+                        gridTemplateRows: layout.rows,
+                        gridTemplateAreas: layout.areas,
+                        gap: closing || opening ? 0 : null,
+                        '--toolbar-offset': `${this.marginOffset()}px`
+                    }}>
+                    <div id="adno-osd-viewer" style={{ gridArea: layout.names[0] }}></div>
+
+                    {activeGroup &&
+                        <div className="scene-mark" style={{ gridArea: layout.names[0] }}>
+                            <GroupMark letter={activeGroup.letter} count={activeGroup.targets.length} />
+                        </div>
+                    }
+
+                    {this.props.showNavigator && this.openSeadragon && this.state.viewerReady && (
+                        <AdnoNavigator
+                            viewer={this.openSeadragon}
+                            imageRatio={this.state.imageRatio}
+                            layout={this.state.navigatorLayout}
+                            imgUrl={this.state.navigatorImgUrl}
+                        />
+                    )}
+
+                    {scene.selectedAnno &&
+                        <GroupWorkspace
+                            project={this.props.selectedProject}
+                            annotation={scene.selectedAnno}
+                            activeGroupId={activeGroupId(scene.selectedAnno, scene.selectedTargetIndex)}
+                            areaNames={layout.names.slice(1)}
+                            crossOriginPolicy={this.crossOrigin()}
+                            defaultRotation={this.props.defaultRotation}
+                            transition={this.props.rotationTransition}
+                            outlinesVisible={this.outlinesVisible()}
+                            styles={this.annoStyles()} />
+                    }
+
+                    {this.cutoutGroups().map((groupId, rank) =>
+                        <CutoutView key={groupId}
+                            elementId={`cutout-osd-${groupId}`}
+                            rank={rank}
+                            project={this.props.selectedProject}
+                            annotation={this.props.selectedAnno}
+                            groupId={groupId}
+                            crossOriginPolicy={this.crossOrigin()}
+                            defaultRotation={this.props.defaultRotation}
+                            styles={this.annoStyles()}
+                            view={this.cutoutViewFor(groupId)}
+                            setView={(view) => this.setCutoutView(groupId, view)} />
+                    )}
+                </div>
             </div>
         </div>
     }
