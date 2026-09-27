@@ -28,7 +28,7 @@
     "html-react-parser": "^5.2.2",
     "i18next": "25.7.3",
     "popper.js": "1.15.0",
-    "postcss": "8.4.49",
+    "postcss": "^8.5.23",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-i18next": "16.5.0",
