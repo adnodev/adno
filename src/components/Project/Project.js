@@ -273,7 +273,9 @@ const Project = ({ editMode }) => {
                     changeSelectedAnno={selectAnnotation}
                     selectedTargetIndex={state.selectedTargetIndex}
                     startPendingZone={(annotationId, groupId) => setState(prev => ({ ...prev, pendingZone: { annotationId, groupId } }))}
-                    getViewerRotation={() => viewerRef.current ? viewerRef.current.viewport.getRotation() : null}
+                    getViewerRotation={() => viewerRef.current.viewport.getRotation()}
+                    setViewerRotation={degrees => viewerRef.current.viewport.setRotation(degrees, true)}
+                    defaultRotation={settings.defaultRotation}
                 />
             )}
 

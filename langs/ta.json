@@ -128,7 +128,10 @@
         },
         "empty_list": "விருப்பங்கள் இல்லை",
         "orientation_inherit": "திட்டத்தின் இயல்புநிலை",
-        "orientation_capture": "தற்போதைய காட்சியைப் பயன்படுத்து",
+        "orientation_inherit_value": "Project default ({{degrees}}°)",
+        "orientation_free_hint": "Dragging snaps to 15°, hold Shift for 1° steps",
+        "orientation_dial": "Reading orientation dial",
+        "orientation_degrees": "Angle in degrees",
         "cutout": "வெட்டுத் துண்டாக",
         "images": "படங்கள்",
         "previous_image": "முந்தைய படம்",
@@ -205,7 +208,9 @@
         "cutout_title": "நேராக்கப்பட்ட வெட்டுத் துண்டு",
         "add_zone": "ஒரு பகுதியைச் சேர்",
         "delete_zone": "இந்தப் பகுதியை நீக்கு",
-        "copy_zone_url": "இந்தப் பகுதியின் IIIF முகவரியை நகலெடு"
+        "copy_zone_url": "இந்தப் பகுதியின் IIIF முகவரியை நகலெடு",
+        "copy_zone_url_rounded": "Link copied at {{applied}}° instead of {{requested}}°: this server only rotates by quarter turns",
+        "copy_zone_url_unrotated": "Link copied without rotation: this server cannot rotate images ({{requested}}° dropped)"
     },
     "navbar": {
         "edit_mode": "தொகு",

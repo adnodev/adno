@@ -128,7 +128,10 @@
         },
         "empty_list": "无选项",
         "orientation_inherit": "项目默认值",
-        "orientation_capture": "使用当前视图",
+        "orientation_inherit_value": "Project default ({{degrees}}°)",
+        "orientation_free_hint": "Dragging snaps to 15°, hold Shift for 1° steps",
+        "orientation_dial": "Reading orientation dial",
+        "orientation_degrees": "Angle in degrees",
         "cutout": "裁切图",
         "images": "图像",
         "previous_image": "上一幅图像",
@@ -205,7 +208,9 @@
         "cutout_title": "已摆正的裁切图",
         "add_zone": "添加区域",
         "delete_zone": "删除该区域",
-        "copy_zone_url": "复制该区域的 IIIF 链接"
+        "copy_zone_url": "复制该区域的 IIIF 链接",
+        "copy_zone_url_rounded": "Link copied at {{applied}}° instead of {{requested}}°: this server only rotates by quarter turns",
+        "copy_zone_url_unrotated": "Link copied without rotation: this server cannot rotate images ({{requested}}° dropped)"
     },
     "navbar": {
         "edit_mode": "编辑",

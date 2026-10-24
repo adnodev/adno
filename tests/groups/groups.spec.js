@@ -174,7 +174,11 @@ test.describe('The grouped zones tab', () => {
         await openEditor(page);
         await openZonesTab(page);
 
-        await page.locator('.zone-group').nth(0).locator('.zone-group-rotation').selectOption('90');
+        const groupA = page.locator('.zone-group').nth(0);
+
+        await groupA.locator('.zone-group-angle').click();
+        await groupA.locator('.orientation-angle-input').fill('90');
+        await groupA.locator('.orientation-angle-input').press('Enter');
         await page.waitForTimeout(800);
 
         const targets = await savedTargets(page);

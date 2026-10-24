@@ -1,7 +1,7 @@
 // @ts-check
 
 const { test, expect } = require('@playwright/test');
-const { BASE_URL, clearProjectsDB, expandSidebar, seedProject } = require('../helpers');
+const { BASE_URL, clearProjectsDB, expandSidebar, readProject, seedProject } = require('../helpers');
 
 const fixture = require('./orientation.fixture.json');
 
@@ -47,8 +47,113 @@ async function openViewer(page) {
     await expect(page.locator('.anno-card')).toHaveCount(fixture.annotations.length);
 }
 
+/**
+ * @param {import('@playwright/test').Page} page
+ */
+async function openEditor(page) {
+    await seedProject(page, fixture);
+    await page.goto(`${BASE_URL}/#/project/${fixture.id}/edit`);
+    await page.waitForSelector('.editor-viewer', { timeout: 30000 });
+    await page.waitForTimeout(1500);
+}
+
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {number} index
+ */
+async function openDial(page, index) {
+    await page.locator('.anno-card').nth(index).locator('button:has([data-icon="pen-to-square"])').click();
+    await expect(page.locator('.rich-card-editor')).toBeVisible();
+    await page.locator('.rich-card-tab').nth(1).click();
+    await page.locator('.zone-group-angle').click();
+    await expect(page.locator('.orientation-popover')).toBeVisible();
+}
+
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {number} index
+ */
+async function storedRotation(page, index) {
+    const saved = await readProject(page, fixture.id);
+    const target = /** @type {any[]} */ ([]).concat(saved.annotations[index].target)[0];
+
+    return target.selector.refinedBy;
+}
+
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {number} degrees
+ */
+async function dragDialTo(page, degrees) {
+    const box = await page.locator('.orientation-dial').boundingBox();
+
+    if (!box) {
+        throw new Error('no dial to drag');
+    }
+
+    const centreX = box.x + box.width / 2;
+    const centreY = box.y + box.height / 2;
+    const radius = box.width * 0.38;
+    const radians = degrees * Math.PI / 180;
+
+    await page.mouse.move(centreX, centreY - radius);
+    await page.mouse.down();
+    await page.mouse.move(centreX + radius * Math.sin(radians), centreY - radius * Math.cos(radians), { steps: 8 });
+    await page.mouse.up();
+}
+
 test.afterEach(async ({ page }) => {
     await clearProjectsDB(page, [fixture.id]);
+});
+
+test.describe('Setting the angle in the editor', () => {
+
+    test('a typed angle is stored as is and the viewer follows', async ({ page }) => {
+        await openEditor(page);
+        await openDial(page, UPSIDE_DOWN);
+
+        await page.locator('.orientation-angle-input').fill('30');
+        await page.locator('.orientation-angle-input').press('Enter');
+        await page.waitForTimeout(800);
+
+        expect(await storedRotation(page, UPSIDE_DOWN)).toEqual({ type: 'ImageApiSelector', rotation: '30' });
+        await expect.poll(() => rotationOf(page)).toBe(30);
+    });
+
+    test('dragging the dial snaps to the nearest 15°', async ({ page }) => {
+        await openEditor(page);
+        await openDial(page, UPSIDE_DOWN);
+
+        await dragDialTo(page, 50);
+        await page.waitForTimeout(800);
+
+        expect(await storedRotation(page, UPSIDE_DOWN)).toEqual({ type: 'ImageApiSelector', rotation: '45' });
+        await expect.poll(() => rotationOf(page)).toBe(45);
+    });
+
+    test('inheriting the project default drops the angle', async ({ page }) => {
+        await openEditor(page);
+        await openDial(page, UPSIDE_DOWN);
+
+        await page.locator('.orientation-inherit input').click();
+        await page.waitForTimeout(800);
+
+        expect(await storedRotation(page, UPSIDE_DOWN)).toBeUndefined();
+        await expect(page.locator('.zone-group-angle')).toHaveClass(/zone-group-angle--inherited/);
+    });
+
+    test('leaving the project default gives the group its own angle', async ({ page }) => {
+        await openEditor(page);
+        await openDial(page, UPRIGHT);
+
+        await expect(page.locator('.orientation-angle-input')).toBeDisabled();
+
+        await page.locator('.orientation-inherit input').click();
+        await page.waitForTimeout(800);
+
+        expect(await storedRotation(page, UPRIGHT)).toEqual({ type: 'ImageApiSelector', rotation: '0' });
+        await expect(page.locator('.orientation-angle-input')).toBeEnabled();
+    });
 });
 
 test.describe('Reading orientation', () => {

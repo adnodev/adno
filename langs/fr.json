@@ -128,7 +128,10 @@
         },
         "empty_list": "Aucune proposition",
         "orientation_inherit": "Défaut du projet",
-        "orientation_capture": "Utiliser la vue actuelle",
+        "orientation_inherit_value": "Défaut du projet ({{degrees}}°)",
+        "orientation_free_hint": "Le glisser s'aligne sur 15°, maintenez Maj pour un pas de 1°",
+        "orientation_dial": "Cadran d'orientation de lecture",
+        "orientation_degrees": "Angle en degrés",
         "cutout": "En découpe",
         "images": "Images",
         "previous_image": "Image précédente",
@@ -205,7 +208,9 @@
         "cutout_title": "Découpe redressée",
         "add_zone": "Ajouter une zone",
         "delete_zone": "Supprimer cette zone",
-        "copy_zone_url": "Copier l'URL IIIF de cette zone"
+        "copy_zone_url": "Copier l'URL IIIF de cette zone",
+        "copy_zone_url_rounded": "Lien copié à {{applied}}° au lieu de {{requested}}° : ce serveur ne tourne que par quarts de tour",
+        "copy_zone_url_unrotated": "Lien copié sans rotation : ce serveur ne sait pas tourner l'image ({{requested}}° ignorés)"
     },
     "navbar": {
         "edit_mode": "édition",

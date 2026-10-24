@@ -1,14 +1,14 @@
-import { useState } from "react"
+import { Fragment, useState } from "react"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheck, faCopy, faCrosshairs, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faCheck, faCopy, faPlus, faTrash, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons"
 
 import { copyToClipboard } from "../../Utils/clipboard"
 import { MAX_GROUPS, deriveGroups, groupColor, groupLetter, groupRotation } from "../../Utils/groups"
 import { getGroupCutout } from "../../Utils/cutout"
 import { imageApiUrl } from "../../Utils/imageApi"
-import { QUARTER_TURNS } from "../../Utils/orientation"
 import { getTargets } from "../../Utils/targets"
+import { OrientationPopover } from "../Orientation"
 import { ZonePreview } from "./ZonePreview"
 
 function withDraft(groups, draftGroupId, palette) {
@@ -55,17 +55,43 @@ function applyDrop(source, spot, moveZone, regroupZone) {
     regroupZone(source.index, spot.id)
 }
 
-function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, actions, translate }) {
+function degradedNotice(link, translate) {
+    if (!link.degraded) {
+        return null
+    }
+
+    if (link.applied === 0) {
+        return translate('annotation.copy_zone_url_unrotated', { requested: link.requested })
+    }
+
+    return translate('annotation.copy_zone_url_rounded', { requested: link.requested, applied: link.applied })
+}
+
+function CopyZoneButton({ link, copied, onCopy, translate }) {
+    const buttonClass = link.degraded ? 'btn btn-xs btn-outline btn-warning' : 'btn btn-xs btn-outline'
+    const idleIcon = link.degraded ? faTriangleExclamation : faCopy
+    const icon = copied ? faCheck : idleIcon
+
+    return (
+        <button type="button" className={buttonClass} onClick={onCopy}>
+            <div className="tooltip tooltip-left z-50" data-tip={translate('annotation.copy_zone_url')}>
+                <FontAwesomeIcon icon={icon} />
+            </div>
+        </button>
+    )
+}
+
+function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, defaultRotation, actions, translate }) {
     const [copiedZone, setCopiedZone] = useState(null)
 
     const rotation = groupRotation(annotation, group.id)
     const cutout = getGroupCutout(annotation, group.id)
-    const isFreeAngle = rotation !== null && !QUARTER_TURNS.includes(rotation)
+    const firstTarget = group.targets[0]?.target ?? null
 
     const copyZoneUrl = (url, index) => {
         copyToClipboard(url)
         setCopiedZone(index)
-        setTimeout(() => setCopiedZone(null), 2000)
+        setTimeout(() => setCopiedZone(null), 4000)
     }
 
     return (
@@ -75,24 +101,13 @@ function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, 
                 <span className="zone-group-count">&middot;&nbsp;{group.targets.length}</span>
 
                 <span className="zone-group-actions">
-                    <div className="tooltip tooltip-bottom z-50" data-tip={translate('annotation.orientation')}>
-                        <select className="select select-xs zone-group-rotation"
-                            value={rotation === null ? '' : String(rotation)}
-                            onChange={event => actions.setRotation(group.id, event.target.value === '' ? null : Number(event.target.value))}>
-                            <option value="">{translate('editor.orientation_inherit')}</option>
-                            {QUARTER_TURNS.map(degrees => <option key={degrees} value={degrees}>{degrees}&deg;</option>)}
-                            {isFreeAngle && <option value={rotation}>{rotation}&deg;</option>}
-                        </select>
-                    </div>
-
-                    <button type="button"
-                        className="btn btn-xs"
-                        aria-label={translate('editor.orientation_capture')}
-                        onClick={() => actions.captureRotation(group.id)}>
-                        <div className="tooltip tooltip-bottom z-50" data-tip={translate('editor.orientation_capture')}>
-                            <FontAwesomeIcon icon={faCrosshairs} />
-                        </div>
-                    </button>
+                    <OrientationPopover
+                        groupId={group.id}
+                        rotation={rotation}
+                        defaultRotation={defaultRotation}
+                        target={firstTarget}
+                        actions={actions}
+                        translate={translate} />
 
                     <label className="zone-group-cutout">
                         <input type="checkbox"
@@ -106,41 +121,43 @@ function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, 
 
             <div className="zone-list">
                 {group.targets.map(({ target, index }) => {
-                    const url = imageApiUrl(target, images || [], rotation)
+                    const link = imageApiUrl(target, images || [], rotation)
+                    const notice = copiedZone === index && link ? degradedNotice(link, translate) : null
 
-                    return <div className={index === selectedTargetIndex ? "zone-row zone-row--current" : "zone-row"}
-                        key={`zone-${index}`}
-                        draggable="true"
-                        data-zone-index={index}
-                        data-zone-group={group.id}
-                        onClick={() => actions.pickZone(index)}>
-                        <ZonePreview target={target} />
+                    return <Fragment key={`zone-${index}`}>
+                        <div className={index === selectedTargetIndex ? "zone-row zone-row--current" : "zone-row"}
+                            draggable="true"
+                            data-zone-index={index}
+                            data-zone-group={group.id}
+                            onClick={() => actions.pickZone(index)}>
+                            <ZonePreview target={target} />
 
-                        {url &&
+                            {link &&
+                                <CopyZoneButton
+                                    link={link}
+                                    copied={copiedZone === index}
+                                    onCopy={event => {
+                                        event.stopPropagation()
+                                        copyZoneUrl(link.url, index)
+                                    }}
+                                    translate={translate} />
+                            }
+
                             <button type="button"
-                                className="btn btn-xs btn-outline"
+                                className="btn btn-xs btn-outline btn-error"
+                                disabled={total < 2}
                                 onClick={event => {
                                     event.stopPropagation()
-                                    copyZoneUrl(url, index)
+                                    actions.removeZone(index)
                                 }}>
-                                <div className="tooltip tooltip-left z-50" data-tip={translate('annotation.copy_zone_url')}>
-                                    <FontAwesomeIcon icon={copiedZone === index ? faCheck : faCopy} />
+                                <div className="tooltip tooltip-left z-50" data-tip={translate('annotation.delete_zone')}>
+                                    <FontAwesomeIcon icon={faTrash} />
                                 </div>
                             </button>
-                        }
+                        </div>
 
-                        <button type="button"
-                            className="btn btn-xs btn-outline btn-error"
-                            disabled={total < 2}
-                            onClick={event => {
-                                event.stopPropagation()
-                                actions.removeZone(index)
-                            }}>
-                            <div className="tooltip tooltip-left z-50" data-tip={translate('annotation.delete_zone')}>
-                                <FontAwesomeIcon icon={faTrash} />
-                            </div>
-                        </button>
-                    </div>
+                        {notice && <p className="zone-notice">{notice}</p>}
+                    </Fragment>
                 })}
 
                 <button type="button"
@@ -154,10 +171,12 @@ function ZoneGroupCard({ group, annotation, images, total, selectedTargetIndex, 
     )
 }
 
-export function ZoneGroups({ annotation, groupColors, images, draftGroupId, selectedTargetIndex, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, setRotation, captureRotation, setCutout, translate }) {
+export function ZoneGroups({ annotation, groupColors, images, draftGroupId, selectedTargetIndex, defaultRotation, pickZone, removeZone, addGroup, addZone, moveZone, regroupZone, setRotation, previewRotation, endPreview, setCutout, translate }) {
+
     const groups = withDraft(deriveGroups(annotation, groupColors), draftGroupId, groupColors)
     const total = getTargets(annotation).length
-    const actions = { pickZone, removeZone, addZone, setRotation, captureRotation, setCutout }
+
+    const actions = { pickZone, removeZone, addZone, setRotation, previewRotation, endPreview, setCutout }
 
     const startDrag = (event) => {
         const source = dragSource(event.target)
@@ -203,6 +222,7 @@ export function ZoneGroups({ annotation, groupColors, images, draftGroupId, sele
                     images={images}
                     total={total}
                     selectedTargetIndex={selectedTargetIndex}
+                    defaultRotation={defaultRotation}
                     actions={actions}
                     translate={translate} />
             )}

@@ -1,17 +1,12 @@
 import { Component, createRef } from "react"
 
-// Import FontAwesome
 import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Select from 'react-select/creatable';
 
-// Import CSS
 import '@toast-ui/editor/dist/toastui-editor.css';
 import "./AdnoMarkdown.css"
-
-// import { Editor } from '@toast-ui/react-editor';
-
 
 import Editor from '@toast-ui/editor';
 
@@ -21,7 +16,6 @@ import '@toast-ui/editor/dist/i18n/es-es';
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
-import { normalizeAngle } from "../../Utils/orientation"
 import { withGroupCutout } from "../../Utils/cutout"
 import { getTargets, removeTargetAt } from "../../Utils/targets"
 import { movedTargetIndex, moveTarget, moveTargetToGroup, nextGroupId, targetIndexOf, withGroupRotation } from "../../Utils/groups"
@@ -354,14 +348,19 @@ class AdnoMdEditor extends Component {
         this.persist(withGroupRotation(this.props.selectedAnnotation, groupId, degrees))
     }
 
-    captureGroupRotation = (groupId) => {
-        const current = this.props.getViewerRotation && this.props.getViewerRotation()
+    viewerRotationBeforePreview = null
 
-        if (current === null || current === undefined) {
-            return
+    previewGroupRotation = (degrees) => {
+        if (this.viewerRotationBeforePreview === null) {
+            this.viewerRotationBeforePreview = this.props.getViewerRotation()
         }
 
-        this.setGroupRotation(groupId, normalizeAngle(Math.round(current)))
+        this.props.setViewerRotation(degrees)
+    }
+
+    endGroupRotationPreview = () => {
+        this.props.setViewerRotation(this.viewerRotationBeforePreview)
+        this.viewerRotationBeforePreview = null
     }
 
     setGroupCutout = (groupId, enabled) => {
@@ -413,6 +412,7 @@ class AdnoMdEditor extends Component {
                                 images={this.props.images}
                                 draftGroupId={this.state.draftGroupId}
                                 selectedTargetIndex={this.props.selectedTargetIndex}
+                                defaultRotation={this.props.defaultRotation}
                                 pickZone={index => this.props.changeSelectedAnno(this.props.selectedAnnotation, index)}
                                 removeZone={this.removeZone}
                                 addGroup={this.addGroup}
@@ -420,7 +420,8 @@ class AdnoMdEditor extends Component {
                                 moveZone={this.moveZone}
                                 regroupZone={this.regroupZone}
                                 setRotation={this.setGroupRotation}
-                                captureRotation={this.captureGroupRotation}
+                                previewRotation={this.previewGroupRotation}
+                                endPreview={this.endGroupRotationPreview}
                                 setCutout={this.setGroupCutout}
                                 translate={this.props.t} />
                         }

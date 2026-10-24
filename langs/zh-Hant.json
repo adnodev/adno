@@ -128,7 +128,10 @@
         },
         "empty_list": "無選項",
         "orientation_inherit": "專案預設值",
-        "orientation_capture": "使用目前檢視",
+        "orientation_inherit_value": "Project default ({{degrees}}°)",
+        "orientation_free_hint": "Dragging snaps to 15°, hold Shift for 1° steps",
+        "orientation_dial": "Reading orientation dial",
+        "orientation_degrees": "Angle in degrees",
         "cutout": "裁切圖",
         "images": "圖像",
         "previous_image": "上一幅圖像",
@@ -205,7 +208,9 @@
         "cutout_title": "已擺正的裁切圖",
         "add_zone": "新增區域",
         "delete_zone": "刪除該區域",
-        "copy_zone_url": "複製該區域的 IIIF 連結"
+        "copy_zone_url": "複製該區域的 IIIF 連結",
+        "copy_zone_url_rounded": "Link copied at {{applied}}° instead of {{requested}}°: this server only rotates by quarter turns",
+        "copy_zone_url_unrotated": "Link copied without rotation: this server cannot rotate images ({{requested}}° dropped)"
     },
     "navbar": {
         "edit_mode": "編輯",
