@@ -222,7 +222,7 @@ class ProjectView extends Component {
                 <span>{this.props.t('project.thumbnail_unavailable')}</span>
             </div>
             : <img
-                src={this.state.imgSource}
+                src={this.state.imgSource || undefined}
                 onError={() => this.setState({ imgFailed: true })}
                 className="img-fluid img-proj-view " alt={this.props.project.title} />
 
