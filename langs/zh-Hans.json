@@ -19,6 +19,7 @@
         "last_update": "最后更新： ",
         "no_desc": "此项目暂无描述",
         "no_creator": "未指定作者",
+        "thumbnail_unavailable": "缩略图不可用",
         "no_editor": "未指定编辑者",
         "preview": "预览",
         "edit": "编辑",

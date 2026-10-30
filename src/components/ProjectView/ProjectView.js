@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 
 // Import FontAwesome icons
-import { faCopy, faDownload, faEye, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faDownload, faEye, faNotdef, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // Import popup alerts
@@ -26,7 +26,8 @@ class ProjectView extends Component {
         this.state = {
             nbAnnotations: 0,
             imgSource: "",
-            imgWidth: 0
+            imgWidth: 0,
+            imgFailed: false
         }
         this.modalRef = React.createRef()
     }
@@ -215,6 +216,16 @@ class ProjectView extends Component {
             settings: this.props.project.settings || defaultProjectSettings()
         }
 
+        const thumbnail = this.state.imgFailed
+            ? <div className="img-proj-fallback">
+                <FontAwesomeIcon icon={faNotdef} size="2x" />
+                <span>{this.props.t('project.thumbnail_unavailable')}</span>
+            </div>
+            : <img
+                src={this.state.imgSource}
+                onError={() => this.setState({ imgFailed: true })}
+                className="img-fluid img-proj-view " alt={this.props.project.title} />
+
         return <>
             <ExporterModal
                 translate={this.props.t}
@@ -224,13 +235,7 @@ class ProjectView extends Component {
 
             <div className="card card-side bg-base-100 shadow-xl project-view-card" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>
                 <div className="project-card-img">
-                    <img
-                        src={this.state.imgSource}
-                        onError={({ currentTarget }) => {
-                            currentTarget.onerror = null; // prevents looping
-                            currentTarget.src = "https://www.pngkey.com/png/detail/212-2124171_404-error-404-pagina-no-encontrada.png"
-                        }}
-                        className="img-fluid img-proj-view " alt={this.props.project.title} />
+                    {thumbnail}
                 </div>
                 <div className="project-card-body">
                     <div className="project-text">

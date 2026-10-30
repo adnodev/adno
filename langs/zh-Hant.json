@@ -19,6 +19,7 @@
         "last_update": "最後更新： ",
         "no_desc": "此專案尚無說明",
         "no_creator": "未指定作者",
+        "thumbnail_unavailable": "縮圖無法使用",
         "no_editor": "未指定編輯者",
         "preview": "預覽",
         "edit": "編輯",

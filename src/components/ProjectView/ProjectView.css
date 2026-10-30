@@ -64,6 +64,18 @@
     align-items: flex-start;
 }
 
+.img-proj-fallback{
+    width: 100%;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: #9ca3af;
+    background-color: #f3f4f6;
+    font-size: 0.875rem;
+}
 .project-card-img:hover{
     cursor: pointer;
 }

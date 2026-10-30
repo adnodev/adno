@@ -177,6 +177,7 @@
         "new": "Crea mi propio proyecto",
         "new_tooltip": "Crear un nuevo proyecto",
         "no_creator": "No se indicó autor",
+        "thumbnail_unavailable": "Miniatura no disponible",
         "no_desc": "Ninguna descripción disponible para este proyecto",
         "no_editor": "No se indicó editor",
         "preview": "Vista previa",
