@@ -16,6 +16,7 @@ import '@toast-ui/editor/dist/i18n/es-es';
 import { withTranslation } from 'react-i18next';
 import Swal from 'sweetalert2';
 import { projectDB } from '../../services/db';
+import { annotationMarkdown, withContent } from '../../services/format';
 import { withGroupCutout } from "../../Utils/cutout"
 import { getTargets, removeTargetAt } from "../../Utils/targets"
 import { movedTargetIndex, moveTarget, moveTargetToGroup, nextGroupId, targetIndexOf, withGroupRotation } from "../../Utils/groups"
@@ -195,18 +196,6 @@ class AdnoMdEditor extends Component {
         // Check if something has been wrote down
         let html = this.editor.getMarkdown() ? this.editor.getHTML() : "";
 
-        let newTextBody = {
-            "type": "TextualBody",
-            "value": md,
-            "purpose": "commenting"
-        }
-
-        let HTMLBody = {
-            "type": "HTMLBody",
-            "value": html,
-            "purpose": "commenting"
-        }
-
         const audioElement = document.getElementById('audioTag');
 
         let audioBody;
@@ -236,12 +225,13 @@ class AdnoMdEditor extends Component {
             )
         })
 
-        let newBody = [newTextBody, HTMLBody, ...tags]
-        currentSelectedAnno.body = newBody;
+        const others = audioBody ? [...tags, audioBody] : tags
 
-        if (audioBody) {
-            currentSelectedAnno.body = [...newBody, audioBody];
-        }
+        currentSelectedAnno = withContent(currentSelectedAnno, {
+            markdown: md,
+            html,
+            others
+        })
 
         if (annos.find(anno => anno.id === currentSelectedAnno.id)) {
             const idx = annos.findIndex(anno => anno.id === currentSelectedAnno.id);
@@ -299,11 +289,7 @@ class AdnoMdEditor extends Component {
     }
 
     getAnnoBody = () => {
-        if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
-            return this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
-        } else {
-            return ""
-        }
+        return annotationMarkdown(this.props.selectedAnnotation)
     }
 
     persist = (annotation) => {

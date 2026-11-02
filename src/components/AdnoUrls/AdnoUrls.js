@@ -4,10 +4,8 @@ import { withRouter } from "react-router";
 // Add translations
 import { withTranslation } from "react-i18next";
 
-// Import SweetAlert
 import Swal from "sweetalert2";
 
-// Import Components
 import { manageUrls } from "./manageUrls";
 
 class AdnoUrls extends Component {
@@ -31,7 +29,6 @@ class AdnoUrls extends Component {
                 }
             })
         }
-
 
     }
     render() {

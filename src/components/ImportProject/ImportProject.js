@@ -1,17 +1,13 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
 
-// Import FontAwesome and icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCancel, faCheckCircle, faUpload } from "@fortawesome/free-solid-svg-icons";
 
-// Import popup alerts
 import Swal from "sweetalert2";
 
-// Import utils
 import { importProjectJsonFile } from "../../Utils/utils";
 
-// Import CSS
 import "./ImportProject.css";
 
 // Add translations
@@ -26,7 +22,6 @@ class ImportProject extends Component {
             labelImportValue: this.props.t('import.import_project')
         }
     }
-
 
     // Function to cancel import
     cancelImport = () => {
@@ -79,7 +74,6 @@ class ImportProject extends Component {
                         </div>
                     </div>
                 }
-
 
             </div>
         )

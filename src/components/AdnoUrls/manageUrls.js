@@ -1,10 +1,10 @@
 import Swal from "sweetalert2"
-import { buildJsonProjectWithManifest, enhancedFetch, migrateTextBody } from "../../Utils/utils";
+import { buildJsonProjectWithManifest, enhancedFetch } from "../../Utils/utils";
 import { projectDB } from "../../services/db";
+import { normalizeAnnotation } from "../../services/format";
 import { withImages } from "../../Utils/images"
 import { extractLanguageValue } from "../AdnoEmbed/IIIFHelper"
 import { v7 } from 'uuid'
-
 
 function isJsonContentType(contentType) {
     const jsonPattern = /^(application\/(vnd\.api\+json|ld\+json|x-json-stream|json)(;.*)?|text\/json)$/i;
@@ -66,13 +66,7 @@ export async function manageUrls(props, url, translation, step = "decoreURICompo
                                                 projectDB.add(projectID, {
                                                     id: projectID,
                                                     ...project,
-                                                    annotations: manifest.first.items.map(annotation => {
-                                                        if (annotation.body.find(annoBody => annoBody.type === "TextualBody") &&
-                                                            !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-                                                            return migrateTextBody(projectID, annotation)
-                                                        }
-                                                        return annotation
-                                                    })
+                                                    annotations: manifest.first.items.map(normalizeAnnotation)
                                                 }).then(() => {
 
                                                     Swal.fire({

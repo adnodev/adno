@@ -6,9 +6,9 @@ import Swal from "sweetalert2";
 
 import { buildTagsList, enhancedFetch, get_url_extension } from "../../Utils/utils"
 import { extractIIIFContent } from "./IIIFHelper"
+import { normalizeAnnotation } from "../../services/format"
 import OpenView from "../OpenView/OpenView"
 
-// Import Style
 import "./AdnoEmbed.css";
 
 const IMAGE_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS?.split(",") || []
@@ -188,7 +188,7 @@ class AdnoEmbed extends Component {
                                     ) {
                                         const selectedTags = imported_project.adno_settings?.tags || []
 
-                                        let annos = [...imported_project.first.items];
+                                        let annos = imported_project.first.items.map(normalizeAnnotation);
 
                                         if (selectedTags.length > 0)
                                             annos = annos
@@ -197,31 +197,6 @@ class AdnoEmbed extends Component {
                                                     tags: buildTagsList(annotation).map(tag => tag.value)
                                                 }))
                                                 .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
-
-                                        annos?.forEach((annotation) => {
-                                            if (
-                                                annotation.body.find(
-                                                    (annoBody) => annoBody.type === "TextualBody"
-                                                ) &&
-                                                !annotation.body.find(
-                                                    (annoBody) => annoBody.type === "HTMLBody"
-                                                )
-                                            ) {
-                                                const newBody = annotation.body;
-
-                                                newBody.push({
-                                                    type: "HTMLBody",
-                                                    value: `<p>${annotation.body.filter(
-                                                        (annobody) => annobody.type === "TextualBody"
-                                                    )[0].value
-                                                        }</p>`,
-                                                    purpose: "commenting",
-                                                });
-
-                                                annos.filter((anno) => anno.id === annotation.id)[0].body =
-                                                    newBody;
-                                            }
-                                        });
 
                                         this.setState({
                                             ...(imported_project.adno_settings || {}),

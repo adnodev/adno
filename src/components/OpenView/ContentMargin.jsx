@@ -1,15 +1,10 @@
 import parse from "html-react-parser"
 
 import { buildTagsList } from "../../Utils/utils"
+import { annotationHtml } from "../../services/format"
 
 function annotationBody(annotation) {
     return Array.isArray(annotation && annotation.body) ? annotation.body : []
-}
-
-function htmlBody(annotation) {
-    const html = annotationBody(annotation).find(item => item.type === "HTMLBody")
-
-    return html && html.value ? html.value : null
 }
 
 function audioSource(annotation) {
@@ -23,11 +18,11 @@ export function hasMarginContent(annotation) {
         return false
     }
 
-    return Boolean(htmlBody(annotation)) || Boolean(audioSource(annotation)) || buildTagsList(annotation).length > 0
+    return Boolean(annotationHtml(annotation)) || Boolean(audioSource(annotation)) || buildTagsList(annotation).length > 0
 }
 
 export function ContentMargin({ annotation, project, tags: projectTags = [], position, offsetTop, canStart, onStart, translate }) {
-    const html = htmlBody(annotation)
+    const html = annotationHtml(annotation)
     const tags = buildTagsList(annotation)
     const track = audioSource(annotation)
 

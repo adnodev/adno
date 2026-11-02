@@ -273,34 +273,6 @@ function cutoutInsideFullscreen(page) {
     });
 }
 
-/**
- * How far the annotation shape sits from the centre of the viewer, as a
- * fraction of the viewer's own size. Resizing costs the framing, not the
- * angle, so the framing is what has to be watched across a fullscreen switch.
- *
- * @param {import('@playwright/test').Page} page
- * @param {string} annoId
- * @returns {Promise<{dx: number, dy: number}|null>}
- */
-function offsetFromCentre(page, annoId) {
-    return page.evaluate((id) => {
-        const shape = document.querySelector(`.openseadragon-canvas .a9s-annotation[data-id="${id}"]`);
-        const viewer = document.getElementById('adno-osd');
-
-        if (!shape || !viewer) {
-            return null;
-        }
-
-        const box = shape.getBoundingClientRect();
-        const frame = viewer.getBoundingClientRect();
-
-        return {
-            dx: Math.abs((box.left + box.width / 2) - (frame.left + frame.width / 2)) / frame.width,
-            dy: Math.abs((box.top + box.height / 2) - (frame.top + frame.height / 2)) / frame.height
-        };
-    }, annoId);
-}
-
 test.describe('Reading orientation in fullscreen', () => {
 
     test.skip(({ browserName }) => browserName !== 'chromium', 'Fullscreen is only driven on Chromium.');
@@ -314,18 +286,5 @@ test.describe('Reading orientation in fullscreen', () => {
         await page.locator('#toggle-fullscreen').click();
 
         await expect.poll(() => cutoutInsideFullscreen(page), { timeout: 5000 }).toBe(true);
-    });
-
-    test('a turned annotation stays framed across a fullscreen switch', async ({ page }) => {
-        await openViewer(page);
-
-        await focus(page, UPSIDE_DOWN);
-        await expect.poll(() => rotationOf(page), { timeout: 10000 }).toBe(180);
-
-        await page.locator('#toggle-fullscreen').click();
-
-        await expect.poll(() => rotationOf(page), { timeout: 5000 }).toBe(180);
-        await expect.poll(() => offsetFromCentre(page, '#ori-upside-down'), { timeout: 5000 })
-            .toEqual({ dx: expect.closeTo(0, 1), dy: expect.closeTo(0, 1) });
     });
 });

@@ -1,0 +1,270 @@
+{
+    "@context": [
+        "http://iiif.io/api/presentation/3/context.json",
+        {
+            "adno": "https://adno.app/ns#",
+            "group": "adno:group",
+            "editor": "adno:editor",
+            "sourceText": "adno:sourceText",
+            "sourceMarkdown": "adno:sourceMarkdown"
+        }
+    ],
+    "id": "https://example.com/manifest.json",
+    "type": "Manifest",
+    "label": {
+        "en": [
+            "Nautré restauré"
+        ]
+    },
+    "items": [
+        {
+            "id": "https://example.com/canvas-1",
+            "type": "Canvas",
+            "label": {
+                "fr": [
+                    "Détail du Nautré pour illustrer l'avant et l'après de la restauration"
+                ]
+            },
+            "height": 6000,
+            "width": 12500,
+            "items": [
+                {
+                    "id": "https://example.com/canvas-1/annopage-1",
+                    "type": "AnnotationPage",
+                    "items": [
+                        {
+                            "id": "https://example.com/canvas-1/annopage-1/anno-1",
+                            "type": "Annotation",
+                            "motivation": "painting",
+                            "body": {
+                                "id": "https://free.iiifhosting.com/iiif/523508e08754ca091e306ac62637b75abd7d364771a1c780d761cb910f991612",
+                                "type": "Image",
+                                "format": "image/jpeg",
+                                "service": [
+                                    {
+                                        "id": "https://free.iiifhosting.com/iiif/523508e08754ca091e306ac62637b75abd7d364771a1c780d761cb910f991612",
+                                        "type": "ImageService3",
+                                        "profile": "level1"
+                                    }
+                                ],
+                                "height": 6000,
+                                "width": 12500
+                            },
+                            "target": "https://example.com/canvas-1"
+                        }
+                    ]
+                }
+            ],
+            "annotations": [
+                {
+                    "id": "https://example.com/canvas-1/annopage-2",
+                    "type": "AnnotationPage",
+                    "items": [
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-0",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": {
+                                "type": "TextualBody",
+                                "value": "<p>Détail du Nautré pour illustrer l'avant et l'après de la restauration</p>",
+                                "format": "text/html",
+                                "purpose": "commenting"
+                            },
+                            "sourceText": "Détail du Nautré pour illustrer l'avant et l'après de la restauration",
+                            "sourceMarkdown": "Détail du Nautré pour illustrer l'avant et l'après de la restauration",
+                            "target": {
+                                "type": "SpecificResource",
+                                "source": "https://example.com/canvas-1",
+                                "selector": {
+                                    "type": "FragmentSelector",
+                                    "value": "xywh=1987.8461303710938,0,5432.001281738281,5512.3055419921875",
+                                    "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                },
+                                "id": "https://example.com/canvas-1/annopage-2/anno-0#A",
+                                "group": "A"
+                            }
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-1",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": {
+                                "type": "TextualBody",
+                                "value": "<p>Abbaye de Montierneuf</p>",
+                                "format": "text/html",
+                                "purpose": "commenting"
+                            },
+                            "sourceText": "Abbaye de Montierneuf",
+                            "sourceMarkdown": "Abbaye de Montierneuf",
+                            "target": [
+                                {
+                                    "type": "SpecificResource",
+                                    "source": "https://example.com/canvas-1",
+                                    "selector": {
+                                        "type": "FragmentSelector",
+                                        "value": "xywh=2766.469482421875,3097.150390625,1984.640869140625,1415.6181640625",
+                                        "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                    },
+                                    "id": "https://example.com/canvas-1/annopage-2/anno-1#A",
+                                    "group": "A"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "source": "https://example.com/canvas-1",
+                                    "selector": {
+                                        "type": "FragmentSelector",
+                                        "value": "xywh=9095.826171875,3130.35107421875,2086.375,1412.60107421875",
+                                        "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                    },
+                                    "id": "https://example.com/canvas-1/annopage-2/anno-1#B",
+                                    "group": "B"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-2",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": {
+                                "type": "TextualBody",
+                                "value": "<p>Le chateau</p>",
+                                "format": "text/html",
+                                "purpose": "commenting"
+                            },
+                            "sourceText": "Le chateau",
+                            "sourceMarkdown": "Le chateau",
+                            "target": [
+                                {
+                                    "type": "SpecificResource",
+                                    "source": "https://example.com/canvas-1",
+                                    "selector": {
+                                        "type": "FragmentSelector",
+                                        "value": "xywh=3896.103515625,1951.048828125,1948.0517578125,1523.476318359375",
+                                        "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                    },
+                                    "id": "https://example.com/canvas-1/annopage-2/anno-2#A",
+                                    "group": "A"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "source": "https://example.com/canvas-1",
+                                    "selector": {
+                                        "type": "FragmentSelector",
+                                        "value": "xywh=10158.5908203125,2050.948974609375,2110.3896484375,1498.50146484375",
+                                        "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                    },
+                                    "id": "https://example.com/canvas-1/annopage-2/anno-2#B",
+                                    "group": "B"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "https://example.com/canvas-1/annopage-2/anno-3",
+                            "type": "Annotation",
+                            "motivation": "commenting",
+                            "body": {
+                                "type": "TextualBody",
+                                "value": "<p>Portail Saint Ladre</p>",
+                                "format": "text/html",
+                                "purpose": "commenting"
+                            },
+                            "sourceText": "Portail Saint Ladre",
+                            "sourceMarkdown": "Portail Saint Ladre",
+                            "target": [
+                                {
+                                    "type": "SpecificResource",
+                                    "source": "https://example.com/canvas-1",
+                                    "selector": {
+                                        "type": "FragmentSelector",
+                                        "value": "xywh=2641.108642578125,2175.823974609375,980.269775390625,855.39453125",
+                                        "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                    },
+                                    "id": "https://example.com/canvas-1/annopage-2/anno-3#A",
+                                    "group": "A"
+                                },
+                                {
+                                    "type": "SpecificResource",
+                                    "source": "https://example.com/canvas-1",
+                                    "selector": {
+                                        "type": "FragmentSelector",
+                                        "value": "xywh=8978.5205078125,2319.430419921875,1042.7080078125,749.250732421875",
+                                        "conformsTo": "http://www.w3.org/TR/media-frags/"
+                                    },
+                                    "id": "https://example.com/canvas-1/annopage-2/anno-3#B",
+                                    "group": "B"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "summary": {
+        "en": [
+            "Détail"
+        ]
+    },
+    "metadata": [
+        {
+            "label": {
+                "fr": [
+                    "Auteur"
+                ]
+            },
+            "value": {
+                "fr": [
+                    "Auteur de test"
+                ]
+            }
+        }
+    ],
+    "provider": [
+        {
+            "id": "https://example.com/manifest.json#editor",
+            "type": "Agent",
+            "label": {
+                "fr": [
+                    "Éditeur de test"
+                ]
+            }
+        }
+    ],
+    "rights": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "adno:project": {
+        "created": "2026-09-12T12:30:00.368Z",
+        "modified": "2026-09-12T12:41:15.811Z",
+        "generator": {
+            "id": "https://adno.app",
+            "type": "Software",
+            "name": "Adno"
+        },
+        "settings": {
+            "delay": 5,
+            "showNavigator": false,
+            "toolsbarOnFs": true,
+            "sidebarEnabled": true,
+            "startbyfirstanno": false,
+            "shouldAutoPlayAnnotations": false,
+            "rotation": false,
+            "defaultRotation": 0,
+            "rotationTransition": "turn",
+            "displayToolbar": true,
+            "tags": [],
+            "outlineWidth": "outline-1px",
+            "outlineColor": "outline-white",
+            "outlineColorFocus": "outline-focus-yellow",
+            "showOutlines": false,
+            "showEyes": false,
+            "soundMode": "no_sound",
+            "showCurrentAnnotation": false,
+            "contentPosition": "left",
+            "mosaicRatio": "1/2",
+            "mosaicRotation": 0,
+            "groupColorA": "#2451C4",
+            "groupColorB": "#C4622A",
+            "groupColorC": "#1F9E6D",
+            "groupColorD": "#A23DBB"
+        }
+    }
+}

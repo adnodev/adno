@@ -696,7 +696,6 @@ class OpenView extends Component {
                 x = anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2
                 y = anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2
 
-
             } else if (type === "path" || type === "polygon") {
                 const bbox = anno.getBBox();
 
@@ -709,7 +708,6 @@ class OpenView extends Component {
 
             audioElement.setAttribute('x', x / this.openSeadragon.viewport._contentSize.x)
             audioElement.setAttribute('y', y / this.openSeadragon.viewport._contentSize.y)
-
 
             const id = anno.getAttribute("data-id")
             const annotation = this.props.annos?.find(anno => anno.id === id);
@@ -760,7 +758,6 @@ class OpenView extends Component {
             })
         })
     }
-
 
     toggleAnnotationsLayer = () => {
         this.toggleAnnotations(!this.state.isAnnotationsVisible)

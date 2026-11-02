@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
+import { normalizeAnnotation } from "../services/format";
 import { projectImages } from "./images"
 import { defaultProjectSettings } from "./project"
 import { v7 } from "uuid";
@@ -85,7 +86,6 @@ export const createExportProjectJsonFile = async (projectID) => {
   return URL.createObjectURL(new Blob([JSON.stringify(finalProject)], { type: "text/plain" }));
 }
 
-
 export const importProjectJsonFile = (event, loadedProject, cancelImport, errorTitle, props) => {
   event.preventDefault()
 
@@ -136,13 +136,7 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
       }
 
       const annotations = (imported_project.total !== 0 ? imported_project.first.items : [])
-        .map(annotation => {
-          if (annotation.body.find(annoBody => annoBody.type === "TextualBody") &&
-            !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-            return migrateTextBody(annotation)
-          }
-          return annotation
-        })
+        .map(normalizeAnnotation)
 
       projectDB.add(
         imported_project.id,
@@ -173,7 +167,6 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
   }
 }
 
-
 export function createDate() {
   return new Date().toISOString();
 }
@@ -196,18 +189,6 @@ export function diffProjectSettings(a, b) {
   }
 
   return diff;
-}
-
-export function migrateTextBody(annotation) {
-  const textBody = annotation.body.find(annobody => annobody.type === "TextualBody");
-  if (textBody) {
-    annotation.body.push({
-      "type": "HTMLBody",
-      "value": `<p>${textBody.value}</p>`,
-      "purpose": "commenting"
-    });
-  }
-  return annotation;
 }
 
 export async function enhancedFetch(url) {

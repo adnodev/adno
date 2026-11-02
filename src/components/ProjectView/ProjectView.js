@@ -1,17 +1,15 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
 
-// Import FontAwesome icons
 import { faCopy, faDownload, faEye, faNotdef, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-// Import popup alerts
 import Swal from 'sweetalert2';
 
-import { enhancedFetch, migrateTextBody, buildJsonProjectWithManifest } from "../../Utils/utils";
+import { enhancedFetch, buildJsonProjectWithManifest } from "../../Utils/utils";
+import { normalizeAnnotation } from "../../services/format";
 import { defaultProjectSettings } from "../../Utils/project";
 
-// Import CSS
 import "./ProjectView.css";
 
 // Add Internationalization
@@ -68,14 +66,7 @@ class ProjectView extends Component {
 
             return projectDB.add(project.id, {
                 ...project,
-                annotations: // Migrate annotations if there is only TextualBody and not HTMLBody
-                    manifest.first.items?.map(annotation => {
-                        if (annotation.body.find(annoBody => annoBody.type === "TextualBody")
-                            && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-                            return migrateTextBody(annotation)
-                        }
-                        return annotation
-                    })
+                annotations: manifest.first.items?.map(normalizeAnnotation)
             })
         } catch (err) {
             console.log(err)

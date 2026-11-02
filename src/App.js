@@ -3,14 +3,12 @@ import {
     HashRouter, Route, Switch
 } from "react-router-dom";
 
-// Import React components
 import Home from "./components/Home/Home";
 import AdnoUrls from "./components/AdnoUrls/AdnoUrls";
 import NewProject from "./components/NewProject/NewProject";
 import NotFound from "./components/NotFound/NotFound";
 import Project from "./components/Project/Project";
 
-// Import css
 import "./index.css"
 import AdnoEmbed from "./components/AdnoEmbed/AdnoEmbed";
 import LinkGenerator from "./components/LinkGenerator/LinkGenerator";

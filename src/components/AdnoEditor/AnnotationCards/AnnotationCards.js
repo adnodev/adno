@@ -1,26 +1,17 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
 
-// Import Html Parser
-import parse from 'html-react-parser';
-
-// Import FontAwesome for all icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownLong, faEdit, faPlus, faTrashAlt, faUpLong } from "@fortawesome/free-solid-svg-icons"
 
-// Import SweetAlert
 import Swal from "sweetalert2";
 
-import { AnnotationBadges } from "../../AnnotationBadges/AnnotationBadges"
+import OneCardView from "../../AdnoViewer/ViewerAnnotationCards/OneCardView/OneCardView"
 
-// Import Utils 
-import { buildTagsList } from "../../../Utils/utils";
 import { getTargets } from "../../../Utils/targets"
 
-//Imports CSS
 import "./AnnotationCards.css";
 
-// Add translations
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../../services/db";
 
@@ -29,19 +20,6 @@ class AnnotationCards extends Component {
         super(props);
     }
 
-    getAnnotationHTMLBody = (annotation) => {
-        if (annotation && annotation.body) {
-            if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
-                return parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
-            } else {
-                return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
-            }
-        } else {
-            return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
-        }
-    }
-
-    // Function to move an annotation up one place
     annoSwitchUp = (index) => {
 
         const annos = this.props.annotations;
@@ -57,7 +35,6 @@ class AnnotationCards extends Component {
             })
     }
 
-    // Function to move an annotation down one place
     annoSwitchDown = (index) => {
         const annos = this.props.annotations;
 
@@ -72,7 +49,6 @@ class AnnotationCards extends Component {
             })
     }
 
-    // Function to delete an annotation
     deleteAnnotation = (annotationID) => {
 
         Swal.fire({
@@ -98,19 +74,11 @@ class AnnotationCards extends Component {
         })
     }
 
-
     render() {
-        const annotationWithTags = this.props.annotations.map(annotation => {
-            return {
-                ...annotation,
-                tags: buildTagsList(annotation).map(tag => tag.value)
-            }
-        })
-
         return (
             <div className="annotations_list" id="annotations_list">
                 {
-                    annotationWithTags
+                    this.props.annotations
                         .map((annotation, index) => {
                             const zones = getTargets(annotation).length
 
@@ -118,26 +86,7 @@ class AnnotationCards extends Component {
                                 <div id={`anno_edit_card_${annotation.id}`} className={this.props.selectedAnno && this.props.selectedAnno.id === annotation.id ? "anno-card selectedAnno shadow" : "anno-card shadow"} key={`anno_edit_card_${annotation.id}`}
                                     onClick={() => this.props.changeSelectedAnno(annotation)}>
 
-                                    <div className="anno-card-body">
-
-                                        <AnnotationBadges annotation={annotation} translate={this.props.t} />
-
-                                        <div className="card-tags-list">
-                                            {
-                                                annotation.tags.map((tag, idx) => {
-                                                    return (
-                                                        <div key={`${tag}-${idx}`} className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-blue-200 text-blue-700 rounded-full">
-                                                            {tag}
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </div>
-
-                                        <div className="adno-card-body">
-                                            {this.getAnnotationHTMLBody(annotation)}
-                                        </div>
-
+                                    <OneCardView annotation={annotation}>
                                         <div className="btn-line-one-card" onClick={event => event.stopPropagation()}>
                                             <button className="btn btn-sm" onClick={() => this.props.openRichEditor(annotation)}>
                                                 <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t('annotation.edit')}>
@@ -169,7 +118,7 @@ class AnnotationCards extends Component {
                                                 </div>
                                             </button>
                                         </div>
-                                    </div>
+                                    </OneCardView>
                                 </div>
                             )
                         })

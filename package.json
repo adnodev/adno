@@ -9,6 +9,7 @@
     "build-local": "vite build --base=./",
     "typecheck": "tsc --noEmit",
     "test": "npm run dev & npx playwright test ; npx playwright show-report",
+    "test:unit": "vitest run",
     "sbom": "cyclonedx-npm --output-format JSON --output-file sbom.json"
   },
   "keywords": [],
@@ -47,13 +48,16 @@
     "@cyclonedx/cyclonedx-npm": "^4.2.1",
     "@playwright/test": "1.50.1",
     "@types/node": "22.13.1",
+    "@types/turndown": "^5.0.6",
     "@vitejs/plugin-react": "^5.1.2",
     "buffer": "6.0.3",
     "events": "3.3.0",
+    "jsonld": "^8.3.3",
     "path-browserify": "1.0.1",
     "process": "0.11.10",
     "rimraf": "6.0.1",
     "typescript": "^5.9.3",
-    "vite": "6.1.0"
+    "vite": "6.1.0",
+    "vitest": "^3.2.4"
   }
 }

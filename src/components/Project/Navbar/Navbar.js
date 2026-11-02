@@ -11,14 +11,12 @@ class Navbar extends Component {
         super(props);
     }
 
-
     render() {
         return (
             <div className="navbar bg-base-300 text-neutral-content">
                 <Link to={"/"} className="project-navbar-link" title={this.props.t('navbar.back_home')}>
                     <img className="max-h-8" src="logo.png" alt="Adno logo" />
                 </Link>
-
 
                 <strong className="ms-3 text-neutral" style={{
                     maxWidth: 400,
@@ -72,12 +70,10 @@ class Navbar extends Component {
                         </button>
                     </div>
 
-
                     {!this.props.editMode &&
                         <button onClick={() => this.props.showEditorSettings()} className="btn navbar-button">
                             <FontAwesomeIcon icon={faGear} size="xl" />
                         </button>}
-
 
                     <div className="tooltip tooltip-bottom z-50"
                         data-tip={this.props.editMode ? this.props.t('navbar.edit_mode_help') : this.props.t('navbar.view_mode_help')}>

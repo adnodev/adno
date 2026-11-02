@@ -1,13 +1,10 @@
 import { Component } from "react";
 
-// Import FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 
-// Import SweetAlert
 import Swal from "sweetalert2";
 
-// Import CSS 
 import "./ProjectSettings.css";
 
 // Add translations
@@ -357,7 +354,6 @@ class ProjectSettings extends Component {
                                 />
                             </label>
                         </>}
-
 
                         {PARAMETERS_BY_TAB[this.state.tab].includes('sidebarEnabled') && <>
                             <label className="form-control w-full">

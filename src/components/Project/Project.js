@@ -9,7 +9,6 @@ import { exportToIIIF } from "../../services/iiif/exporter";
 import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
 
-// Import Components
 import AdnoEditor from "../AdnoEditor/AdnoEditor";
 import ProjectMetadatas from "./ProjectMetadatas/ProjectMetadatas";
 import ProjectEditMetadatas from "./ProjectEditMetadatas/ProjectEditMetadatas";

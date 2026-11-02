@@ -2,8 +2,8 @@ import { Component } from "react";
 import ReactMarkdown from 'react-markdown'
 import WBK from "wikibase-sdk"
 import { InfinitySpin } from 'react-loader-spinner'
+import { annotationMarkdown } from "../../services/format"
 
-// Import style
 import "./AdnoMarkdown.css";
 
 class AdnoMdViewer extends Component {
@@ -68,9 +68,7 @@ class AdnoMdViewer extends Component {
         })
 
         if (Array.isArray(this.props.selectedAnnotation.body) && this.props.selectedAnnotation.body.length > 0) {
-            const annoMdBody = this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0] ? this.props.selectedAnnotation.body.filter(annobody => annobody.type === "TextualBody" && annobody.purpose === "commenting")[0].value : ""
-
-            const allLines = annoMdBody.split("\n")
+            const allLines = annotationMarkdown(this.props.selectedAnnotation).split("\n")
 
             for (const line of allLines) {
                 if (line !== "") {

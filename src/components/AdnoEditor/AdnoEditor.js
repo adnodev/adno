@@ -5,6 +5,7 @@ import "./AdnoEditor.css";
 
 import { withTranslation } from "react-i18next";
 import { projectDB } from "../../services/db";
+import { roundTarget } from "../../services/format";
 import { computeNavigatorInfo } from "../../Utils/utils";
 import { hideWorkspace, isInsideAnnotation, revealAnnotation, showWorkspace, watchViewerResize } from "../../Utils/viewport"
 import { preserveTargetRotation } from "../../Utils/orientation"
@@ -122,11 +123,11 @@ class AdnoEditor extends Component {
                 || (hostSelected
                     ? activeGroupId(this.props.selectedAnno, this.props.selectedTargetIndex)
                     : targetGroupId(siblings[siblings.length - 1]))
-            const target = {
+            const target = roundTarget({
                 ...newAnnotation.target,
                 ...(image ? { source: image.source } : {}),
                 id: buildTargetId(groupId, pendingId || newAnnotation.id)
-            }
+            })
             const created = { ...newAnnotation, target }
 
             const annotations = pendingId
@@ -347,7 +348,7 @@ class AdnoEditor extends Component {
         }
 
         const previous = getTargets(base)[index]
-        const target = preserveTargetId(previous, preserveTargetRotation(previous, newTarget))
+        const target = roundTarget(preserveTargetId(previous, preserveTargetRotation(previous, newTarget)))
 
         this.setState({
             pending: { id, annotation: replaceTargetAt(base, index, target) }
@@ -392,7 +393,6 @@ class AdnoEditor extends Component {
             showWorkspace(this.openSeadragon, this.props.selectedAnno, this.props.groupColors)
         }
     }
-
 
     groups = () => this.props.selectedAnno ? deriveGroups(this.props.selectedAnno, this.props.groupColors) : []
 

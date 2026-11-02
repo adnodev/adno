@@ -3,7 +3,6 @@ import { Component } from "react";
 // Add Translations
 import { withTranslation } from "react-i18next";
 
-// Import CSS
 import "./ProjectMetadatas.css"
 
 class ProjectMetadatas extends Component {

@@ -1,5 +1,6 @@
 import edjsHTML from "editorjs-html";
 import TurndownService from "turndown";
+import { normalizeProject } from "./format";
 
 class ProjectDB {
   constructor() {
@@ -52,17 +53,27 @@ class ProjectDB {
     return new Promise((resolve) => {
       const request = tx.objectStore(this.storeName).get(id);
       request.onsuccess = () => {
-        const r = request.result
-        if (!r)
-          resolve(r)
-        else {
-          resolve({
-            annotations: [],
-            ...r
-          })
+        const record = request.result
+
+        if (!record) {
+          resolve(record)
+          return
         }
+
+        const { project, changed } = normalizeProject(record)
+
+        if (changed) {
+          this.rewrite(project)
+        }
+
+        resolve(project)
       };
     });
+  }
+
+  rewrite(project) {
+    const tx = this.db.transaction([this.storeName], 'readwrite');
+    tx.objectStore(this.storeName).put(project);
   }
 
   async getAll() {

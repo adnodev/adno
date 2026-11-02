@@ -192,7 +192,6 @@ export function findImageInObject(obj, depth = 0) {
     return null;
 }
 
-
 function withMediaFrags(target) {
     if (Array.isArray(target)) {
         return target.map(withMediaFrags)
