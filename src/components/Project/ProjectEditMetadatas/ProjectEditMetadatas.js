@@ -89,9 +89,16 @@ class ProjectEditMetadatas extends Component {
 
                         <label className="form-control w-full mt-4">
                             <div className="label font-medium">
-                                <span className="label-text">{this.props.t('project.metadatas.allocation_rights')}</span>
+                                <span className="label-text">{this.props.t('project.metadatas.licence')}</span>
                             </div>
-                            <input type="text" placeholder={this.props.t('project.metadatas_plh.allocation_rights')} className="input input-bordered w-full max-w-4xl" value={this.state.project.rights} onChange={(e) => this.setState({ project: { ...this.state.project, rights: e.target.value } })} />
+                            <input type="url" placeholder={this.props.t('project.metadatas_plh.licence')} className="input input-bordered w-full max-w-4xl" value={this.state.project.licence || ''} onChange={(e) => this.setState({ project: { ...this.state.project, licence: e.target.value } })} />
+                        </label>
+
+                        <label className="form-control w-full mt-4">
+                            <div className="label font-medium">
+                                <span className="label-text">{this.props.t('project.metadatas.attribution')}</span>
+                            </div>
+                            <input type="text" placeholder={this.props.t('project.metadatas_plh.attribution')} className="input input-bordered w-full max-w-4xl" value={this.state.project.attribution || ''} onChange={(e) => this.setState({ project: { ...this.state.project, attribution: e.target.value } })} />
                         </label>
 
                         {

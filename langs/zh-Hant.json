@@ -49,15 +49,16 @@
             "creation_date": "建立日期",
             "last_update": "最後更新",
             "format": "格式",
-            "rights": "授權聲明",
-            "allocation_rights": "權利歸屬"
+            "licence": "授權條款",
+            "attribution": "署名"
         },
         "metadatas_plh": {
             "title": "為您的專案命名",
             "description": "新增關於此作品的簡短說明",
             "author": "在此填入作品的作者",
             "editor": "在此填入作品的編輯者",
-            "allocation_rights": "在此填入作品的授權聲明"
+            "licence": "授權條款連結（Creative Commons、RightsStatements.org……）",
+            "attribution": "與作品一同顯示的署名資訊（機構、攝影師……）"
         },
         "settings": {
             "delay": "兩個標註之間的延遲時間（秒）",

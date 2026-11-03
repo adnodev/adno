@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 import { buildTagsList, enhancedFetch, get_url_extension } from "../../Utils/utils"
 import { extractIIIFContent } from "./IIIFHelper"
-import { normalizeAnnotation } from "../../services/format"
+import { normalizeAnnotation, splitRights } from "../../services/format"
 import OpenView from "../OpenView/OpenView"
 
 import "./AdnoEmbed.css";
@@ -136,7 +136,7 @@ class AdnoEmbed extends Component {
         const { source, title, description, creator, editor, rights, annos } = this.state
         const isImage = IMAGE_EXTENSIONS.includes(get_url_extension(source))
 
-        return {
+        return splitRights({
             id: 'adno-embed',
             title,
             description,
@@ -145,7 +145,7 @@ class AdnoEmbed extends Component {
             rights,
             [isImage ? 'img_url' : 'manifest_url']: source,
             annotations: annos
-        }
+        })
     }
 
     getAdnoProject = (url) => {

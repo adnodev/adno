@@ -913,11 +913,20 @@ class OpenView extends Component {
                                     </>
                                 }
                                 {
-                                    this.props.selectedProject.rights &&
+                                    this.props.selectedProject.licence &&
                                     <>
                                         <div className="flex py-2">
-                                            <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
-                                            <dd>{this.props.selectedProject.rights}</dd>
+                                            <dt className="font-medium px-2">{this.props.t('project.metadatas.licence')} :</dt>
+                                            <dd><a className="adno-link" href={this.props.selectedProject.licence} target="_blank" rel="noreferrer">{this.props.selectedProject.licence}</a></dd>
+                                        </div>
+                                    </>
+                                }
+                                {
+                                    this.props.selectedProject.attribution &&
+                                    <>
+                                        <div className="flex py-2">
+                                            <dt className="font-medium px-2">{this.props.t('project.metadatas.attribution')} :</dt>
+                                            <dd>{this.props.selectedProject.attribution}</dd>
                                         </div>
                                     </>
                                 }

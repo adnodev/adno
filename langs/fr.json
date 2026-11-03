@@ -49,15 +49,16 @@
             "creation_date": "Date de création",
             "last_update": "Dernière modification",
             "format": "Format",
-            "rights": "Droits attribués",
-            "allocation_rights": "Attribution des droits"
+            "licence": "Licence",
+            "attribution": "Attribution"
         },
         "metadatas_plh": {
             "title": "Donnez un titre à ce projet",
             "description": "Ajoutez une description à votre projet",
             "author": "Renseignez ici l'auteur",
             "editor": "Renseignez ici l'editeur",
-            "allocation_rights": "Renseignez ici les droits de l'oeuvre"
+            "licence": "Lien vers la licence (Creative Commons, RightsStatements.org…)",
+            "attribution": "Mention de crédit à afficher avec l'œuvre (institution, photographe…)"
         },
         "settings": {
             "delay": "Délai entre 2 annotations (en secondes)",

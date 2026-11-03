@@ -66,13 +66,25 @@ class ProjectMetadatas extends Component {
                         }
 
                         {
-                            this.props.selectedProject.rights && 
-		            <>
-			        <label className="form-control w-full mt-4">
+                            this.props.selectedProject.licence &&
+                            <>
+                                <label className="form-control w-full mt-4">
                                     <div className="label font-medium">
-                                        <span className="label-text">{this.props.t('project.metadatas.rights')}</span>
+                                        <span className="label-text">{this.props.t('project.metadatas.licence')}</span>
                                     </div>
-                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={this.props.selectedProject.rights} disabled />
+                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={this.props.selectedProject.licence} disabled />
+                                </label>
+                            </>
+                        }
+
+                        {
+                            this.props.selectedProject.attribution &&
+                            <>
+                                <label className="form-control w-full mt-4">
+                                    <div className="label font-medium">
+                                        <span className="label-text">{this.props.t('project.metadatas.attribution')}</span>
+                                    </div>
+                                    <input type="text" className="input input-bordered w-full max-w-4xl" value={this.props.selectedProject.attribution} disabled />
                                 </label>
                             </>
                         }

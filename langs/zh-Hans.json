@@ -49,15 +49,16 @@
             "creation_date": "创建日期",
             "last_update": "最后更新",
             "format": "格式",
-            "rights": "版权声明",
-            "allocation_rights": "权利归属"
+            "licence": "许可协议",
+            "attribution": "署名"
         },
         "metadatas_plh": {
             "title": "为项目命名",
             "description": "添加作品简短描述",
             "author": "在此填写作品作者",
             "editor": "在此填写作品编辑者",
-            "allocation_rights": "在此填写作品版权信息"
+            "licence": "许可协议链接（Creative Commons、RightsStatements.org……）",
+            "attribution": "与作品一同显示的署名信息（机构、摄影师……）"
         },
         "settings": {
             "delay": "两个标注之间的延迟时间（秒）",

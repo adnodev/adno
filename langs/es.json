@@ -159,19 +159,20 @@
         "last_update": "Última actualización el ",
         "manifest_url": "URL",
         "metadatas": {
-            "allocation_rights": "Asignación de derechos",
+            "attribution": "Atribución",
             "creation_date": "Fecha de creación",
             "format": "Formato",
             "identifier": "Nombre de usuario",
             "last_update": "Última modificación",
-            "rights": "Derechos asignados",
+            "licence": "Licencia",
             "source": "Fuente"
         },
         "metadatas_plh": {
-            "allocation_rights": "Ingrese aquí los derechos de la obra",
+            "attribution": "Línea de crédito que se mostrará con la obra (institución, fotógrafo…)",
             "author": "Indique aquí el autor",
             "description": "Añade una descripción a su proyecto",
             "editor": "Indique aquí el editor",
+            "licence": "Enlace a la licencia (Creative Commons, RightsStatements.org…)",
             "title": "Dé un título a este proyecto"
         },
         "new": "Crea mi propio proyecto",

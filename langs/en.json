@@ -49,15 +49,16 @@
             "creation_date": "Created on",
             "last_update": "Last update on",
             "format": "Format",
-            "rights": "Distributed rights",
-            "allocation_rights": "Allocation of rights"
+            "licence": "Licence",
+            "attribution": "Attribution"
         },
         "metadatas_plh": {
             "title": "Give a title to your project",
             "description": "Add a little text about your artwork",
             "author": "Add the author of the artwork here",
             "editor": "Add the editor of the artwork here",
-            "allocation_rights": "Fill in here the rights of the artwork"
+            "licence": "Link to the licence (Creative Commons, RightsStatements.org…)",
+            "attribution": "Credit line to display with the artwork (institution, photographer…)"
         },
         "settings": {
             "delay": "Delay between 2 annotations (in seconds)",
