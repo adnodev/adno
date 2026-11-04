@@ -1023,7 +1023,7 @@
   height: 34rem;
   max-height: calc(100vh - 140px);
   margin: 0;
-  z-index: 1000;
+  z-index: 40;
   pointer-events: auto;
   animation: rich-card-open 180ms ease-out;
 }
