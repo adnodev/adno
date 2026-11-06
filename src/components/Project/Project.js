@@ -38,7 +38,7 @@ const Project = ({ editMode }) => {
         currentImageIndex: 0,
         pendingZone: null,
         sidebarOpened: true,
-        sidebarMode: 'collapsed',
+        sidebarMode: localStorage.getItem('adno_sidebar_mode') || 'collapsed',
         updateAnnotation: false,
         showProjectMetadatas: false,
         showSettings: false,
@@ -309,7 +309,10 @@ const Project = ({ editMode }) => {
                     <div className={`sidebar-opened-w-modal sidebar--${state.sidebarMode}`}>
                         <SidebarControl
                             mode={state.sidebarMode}
-                            setMode={(sidebarMode) => setState(prev => ({ ...prev, sidebarMode }))}
+                            setMode={(sidebarMode) => {
+                                localStorage.setItem('adno_sidebar_mode', sidebarMode)
+                                setState(prev => ({ ...prev, sidebarMode }))
+                            }}
                             translate={t}
                         />
                         <ViewerAnnotationCards

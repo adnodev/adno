@@ -222,7 +222,7 @@ class OpenView extends Component {
                 this.previousAnno()
                 break;
             case "KeyP":
-                this.startTimer()
+                this.toggleTimer()
                 break;
             case "KeyE":
                 this.toggleFullScreen()
@@ -525,7 +525,17 @@ class OpenView extends Component {
         this.cancelShowOnlyAnnotation()
     }
 
+    toggleTimer = () => {
+        if (this.state.timer) {
+            this.clearTimer()
+        } else {
+            this.startTimer()
+        }
+    }
+
     startTimer = () => {
+        clearTimeout(this.state.intervalID)
+
         // Do not start the timer if there is no content to display
         if (this.props.annos.length > 0) {
             if (this.props.startbyfirstanno) {
@@ -818,7 +828,7 @@ class OpenView extends Component {
 
                     {
                         this.props.annos.length > 0 &&
-                        <button id="play-button" className="toolbarButton toolbaractive" onClick={() => this.state.timer ? this.clearTimer() : this.startTimer()}>
+                        <button id="play-button" className="toolbarButton toolbaractive" onClick={this.toggleTimer}>
                             <div className="tooltip tooltip-bottom z-50" data-tip={this.props.t(`visualizer.${this.state.timer ? 'pause' : 'play'}`)}>
                                 <FontAwesomeIcon icon={this.state.timer ? faPause : faPlay} size="lg" />
                             </div>

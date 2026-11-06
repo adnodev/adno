@@ -58,6 +58,20 @@
   max-width: 350px;
 }
 
+@media (min-width: 1024px) {
+  .sidebar-opened-w-modal,
+  .sidebar--hover:hover {
+    min-width: 320px;
+    max-width: 320px;
+  }
+
+  .sidebar--collapsed,
+  .sidebar--hover {
+    min-width: 46px;
+    max-width: 46px;
+  }
+}
+
 .sidebar--collapsed .annotations_list,
 .sidebar--hover .annotations_list {
   display: none;
