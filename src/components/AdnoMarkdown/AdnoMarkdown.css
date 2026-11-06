@@ -1230,15 +1230,25 @@
   color: #6a737d;
 }
 
-.zone-group-angle {
-  min-width: 3.5rem;
-  font-variant-numeric: tabular-nums;
+.zone-group-orientation {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
 }
 
-.zone-group-angle--inherited {
-  color: #6a737d;
-  font-style: italic;
-  font-weight: 400;
+.zone-group-angle {
+  padding: 0 6px;
+  border: 1px solid #d0d7de;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.zone-group-angle:hover {
+  background: #f0f0f0;
 }
 
 .orientation-root {

@@ -139,7 +139,7 @@ test.describe('Setting the angle in the editor', () => {
         await page.waitForTimeout(800);
 
         expect(await storedRotation(page, UPSIDE_DOWN)).toBeUndefined();
-        await expect(page.locator('.zone-group-angle')).toHaveClass(/zone-group-angle--inherited/);
+        await expect(page.locator('.zone-group-angle')).not.toHaveText(/°/);
     });
 
     test('leaving the project default gives the group its own angle', async ({ page }) => {

@@ -72,9 +72,7 @@ export function OrientationPopover({ groupId, rotation, defaultRotation, target,
         return () => actions.endPreview()
     }, [open])
 
-    const label = inheritsProjectDefault ? translate('editor.orientation_inherit_value', { degrees: projectDefaultRotation }) : `${rotationShown}°`
-    
-    const buttonClass = inheritsProjectDefault ? 'btn btn-xs zone-group-angle zone-group-angle--inherited' : 'btn btn-xs zone-group-angle'
+    const label = inheritsProjectDefault ? translate('editor.orientation_default') : `${rotationShown}°`
 
     const toggleOpen = () => {
         setOpen(!open)
@@ -106,15 +104,16 @@ export function OrientationPopover({ groupId, rotation, defaultRotation, target,
 
     return (
         <div ref={rootRef} className="orientation-root">
-            <div className="tooltip tooltip-bottom z-50" data-tip={translate('annotation.orientation')}>
+            <span className="zone-group-orientation">
+                <span>{translate('editor.orientation')}</span>
                 <button type="button"
-                    className={buttonClass}
+                    className="zone-group-angle"
                     aria-haspopup="dialog"
                     aria-expanded={open}
                     onClick={toggleOpen}>
                     {label}
                 </button>
-            </div>
+            </span>
 
             {open &&
                 <div className="orientation-popover" role="dialog" onKeyDown={closeOnEscape}>
