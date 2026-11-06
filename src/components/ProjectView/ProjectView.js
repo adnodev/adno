@@ -7,15 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 import { enhancedFetch, buildJsonProjectWithManifest } from "../../Utils/utils";
-import { normalizeAnnotation } from "../../services/format";
-import { defaultProjectSettings } from "../../Utils/project";
+import { exportManifest, normalizeAnnotation } from "../../services/format";
 
 import "./ProjectView.css";
 
 // Add Internationalization
 import { withTranslation } from "react-i18next";
 import { ExporterModal } from "../Exporter/Exporter";
-import { exportToIIIF } from "../../services/iiif/exporter";
 import { projectDB } from "../../services/db";
 
 class ProjectView extends Component {
@@ -199,14 +197,6 @@ class ProjectView extends Component {
     }
 
     render() {
-        const annotations = this.props.project.annotations || []
-
-        const exportedProject = {
-            annotations,
-            selectedProject: this.props.project,
-            settings: this.props.project.settings || defaultProjectSettings()
-        }
-
         const thumbnail = this.state.imgFailed
             ? <div className="img-proj-fallback">
                 <FontAwesomeIcon icon={faNotdef} size="2x" />
@@ -221,7 +211,7 @@ class ProjectView extends Component {
             <ExporterModal
                 translate={this.props.t}
                 selectedProject={this.props.project}
-                exportIIIF={() => exportToIIIF(exportedProject)}
+                exportIIIF={() => projectDB.get(this.props.project.id).then(exportManifest)}
                 ref={this.modalRef} />
 
             <div className="card card-side bg-base-100 shadow-xl project-view-card" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>

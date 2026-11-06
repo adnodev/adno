@@ -1,4 +1,7 @@
 export { annotationHtml, annotationMarkdown, withContent } from "./body"
+export { exportBase, exportManifest } from "./browser"
+export { toWADMCollection } from "./collection"
 export { roundTarget } from "./geometry"
+export { toIIIFManifest } from "./manifest"
 export { normalizeAnnotation, normalizeProject } from "./normalize"
 export { splitRights } from "./rights"

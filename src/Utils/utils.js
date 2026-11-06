@@ -2,7 +2,6 @@ import Swal from "sweetalert2";
 import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
 import { normalizeAnnotation } from "../services/format";
-import { projectImages } from "./images"
 import { defaultProjectSettings } from "./project"
 import { v7 } from "uuid";
 
@@ -51,39 +50,6 @@ export const buildJsonProjectWithImg = (id, title, desc, img) => {
     "creator": "",
     "settings": defaultProjectSettings()
   }
-}
-
-export const createExportProjectJsonFile = async (projectID) => {
-
-  const project = await projectDB.get(projectID)
-  const images = projectImages(project)
-
-  const finalProject =
-  {
-
-    "@context": "http://www.w3.org/ns/anno.jsonld",
-    "id": project.id,
-    "type": "AnnotationCollection",
-    "title": project.title,
-    "description": project.description,
-    "creator": project.creator || "",
-    "editor": project.editor || "",
-    "rights": project.rights || "",
-    "date": project.creation_date,
-    "modified": project.last_update,
-    "source": images.length > 0 ? images[0].source : "",
-    "images": images,
-    "format": "Adno",
-    "total": project.annotations && project.annotations.length ? project.annotations.length : 0,
-    "first": {
-      "id": "page1",
-      "type": "AnnotationPage",
-      "startIndex": 0,
-      "items": project.annotations && project.annotations.length > 0 ? project.annotations : [],
-    },
-    "adno_settings": project.settings || defaultProjectSettings()
-  }
-  return URL.createObjectURL(new Blob([JSON.stringify(finalProject)], { type: "text/plain" }));
 }
 
 export const importProjectJsonFile = (event, loadedProject, cancelImport, errorTitle, props) => {

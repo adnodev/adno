@@ -5,7 +5,7 @@ import { buildTagsList } from "../../Utils/utils";
 import { defaultProjectSettings } from "../../Utils/project";
 import { ensureTargetGroups, groupPalette } from "../../Utils/groups"
 import { projectImages } from "../../Utils/images"
-import { exportToIIIF } from "../../services/iiif/exporter";
+import { exportManifest } from "../../services/format";
 import { InfinitySpin } from 'react-loader-spinner'
 import { projectDB } from "../../services/db";
 
@@ -221,7 +221,7 @@ const Project = ({ editMode }) => {
                 changeSelectedAnno={(newSelectedAnno) => changeAnnoGuarded(newSelectedAnno)}
                 showEditorSettings={() => setState(prev => ({ ...prev, showSettings: true }))}
                 autoplayID={state.autoplayID}
-                exportIIIF={() => exportToIIIF(state)}
+                exportIIIF={() => projectDB.get(state.selectedProject.id).then(exportManifest)}
                 undoRedo={{
                     undo,
                     redo,

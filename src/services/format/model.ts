@@ -6,6 +6,18 @@ export const SOURCE_MARKDOWN = 'adno:sourceMarkdown'
 
 export const CUTOUTS = 'adno:cutouts'
 
+export const ADNO_PROJECT = 'adno:project'
+
+export type JsonObject = Record<string, unknown>
+
+export type Manifest = JsonObject
+
+export type LanguageMap = Record<string, string[]>
+
+export type ExportOptions = {
+    base: string
+}
+
 export type Body = {
     type?: string,
     value?: string,

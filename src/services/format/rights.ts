@@ -1,7 +1,15 @@
 import type { Project } from "../../Utils/project"
 
+const IIIF_RIGHTS = /^https?:\/\/((?:creativecommons|rightsstatements)\.org\/.+)$/
+
 type LegacyRights = {
     rights?: string
+}
+
+export function iiifRightsUri(licence: string): string | null {
+    const found = IIIF_RIGHTS.exec(licence)
+
+    return found ? `http://${found[1]}` : null
 }
 
 function isLicenceUrl(rights: string): boolean {

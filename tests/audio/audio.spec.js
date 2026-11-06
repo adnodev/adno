@@ -80,7 +80,8 @@ test.describe('Audio annotations are preserved on export', () => {
         const download = await downloadPromise;
 
         const exported = await readDownloadAsJson(download);
-        expect(exported.format).toBe('Adno');
+        expect(exported.type).toBe('AnnotationCollection');
+        expect(exported['adno:project']).toBeTruthy();
 
         const audioUrls = [...collectAudioUrls(exported)];
         for (const url of EXPECTED_AUDIO_URLS) {

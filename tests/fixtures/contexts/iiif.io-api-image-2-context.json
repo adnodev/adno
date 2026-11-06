@@ -1,0 +1,134 @@
+{
+  "@context": {
+    "iiif": "http://iiif.io/api/image/2#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "exif": "http://www.w3.org/2003/12/exif/ns#",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "doap": "http://usefulinc.com/ns/doap#",
+    "svcs": "http://rdfs.org/sioc/services#",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "sc": "http://iiif.io/api/presentation/2#",
+
+    "baseUriRedirect": {
+      "@id": "iiif:baseUriRedirectFeature"
+    },
+    "cors": {
+      "@id": "iiif:corsFeature"
+    },
+    "regionByPct": {
+      "@id": "iiif:regionByPctFeature"
+    },
+    "regionByPx": {
+      "@id": "iiif:regionByPxFeature"
+    },
+    "regionSquare": {
+      "@id": "iiif:regionSquareFeature"
+    },
+    "rotationArbitrary": {
+      "@id": "iiif:arbitraryRotationFeature"
+    },
+    "rotationBy90s": {
+      "@id": "iiif:rotationBy90sFeature"
+    },
+    "mirroring": {
+      "@id": "iiif:mirroringFeature"
+    },
+    "sizeAboveFull": {
+      "@id": "iiif:sizeAboveFullFeature"
+    },
+    "sizeByForcedWh": {
+      "@id": "iiif:sizeByForcedWHFeature"
+    },
+    "sizeByH": {
+      "@id": "iiif:sizeByHFeature"
+    },
+    "sizeByPct": {
+      "@id": "iiif:sizeByPctFeature"
+    },
+    "sizeByW": {
+      "@id": "iiif:sizeByWFeature"
+    },
+    "sizeByWh": {
+      "@id": "iiif:sizeByWHFeature"
+    },
+    "sizeByWhListed": {
+      "@id": "iiif:sizeByWHListedFeature"
+    },
+    "sizeByConfinedWh": {
+      "@id": "iiif:sizeByConfinedWHFeature"
+    },
+    "sizeByDistortedWh": {
+      "@id": "iiif:sizeByDistortedWHFeature"
+    },
+    "profileLinkHeader": {
+      "@id": "iiif:profileLinkHeaderFeature"
+    },
+    "canonicalLinkHeader": {
+      "@id": "iiif:canonicalLinkHeaderFeature"
+    },
+    "jsonldMediaType": {
+      "@id": "iiif:jsonLdMediaTypeFeature"
+    },
+    "height": {
+      "@id": "exif:height"
+    },
+    "width": {
+      "@id": "exif:width"
+    },
+    "scaleFactors": {
+      "@id": "iiif:scaleFactor",
+      "@container": "@set"
+    },
+    "formats": {
+      "@id": "iiif:format"
+    },
+    "qualities": {
+      "@id": "iiif:quality"
+    },
+    "sizes": {
+      "@id": "iiif:hasSize",
+      "@type": "@id"
+    },
+    "tiles": {
+      "@id": "iiif:hasTile",
+      "@type": "@id"
+    },
+    "maxWidth": {
+      "@id": "iiif:maxWidth"
+    },
+    "maxHeight": {
+      "@id": "iiif:maxHeight"
+    },
+    "maxArea": {
+      "@id": "iiif:maxArea"
+    },
+    "profile": {
+      "@id": "doap:implements",
+      "@type": "@id"
+    },
+    "protocol": {
+      "@id": "dcterms:conformsTo",
+      "@type": "@id"
+    },
+    "supports": {
+      "@id": "iiif:supports",
+      "@type": "@vocab"
+    },
+    "service": {
+      "@type": "@id",
+      "@id": "svcs:has_service"
+    },
+    "license": {
+      "@type": "@id",
+      "@id": "dcterms:rights"
+    },
+    "logo": {
+      "@type": "@id",
+      "@id": "foaf:logo"
+    },
+    "attribution": {
+      "@id": "sc:attributionLabel"
+    }
+  }
+}
