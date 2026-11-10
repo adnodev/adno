@@ -4,8 +4,6 @@
     "import": {
         "import_project": "匯入專案",
         "import_now": "使用專案檔案",
-        "validate": "確認匯入",
-        "cancel": "取消匯入",
         "adno_project": "已找到 Adno 專案，是否要匯入？",
         "import_success": "專案匯入成功！"
     },
@@ -98,9 +96,6 @@
             "mosaic_layout": "馬賽克佈局"
         }
     },
-    "files": {
-        "one_selected": "已選擇 1 個檔案"
-    },
     "buttons": {
         "cancel": "取消",
         "close": "關閉"
@@ -187,8 +182,7 @@
         "confirm_del_annotation": "是，刪除此標註",
         "del_annotation_confirmation": "標註已成功刪除",
         "project_edit_success": "您的專案已成功更新！",
-        "settings_updated_success": "設定已成功更新！",
-        "adno_proj_detected": "已偵測到 Adno 專案，是否要匯入？"
+        "settings_updated_success": "設定已成功更新！"
     },
     "annotation": {
         "no_content": "尚無內容",

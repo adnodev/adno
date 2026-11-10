@@ -53,6 +53,7 @@ export type Shape = Rect | Circle | Ellipse | Polygon | Path
 export type Selector = {
     type?: string,
     value?: string,
+    conformsTo?: string,
     refinedBy?: { type?: string, rotation?: string }
 }
 

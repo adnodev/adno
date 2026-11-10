@@ -4,8 +4,6 @@
     "import": {
         "import_project": "Import a project",
         "import_now": "Using a project file",
-        "validate": "Validate",
-        "cancel": "Cancel",
         "adno_project": "Adno project found, would you like to import it ?",
         "import_success": "Project imported successfully!"
     },
@@ -98,9 +96,6 @@
             "mosaic_layout": "Mosaic layout"
         }
     },
-    "files": {
-        "one_selected": "1 file selected"
-    },
     "buttons": {
         "cancel": "Cancel",
         "close": "Close"
@@ -187,8 +182,7 @@
         "confirm_del_annotation": "Yes, delete this annotation",
         "del_annotation_confirmation": "Annotation deleted successfully",
         "project_edit_success": "Your project have been updated successfully !",
-        "settings_updated_success": "Settings updated successfully !",
-        "adno_proj_detected": "Adno project detected, would you like to import it ?"
+        "settings_updated_success": "Settings updated successfully !"
     },
     "annotation": {
         "no_content": "no content yet",

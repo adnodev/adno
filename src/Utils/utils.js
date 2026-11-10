@@ -1,7 +1,6 @@
-import Swal from "sweetalert2";
-import { readProjectFromIIIFFormat } from '../components/AdnoUrls/manageUrls'
 import { projectDB } from "../services/db";
-import { normalizeAnnotation } from "../services/format";
+import { toast } from "../components/Toast/store"
+import { fromAny } from "../services/format";
 import { defaultProjectSettings } from "./project"
 import { v7 } from "uuid";
 
@@ -52,85 +51,24 @@ export const buildJsonProjectWithImg = (id, title, desc, img) => {
   }
 }
 
-export const importProjectJsonFile = (event, loadedProject, cancelImport, errorTitle, props) => {
-  event.preventDefault()
+export const importProjectJsonFile = (file, errorMessage, onImported) => {
+  const reader = new FileReader()
 
-  let fr = new FileReader();
+  reader.onload = (e) => {
+    const project = fromAny(JSON.parse(e.target.result), { id: v7() })
 
-  fr.readAsText(loadedProject)
-
-  fr.onload = function (e) {
-    let imported_project = JSON.parse(e.target.result)
-
-    if (imported_project.metadata && imported_project.metadata.find(meta => meta.label.en?.includes('adno_settings'))) {
-      return readProjectFromIIIFFormat(props, imported_project, props.t)
+    if (!project) {
+      toast.error(errorMessage)
+      return
     }
 
-    if (imported_project.hasOwnProperty("@context")
-      && imported_project.hasOwnProperty("date")
-      && imported_project.hasOwnProperty("id")
-      && (imported_project.hasOwnProperty("title") || imported_project.hasOwnProperty("label"))
-      && imported_project.hasOwnProperty("type")
-      && imported_project.hasOwnProperty("modified")
-      && imported_project.hasOwnProperty("source")
-      && imported_project.hasOwnProperty("total")
-    ) {
-
-      // Generate a new ID and new last_update
-      imported_project.modified = createDate()
-      imported_project.id = v7()
-
-      let proj = {
-        "id": imported_project.id,
-        "title": imported_project.title || imported_project.label,
-        "description": imported_project.description || "",
-        "creation_date": imported_project.date,
-        "last_update": imported_project.modified,
-        "creator": imported_project.creator || "",
-        "editor": imported_project.editor || "",
-        "rights": imported_project.rights || "",
-        "settings": imported_project.adno_settings || defaultProjectSettings(),
-      }
-
-      let importedURL = imported_project.source
-      const isIpfsUrl = importedURL.startsWith(process.env.IPFS_GATEWAY);
-
-      if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg" || isIpfsUrl) {
-        proj.img_url = imported_project.source
-      } else {
-        proj.manifest_url = imported_project.source
-      }
-
-      const annotations = (imported_project.total !== 0 ? imported_project.first.items : [])
-        .map(normalizeAnnotation)
-
-      projectDB.add(
-        imported_project.id,
-        {
-          id: imported_project.id,
-          ...proj,
-          annotations
-        }
-      )
-        .then(() => {
-          window.location.reload()
-        })
-
-    } else {
-      Swal.fire({
-        title: errorTitle,
-        showCancelButton: false,
-        showConfirmButton: true,
-        confirmButtonText: 'OK',
-        icon: 'error',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          cancelImport()
-        }
+    projectDB.add(project.id, project)
+      .then(() => {
+        onImported(project.id)
       })
-    }
-
   }
+
+  reader.readAsText(file)
 }
 
 export function createDate() {

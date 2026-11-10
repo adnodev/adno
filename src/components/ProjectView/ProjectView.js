@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Swal from 'sweetalert2';
 
-import { enhancedFetch, buildJsonProjectWithManifest } from "../../Utils/utils";
-import { exportManifest, normalizeAnnotation } from "../../services/format";
+import { enhancedFetch } from "../../Utils/utils";
+import { exportManifest, fromAny, isAdnoExport } from "../../services/format";
 
 import "./ProjectView.css";
 
@@ -33,7 +33,7 @@ class ProjectView extends Component {
             enhancedFetch(this.props.project.manifest_url)
                 .then(rep => rep.response.json())
                 .then(async manifest => {
-                    if (manifest?.format === 'Adno') {
+                    if (isAdnoExport(manifest)) {
                         await this.migrateAdnoProject(this.props.project.id, manifest)
                     }
 
@@ -55,20 +55,8 @@ class ProjectView extends Component {
         }
     }
 
-    migrateAdnoProject = async (projectID, manifest) => {
-        try {
-            const title = manifest.title || manifest.label
-            const desc = manifest.description || manifest.subject
-
-            const project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
-
-            return projectDB.add(project.id, {
-                ...project,
-                annotations: manifest.first.items?.map(normalizeAnnotation)
-            })
-        } catch (err) {
-            console.log(err)
-        }
+    migrateAdnoProject = (projectID, manifest) => {
+        return projectDB.add(projectID, fromAny(manifest, { id: projectID }))
     }
 
     loadSourceImage = manifest => {

@@ -12,6 +12,7 @@ import Project from "./components/Project/Project";
 import "./index.css"
 import AdnoEmbed from "./components/AdnoEmbed/AdnoEmbed";
 import LinkGenerator from "./components/LinkGenerator/LinkGenerator";
+import Toaster from "./components/Toast";
 import { createBrowserHistory } from "history";
 
 const history = createBrowserHistory();
@@ -83,6 +84,8 @@ export default class App extends Component {
                     </Route>
 
                 </Switch>
+
+                <Toaster />
             </HashRouter>
         );
     }

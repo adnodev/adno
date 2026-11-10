@@ -18,6 +18,10 @@ export type ExportOptions = {
     base: string
 }
 
+export type ImportOptions = {
+    id: string
+}
+
 export type Body = {
     type?: string,
     value?: string,

@@ -2,16 +2,30 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next"
 import { InfinitySpin } from 'react-loader-spinner'
-import Swal from "sweetalert2";
-
-import { buildTagsList, enhancedFetch, get_url_extension } from "../../Utils/utils"
-import { extractIIIFContent } from "./IIIFHelper"
-import { normalizeAnnotation, splitRights } from "../../services/format"
+import { buildJsonProjectWithImg, buildTagsList, enhancedFetch } from "../../Utils/utils"
+import { fromAny } from "../../services/format"
+import { toast } from "../Toast/store"
 import OpenView from "../OpenView/OpenView"
 
 import "./AdnoEmbed.css";
 
-const IMAGE_EXTENSIONS = process.env.GRANTED_IMG_EXTENSIONS?.split(",") || []
+const EMBED_ID = 'adno-embed'
+
+const JSON_CONTENT_TYPES = ['application/json', 'text/html', 'text/plain', 'application/octet-stream',
+    'application/vnd.api+json', 'application/ld+json', 'application/x-json-stream', 'text/json']
+
+function annotationsTagged(annotations, selectedTags) {
+    if (selectedTags.length === 0) {
+        return annotations
+    }
+
+    return annotations
+        .map(annotation => ({
+            ...annotation,
+            tags: buildTagsList(annotation).map(tag => tag.value)
+        }))
+        .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
+}
 
 class AdnoEmbed extends Component {
     constructor(props) {
@@ -133,19 +147,21 @@ class AdnoEmbed extends Component {
     }
 
     embeddedProject = () => {
-        const { source, title, description, creator, editor, rights, annos } = this.state
-        const isImage = IMAGE_EXTENSIONS.includes(get_url_extension(source))
+        return {
+            ...this.state.project,
+            annotations: this.state.annos
+        }
+    }
 
-        return splitRights({
-            id: 'adno-embed',
-            title,
-            description,
-            creator,
-            editor,
-            rights,
-            [isImage ? 'img_url' : 'manifest_url']: source,
-            annotations: annos
-        })
+    loadProject = (project) => {
+        const selectedTags = project.settings.tags || []
+
+        this.setState({
+            ...project.settings,
+            project,
+            annos: annotationsTagged(project.annotations, selectedTags),
+            isLoaded: true
+        }, this.overrideSettings)
     }
 
     getAdnoProject = (url) => {
@@ -159,96 +175,34 @@ class AdnoEmbed extends Component {
         return enhancedFetch(decodeURIComponent(url))
             .then(rawResponse => {
                 const { response } = rawResponse
-                if (response.ok) {
-                    const contentType = response.headers.get('Content-Type')
-                    if (['application/json', 'text/html', 'text/plain', 'application/octet-stream',
-                        'application/vnd.api+json', 'application/ld+json', 'application/x-json-stream', 'text/json'
-                    ].find(c => contentType.includes(c)) ||
-                        contentType.includes("application/json")) {
-                        response.text()
-                            .then(data => {
-                                const imported_project = JSON.parse(data);
 
-                                // ADNO project detected
-
-                                if (
-                                    imported_project.hasOwnProperty("format") &&
-                                    imported_project.format === "Adno"
-                                ) {
-                                    if (
-                                        imported_project.hasOwnProperty("@context") &&
-                                        imported_project.hasOwnProperty("date") &&
-                                        imported_project.hasOwnProperty("id") &&
-                                        (imported_project.hasOwnProperty("title") ||
-                                            imported_project.hasOwnProperty("label")) &&
-                                        imported_project.hasOwnProperty("type") &&
-                                        imported_project.hasOwnProperty("modified") &&
-                                        imported_project.hasOwnProperty("source") &&
-                                        imported_project.hasOwnProperty("total")
-                                    ) {
-                                        const selectedTags = imported_project.adno_settings?.tags || []
-
-                                        let annos = imported_project.first.items.map(normalizeAnnotation);
-
-                                        if (selectedTags.length > 0)
-                                            annos = annos
-                                                .map(annotation => ({
-                                                    ...annotation,
-                                                    tags: buildTagsList(annotation).map(tag => tag.value)
-                                                }))
-                                                .filter(annotation => annotation.tags.find(tag => selectedTags.includes(tag)))
-
-                                        this.setState({
-                                            ...(imported_project.adno_settings || {}),
-                                            title: imported_project.title,
-                                            description: imported_project.description,
-                                            creator: imported_project.creator,
-                                            editor: imported_project.editor,
-                                            rights: imported_project.rights,
-                                            source: imported_project.source,
-                                            annos,
-                                            isLoaded: true
-                                        }, this.overrideSettings)
-                                    } else {
-                                        Swal.fire({
-                                            title: `projet adno INVALIDE`,
-                                            showCancelButton: false,
-                                            showConfirmButton: false,
-                                            icon: "error",
-                                        });
-                                    }
-                                } else {
-                                    // Check if it's a manifest
-
-                                    if (
-                                        (imported_project.hasOwnProperty("id") ||
-                                            imported_project.hasOwnProperty("@id")) &&
-                                        (imported_project.hasOwnProperty("context") ||
-                                            imported_project.hasOwnProperty("@context"))
-                                    ) {
-                                        extractIIIFContent(imported_project, {
-                                            overrideSettings: this.overrideSettings,
-                                            setState: (opts, callback) => this.setState({ ...opts }, callback),
-                                            props: this.props
-                                        })
-                                    } else {
-                                        console.log("projet non adno INVALIDE");
-                                    }
-                                }
-                            })
-                    } else {
-                        this.setState({ isLoaded: true, source: url }, this.overrideSettings)
-                    }
-                } else {
-                    Swal.fire({
-                        title: this.props.t('errors.unable_access_file'),
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                        icon: "error",
-                    });
+                if (!response.ok) {
+                    toast.error(this.props.t('errors.unable_access_file'))
+                    return
                 }
+
+                const contentType = response.headers.get('Content-Type')
+
+                if (!JSON_CONTENT_TYPES.some(type => contentType.includes(type))) {
+                    this.loadProject(buildJsonProjectWithImg(EMBED_ID, '', '', url))
+                    return
+                }
+
+                return response.text()
+                    .then(data => this.loadDocument(JSON.parse(data)))
             })
     };
+
+    loadDocument = (document) => {
+        const project = fromAny(document, { id: EMBED_ID })
+
+        if (!project) {
+            toast.error(this.props.t('errors.unable_reading_manifest'))
+            return
+        }
+
+        this.loadProject(project)
+    }
 
     render() {
         if (!this.state.isLoaded || !this.state.settingsReady)

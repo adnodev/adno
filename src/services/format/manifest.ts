@@ -7,7 +7,7 @@ import { adnoProjectForIIIF } from "./extension"
 import { targetGroupId } from "../../Utils/groups"
 import { annotationPageId, canvasId, manifestId, paintingPageId, projectRoot, zoneId } from "./ids"
 import { ADNO_PROJECT, type ExportOptions, type JsonObject, type LanguageMap, type Manifest } from "./model"
-import { iiifRightsUri } from "./rights"
+import { CREDIT_SEPARATOR, iiifRightsUri } from "./rights"
 
 const DATA_URL_MIME = /^data:([^;,]+)/
 
@@ -39,7 +39,7 @@ function when(value: string | undefined, entry: (value: string) => JsonObject): 
 function creditLine(project: Project, rights: string | null): string {
     const unspokenLicence = rights ? undefined : project.licence
 
-    return [project.attribution, unspokenLicence].filter(Boolean).join(' — ')
+    return [project.attribution, unspokenLicence].filter(Boolean).join(CREDIT_SEPARATOR)
 }
 
 function describeProject(project: Project, root: string): JsonObject {

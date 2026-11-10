@@ -1,6 +1,6 @@
 import edjsHTML from "editorjs-html";
 import TurndownService from "turndown";
-import { normalizeProject } from "./format";
+import { normalizeProject, withContent } from "./format";
 
 class ProjectDB {
   constructor() {
@@ -136,56 +136,28 @@ class ProjectDB {
     return existingProjects.length === 0;
   }
 
-  migrateAnnotationBody(anno) {
-    const edjsParser = edjsHTML();
-    const turndownService = new TurndownService();
+  convertRichTextBody(anno) {
+    const richText = anno.body.find(anno_body => anno_body.type === "AdnoRichText")
 
-    let newBody = anno.body.filter(anno_body =>
+    if (!richText) {
+      return anno
+    }
+
+    const edjsParser = edjsHTML()
+    const turndownService = new TurndownService()
+    const blocks = richText.value.map(block => edjsParser.parseBlock(block))
+
+    const others = anno.body.filter(anno_body =>
       anno_body.type !== "AdnoHtmlBody" &&
       anno_body.type !== "AdnoRichText" &&
       !(anno_body.type === "TextualBody" && anno_body.purpose === "commenting")
-    );
+    )
 
-    if (anno.body.find(anno_body => anno_body.type === "AdnoRichText")) {
-      const annoRichText = anno.body.find(anno_body => anno_body.type === "AdnoRichText").value;
-
-      let htmlBody = "";
-      let allMarkdown = "";
-
-      annoRichText.forEach(block => {
-        const blockHTML = edjsParser.parseBlock(block);
-        htmlBody += blockHTML;
-        const markdown = turndownService.turndown(blockHTML);
-        allMarkdown += markdown + "\n";
-      });
-
-      newBody.push(
-        {
-          "type": "TextualBody",
-          "value": allMarkdown,
-          "purpose": "commenting"
-        },
-        {
-          "type": "HTMLBody",
-          "value": htmlBody,
-          "purpose": "commenting"
-        }
-      );
-
-      return { ...anno, body: newBody };
-    }
-
-    if (anno.body.find(anno_body => anno_body.type === "TextualBody") &&
-        !anno.body.find(anno_body => anno_body.type === "HTMLBody")) {
-      const textValue = anno.body.find(annobody => annobody.type === "TextualBody").value;
-      anno.body.push({
-        "type": "HTMLBody",
-        "value": `<p>${textValue}</p>`,
-        "purpose": "commenting"
-      });
-    }
-
-    return anno;
+    return withContent(anno, {
+      markdown: blocks.map(html => turndownService.turndown(html)).join("\n"),
+      html: blocks.join(""),
+      others
+    })
   }
 
   async migrateFromLocalStorage() {
@@ -208,7 +180,7 @@ class ProjectDB {
         const annotationsJson = localStorage.getItem(`${id}_annotations`);
         if (annotationsJson) {
           const annotations = JSON.parse(annotationsJson);
-          project.annotations = annotations.map(anno => this.migrateAnnotationBody(anno));
+          project.annotations = annotations.map(anno => this.convertRichTextBody(anno));
         }
 
         await this.add(project.id, project);

@@ -1,7 +1,7 @@
 import type { Project } from "./project"
 
 export const IIIF_TYPE = 'iiif'
-const IMAGE_TYPE = 'image'
+export const IMAGE_TYPE = 'image'
 
 export type ImageType = typeof IIIF_TYPE | typeof IMAGE_TYPE
 
@@ -12,6 +12,25 @@ export type ProjectImage = {
     label?: string,
     width?: number,
     height?: number
+}
+
+const IMAGE_EXTENSIONS = (process.env.GRANTED_IMG_EXTENSIONS || 'jpg,png,jpeg').split(',')
+const IPFS_GATEWAY = process.env.IPFS_GATEWAY
+
+function urlExtension(url: string): string {
+    return url.split(/[#?]/)[0].split('.').pop() || ''
+}
+
+export function isImageUrl(url: string): boolean {
+    if (url.startsWith('data:')) {
+        return true
+    }
+
+    if (IPFS_GATEWAY && url.startsWith(IPFS_GATEWAY)) {
+        return true
+    }
+
+    return IMAGE_EXTENSIONS.includes(urlExtension(url))
 }
 
 export type ImageIndex = number
