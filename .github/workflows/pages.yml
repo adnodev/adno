@@ -30,6 +30,8 @@ jobs:
       - name: Build project
         env:
             GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
+            CORS_SERVER: https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
+            IPFS_GATEWAY: https://ipfs.io/ipfs/
             PUBLIC_URL: "/${{ github.event.repository.name }}"
         run: npm run build
 
