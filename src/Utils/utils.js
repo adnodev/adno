@@ -21,7 +21,7 @@ export const get_url_extension = (url) => {
   if (url.includes('?url=https'))
     return get_url_extension(url.split(/[#?]/)[1].replace('url=', ''));
   else
-    return url.split(/[#?]/)[0].split('.').pop().trim();
+    return url.split(/[#?]/)[0].split('.').pop().trim().toLowerCase();
 }
 
 export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {
@@ -128,8 +128,9 @@ export const importProjectJsonFile = (event, loadedProject, cancelImport, errorT
 
       let importedURL = imported_project.source
       const isIpfsUrl = importedURL.startsWith(process.env.IPFS_GATEWAY);
+      const ext = get_url_extension(importedURL)	     
 
-      if (get_url_extension(importedURL) === "png" || get_url_extension(importedURL) === "jpg" || get_url_extension(importedURL) === "jpeg" || isIpfsUrl) {
+      if (ext === "png" || ext === "jpg" || ext === "jpeg" || isIpfsUrl) {
         proj.img_url = imported_project.source
       } else {
         proj.manifest_url = imported_project.source
