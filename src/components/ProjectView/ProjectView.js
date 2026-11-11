@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Import popup alerts
 import Swal from 'sweetalert2';
 
-import { enhancedFetch, migrateTextBody, buildJsonProjectWithManifest } from "../../Utils/utils";
+import { corsProxyUrl, enhancedFetch, migrateTextBody, buildJsonProjectWithManifest } from "../../Utils/utils";
 import { defaultProjectSettings } from "../../Utils/project";
 
 // Import CSS
@@ -165,6 +165,17 @@ class ProjectView extends Component {
 
     }
 
+    retryThumbnailThroughProxy = () => {
+        const corsServer = process.env.CORS_SERVER
+
+        if (corsServer && !this.state.imgSource.startsWith(corsServer)) {
+            this.setState({ imgSource: corsProxyUrl(this.state.imgSource) })
+            return
+        }
+
+        this.setState({ imgFailed: true })
+    }
+
     deleteProj = (projID) => {
         Swal.fire({
             title: this.props.t('modal.delete_project'),
@@ -223,7 +234,7 @@ class ProjectView extends Component {
             </div>
             : <img
                 src={this.state.imgSource}
-                onError={() => this.setState({ imgFailed: true })}
+                onError={this.retryThumbnailThroughProxy}
                 className="img-fluid img-proj-view " alt={this.props.project.title} />
 
         return <>
