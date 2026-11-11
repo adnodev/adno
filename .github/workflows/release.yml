@@ -41,6 +41,8 @@ jobs:
       - name: Build prod
         env:
           GRANTED_IMG_EXTENSIONS: jpg,png,JPG,PNG
+          CORS_SERVER: https://app-f1586530-d9cb-472f-93fd-e586b0a801ab.cleverapps.io
+          IPFS_GATEWAY: https://ipfs.io/ipfs/
           PUBLIC_URL: "./"
           MATOMO_SITE_ID: ${{ secrets.PROD_MATOMO_SITE_ID }}
           MATOMO_URL: ${{ secrets.PROD_MATOMO_URL }}

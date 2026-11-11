@@ -95,6 +95,10 @@ export function diffProjectSettings(a, b) {
   return diff;
 }
 
+export function corsProxyUrl(url) {
+  return `${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}`
+}
+
 export async function enhancedFetch(url) {
   try {
     const response = await fetch(url, {
@@ -112,7 +116,7 @@ export async function enhancedFetch(url) {
       console.log('CORS error: Could not fetch the image.')
 
       if (process.env.CORS_SERVER) {
-        const newUrl = `${process.env.CORS_SERVER}/?url=${encodeURIComponent(url)}`;
+        const newUrl = corsProxyUrl(url);
         const response = await fetch(newUrl);
 
         return {

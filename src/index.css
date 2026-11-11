@@ -13,6 +13,12 @@
     --adno-margin-height: 20%;
 }
 
+@media (min-width: 1024px) {
+    :root {
+        --adno-margin-width: clamp(340px, 23vw, 460px);
+    }
+}
+
 #app {
     height: 100vh;
     overflow-y: hidden;
