@@ -2,7 +2,7 @@ import { Component } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next"
 import { InfinitySpin } from 'react-loader-spinner'
-import { buildJsonProjectWithImg, buildTagsList, enhancedFetch } from "../../Utils/utils"
+import { buildJsonProjectWithImg, buildTagsList, enhancedFetch, parseJsonOrNull } from "../../Utils/utils"
 import { fromAny } from "../../services/format"
 import { toast } from "../Toast/store"
 import OpenView from "../OpenView/OpenView"
@@ -189,12 +189,12 @@ class AdnoEmbed extends Component {
                 }
 
                 return response.text()
-                    .then(data => this.loadDocument(JSON.parse(data)))
+                    .then(data => this.loadDocument(parseJsonOrNull(data)))
             })
     };
 
     loadDocument = (document) => {
-        const project = fromAny(document, { id: EMBED_ID })
+        const project = document ? fromAny(document, { id: EMBED_ID }) : null
 
         if (!project) {
             toast.error(this.props.t('errors.unable_reading_manifest'))

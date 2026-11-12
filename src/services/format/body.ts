@@ -1,19 +1,20 @@
 import TurndownService from "turndown"
 import type { Annotation } from "../../Utils/targets"
-import { COMMENTING, HTML_FORMAT, SOURCE_MARKDOWN, type Body } from "./model"
+import { asList, COMMENTING, HTML_FORMAT, isAnnotationBody, SOURCE_MARKDOWN, type AnnotationBody, type Body } from "./model"
 
-export function bodyList(annotation: Annotation | null): Body[] {
-    const body = annotation ? annotation.body as Body | Body[] | undefined : undefined
+export function bodyList(annotation: Annotation | null): AnnotationBody[] {
+    const body = annotation ? annotation.body : undefined
 
     if (!body) {
         return []
     }
 
-    return Array.isArray(body) ? body : [body]
+    return asList(body).filter(isAnnotationBody)
 }
 
-function isHtmlComment(body: Body): boolean {
-    return body.type === 'TextualBody' &&
+function isHtmlComment(body: AnnotationBody): body is Body {
+    return typeof body !== 'string' &&
+        body.type === 'TextualBody' &&
         body.purpose === COMMENTING &&
         body.format === HTML_FORMAT
 }
@@ -36,7 +37,7 @@ export function htmlBody(value: string): Body {
 export type Content = {
     markdown: string,
     html: string,
-    others: Body[]
+    others: AnnotationBody[]
 }
 
 export function withContent(annotation: Annotation, content: Content): Annotation {

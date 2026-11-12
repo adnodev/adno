@@ -1,8 +1,9 @@
 import { IIIF_TYPE, IMAGE_TYPE, type ProjectImage } from "../../../Utils/images"
 import type { Project } from "../../../Utils/project"
+import type { Selector } from "../../../Utils/targets"
 import { annotationOnImages, imageSourceById, infoJsonUrl, languageText } from "../iiif"
 import { convertAllToInternalModel } from "../internal"
-import { COMMENTING, type Body, type ImportOptions, type JsonObject } from "../model"
+import { asList, COMMENTING, isJsonObject, objectList, type Body, type ImportOptions, type JsonObject } from "../model"
 import { buildProject } from "./build"
 
 // IIIF Presentation 2 Manifest, as read here:
@@ -39,22 +40,23 @@ import { buildProject } from "./build"
 // }
 
 function canvasesV2(manifest: JsonObject): JsonObject[] {
-    const [sequence] = Array.isArray(manifest.sequences) ? manifest.sequences : []
+    const [sequence] = objectList(manifest.sequences)
 
-    return sequence && Array.isArray(sequence.canvases) ? sequence.canvases : []
+    return sequence ? objectList(sequence.canvases) : []
 }
 
 function serviceIdV2(resource: JsonObject): string | undefined {
-    const service = Array.isArray(resource.service) ? resource.service[0] : resource.service
+    const [service] = objectList(asList(resource.service))
+    const id = service ? service['@id'] || service.id : undefined
 
-    return service ? service['@id'] || service.id : undefined
+    return typeof id === 'string' ? id : undefined
 }
 
 function canvasImageV2(canvas: JsonObject): ProjectImage | null {
-    const [painting] = Array.isArray(canvas.images) ? canvas.images : []
-    const resource = painting ? painting.resource as JsonObject | undefined : undefined
+    const [painting] = objectList(canvas.images)
+    const resource = painting?.resource
 
-    if (!resource) {
+    if (!isJsonObject(resource)) {
         return null
     }
 
@@ -76,13 +78,11 @@ function canvasImageV2(canvas: JsonObject): ProjectImage | null {
 }
 
 function isCommentingV2(resource: JsonObject): boolean {
-    const motivations = Array.isArray(resource.motivation) ? resource.motivation : [resource.motivation]
-
-    return motivations.some(motivation => String(motivation).endsWith(COMMENTING))
+    return asList(resource.motivation).some(motivation => String(motivation).endsWith(COMMENTING))
 }
 
-function textualBodyV2(resource: JsonObject | undefined): Body | undefined {
-    if (!resource) {
+function textualBodyV2(resource: unknown): Body | undefined {
+    if (!isJsonObject(resource)) {
         return undefined
     }
 
@@ -94,21 +94,52 @@ function textualBodyV2(resource: JsonObject | undefined): Body | undefined {
     }
 }
 
+function selectorFromV2(selector: JsonObject): Selector {
+    const chosen = selector['@type'] === 'oa:Choice' && isJsonObject(selector.default)
+        ? selector.default
+        : selector
+
+    return {
+        type: String(chosen['@type'] || '').replace('oa:', ''),
+        value: String(chosen.value || '')
+    }
+}
+
+function targetFromV2(on: unknown): unknown {
+    if (Array.isArray(on)) {
+        return on.map(targetFromV2)
+    }
+
+    if (!isJsonObject(on)) {
+        return on
+    }
+
+    if (!isJsonObject(on.selector)) {
+        return {
+            source: on.full
+        }
+    }
+
+    return {
+        source: on.full,
+        selector: selectorFromV2(on.selector)
+    }
+}
+
 function annotationFromV2(resource: JsonObject): JsonObject {
     return {
         id: resource['@id'],
         type: 'Annotation',
         motivation: COMMENTING,
-        body: textualBodyV2(resource.resource as JsonObject | undefined),
-        target: resource.on
+        body: textualBodyV2(resource.resource),
+        target: targetFromV2(resource.on)
     }
 }
 
-export function commentingAnnotationsV2(manifest: JsonObject): JsonObject[] {
+function commentingAnnotationsV2(manifest: JsonObject): JsonObject[] {
     return canvasesV2(manifest)
-        .flatMap(canvas => Array.isArray(canvas.otherContent) ? canvas.otherContent : [])
-        .filter(list => typeof list === 'object')
-        .flatMap(list => Array.isArray(list.resources) ? list.resources : [])
+        .flatMap(canvas => objectList(canvas.otherContent))
+        .flatMap(list => objectList(list.resources))
         .filter(isCommentingV2)
         .map(annotationFromV2)
 }

@@ -3,7 +3,7 @@ import type { Project } from "../../Utils/project"
 import { getTargets, type Annotation, type Cutouts } from "../../Utils/targets"
 import { bodyList, withContent, type Content } from "./body"
 import { roundTargets } from "./geometry"
-import { COMMENTING, CUTOUTS, HTML_FORMAT, type Body } from "./model"
+import { COMMENTING, CUTOUTS, HTML_FORMAT, type AnnotationBody, type Body } from "./model"
 import { splitRights } from "./rights"
 
 const LEGACY_HTML_TYPE = 'HTMLBody'
@@ -30,8 +30,9 @@ function isRichText(body: Body): boolean {
     return body.type === RICH_TEXT_TYPE
 }
 
-function isLegacyComment(body: Body): boolean {
-    return isLegacyHtml(body) || isLegacyText(body) || isRichText(body)
+function isLegacyComment(body: AnnotationBody): body is Body {
+    return typeof body !== 'string' &&
+        (isLegacyHtml(body) || isLegacyText(body) || isRichText(body))
 }
 
 function legacyContent(legacy: Body[]): LegacyContent {

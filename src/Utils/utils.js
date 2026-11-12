@@ -51,11 +51,20 @@ export const buildJsonProjectWithImg = (id, title, desc, img) => {
   }
 }
 
+export function parseJsonOrNull(text) {
+  try {
+    return JSON.parse(text)
+  } catch {
+    return null
+  }
+}
+
 export const importProjectJsonFile = (file, errorMessage, onImported) => {
   const reader = new FileReader()
 
   reader.onload = (e) => {
-    const project = fromAny(JSON.parse(e.target.result), { id: v7() })
+    const json = parseJsonOrNull(e.target.result)
+    const project = json ? fromAny(json, { id: v7() }) : null
 
     if (!project) {
       toast.error(errorMessage)

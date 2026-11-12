@@ -27,7 +27,7 @@ test('should load IIFF export files successfully', async ({ page }) => {
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles(path.join(__dirname, 'assets', 'iiif_export.json'));
 
-  await page.getByRole('button').filter({ hasText: /^$/ }).first().click();
+  await page.waitForURL(/\/project\/.+\/edit/);
   await expect(page.locator('g:nth-child(2) > .a9s-inner')).toBeVisible();
   await expect(page.locator('.a9s-inner').first()).toBeVisible();
   await expect(page.locator('g:nth-child(4) > .a9s-inner')).toBeVisible();
@@ -40,8 +40,7 @@ async function loadProjectFromURL(page, url) {
   await page.getByPlaceholder('https://iiif.emf.fr/iiif/3/').click();
   await page.getByPlaceholder('https://iiif.emf.fr/iiif/3/').fill(url);
   await page.getByRole('button', { name: 'Create my own project' }).click();
-  await page.getByRole('button', { name: 'OK' }).click();
-  await page.getByRole('button', { name: 'OK' }).click();
+  await page.waitForURL(/\/project\/.+\/edit/);
   await expect(page.locator('.a9s-annotationlayer')).toBeVisible();
 }
 

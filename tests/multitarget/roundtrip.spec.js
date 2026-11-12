@@ -20,8 +20,7 @@ test.describe('Importing a project that carries multi-zone annotations', () => {
             buffer: Buffer.from(JSON.stringify(exported))
         });
 
-        await page.locator('.import-btns button.btn-success').click();
-        await page.waitForTimeout(2000);
+        await page.waitForURL(/\/project\/.+\/edit/);
 
         const projects = await readProjects(page);
         const imported = projects.find(project => project.title === exported.title);

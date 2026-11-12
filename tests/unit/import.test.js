@@ -100,6 +100,37 @@ describe('fromAny on a third-party Web Annotation collection', () => {
     })
 })
 
+describe('fromAny on a Web Annotation collection written with bare IRIs', () => {
+    const project = fromAny({
+        '@context': 'http://www.w3.org/ns/anno.jsonld',
+        id: 'https://example.org/collection',
+        type: 'AnnotationCollection',
+        label: 'Bare IRIs',
+        first: {
+            type: 'AnnotationPage',
+            items: [{
+                id: 'https://example.org/annotations/a',
+                type: 'Annotation',
+                motivation: 'commenting',
+                body: 'https://example.org/note.html',
+                target: 'https://example.org/image.jpg#xywh=10,20,30,40'
+            }]
+        }
+    }, { id: 'bare' })
+
+    it('reads a string target as a zone on its image', () => {
+        const [zone] = getTargets(project.annotations[0])
+
+        expect(zone.source).toBe('https://example.org/image.jpg')
+        expect(zone.selector.value).toBe('xywh=pixel:10,20,30,40')
+        expect(project.images.map(image => image.source)).toEqual(['https://example.org/image.jpg'])
+    })
+
+    it('keeps a string body as it is', () => {
+        expect(project.annotations[0].body).toEqual(['https://example.org/note.html'])
+    })
+})
+
 describe('fromAny on a legacy Adno collection', () => {
     const project = fromAny(legacyCollection, { id: 'legacy' })
 

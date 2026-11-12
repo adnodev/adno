@@ -1,29 +1,26 @@
 import { IIIF_TYPE, IMAGE_TYPE, type ProjectImage } from "../../Utils/images"
-import { withTargets, type Annotation, type Target } from "../../Utils/targets"
-import { COMMENTING, type JsonObject } from "./model"
+import type { Target } from "../../Utils/targets"
+import { asList, COMMENTING, isJsonObject, objectList, type JsonObject } from "./model"
 
 const PREFERRED_LANGUAGES = ['none', 'en', 'fr']
 const MEDIA_FRAGMENTS = 'http://www.w3.org/TR/media-frags/'
 
-// ["Two folios"]                                  -> "Two folios"
-// "Two folios"                                    -> "Two folios"
-// [{ "@value": "Folio", "@language": "fr" }]      -> "Folio"        (IIIF v2 label)
-// undefined, [], 42                               -> ""
 function firstText(values: unknown): string {
-    const first = Array.isArray(values) ? values[0] : values
+    const [first] = asList(values)
 
     if (typeof first === 'string') {
         return first
     }
 
-    return first && typeof first === 'object' && typeof first['@value'] === 'string' ? first['@value'] : ''
+    if (!isJsonObject(first)) {
+        return ''
+    }
+
+    return typeof first['@value'] === 'string' ? first['@value'] : ''
 }
 
-// metadata [{ label: { fr: ["Auteur"] }, value: { fr: ["Auteur de test"] } }], "Auteur"  -> "Auteur de test"
-// metadata [{ label: { en: ["title"] }, value: { en: ["second"] } }], "Title"            -> "second"
-// metadata undefined, or no entry with that label                                        -> ""
 export function metadataValue(metadata: unknown, label: string): string {
-    const entries = Array.isArray(metadata) ? metadata : []
+    const entries = objectList(metadata)
     const wanted = label.toLowerCase()
     const entry = entries.find(item => languageText(item.label).toLowerCase() === wanted)
 
@@ -34,40 +31,32 @@ export function infoJsonUrl(service: string): string {
     return service.endsWith('info.json') ? service : `${service}/info.json`
 }
 
-// { items: [a, b] } -> [a, b] ; no items -> []
 export function items(node: JsonObject | undefined): JsonObject[] {
-    return node && Array.isArray(node.items) ? node.items : []
+    return node ? objectList(node.items) : []
 }
 
-// motivation "commenting"              -> true
-// motivation ["commenting", "tagging"] -> true
-// motivation "painting"                -> false
 function isCommenting(annotation: JsonObject): boolean {
-    const motivations = Array.isArray(annotation.motivation) ? annotation.motivation : [annotation.motivation]
-
-    return motivations.includes(COMMENTING)
+    return asList(annotation.motivation).includes(COMMENTING)
 }
 
-// Manifest { items: [canvas { annotations: [page { items: [commenting, painting] }] }] } -> [commenting]
 export function commentingAnnotations(manifest: JsonObject): JsonObject[] {
     return items(manifest)
-        .flatMap(canvas => Array.isArray(canvas.annotations) ? canvas.annotations : [])
+        .flatMap(canvas => objectList(canvas.annotations))
         .flatMap(page => items(page))
         .filter(isCommenting)
 }
 
 function serviceId(body: JsonObject): string | undefined {
-    const [service] = Array.isArray(body.service) ? body.service : []
+    const [service] = objectList(body.service)
+    const id = service ? service.id || service['@id'] : undefined
 
-    return service ? service.id || service['@id'] : undefined
+    return typeof id === 'string' ? id : undefined
 }
 
-// Canvas painted with a service  -> { id: canvas.id, source: ".../info.json", type: "iiif", label, width, height }
-// Canvas painted with a plain image -> { ..., source: body.id, type: "image" } ; nothing painted -> null
 export function canvasImage(canvas: JsonObject): ProjectImage | null {
-    const painted = items(items(canvas)[0])[0]?.body as JsonObject | undefined
+    const painted = items(items(canvas)[0])[0]?.body
 
-    if (!painted) {
+    if (!isJsonObject(painted)) {
         return null
     }
 
@@ -88,7 +77,11 @@ export function canvasImage(canvas: JsonObject): ProjectImage | null {
     }
 }
 
-function targetFromReference(reference: string): Target {
+function withPixelUnit(fragment: string): string {
+    return fragment.replace(/^xywh=(?!pixel:|percent:)/, 'xywh=pixel:')
+}
+
+export function targetFromReference(reference: string): Target {
     const [source, fragment] = reference.split('#')
 
     if (!fragment) {
@@ -100,7 +93,7 @@ function targetFromReference(reference: string): Target {
         selector: {
             type: 'FragmentSelector',
             conformsTo: MEDIA_FRAGMENTS,
-            value: fragment.replace('xywh=', 'xywh=pixel:')
+            value: withPixelUnit(fragment)
         }
     }
 }
@@ -108,7 +101,7 @@ function targetFromReference(reference: string): Target {
 function withMediaFragments(target: Target): Target {
     const selector = target.selector
 
-    if (!selector || selector.type !== 'FragmentSelector' || selector.conformsTo) {
+    if (!selector || selector.type !== 'FragmentSelector') {
         return target
     }
 
@@ -116,7 +109,8 @@ function withMediaFragments(target: Target): Target {
         ...target,
         selector: {
             ...selector,
-            conformsTo: MEDIA_FRAGMENTS
+            conformsTo: selector.conformsTo || MEDIA_FRAGMENTS,
+            value: withPixelUnit(selector.value || '')
         }
     }
 }
@@ -125,28 +119,53 @@ export function imageSourceById(images: ProjectImage[]): Map<string, string> {
     return new Map(images.map(image => [String(image.id), image.source]))
 }
 
-export function retargetFromCanvasToImage(target: Target | string, imageByCanvas: Map<string, string>): Target {
-    const resource = typeof target === 'string' ? targetFromReference(target) : withMediaFragments(target)
-    const image = resource.source ? imageByCanvas.get(resource.source) : undefined
+function canvasIdOf(source: unknown): string | undefined {
+    if (typeof source === 'string') {
+        return source
+    }
 
-    return image ? { ...resource, source: image } : resource
+    if (!isJsonObject(source)) {
+        return undefined
+    }
+
+    const id = source.id || source['@id']
+
+    return typeof id === 'string' ? id : undefined
 }
 
-export function annotationOnImages(annotation: JsonObject, imageByCanvas: Map<string, string>): Annotation {
-    const targets = Array.isArray(annotation.target) ? annotation.target : [annotation.target]
+export function retargetFromCanvasToImage(target: Target | string, imageByCanvas: Map<string, string>): Target {
+    const resource = typeof target === 'string' ? targetFromReference(target) : withMediaFragments(target)
+    const canvasId = canvasIdOf(resource.source)
 
-    return withTargets(
-        annotation as Annotation,
-        targets.filter(Boolean).map(target => retargetFromCanvasToImage(target, imageByCanvas)))
+    if (!canvasId) {
+        return resource
+    }
+
+    return {
+        ...resource,
+        source: imageByCanvas.get(canvasId) || canvasId
+    }
+}
+
+export function isTargetLike(target: unknown): target is Target | string {
+    return typeof target === 'string' || isJsonObject(target)
+}
+
+export function annotationOnImages(annotation: JsonObject, imageByCanvas: Map<string, string>): JsonObject {
+    const targets = asList(annotation.target).filter(isTargetLike)
+
+    return {
+        ...annotation,
+        target: targets.map(target => retargetFromCanvasToImage(target, imageByCanvas))
+    }
 }
 
 export function languageText(value: unknown): string {
-    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    if (!isJsonObject(value)) {
         return firstText(value)
     }
 
-    const map = value as Record<string, unknown>
-    const language = PREFERRED_LANGUAGES.find(code => map[code]) || Object.keys(map)[0]
+    const language = PREFERRED_LANGUAGES.find(code => value[code]) || Object.keys(value)[0]
 
-    return language ? firstText(map[language]) : ''
+    return language ? firstText(value[language]) : ''
 }

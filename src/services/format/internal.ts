@@ -1,8 +1,8 @@
 import { buildTargetId, groupIdFromLetter, type GroupId } from "../../Utils/groups"
-import { getTargets, withTargets, type Annotation, type Target } from "../../Utils/targets"
-import { bodyList } from "./body"
+import { withTargets, type Annotation, type Target } from "../../Utils/targets"
 import { ANNO_CONTEXT_URL } from "./context"
-import { COMMENTING, SOURCE_MARKDOWN, type Body, type JsonObject } from "./model"
+import { isTargetLike, targetFromReference } from "./iiif"
+import { asList, COMMENTING, isAnnotationBody, SOURCE_MARKDOWN, type AnnotationBody, type JsonObject } from "./model"
 
 function slug(iri: string): string {
     return iri.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -50,8 +50,8 @@ function convertTargetToInternalModel(zone: Target, internalId: string): Target 
     }
 }
 
-function withCommentingPurpose(body: Body): Body {
-    if (body.type !== 'TextualBody' || body.purpose) {
+function withCommentingPurpose(body: AnnotationBody): AnnotationBody {
+    if (typeof body === 'string' || body.type !== 'TextualBody' || body.purpose) {
         return body
     }
 
@@ -59,6 +59,18 @@ function withCommentingPurpose(body: Body): Body {
         ...body,
         purpose: COMMENTING
     }
+}
+
+function readForeignBodies(foreign: JsonObject): AnnotationBody[] {
+    return asList(foreign.body).filter(isAnnotationBody)
+}
+
+function readForeignTarget(target: Target | string): Target {
+    return typeof target === 'string' ? targetFromReference(target) : target
+}
+
+export function readForeignTargets(foreign: JsonObject): Target[] {
+    return asList(foreign.target).filter(isTargetLike).map(readForeignTarget)
 }
 
 function convertToInternalModel(foreign: JsonObject, internalId: string): Annotation {
@@ -72,12 +84,12 @@ function convertToInternalModel(foreign: JsonObject, internalId: string): Annota
         '@context': ANNO_CONTEXT_URL,
         id: internalId,
         type: 'Annotation',
-        body: bodyList(foreign as Annotation).map(withCommentingPurpose),
+        body: readForeignBodies(foreign).map(withCommentingPurpose),
         ...rest,
         ...markdown
     }
 
-    return withTargets(converted, getTargets(foreign as Annotation).map(zone => convertTargetToInternalModel(zone, internalId)))
+    return withTargets(converted, readForeignTargets(foreign).map(zone => convertTargetToInternalModel(zone, internalId)))
 }
 
 export function convertAllToInternalModel(foreign: JsonObject[]): Annotation[] {

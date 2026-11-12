@@ -2,13 +2,13 @@ import type { ProjectImage } from "../../../Utils/images"
 import type { Project, ProjectSettings } from "../../../Utils/project"
 import { annotationOnImages, canvasImage, commentingAnnotations, imageSourceById, items, languageText, metadataValue } from "../iiif"
 import { convertAllToInternalModel } from "../internal"
-import { ADNO_PROJECT, type ImportOptions, type JsonObject } from "../model"
+import { ADNO_PROJECT, isJsonObject, objectList, type ImportOptions, type JsonObject } from "../model"
 import { readRights } from "../rights"
-import { buildProject, type Description, type Extension } from "./build"
+import { buildProject, isExtension, type Description, type Extension } from "./build"
 
-// IIIF Presentation 3 Manifest, as read here (Adno export, legacy Base64 export or third party):
+// IIIF Presentation 3 Manifest, Adno export -> legacy Base64 export or third party
 // {
-//     "@context": ["https://adno.app/ns/context.json", "http://iiif.io/api/presentation/3/context.json"],
+//     "@context": ["https://w.adno.app/ns/context.json", "http://iiif.io/api/presentation/3/context.json"],
 //     "id": "https://adno.app/projects/p/manifest.json",
 //     "type": "Manifest",
 //     "label": { "none": ["Two folios"] },
@@ -35,13 +35,21 @@ import { buildProject, type Description, type Extension } from "./build"
 function legacySettings(manifest: JsonObject): Partial<ProjectSettings> | undefined {
     const encoded = metadataValue(manifest.metadata, 'adno_settings')
 
-    return encoded ? JSON.parse(atob(encoded)) : undefined
+    if (!encoded) {
+        return undefined
+    }
+
+    try {
+        return JSON.parse(atob(encoded))
+    } catch {
+        return undefined
+    }
 }
 
 function manifestExtension(manifest: JsonObject): Extension {
-    const extension = manifest[ADNO_PROJECT] as Extension | undefined
+    const extension = manifest[ADNO_PROJECT]
 
-    if (extension) {
+    if (isExtension(extension)) {
         return extension
     }
 
@@ -52,16 +60,31 @@ function manifestExtension(manifest: JsonObject): Extension {
     }
 }
 
+function isLegacyBase64Export(manifest: JsonObject): boolean {
+    return metadataValue(manifest.metadata, 'adno_settings') !== ''
+}
+
+function manifestTitle(manifest: JsonObject): string {
+    const metadataTitle = metadataValue(manifest.metadata, 'title')
+    const label = languageText(manifest.label)
+
+    if (isLegacyBase64Export(manifest)) {
+        return metadataTitle || label
+    }
+
+    return label || metadataTitle
+}
+
 function describedByManifest(manifest: JsonObject): Description {
-    const [provider] = Array.isArray(manifest.provider) ? manifest.provider : []
-    const statement = manifest.requiredStatement as JsonObject | undefined
+    const [provider] = objectList(manifest.provider)
+    const statement = manifest.requiredStatement
 
     return {
-        title: metadataValue(manifest.metadata, 'title') || languageText(manifest.label),
+        title: manifestTitle(manifest),
         description: languageText(manifest.summary) || metadataValue(manifest.metadata, 'description'),
         creator: metadataValue(manifest.metadata, 'Auteur') || metadataValue(manifest.metadata, 'creator'),
         editor: provider ? languageText(provider.label) : '',
-        ...readRights(manifest.rights, statement ? languageText(statement.value) : '')
+        ...readRights(manifest.rights, isJsonObject(statement) ? languageText(statement.value) : '')
     }
 }
 
