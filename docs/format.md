@@ -42,7 +42,7 @@ The Manifest is the project file. One Canvas per image, the image painted on it,
 
 ```json
 {
-  "@context": ["https://adno.app/ns/context.json", "http://iiif.io/api/presentation/3/context.json"],
+  "@context": ["https://w.adno.app/ns/context.json", "http://iiif.io/api/presentation/3/context.json"],
   "id": "https://adno.app/projects/<uuid>/manifest.json",
   "type": "Manifest",
   "label": { "none": ["Two folios"] },
@@ -88,7 +88,7 @@ The collection is a flat list of the same annotations, targeting the images dire
 
 ```json
 {
-  "@context": ["https://adno.app/ns/context.json", "http://www.w3.org/ns/anno.jsonld"],
+  "@context": ["https://w.adno.app/ns/context.json", "http://www.w3.org/ns/anno.jsonld"],
   "id": "https://adno.app/projects/<uuid>/collection.json",
   "type": "AnnotationCollection",
   "label": "Two folios",
@@ -106,7 +106,7 @@ The collection is a flat list of the same annotations, targeting the images dire
 
 ## The `adno:` extension
 
-Extension terms are declared in `https://adno.app/ns/context.json` (`public/ns/context.json`), listed before the standard context so that IIIF and Web Annotation terms keep their meaning:
+Extension terms are declared in `https://w.adno.app/ns/context.json` (`public/ns/context.json`, served with the application), under the `https://adno.app/ns#` namespace, listed before the standard context so that IIIF and Web Annotation terms keep their meaning:
 
 - `adno:project`: the project data a generic viewer does not need, kept as a JSON literal (`@type: @json`).
 - `adno:cutouts`: cutout flags per zone group, JSON literal.

@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { normalizeProject, toIIIFManifest } from '../../src/services/format'
 
 const BASE = 'https://adno.app'
-const ADNO_CONTEXT = 'https://adno.app/ns/context.json'
+const ADNO_CONTEXT = 'https://w.adno.app/ns/context.json'
 const IIIF_CONTEXT = 'http://iiif.io/api/presentation/3/context.json'
 const FIXTURES = join(import.meta.dirname, '..', 'fixtures')
 const VALIDATED = join(FIXTURES, 'iiif-validate', 'generated-manifest.json')

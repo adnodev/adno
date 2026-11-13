@@ -6,7 +6,7 @@ import { normalizeProject, toIIIFManifest, toWADMCollection } from '../../src/se
 
 const ROOT = join(import.meta.dirname, '..', '..')
 const ADNO_NS = 'https://adno.app/ns#'
-const ADNO_CONTEXT_URL = 'https://adno.app/ns/context.json'
+const ADNO_CONTEXT_URL = 'https://w.adno.app/ns/context.json'
 
 const CONTEXTS = join(ROOT, 'tests', 'fixtures', 'contexts')
 

@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 - IIIF Presentation 3 Manifest export: one Canvas per image, `label`, `summary`, `provider`, `rights` and `requiredStatement`, comments in the Canvas `annotations`
-- Web Annotation collection export sharing the same `adno:project` extension, declared in `https://adno.app/ns/context.json`
+- Web Annotation collection export sharing the same `adno:project` extension, declared in `https://w.adno.app/ns/context.json`
 - Unified import: Adno exports (current and former), third-party IIIF Presentation 2 and 3 Manifests, Web Annotation collections and `info.json`, from a file, a URL or an embed
 - Separate `licence` and `attribution` project fields
 - Unit test suite (Vitest) with JSON-LD expansion and IIIF validator check in CI

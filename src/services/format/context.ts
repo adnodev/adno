@@ -1,4 +1,4 @@
-export const ADNO_CONTEXT_URL = 'https://adno.app/ns/context.json'
+export const ADNO_CONTEXT_URL = 'https://w.adno.app/ns/context.json'
 
 export const IIIF_CONTEXT_URL = 'http://iiif.io/api/presentation/3/context.json'
 

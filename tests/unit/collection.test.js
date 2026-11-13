@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { normalizeProject, toWADMCollection } from '../../src/services/format'
 
 const BASE = 'https://adno.app'
-const ADNO_CONTEXT = 'https://adno.app/ns/context.json'
+const ADNO_CONTEXT = 'https://w.adno.app/ns/context.json'
 const ANNO_CONTEXT = 'http://www.w3.org/ns/anno.jsonld'
 
 const record = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'multiimage', 'multiimage.fixture.json'), 'utf8'))
