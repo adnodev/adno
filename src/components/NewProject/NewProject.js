@@ -20,6 +20,7 @@ class NewProject extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            isReadingManifest: true,
             manifestImages: [],
             currentIndex: -1,
             nbCanvases: 0,
@@ -59,6 +60,7 @@ class NewProject extends Component {
                     this.loadManifestV2(manifestIIIF)
                 }
             })
+            .finally(() => this.setState({ isReadingManifest: false }))
     }
 
     loadManifestV3 = manifestIIIF => {
@@ -421,6 +423,8 @@ class NewProject extends Component {
 
     render() {
         const overloadedSettings = diffProjectSettings(this.state.settings, defaultProjectSettings())
+        const imageChosen = !this.state.isCanvaProject || this.state.selectedCanva
+        const showForm = !this.state.isReadingManifest && imageChosen
 
         console.log(this.state)
 
@@ -447,7 +451,7 @@ class NewProject extends Component {
                     closeProjectMetadatas={() => this.setState({ showMetadatas: false })} />}
 
                 {
-                    (!this.state.isCanvaProject || (this.state.isCanvaProject && this.state.selectedCanva)) &&
+                    showForm &&
                     <>
                         <h1 className="new-project-title">{this.props.t('new_project.add_info')}</h1>
                         <form className="form-new-project" >

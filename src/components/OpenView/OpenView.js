@@ -45,6 +45,7 @@ class OpenView extends Component {
         }
 
         this.toolbarRef = createRef()
+        this.viewRef = createRef()
     }
 
     measureToolbar = () => {
@@ -61,7 +62,9 @@ class OpenView extends Component {
     annoStyles = () => this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus
 
     marginOffset = () => {
-        if (this.state.fullScreenEnabled || !this.props.showToolbar) {
+        const hiddenOnFs = this.state.fullScreenEnabled && !this.props.toolsbarOnFs
+
+        if (hiddenOnFs || !this.props.showToolbar) {
             return 0
         }
 
@@ -577,8 +580,8 @@ class OpenView extends Component {
         // turn on full screen
         if (document.fullscreenEnabled) {
             if (!this.state.fullScreenEnabled) {
-                if (document.getElementById("adno-osd")) {
-                    document.getElementById("adno-osd").requestFullscreen();
+                if (this.viewRef.current) {
+                    this.viewRef.current.requestFullscreen();
                     this.setState({ fullScreenEnabled: true })
                 } else {
                     alert("Unable to turn on FullScreen")
@@ -812,7 +815,7 @@ class OpenView extends Component {
         const layout = closing || opening ? collapsedLayout(this.mosaic(scene)) : this.mosaic(scene)
         const activeGroup = this.outlinesVisible() ? this.activeGroup() : null
 
-        return <div className="open-view flex flex-col flex-grow relative">
+        return <div ref={this.viewRef} className="open-view flex flex-col flex-grow relative">
             <div ref={this.toolbarRef}
                 className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"}
                 style={{
