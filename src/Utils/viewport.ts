@@ -46,6 +46,7 @@ type OsdViewport = {
     setRotation(degrees: number, immediately?: boolean): void,
     fitBounds(bounds: ViewportRect, immediately?: boolean): void,
     getBounds(): ViewportRect,
+    getMaxZoom(): number,
     panTo(center: { x: number, y: number }, immediately?: boolean): void,
     viewportToViewerElementRectangle(rect: ViewportRect): ViewportRect,
     imageToViewportRectangle(x: number, y: number, width: number, height: number): ViewportRect
@@ -165,6 +166,27 @@ function paddedRect(viewport: OsdViewport, box: Box, padding: number): ViewportR
         box.y - marginY,
         box.width + marginX * 2,
         box.height + marginY * 2
+    )
+}
+
+function limitZoomDepth(viewport: OsdViewport, bounds: ViewportRect): ViewportRect {
+    const visible = viewport.getBounds()
+    const fittedWidth = Math.max(bounds.width, bounds.height * visible.width / visible.height)
+    const narrowestWidth = 1 / viewport.getMaxZoom()
+
+    if (fittedWidth >= narrowestWidth) {
+        return bounds
+    }
+
+    const scale = narrowestWidth / fittedWidth
+    const width = bounds.width * scale
+    const height = bounds.height * scale
+
+    return new OpenSeadragon.Rect(
+        bounds.x - (width - bounds.width) / 2,
+        bounds.y - (height - bounds.height) / 2,
+        width,
+        height
     )
 }
 
@@ -347,12 +369,14 @@ export function applyAnnotationView(viewer: Viewer, annotorious: Annotorious, an
 
     lastViews.set(viewer, { annotation, options })
 
-    const bounds = annotationBounds(viewer, annotation.id, padded ? BOUNDS_PADDING : 0, shadowIds)
+    const annotationRect = annotationBounds(viewer, annotation.id, padded ? BOUNDS_PADDING : 0, shadowIds)
 
-    if (!bounds) {
+    if (!annotationRect) {
         annotorious.fitBounds(annotation.id)
         return
     }
+
+    const bounds = limitZoomDepth(viewer.viewport, annotationRect)
 
     const activeGroup = targetGroupId(getTargets(annotation)[0])
 
@@ -434,7 +458,7 @@ export function frameGroup(viewer: Viewer, annotorious: Annotorious, annotation:
     const rotation = groupRotation(annotation, groupId)
     const wanted = rotation === null ? normalizeAngle(defaultRotation) : rotation
     const viewport = viewer.viewport
-    const bounds = paddedRect(viewport, box, GROUP_PADDING)
+    const bounds = limitZoomDepth(viewport, paddedRect(viewport, box, GROUP_PADDING))
 
     if (transition) {
         settleView(viewer, bounds, wanted, transition)
