@@ -3,9 +3,9 @@
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
   "version": 1,
-  "serialNumber": "urn:uuid:7425b3a3-24ec-4be0-b21d-313c9c0f2f82",
+  "serialNumber": "urn:uuid:27c7a2f7-f69e-4466-923a-551cab3346c0",
   "metadata": {
-    "timestamp": "2026-11-17T12:29:42.114Z",
+    "timestamp": "2026-11-17T12:32:43.239Z",
     "tools": {
       "components": [
         {
@@ -355,8 +355,8 @@
       "type": "library",
       "name": "test",
       "group": "@playwright",
-      "version": "1.50.1",
-      "bom-ref": "adno@1.0.9|@playwright/test@1.50.1",
+      "version": "1.65.1",
+      "bom-ref": "adno@1.0.9|@playwright/test@1.65.1",
       "author": "Microsoft Corporation",
       "description": "A high-level API to automate web browsers",
       "licenses": [
@@ -367,7 +367,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/%40playwright/test@1.50.1",
+      "purl": "pkg:npm/%40playwright/test@1.65.1",
       "externalReferences": [
         {
           "url": "git+https://github.com/microsoft/playwright.git",
@@ -385,12 +385,12 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/@playwright/test/-/test-1.50.1.tgz",
+          "url": "https://registry.npmjs.org/@playwright/test/-/test-1.65.1.tgz",
           "type": "distribution",
           "hashes": [
             {
               "alg": "SHA-512",
-              "content": "2628b768183e0840e9827b83c44a7f87b0629877144c396912d71ef3dc44ba6949e5e7f686a7a967e3d6a750c3a580bf54ef5f996548d489446a82397caf455d"
+              "content": "cbe3422119b62ef638b255155af1a1d67ba327c445fe1122b08b2ada6b543e07500b82fbd356eae61646321ae97978c00afc2f3bdb63e5d26a86f33a4cff656f"
             }
           ],
           "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
@@ -399,7 +399,7 @@
       "properties": [
         {
           "name": "cdx:npm:package:constraint:engine:node",
-          "value": ">=18"
+          "value": ">=20"
         },
         {
           "name": "cdx:npm:package:development",
@@ -3930,8 +3930,8 @@
     {
       "type": "library",
       "name": "playwright",
-      "version": "1.50.1",
-      "bom-ref": "adno@1.0.9|playwright@1.50.1",
+      "version": "1.65.1",
+      "bom-ref": "adno@1.0.9|playwright@1.65.1",
       "author": "Microsoft Corporation",
       "description": "A high-level API to automate web browsers",
       "licenses": [
@@ -3942,7 +3942,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/playwright@1.50.1",
+      "purl": "pkg:npm/playwright@1.65.1",
       "externalReferences": [
         {
           "url": "git+https://github.com/microsoft/playwright.git",
@@ -3960,12 +3960,12 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/playwright/-/playwright-1.50.1.tgz",
+          "url": "https://registry.npmjs.org/playwright/-/playwright-1.65.1.tgz",
           "type": "distribution",
           "hashes": [
             {
               "alg": "SHA-512",
-              "content": "1bcaf0b0e409eb75c6e816ca8f6c39ac779abc58f2e73ca7040f73b0930cb41a1efd47fbe7ba06d76357cfa7ba3a2ac5ed10ab4d500a1576cb9a7d516cbed06b"
+              "content": "bc9d45ba83ab37038a1d421512f4adde34f52fec238c3a7087022cb4ab5fbd387c5c81b8146e1b205baf35d3318bcd4b19f02152051995e54568e2d8e1121453"
             }
           ],
           "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
@@ -3974,7 +3974,7 @@
       "properties": [
         {
           "name": "cdx:npm:package:constraint:engine:node",
-          "value": ">=18"
+          "value": ">=20"
         },
         {
           "name": "cdx:npm:package:development",
@@ -11795,8 +11795,8 @@
     {
       "type": "library",
       "name": "playwright-core",
-      "version": "1.50.1",
-      "bom-ref": "adno@1.0.9|playwright-core@1.50.1",
+      "version": "1.65.1",
+      "bom-ref": "adno@1.0.9|playwright-core@1.65.1",
       "author": "Microsoft Corporation",
       "description": "A high-level API to automate web browsers",
       "licenses": [
@@ -11807,7 +11807,7 @@
           }
         }
       ],
-      "purl": "pkg:npm/playwright-core@1.50.1",
+      "purl": "pkg:npm/playwright-core@1.65.1",
       "externalReferences": [
         {
           "url": "git+https://github.com/microsoft/playwright.git",
@@ -11825,12 +11825,12 @@
           "comment": "as detected from PackageJson property \"bugs.url\""
         },
         {
-          "url": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.50.1.tgz",
+          "url": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.65.1.tgz",
           "type": "distribution",
           "hashes": [
             {
               "alg": "SHA-512",
-              "content": "adaf5fb0d59acae62e9adf8d88cd3af4ce8e91c45bd456522bc6e08bae80b691685a4836fb2d1b252366905ad684c6c405b54a0bf12bb801c7de0d339adc0699"
+              "content": "86a3e9cfb6e548c3f1595768784d728814b35ec2a254e77693e9230af994cb00f618f3b60ddf477dc5a7abd34dd061db3590c5819f497c116bf97e7f04ba34ab"
             }
           ],
           "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
@@ -11839,7 +11839,7 @@
       "properties": [
         {
           "name": "cdx:npm:package:constraint:engine:node",
-          "value": ">=18"
+          "value": ">=20"
         },
         {
           "name": "cdx:npm:package:development",
@@ -24477,7 +24477,7 @@
         "adno@1.0.9|@fortawesome/fontawesome-svg-core@6.7.2",
         "adno@1.0.9|@fortawesome/free-solid-svg-icons@6.7.2",
         "adno@1.0.9|@fortawesome/react-fontawesome@0.2.2",
-        "adno@1.0.9|@playwright/test@1.50.1",
+        "adno@1.0.9|@playwright/test@1.65.1",
         "adno@1.0.9|@toast-ui/editor@3.2.2",
         "adno@1.0.9|@toast-ui/react-editor@3.2.3",
         "adno@1.0.9|@types/node@22.13.1",
@@ -24551,9 +24551,9 @@
       ]
     },
     {
-      "ref": "adno@1.0.9|@playwright/test@1.50.1",
+      "ref": "adno@1.0.9|@playwright/test@1.65.1",
       "dependsOn": [
-        "adno@1.0.9|playwright@1.50.1"
+        "adno@1.0.9|playwright@1.65.1"
       ]
     },
     {
@@ -25060,9 +25060,9 @@
       ]
     },
     {
-      "ref": "adno@1.0.9|playwright@1.50.1",
+      "ref": "adno@1.0.9|playwright@1.65.1",
       "dependsOn": [
-        "adno@1.0.9|playwright-core@1.50.1"
+        "adno@1.0.9|playwright-core@1.65.1"
       ]
     },
     {
@@ -25907,7 +25907,7 @@
       ]
     },
     {
-      "ref": "adno@1.0.9|playwright-core@1.50.1"
+      "ref": "adno@1.0.9|playwright-core@1.65.1"
     },
     {
       "ref": "adno@1.0.9|prosemirror-transform@1.12.2",
