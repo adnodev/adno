@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@cyclonedx/cyclonedx-npm": "^4.2.1",
-    "@playwright/test": "1.50.1",
+    "@playwright/test": "1.65.1",
     "@types/node": "22.13.1",
     "@types/turndown": "^5.0.6",
     "@vitejs/plugin-react": "^5.1.2",

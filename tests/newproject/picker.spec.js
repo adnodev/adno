@@ -42,11 +42,17 @@ const manifest = {
     items: [canvasItem(1), canvasItem(2)]
 };
 
+const singleImageManifest = {
+    ...manifest,
+    items: [canvasItem(1)]
+};
+
 /**
  * @param {import('@playwright/test').Page} page
+ * @param {object} servedManifest
  * @returns {Promise<() => void>}
  */
-async function openNewProject(page) {
+async function openNewProject(page, servedManifest) {
     let release = () => {};
     const gate = new Promise(resolve => {
         release = () => resolve(null);
@@ -56,7 +62,7 @@ async function openNewProject(page) {
         await gate;
         await route.fulfill({
             contentType: 'application/json',
-            body: JSON.stringify(manifest)
+            body: JSON.stringify(servedManifest)
         });
     });
 
@@ -84,7 +90,7 @@ test.afterEach(async ({ page }) => {
 test.describe('Nouveau projet — manifeste à plusieurs images', () => {
 
     test('le formulaire reste masqué pendant la lecture du manifeste', async ({ page }) => {
-        const release = await openNewProject(page);
+        const release = await openNewProject(page, manifest);
 
         await expect(page.locator('.form-new-project')).toHaveCount(0);
 
@@ -95,7 +101,7 @@ test.describe('Nouveau projet — manifeste à plusieurs images', () => {
     });
 
     test('le sélecteur affiche la vignette de chaque image', async ({ page }) => {
-        const release = await openNewProject(page);
+        const release = await openNewProject(page, manifest);
         release();
 
         const thumbnail = page.locator('#select_canva img');
@@ -110,7 +116,7 @@ test.describe('Nouveau projet — manifeste à plusieurs images', () => {
     });
 
     test('le formulaire apparaît une fois l\'image choisie', async ({ page }) => {
-        const release = await openNewProject(page);
+        const release = await openNewProject(page, manifest);
         release();
 
         await page.getByRole('button', { name: 'Use this picture for my' }).click();
@@ -120,5 +126,28 @@ test.describe('Nouveau projet — manifeste à plusieurs images', () => {
 
         const selected = await page.evaluate(() => localStorage.getItem('selected_canva'));
         expect(selected).toBe(`${SERVICE}/image-1/info.json`);
+    });
+});
+
+test.describe('Nouveau projet — manifeste à une seule image', () => {
+
+    test('le formulaire s\'affiche sans passer par le sélecteur', async ({ page }) => {
+        const release = await openNewProject(page, singleImageManifest);
+        release();
+
+        await expect(page.locator('.form-new-project')).toBeVisible();
+        await expect(page.locator('#select_canva img')).toHaveCount(0);
+        await expect(page.getByRole('button', { name: 'Use this picture for my' })).toHaveCount(0);
+
+        const selected = await page.evaluate(() => localStorage.getItem('selected_canva'));
+        expect(selected).toBe(`${SERVICE}/image-1/info.json`);
+    });
+
+    test('le formulaire propose d\'annuler plutôt que de revenir au sélecteur', async ({ page }) => {
+        const release = await openNewProject(page, singleImageManifest);
+        release();
+
+        await expect(page.locator('.form-new-project #cancel_creation')).toBeVisible();
+        await expect(page.locator('.form-new-project #annuler_creation')).toHaveCount(0);
     });
 });

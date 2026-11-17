@@ -60,7 +60,27 @@ class NewProject extends Component {
                     this.loadManifestV2(manifestIIIF)
                 }
             })
+            .then(this.chooseSingleCanva)
             .finally(() => this.setState({ isReadingManifest: false }))
+    }
+
+    chooseSingleCanva = () => {
+        const [onlyImage] = this.state.manifestImages
+
+        if (this.state.nbCanvases !== 1 || !onlyImage) {
+            return
+        }
+
+        this.chooseCanva(onlyImage)
+    }
+
+    chooseCanva = canva => {
+        this.setState({
+            selectedCanva: true,
+            ...(canva.img_url ? { selectedImg: canva.img_url } : {})
+        })
+
+        localStorage.setItem("selected_canva", canva.img_url || canva.canva_url)
     }
 
     loadManifestV3 = manifestIIIF => {
@@ -425,6 +445,9 @@ class NewProject extends Component {
         const overloadedSettings = diffProjectSettings(this.state.settings, defaultProjectSettings())
         const imageChosen = !this.state.isCanvaProject || this.state.selectedCanva
         const showForm = !this.state.isReadingManifest && imageChosen
+        const hasImageChoice = this.state.nbCanvases > 1
+        const showCancel = !this.state.isCanvaProject || !hasImageChoice
+        const showBackToPicker = this.state.isCanvaProject && this.state.selectedCanva && hasImageChoice
 
         console.log(this.state)
 
@@ -490,7 +513,7 @@ class NewProject extends Component {
                             </div>
                             <div className="new_project_btns">
                                 {
-                                    !this.state.isCanvaProject &&
+                                    showCancel &&
                                     <button
                                         id="cancel_creation"
                                         type="button"
@@ -508,7 +531,7 @@ class NewProject extends Component {
                                     {this.props.t('project.create')}
                                 </button>
                                 {
-                                    this.state.isCanvaProject && this.state.selectedCanva &&
+                                    showBackToPicker &&
                                     <button id="annuler_creation"
                                         type="button"
                                         className="btn btn-outline"
@@ -555,15 +578,9 @@ class NewProject extends Component {
 
                 {
                     this.state.manifestImages && this.state.nbCanvases > 0 && this.state.currentIndex !== -1 && !this.state.selectedCanva &&
-                    <button className="btn btn-success my-2" onClick={() => {
-                        this.setState({ selectedCanva: true, isCanvaProject: true })
-
-                        const canva = this.state.manifestImages[this.state.currentIndex]
-                        if (canva.img_url)
-                            this.setState({ selectedImg: canva.img_url })
-
-                        localStorage.setItem("selected_canva", canva.img_url ? canva.img_url : canva.canva_url)
-                    }}>{this.props.t('project.choose_canva')}</button>
+                    <button className="btn btn-success my-2" onClick={() => this.chooseCanva(this.state.manifestImages[this.state.currentIndex])}>
+                        {this.props.t('project.choose_canva')}
+                    </button>
                 }
 
                 {
