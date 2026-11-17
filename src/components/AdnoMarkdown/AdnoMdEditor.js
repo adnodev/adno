@@ -196,10 +196,10 @@ class AdnoMdEditor extends Component {
         // Check if something has been wrote down
         let html = this.editor.getMarkdown() ? this.editor.getHTML() : "";
 
-        const audioElement = document.getElementById('audioTag');
-
         let audioBody;
-        if (audioElement) {
+
+        if (this.state.audioTrack) {
+            const audioElement = document.createElement('audio');
             const format = AUDIO_TYPES.find(format => audioElement.canPlayType(format) === 'probably' ||
                 audioElement.canPlayType(format) === 'maybe')
 
@@ -443,7 +443,7 @@ class AdnoMdEditor extends Component {
 
                                 {this.state.audioTrack &&
                                     <figure className="mt-2 flex" style={{ justifyContent: 'flex-start' }}>
-                                        <audio controls src={this.state.audioTrack} id="audioTag"></audio>
+                                        <audio controls src={this.state.audioTrack}></audio>
                                     </figure>
                                 }
 

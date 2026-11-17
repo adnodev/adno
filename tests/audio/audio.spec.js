@@ -2,7 +2,7 @@
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
-const { clearProjectsDB } = require('../helpers');
+const { clearProjectsDB, readProjects } = require('../helpers');
 
 test.afterEach(async ({ page }) => {
     await clearProjectsDB(page);
@@ -130,6 +130,28 @@ test.describe('Audio annotations are preserved on export', () => {
         )[0];
 
         const audioUrls = [...collectAudioUrls(reimported)];
+        for (const url of EXPECTED_AUDIO_URLS) {
+            expect(audioUrls).toContain(url);
+        }
+    });
+
+    test('saving an annotation from the text tab keeps its audio track', async ({ page }) => {
+        await importIIIFFixtureWithAudio(page);
+
+        const editButtons = page.locator('[id^="anno_edit_card_"] button:has([data-icon="pen-to-square"])');
+        const count = await editButtons.count();
+        expect(count).toBeGreaterThan(0);
+
+        for (let index = 0; index < count; index++) {
+            await editButtons.nth(index).click();
+            await expect(page.locator('.rich-card-editor')).toBeVisible();
+            await page.locator('.rich-card-save').click();
+            await expect(page.locator('.rich-card-editor')).toHaveCount(0);
+        }
+
+        const [saved] = await readProjects(page);
+        const audioUrls = [...collectAudioUrls(saved)];
+
         for (const url of EXPECTED_AUDIO_URLS) {
             expect(audioUrls).toContain(url);
         }
