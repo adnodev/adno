@@ -1,42 +1,23 @@
 import { Component } from "react";
 
-// Import Utils
 import { buildTagsList } from "../../../../Utils/utils";
+import { annotationHtml } from "../../../../services/format";
 
-// Import Html Parser
 import parse from 'html-react-parser';
 
-// Import FontAwesome for all icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExpand } from "@fortawesome/free-solid-svg-icons"
-
-// Add translations
 import { withTranslation } from "react-i18next";
 
 import { AnnotationBadges } from "../../../AnnotationBadges/AnnotationBadges"
 
 class OneCardView extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            fullView: false,
-            annoBody: this.props.annotation.body[0] && this.props.annotation.body[0].value && parse(this.props.annotation.body[0].value)
-        }
-    }
-
     getAnnotationHTMLBody = () => {
-        let annotation = this.props.annotation
+        const html = annotationHtml(this.props.annotation)
 
-        if (annotation && annotation.body) {
-            if (Array.isArray(annotation.body) && annotation.body.find(annoBody => annoBody.type === "HTMLBody") && annotation.body.find(annoBody => annoBody.type === "HTMLBody").value !== "") {
-                return parse(annotation.body.find(annoBody => annoBody.type === "HTMLBody").value)
-            } else {
-                return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
-            }
-        } else {
+        if (!html) {
             return <span className="no-content">Ø {this.props.t('annotation.no_content')}</span>
         }
+
+        return parse(html)
     }
 
     render() {
@@ -59,6 +40,8 @@ class OneCardView extends Component {
                 <div className="adno-card-body">
                     {this.getAnnotationHTMLBody()}
                 </div>
+
+                {this.props.children}
             </div>
         )
     }

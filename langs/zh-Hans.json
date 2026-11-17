@@ -4,8 +4,6 @@
     "import": {
         "import_project": "导入项目",
         "import_now": "使用项目文件",
-        "validate": "确认导入",
-        "cancel": "取消导入",
         "adno_project": "已找到 Adno 项目，是否导入？",
         "import_success": "项目导入成功！"
     },
@@ -49,15 +47,16 @@
             "creation_date": "创建日期",
             "last_update": "最后更新",
             "format": "格式",
-            "rights": "版权声明",
-            "allocation_rights": "权利归属"
+            "licence": "许可协议",
+            "attribution": "署名"
         },
         "metadatas_plh": {
             "title": "为项目命名",
             "description": "添加作品简短描述",
             "author": "在此填写作品作者",
             "editor": "在此填写作品编辑者",
-            "allocation_rights": "在此填写作品版权信息"
+            "licence": "许可协议链接（Creative Commons、RightsStatements.org……）",
+            "attribution": "与作品一同显示的署名信息（机构、摄影师……）"
         },
         "settings": {
             "delay": "两个标注之间的延迟时间（秒）",
@@ -96,9 +95,6 @@
             "content_position_right": "右侧边栏",
             "mosaic_layout": "马赛克布局"
         }
-    },
-    "files": {
-        "one_selected": "已选择 1 个文件"
     },
     "buttons": {
         "cancel": "取消",
@@ -187,8 +183,7 @@
         "confirm_del_annotation": "是，删除此标注",
         "del_annotation_confirmation": "标注已成功删除",
         "project_edit_success": "项目已成功更新！",
-        "settings_updated_success": "设置已成功更新！",
-        "adno_proj_detected": "已检测到 Adno 项目，是否导入？"
+        "settings_updated_success": "设置已成功更新！"
     },
     "annotation": {
         "no_content": "暂无内容",

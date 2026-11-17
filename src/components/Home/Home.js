@@ -1,23 +1,18 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
 
-// Import FontAwesome and icons
 import { faAdd, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// Import popup alerts
 import Swal from "sweetalert2";
 
-// Import utils
 import { manageUrls } from "../AdnoUrls/manageUrls";
 
-// Import components
 import ImportProject from "../ImportProject/ImportProject";
 import ProjectsList from "../ProjectsList/ProjectsList";
 
 import { projectDB } from '../../services/db'
 
-// Import CSS
 import "./Home.css";
 
 // Add translations
@@ -76,7 +71,6 @@ class Home extends Component {
             }
         })
     }
-
 
     render() {
         // Create function which is called when clicking on the submit button

@@ -103,13 +103,6 @@ test.describe('Reading an annotation split across groups', () => {
         await expect(page.locator('.cutout-body .a9s-annotation')).toHaveCount(2);
     });
 
-    test('the legacy cutout flag still covers the whole annotation', async ({ page }) => {
-        await openViewer(page, projectWith({ cutout: true }));
-
-        await expect(page.locator('.cutout-panel')).toBeVisible({ timeout: 10000 });
-        await expect(page.locator('.cutout-body .a9s-annotation')).toHaveCount(3);
-    });
-
     test('two cutout groups each get their own panel', async ({ page }) => {
         await openViewer(page, projectWith({ cutouts: { g1: true, g2: true } }));
 

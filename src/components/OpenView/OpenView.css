@@ -68,7 +68,7 @@
 
 .toolbar-on {
     display: block;
-    z-index: 60;
+    z-index: 45;
 }
 
 .toolbar-off {

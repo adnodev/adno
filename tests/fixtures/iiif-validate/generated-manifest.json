@@ -1,0 +1,224 @@
+{
+  "@context": [
+    "https://w.adno.app/ns/context.json",
+    "http://iiif.io/api/presentation/3/context.json"
+  ],
+  "id": "https://adno.app/projects/multiimage-test-project/manifest.json",
+  "type": "Manifest",
+  "label": {
+    "none": [
+      "Two folios"
+    ]
+  },
+  "summary": {
+    "none": [
+      "Zones spread over two images"
+    ]
+  },
+  "items": [
+    {
+      "id": "https://adno.app/projects/multiimage-test-project/canvas/1",
+      "type": "Canvas",
+      "label": {
+        "none": [
+          "Folio 1r"
+        ]
+      },
+      "width": 400,
+      "height": 300,
+      "items": [
+        {
+          "id": "https://adno.app/projects/multiimage-test-project/canvas/1/painting",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://adno.app/projects/multiimage-test-project/canvas/1/painting/image",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://example.org/folio-1.png",
+                "type": "Image",
+                "format": "image/png",
+                "width": 400,
+                "height": 300
+              },
+              "target": "https://adno.app/projects/multiimage-test-project/canvas/1"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "id": "https://adno.app/projects/multiimage-test-project/canvas/1/annotations",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://adno.app/projects/multiimage-test-project/annotations/zone-recto",
+              "type": "Annotation",
+              "motivation": "commenting",
+              "body": {
+                "type": "TextualBody",
+                "value": "<p>RECTO ONLY</p>",
+                "format": "text/html",
+                "purpose": "commenting"
+              },
+              "adno:sourceMarkdown": "RECTO ONLY",
+              "target": {
+                "type": "SpecificResource",
+                "id": "https://adno.app/projects/multiimage-test-project/annotations/zone-recto#g1-1",
+                "selector": {
+                  "type": "FragmentSelector",
+                  "conformsTo": "http://www.w3.org/TR/media-frags/",
+                  "value": "xywh=pixel:10,10,80,60"
+                },
+                "source": "https://adno.app/projects/multiimage-test-project/canvas/1"
+              }
+            },
+            {
+              "id": "https://adno.app/projects/multiimage-test-project/annotations/zone-both",
+              "type": "Annotation",
+              "motivation": "commenting",
+              "body": {
+                "type": "TextualBody",
+                "value": "<p>BOTH FOLIOS</p>",
+                "format": "text/html",
+                "purpose": "commenting"
+              },
+              "adno:sourceMarkdown": "BOTH FOLIOS",
+              "target": [
+                {
+                  "type": "SpecificResource",
+                  "id": "https://adno.app/projects/multiimage-test-project/annotations/zone-both#g1-1",
+                  "selector": {
+                    "type": "FragmentSelector",
+                    "conformsTo": "http://www.w3.org/TR/media-frags/",
+                    "value": "xywh=pixel:200,150,120,90"
+                  },
+                  "source": "https://adno.app/projects/multiimage-test-project/canvas/1"
+                },
+                {
+                  "type": "SpecificResource",
+                  "id": "https://adno.app/projects/multiimage-test-project/annotations/zone-both#g1-2",
+                  "selector": {
+                    "type": "FragmentSelector",
+                    "conformsTo": "http://www.w3.org/TR/media-frags/",
+                    "value": "xywh=pixel:40,300,100,120"
+                  },
+                  "source": "https://adno.app/projects/multiimage-test-project/canvas/2"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://adno.app/projects/multiimage-test-project/canvas/2",
+      "type": "Canvas",
+      "label": {
+        "none": [
+          "Folio 1v"
+        ]
+      },
+      "width": 401,
+      "height": 300,
+      "items": [
+        {
+          "id": "https://adno.app/projects/multiimage-test-project/canvas/2/painting",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://adno.app/projects/multiimage-test-project/canvas/2/painting/image",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://example.org/folio-2.png",
+                "type": "Image",
+                "format": "image/png",
+                "width": 401,
+                "height": 300
+              },
+              "target": "https://adno.app/projects/multiimage-test-project/canvas/2"
+            }
+          ]
+        }
+      ],
+      "annotations": [
+        {
+          "id": "https://adno.app/projects/multiimage-test-project/canvas/2/annotations",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://adno.app/projects/multiimage-test-project/annotations/zone-verso",
+              "type": "Annotation",
+              "motivation": "commenting",
+              "body": {
+                "type": "TextualBody",
+                "value": "<p>VERSO ONLY</p>",
+                "format": "text/html",
+                "purpose": "commenting"
+              },
+              "adno:sourceMarkdown": "VERSO ONLY",
+              "target": {
+                "type": "SpecificResource",
+                "id": "https://adno.app/projects/multiimage-test-project/annotations/zone-verso#g1-1",
+                "selector": {
+                  "type": "FragmentSelector",
+                  "conformsTo": "http://www.w3.org/TR/media-frags/",
+                  "value": "xywh=pixel:20,20,60,90"
+                },
+                "source": "https://adno.app/projects/multiimage-test-project/canvas/2"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "adno:project": {
+    "id": "multiimage-test-project",
+    "settings": {
+      "delay": 5,
+      "showNavigator": false,
+      "toolsbarOnFs": true,
+      "sidebarEnabled": true,
+      "startbyfirstanno": false,
+      "shouldAutoPlayAnnotations": false,
+      "rotation": false,
+      "displayToolbar": true,
+      "tags": [],
+      "outlineWidth": "outline-1px",
+      "outlineColor": "outline-white",
+      "outlineColorFocus": "outline-focus-yellow",
+      "showOutlines": true,
+      "showEyes": false,
+      "soundMode": "no_sound",
+      "showCurrentAnnotation": false
+    },
+    "images": [
+      {
+        "id": "folio-recto",
+        "source": "https://example.org/folio-1.png",
+        "label": "Folio 1r",
+        "type": "image",
+        "width": 400,
+        "height": 300
+      },
+      {
+        "id": "folio-verso",
+        "source": "https://example.org/folio-2.png",
+        "label": "Folio 1v",
+        "type": "image",
+        "width": 401,
+        "height": 300
+      }
+    ],
+    "created": "2026-07-01T00:00:00.000Z",
+    "modified": "2026-07-01T00:00:00.000Z",
+    "generator": {
+      "id": "https://adno.app",
+      "type": "Software",
+      "name": "Adno"
+    }
+  }
+}

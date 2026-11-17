@@ -53,6 +53,8 @@ export type Project = {
     last_update: string,
     editor: string,
     creator: string,
+    licence?: string,
+    attribution?: string,
     img_url?: string,
     manifest_url?: string,
     images?: ProjectImage[],

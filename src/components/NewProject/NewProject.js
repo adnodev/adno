@@ -5,10 +5,8 @@ import ProjectSettings from "../Project/ProjectSettings";
 import { buildJsonProjectWithImg, buildJsonProjectWithManifest, get_url_extension, enhancedFetch, diffProjectSettings } from "../../Utils/utils";
 import { defaultProjectSettings } from "../../Utils/project";
 
-// Import popup alerts
 import Swal from "sweetalert2";
 
-// Import CSS
 import "./NewProject.css"
 
 // Add translation
@@ -22,6 +20,7 @@ class NewProject extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            isReadingManifest: true,
             manifestImages: [],
             currentIndex: -1,
             nbCanvases: 0,
@@ -49,7 +48,6 @@ class NewProject extends Component {
             this.setState({ selectedCanva: true, isCanvaProject: true })
         }
 
-
         enhancedFetch(manifest_url)
             .then(rep => rep.response.json())
             .then(manifestIIIF => {
@@ -62,6 +60,7 @@ class NewProject extends Component {
                     this.loadManifestV2(manifestIIIF)
                 }
             })
+            .finally(() => this.setState({ isReadingManifest: false }))
     }
 
     loadManifestV3 = manifestIIIF => {
@@ -206,7 +205,6 @@ class NewProject extends Component {
         }
     }
 
-
     isManifest = async (url) => {
         return new Promise((resolve, reject) => {
             enhancedFetch(url)
@@ -238,7 +236,6 @@ class NewProject extends Component {
                 })
         })
     }
-
 
     createProj = async (e) => {
         e.preventDefault()
@@ -426,6 +423,8 @@ class NewProject extends Component {
 
     render() {
         const overloadedSettings = diffProjectSettings(this.state.settings, defaultProjectSettings())
+        const imageChosen = !this.state.isCanvaProject || this.state.selectedCanva
+        const showForm = !this.state.isReadingManifest && imageChosen
 
         console.log(this.state)
 
@@ -452,7 +451,7 @@ class NewProject extends Component {
                     closeProjectMetadatas={() => this.setState({ showMetadatas: false })} />}
 
                 {
-                    (!this.state.isCanvaProject || (this.state.isCanvaProject && this.state.selectedCanva)) &&
+                    showForm &&
                     <>
                         <h1 className="new-project-title">{this.props.t('new_project.add_info')}</h1>
                         <form className="form-new-project" >
@@ -525,7 +524,6 @@ class NewProject extends Component {
                     </>
                 }
 
-
                 {
                     this.state.isCanvaProject && !this.state.selectedCanva && this.state.manifestImages && this.state.nbCanvases > 1 &&
                     <>
@@ -533,7 +531,6 @@ class NewProject extends Component {
                         <p className="adno_description">{this.props.t('project.choose_desc')}</p>
                     </>
                 }
-
 
                 {
                     this.state.manifestImages && this.state.nbCanvases > 0 &&
@@ -556,7 +553,6 @@ class NewProject extends Component {
                     </div>
                 }
 
-
                 {
                     this.state.manifestImages && this.state.nbCanvases > 0 && this.state.currentIndex !== -1 && !this.state.selectedCanva &&
                     <button className="btn btn-success my-2" onClick={() => {
@@ -569,7 +565,6 @@ class NewProject extends Component {
                         localStorage.setItem("selected_canva", canva.img_url ? canva.img_url : canva.canva_url)
                     }}>{this.props.t('project.choose_canva')}</button>
                 }
-
 
                 {
                     this.state.isCanvaProject && !this.state.selectedCanva &&

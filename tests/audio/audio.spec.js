@@ -53,9 +53,6 @@ async function importIIIFFixtureWithAudio(page) {
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(FIXTURE);
 
-    // Validate import (success button has only an icon, no text)
-    await page.getByRole('button').filter({ hasText: /^$/ }).first().click();
-
     await page.waitForURL(/\/project\/.+\/edit/);
     await expect(page.locator('.a9s-annotationlayer')).toBeVisible();
 }
@@ -80,7 +77,8 @@ test.describe('Audio annotations are preserved on export', () => {
         const download = await downloadPromise;
 
         const exported = await readDownloadAsJson(download);
-        expect(exported.format).toBe('Adno');
+        expect(exported.type).toBe('AnnotationCollection');
+        expect(exported['adno:project']).toBeTruthy();
 
         const audioUrls = [...collectAudioUrls(exported)];
         for (const url of EXPECTED_AUDIO_URLS) {
@@ -104,11 +102,13 @@ test.describe('Audio annotations are preserved on export', () => {
         const fileChooserPromise = page.waitForEvent('filechooser');
         await page.getByText('Import a project').click();
         const fileChooser = await fileChooserPromise;
-        await fileChooser.setFiles(exportedPath);
+        await fileChooser.setFiles({
+            name: download.suggestedFilename(),
+            mimeType: 'application/json',
+            buffer: fs.readFileSync(exportedPath)
+        });
 
-        // Validate import; the Adno-format import path triggers window.location.reload()
-        await page.getByRole('button').filter({ hasText: /^$/ }).first().click();
-        await page.waitForLoadState('networkidle');
+        await page.waitForURL(/\/project\/.+\/edit/);
 
         // Step 3: read the freshly persisted project straight out of IndexedDB and
         // verify the audio bodies survived the reload

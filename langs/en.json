@@ -4,8 +4,6 @@
     "import": {
         "import_project": "Import a project",
         "import_now": "Using a project file",
-        "validate": "Validate",
-        "cancel": "Cancel",
         "adno_project": "Adno project found, would you like to import it ?",
         "import_success": "Project imported successfully!"
     },
@@ -49,15 +47,16 @@
             "creation_date": "Created on",
             "last_update": "Last update on",
             "format": "Format",
-            "rights": "Distributed rights",
-            "allocation_rights": "Allocation of rights"
+            "licence": "Licence",
+            "attribution": "Attribution"
         },
         "metadatas_plh": {
             "title": "Give a title to your project",
             "description": "Add a little text about your artwork",
             "author": "Add the author of the artwork here",
             "editor": "Add the editor of the artwork here",
-            "allocation_rights": "Fill in here the rights of the artwork"
+            "licence": "Link to the licence (Creative Commons, RightsStatements.org…)",
+            "attribution": "Credit line to display with the artwork (institution, photographer…)"
         },
         "settings": {
             "delay": "Delay between 2 annotations (in seconds)",
@@ -96,9 +95,6 @@
             "content_position_right": "Right margin",
             "mosaic_layout": "Mosaic layout"
         }
-    },
-    "files": {
-        "one_selected": "1 file selected"
     },
     "buttons": {
         "cancel": "Cancel",
@@ -187,8 +183,7 @@
         "confirm_del_annotation": "Yes, delete this annotation",
         "del_annotation_confirmation": "Annotation deleted successfully",
         "project_edit_success": "Your project have been updated successfully !",
-        "settings_updated_success": "Settings updated successfully !",
-        "adno_proj_detected": "Adno project detected, would you like to import it ?"
+        "settings_updated_success": "Settings updated successfully !"
     },
     "annotation": {
         "no_content": "no content yet",

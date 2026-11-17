@@ -1,12 +1,11 @@
 import { Component } from 'react';
 import { withRouter } from "react-router";
 
-// Import CSS
 import "./ViewerAnnotationCards.css";
 
-// Import Components
 import OneCardView from './OneCardView/OneCardView';
 import { buildTagsList, stripHtml } from "../../../Utils/utils"
+import { annotationHtml } from "../../../services/format"
 import { withTranslation } from 'react-i18next';
 
 const RAIL_SUMMARY_LENGTH = 90
@@ -17,9 +16,7 @@ class ViewerAnnotationCards extends Component {
     }
 
     summarise = (annotation) => {
-        const body = Array.isArray(annotation.body) ? annotation.body : []
-        const text = body.find(item => item.type === "TextualBody" && item.purpose === "commenting")
-        const value = text ? stripHtml(text.value).trim() : ""
+        const value = stripHtml(annotationHtml(annotation) || "").trim()
 
         return value.length > RAIL_SUMMARY_LENGTH ? `${value.slice(0, RAIL_SUMMARY_LENGTH)}…` : value
     }

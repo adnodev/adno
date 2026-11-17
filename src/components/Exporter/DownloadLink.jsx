@@ -1,10 +1,14 @@
-import { createExportProjectJsonFile } from "../../Utils/utils"
+import { projectDB } from "../../services/db"
+import { exportBase, toWADMCollection } from "../../services/format"
 
 export function DownloadLink({ selectedProject, translate }) {
     const download = (event) => {
         event.preventDefault()
 
-        createExportProjectJsonFile(selectedProject.id).then(url => {
+        projectDB.get(selectedProject.id).then(project => {
+            const collection = toWADMCollection(project, { base: exportBase() })
+            const blob = new Blob([JSON.stringify(collection, null, 2)], { type: "application/json" })
+            const url = URL.createObjectURL(blob)
             const link = document.createElement("a")
 
             link.href = url
@@ -25,7 +29,7 @@ export function DownloadLink({ selectedProject, translate }) {
             onClick={download}
             title={translate('navbar.download_project')}
         >
-            Adno
+            Adno (WADM Collection)
         </a>
     )
 }

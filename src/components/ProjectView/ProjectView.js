@@ -1,23 +1,19 @@
 import { Component } from "react";
 import { withRouter } from "react-router";
 
-// Import FontAwesome icons
 import { faCopy, faDownload, faEye, faNotdef, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-// Import popup alerts
 import Swal from 'sweetalert2';
 
-import { corsProxyUrl, enhancedFetch, migrateTextBody, buildJsonProjectWithManifest } from "../../Utils/utils";
-import { defaultProjectSettings } from "../../Utils/project";
+import { corsProxyUrl, enhancedFetch } from "../../Utils/utils";
+import { exportManifest, fromAny, isAdnoExport } from "../../services/format";
 
-// Import CSS
 import "./ProjectView.css";
 
 // Add Internationalization
 import { withTranslation } from "react-i18next";
 import { ExporterModal } from "../Exporter/Exporter";
-import { exportToIIIF } from "../../services/iiif/exporter";
 import { projectDB } from "../../services/db";
 
 class ProjectView extends Component {
@@ -37,7 +33,7 @@ class ProjectView extends Component {
             enhancedFetch(this.props.project.manifest_url)
                 .then(rep => rep.response.json())
                 .then(async manifest => {
-                    if (manifest?.format === 'Adno') {
+                    if (isAdnoExport(manifest)) {
                         await this.migrateAdnoProject(this.props.project.id, manifest)
                     }
 
@@ -59,27 +55,8 @@ class ProjectView extends Component {
         }
     }
 
-    migrateAdnoProject = async (projectID, manifest) => {
-        try {
-            const title = manifest.title || manifest.label
-            const desc = manifest.description || manifest.subject
-
-            const project = buildJsonProjectWithManifest(projectID, title, desc, manifest.source)
-
-            return projectDB.add(project.id, {
-                ...project,
-                annotations: // Migrate annotations if there is only TextualBody and not HTMLBody
-                    manifest.first.items?.map(annotation => {
-                        if (annotation.body.find(annoBody => annoBody.type === "TextualBody")
-                            && !annotation.body.find(annoBody => annoBody.type === "HTMLBody")) {
-                            return migrateTextBody(annotation)
-                        }
-                        return annotation
-                    })
-            })
-        } catch (err) {
-            console.log(err)
-        }
+    migrateAdnoProject = (projectID, manifest) => {
+        return projectDB.add(projectID, fromAny(manifest, { id: projectID }))
     }
 
     loadSourceImage = manifest => {
@@ -219,14 +196,6 @@ class ProjectView extends Component {
     }
 
     render() {
-        const annotations = this.props.project.annotations || []
-
-        const exportedProject = {
-            annotations,
-            selectedProject: this.props.project,
-            settings: this.props.project.settings || defaultProjectSettings()
-        }
-
         const thumbnail = this.state.imgFailed
             ? <div className="img-proj-fallback">
                 <FontAwesomeIcon icon={faNotdef} size="2x" />
@@ -241,7 +210,7 @@ class ProjectView extends Component {
             <ExporterModal
                 translate={this.props.t}
                 selectedProject={this.props.project}
-                exportIIIF={() => exportToIIIF(exportedProject)}
+                exportIIIF={() => projectDB.get(this.props.project.id).then(exportManifest)}
                 ref={this.modalRef} />
 
             <div className="card card-side bg-base-100 shadow-xl project-view-card" onClick={() => this.props.history.push(`/project/${this.props.project.id}/view`)}>

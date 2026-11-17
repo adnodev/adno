@@ -53,6 +53,7 @@ export type Shape = Rect | Circle | Ellipse | Polygon | Path
 export type Selector = {
     type?: string,
     value?: string,
+    conformsTo?: string,
     refinedBy?: { type?: string, rotation?: string }
 }
 
@@ -64,14 +65,10 @@ export type Target = {
 
 export type Cutouts = Record<GroupId, boolean>
 
-export type AnnotationAdno = {
-    cutouts?: Cutouts
-}
-
 export type Annotation = {
     id: AnnotationId,
     target?: Target | Target[],
-    adno?: AnnotationAdno,
+    'adno:cutouts'?: Cutouts,
     [key: string]: unknown
 }
 

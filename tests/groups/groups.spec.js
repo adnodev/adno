@@ -177,6 +177,7 @@ test.describe('The grouped zones tab', () => {
         const groupA = page.locator('.zone-group').nth(0);
 
         await groupA.locator('.zone-group-angle').click();
+        await groupA.locator('.orientation-inherit input').click();
         await groupA.locator('.orientation-angle-input').fill('90');
         await groupA.locator('.orientation-angle-input').press('Enter');
         await page.waitForTimeout(800);
@@ -196,7 +197,7 @@ test.describe('The grouped zones tab', () => {
 
         const saved = await readProject(page, PROJECT_ID);
 
-        expect(saved.annotations[0].adno.cutouts).toEqual({ g1: true });
+        expect(saved.annotations[0]['adno:cutouts']).toEqual({ g1: true });
     });
 
     test('the add button goes away once four groups exist', async ({ page }) => {
@@ -308,7 +309,7 @@ test.describe('Drawing while the panel is open', () => {
         await openEditor(page);
         await openPanel(page);
 
-        await drawRect(page, 420, 120, 90, 70);
+        await drawRect(page, 560, 120, 90, 70);
 
         const targets = await savedTargets(page);
 

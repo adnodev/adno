@@ -4,8 +4,6 @@
     "import": {
         "import_project": "Importer un projet",
         "import_now": "Utiliser le fichier d'un projet",
-        "validate": "Valider l'importation",
-        "cancel": "Annuler l'importation",
         "adno_project": "Projet Adno détecté, voulez-vous l'importer ?",
         "import_success": "Projet importé avec succès !"
     },
@@ -49,15 +47,16 @@
             "creation_date": "Date de création",
             "last_update": "Dernière modification",
             "format": "Format",
-            "rights": "Droits attribués",
-            "allocation_rights": "Attribution des droits"
+            "licence": "Licence",
+            "attribution": "Attribution"
         },
         "metadatas_plh": {
             "title": "Donnez un titre à ce projet",
             "description": "Ajoutez une description à votre projet",
             "author": "Renseignez ici l'auteur",
             "editor": "Renseignez ici l'editeur",
-            "allocation_rights": "Renseignez ici les droits de l'oeuvre"
+            "licence": "Lien vers la licence (Creative Commons, RightsStatements.org…)",
+            "attribution": "Mention de crédit à afficher avec l'œuvre (institution, photographe…)"
         },
         "settings": {
             "delay": "Délai entre 2 annotations (en secondes)",
@@ -96,9 +95,6 @@
             "content_position_right": "Marge à droite",
             "mosaic_layout": "Disposition de la mosaïque"
         }
-    },
-    "files": {
-        "one_selected": "1 Fichier selectionné"
     },
     "buttons": {
         "cancel": "Annuler",
@@ -187,8 +183,7 @@
         "confirm_del_annotation": "Oui, supprimer cette annotation",
         "del_annotation_confirmation": "L'annotation a bien été supprimée",
         "project_edit_success": "Projet édité avec succés !",
-        "settings_updated_success": "Paramètres mis à jour avec succés !",
-        "adno_proj_detected": "Projet Adno détecté, voulez-vous l'importer ?"
+        "settings_updated_success": "Paramètres mis à jour avec succés !"
     },
     "annotation": {
         "no_content": "aucun contenu",

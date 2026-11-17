@@ -1,0 +1,14 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "adno": "https://adno.app/ns#",
+    "adno:project": {
+      "@id": "https://adno.app/ns#project",
+      "@type": "@json"
+    },
+    "adno:cutouts": {
+      "@id": "https://adno.app/ns#cutouts",
+      "@type": "@json"
+    }
+  }
+}

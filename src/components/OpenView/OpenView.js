@@ -45,6 +45,7 @@ class OpenView extends Component {
         }
 
         this.toolbarRef = createRef()
+        this.viewRef = createRef()
     }
 
     measureToolbar = () => {
@@ -61,7 +62,9 @@ class OpenView extends Component {
     annoStyles = () => this.props.outlineWidth + " " + this.props.outlineColor + " " + this.props.outlineColorFocus
 
     marginOffset = () => {
-        if (this.state.fullScreenEnabled || !this.props.showToolbar) {
+        const hiddenOnFs = this.state.fullScreenEnabled && !this.props.toolsbarOnFs
+
+        if (hiddenOnFs || !this.props.showToolbar) {
             return 0
         }
 
@@ -577,8 +580,8 @@ class OpenView extends Component {
         // turn on full screen
         if (document.fullscreenEnabled) {
             if (!this.state.fullScreenEnabled) {
-                if (document.getElementById("adno-osd")) {
-                    document.getElementById("adno-osd").requestFullscreen();
+                if (this.viewRef.current) {
+                    this.viewRef.current.requestFullscreen();
                     this.setState({ fullScreenEnabled: true })
                 } else {
                     alert("Unable to turn on FullScreen")
@@ -706,7 +709,6 @@ class OpenView extends Component {
                 x = anno.children[0].getAttribute("x") - tileSize / 2 + anno.children[0].getAttribute("width") / 2
                 y = anno.children[0].getAttribute("y") - tileSize / 2 + anno.children[0].getAttribute("height") / 2
 
-
             } else if (type === "path" || type === "polygon") {
                 const bbox = anno.getBBox();
 
@@ -719,7 +721,6 @@ class OpenView extends Component {
 
             audioElement.setAttribute('x', x / this.openSeadragon.viewport._contentSize.x)
             audioElement.setAttribute('y', y / this.openSeadragon.viewport._contentSize.y)
-
 
             const id = anno.getAttribute("data-id")
             const annotation = this.props.annos?.find(anno => anno.id === id);
@@ -771,7 +772,6 @@ class OpenView extends Component {
         })
     }
 
-
     toggleAnnotationsLayer = () => {
         this.toggleAnnotations(!this.state.isAnnotationsVisible)
         this.setState({ isAnnotationsVisible: !this.state.isAnnotationsVisible })
@@ -815,7 +815,7 @@ class OpenView extends Component {
         const layout = closing || opening ? collapsedLayout(this.mosaic(scene)) : this.mosaic(scene)
         const activeGroup = this.outlinesVisible() ? this.activeGroup() : null
 
-        return <div className="open-view flex flex-col flex-grow relative">
+        return <div ref={this.viewRef} className="open-view flex flex-col flex-grow relative">
             <div ref={this.toolbarRef}
                 className={this.props.showToolbar ? "toolbar-on" : "toolbar-off"}
                 style={{
@@ -926,11 +926,20 @@ class OpenView extends Component {
                                     </>
                                 }
                                 {
-                                    this.props.selectedProject.rights &&
+                                    this.props.selectedProject.licence &&
                                     <>
                                         <div className="flex py-2">
-                                            <dt className="font-medium px-2">{this.props.t('project.metadatas.rights')} :</dt>
-                                            <dd>{this.props.selectedProject.rights}</dd>
+                                            <dt className="font-medium px-2">{this.props.t('project.metadatas.licence')} :</dt>
+                                            <dd><a className="adno-link" href={this.props.selectedProject.licence} target="_blank" rel="noreferrer">{this.props.selectedProject.licence}</a></dd>
+                                        </div>
+                                    </>
+                                }
+                                {
+                                    this.props.selectedProject.attribution &&
+                                    <>
+                                        <div className="flex py-2">
+                                            <dt className="font-medium px-2">{this.props.t('project.metadatas.attribution')} :</dt>
+                                            <dd>{this.props.selectedProject.attribution}</dd>
                                         </div>
                                     </>
                                 }

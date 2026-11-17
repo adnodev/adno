@@ -74,6 +74,12 @@ export function groupLetter(rank: number): string {
     return LETTERS[rank % LETTERS.length]
 }
 
+export function groupIdFromLetter(letter: string): GroupId {
+    const rank = Math.max(0, LETTERS.indexOf(letter.toUpperCase()))
+
+    return `g${rank + 1}`
+}
+
 export function groupColor(rank: number, palette: GroupPalette = PALETTE): string {
     return palette[rank % palette.length]
 }

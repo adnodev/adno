@@ -99,11 +99,15 @@ test.describe('Annotation content in a margin', () => {
         await expect(page.locator('#adno-osd #adno-content-margin')).toHaveCount(1);
     });
 
-    test('a floating setting keeps the margin away', async ({ page }) => {
+    test('a floating setting shows the content in a floating card', async ({ page }) => {
         await openViewer(page, projectWith('floating'));
         await focus(page, 0);
 
-        await expect(page.locator('#adno-content-margin')).toHaveCount(0);
+        const margin = page.locator('#adno-content-margin');
+
+        await expect(margin).toBeVisible();
+        await expect(margin).toHaveClass(/content-margin--floating/);
+        await expect(margin).toContainText('MARGIN TEXT');
     });
 
     test('an annotation with nothing to say opens no margin', async ({ page }) => {

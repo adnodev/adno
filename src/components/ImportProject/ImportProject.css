@@ -18,26 +18,6 @@
   width: 250px;
 }
 
-.importing_project{
-  margin-left: 15px;
-  width: 350px;
-  display: flex;
-  align-items: center;
-}
-
-.importing_project #label-upload svg{
-  margin-right: 5px;
-}
-
-.import-btns{
-    display: flex;
-    justify-content: center;
-}
-
-.import-btns > div > button {
-  margin: 5px;
-}
-
 .import-reset{
   padding: 10px;
   border: none;

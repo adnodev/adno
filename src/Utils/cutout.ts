@@ -1,10 +1,13 @@
+import { CUTOUTS } from "../services/format/model"
 import type { GroupId } from "./groups"
 import type { Annotation, Cutouts } from "./targets"
 
 function cutouts(annotation: Annotation | null): Cutouts {
-    const adno = annotation ? annotation.adno : null
+    if (!annotation) {
+        return {}
+    }
 
-    return (adno ? adno.cutouts : null) || {}
+    return annotation[CUTOUTS] || {}
 }
 
 export function getGroupCutout(annotation: Annotation | null, groupId: GroupId): boolean {
@@ -18,11 +21,11 @@ export function cutoutGroupIds(annotation: Annotation | null): GroupId[] {
 }
 
 export function withGroupCutout(annotation: Annotation, groupId: GroupId, enabled: boolean): Annotation {
-    const { adno, ...rest } = annotation
+    const { [CUTOUTS]: current, ...rest } = annotation
 
     const kept = Object.entries({ ...cutouts(annotation), [groupId]: enabled })
         .filter(([, on]) => on)
         .reduce<Cutouts>((flags, [id]) => ({ ...flags, [id]: true }), {})
 
-    return Object.keys(kept).length > 0 ? { ...rest, adno: { cutouts: kept } } : rest
+    return Object.keys(kept).length > 0 ? { ...rest, [CUTOUTS]: kept } : rest
 }

@@ -31,7 +31,6 @@ function CustomProjectSettings({ t, settings, setSettings }) {
         <input type="number" placeholder="2" className="input input-bordered w-full" value={settings.delay}
             onChange={(e) => setSettings({ ...settings, delay: e.target.value })} />
 
-
         <label className="label">
             <span className="label-text">{t('project.settings.outline_width')}</span>
         </label>
@@ -152,13 +151,11 @@ function CustomProjectSettings({ t, settings, setSettings }) {
         <input type="checkbox" className="toggle toggle-toolsbar" checked={settings.startbyfirstanno}
             onChange={() => setSettings({ ...settings, startbyfirstanno: !settings.startbyfirstanno })} />
 
-
         <label className="label">
             <span className="label-text">{t('project.settings.should_auto_play_annotations')}</span>
         </label>
         <input type="checkbox" className="toggle toggle-toolsbar" checked={settings.shouldAutoPlayAnnotations}
             onChange={() => setSettings({ ...settings, shouldAutoPlayAnnotations: !settings.shouldAutoPlayAnnotations })} />
-
 
         <label className="label" >
             <span className="label-text">{t('project.settings.navigator')}</span>
@@ -228,13 +225,11 @@ function CustomProjectSettings({ t, settings, setSettings }) {
         <input type="checkbox" className="toggle toggle-toolsbar" checked={settings.annoBounds}
             onChange={() => setSettings({ ...settings, annoBounds: !settings.annoBounds })} />
 
-
         <label className="label">
             <span className="label-text">{t('project.settings.fullscreen')}</span>
         </label>
         <input type="checkbox" className="toggle toggle-toolsbar" checked={settings.toolsbarOnFs}
             onChange={() => setSettings({ ...settings, toolsbarOnFs: !settings.toolsbarOnFs })} />
-
 
         <label className="label">
             <span className="label-text">{t('project.settings.enable_rota')}</span>

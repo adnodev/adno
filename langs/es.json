@@ -84,16 +84,11 @@
         "wrong_file": "¡Este archivo no es legible por Adno! Inténtelo de nuevo con otro archivo",
         "wrong_url": "¡La URL proporcionada no es válida! Indique un enlace a un manifiesto o una imagen IIIF, una imagen JPG, PNG, o un archivo de un proyecto Adno"
     },
-    "files": {
-        "one_selected": "1 Archivo seleccionado"
-    },
     "import": {
         "adno_project": "Se ha encontrado el proyecto Adno, ¿desea importarlo?",
-        "cancel": "Cancelar la importación",
         "import_now": "Utilizar el archivo de un proyecto",
         "import_project": "Importar un proyecto",
-        "import_success": "Proyecto importado correctamente.",
-        "validate": "Validar la importación"
+        "import_success": "Proyecto importado correctamente."
     },
     "link": {
         "generate": "Copiar URL",
@@ -102,7 +97,6 @@
         "url": "Introduzca la URL a los recursos IIIF"
     },
     "modal": {
-        "adno_proj_detected": "Proyecto Adno detectado, ¿le gustaŕia importarlo?",
         "ask_delete": "¿Realmente desea eliminar esta anotación?",
         "cancel": "Cancelar",
         "confirm_del_annotation": "Sí, eliminar esta anotación",
@@ -160,19 +154,20 @@
         "last_update": "Última actualización el ",
         "manifest_url": "URL",
         "metadatas": {
-            "allocation_rights": "Asignación de derechos",
+            "attribution": "Atribución",
             "creation_date": "Fecha de creación",
             "format": "Formato",
             "identifier": "Nombre de usuario",
             "last_update": "Última modificación",
-            "rights": "Derechos asignados",
+            "licence": "Licencia",
             "source": "Fuente"
         },
         "metadatas_plh": {
-            "allocation_rights": "Ingrese aquí los derechos de la obra",
+            "attribution": "Línea de crédito que se mostrará con la obra (institución, fotógrafo…)",
             "author": "Indique aquí el autor",
             "description": "Añade una descripción a su proyecto",
             "editor": "Indique aquí el editor",
+            "licence": "Enlace a la licencia (Creative Commons, RightsStatements.org…)",
             "title": "Dé un título a este proyecto"
         },
         "new": "Crea mi propio proyecto",
