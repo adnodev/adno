@@ -20,7 +20,7 @@ export const get_url_extension = (url) => {
   if (url.includes('?url=https'))
     return get_url_extension(url.split(/[#?]/)[1].replace('url=', ''));
   else
-    return url.split(/[#?]/)[0].split('.').pop().trim();
+    return url.split(/[#?]/)[0].split('.').pop().trim().toLowerCase();
 }
 
 export const buildJsonProjectWithManifest = (id, title, desc, manifest) => {
