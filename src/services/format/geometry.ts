@@ -3,7 +3,7 @@ import { getTargets, targetShape, withTargets, type Annotation, type Box, type T
 export function pixelFragment(box: Box): string {
     const rounded = [box.x, box.y, box.width, box.height].map(Math.round)
 
-    return `xywh=pixel:${rounded.join(',')}`
+    return `xywh=${rounded.join(',')}`
 }
 
 export function roundTarget(target: Target): Target {

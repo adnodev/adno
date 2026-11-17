@@ -66,7 +66,7 @@ describe('normalizeProject on a legacy annotation', () => {
     const [annotation] = project.annotations
 
     it('rounds the fragment to integers', () => {
-        expect(annotation.target.selector.value).toBe('xywh=pixel:12,9,100,51')
+        expect(annotation.target.selector.value).toBe('xywh=12,9,100,51')
     })
 
     it('moves the cutouts under the adno prefix', () => {

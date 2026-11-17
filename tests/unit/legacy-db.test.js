@@ -5,7 +5,7 @@ import { normalizeProject } from '../../src/services/format'
 import { getTargets } from '../../src/Utils/targets'
 
 const LEGACY_BODY_TYPES = ['HTMLBody', 'AdnoRichText']
-const INTEGER_FRAGMENT = /^xywh=pixel:\d+,\d+,\d+,\d+$/
+const INTEGER_FRAGMENT = /^xywh=\d+,\d+,\d+,\d+$/
 const GROUPED_TARGET_ID = /^g\d+@/
 
 const dump = JSON.parse(readFileSync(join(import.meta.dirname, 'legacy-db-before-normalize.json'), 'utf8'))

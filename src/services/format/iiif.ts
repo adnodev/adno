@@ -77,8 +77,8 @@ export function canvasImage(canvas: JsonObject): ProjectImage | null {
     }
 }
 
-function withPixelUnit(fragment: string): string {
-    return fragment.replace(/^xywh=(?!pixel:|percent:)/, 'xywh=pixel:')
+function withoutPixelUnit(fragment: string): string {
+    return fragment.replace(/^xywh=pixel:/, 'xywh=')
 }
 
 export function targetFromReference(reference: string): Target {
@@ -93,7 +93,7 @@ export function targetFromReference(reference: string): Target {
         selector: {
             type: 'FragmentSelector',
             conformsTo: MEDIA_FRAGMENTS,
-            value: withPixelUnit(fragment)
+            value: withoutPixelUnit(fragment)
         }
     }
 }
@@ -110,7 +110,7 @@ function withMediaFragments(target: Target): Target {
         selector: {
             ...selector,
             conformsTo: selector.conformsTo || MEDIA_FRAGMENTS,
-            value: withPixelUnit(selector.value || '')
+            value: withoutPixelUnit(selector.value || '')
         }
     }
 }

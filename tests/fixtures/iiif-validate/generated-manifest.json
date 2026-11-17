@@ -69,7 +69,7 @@
                 "selector": {
                   "type": "FragmentSelector",
                   "conformsTo": "http://www.w3.org/TR/media-frags/",
-                  "value": "xywh=pixel:10,10,80,60"
+                  "value": "xywh=10,10,80,60"
                 },
                 "source": "https://adno.app/projects/multiimage-test-project/canvas/1"
               }
@@ -92,7 +92,7 @@
                   "selector": {
                     "type": "FragmentSelector",
                     "conformsTo": "http://www.w3.org/TR/media-frags/",
-                    "value": "xywh=pixel:200,150,120,90"
+                    "value": "xywh=200,150,120,90"
                   },
                   "source": "https://adno.app/projects/multiimage-test-project/canvas/1"
                 },
@@ -102,7 +102,7 @@
                   "selector": {
                     "type": "FragmentSelector",
                     "conformsTo": "http://www.w3.org/TR/media-frags/",
-                    "value": "xywh=pixel:40,300,100,120"
+                    "value": "xywh=40,300,100,120"
                   },
                   "source": "https://adno.app/projects/multiimage-test-project/canvas/2"
                 }
@@ -165,7 +165,7 @@
                 "selector": {
                   "type": "FragmentSelector",
                   "conformsTo": "http://www.w3.org/TR/media-frags/",
-                  "value": "xywh=pixel:20,20,60,90"
+                  "value": "xywh=20,20,60,90"
                 },
                 "source": "https://adno.app/projects/multiimage-test-project/canvas/2"
               }

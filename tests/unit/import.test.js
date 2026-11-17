@@ -122,7 +122,7 @@ describe('fromAny on a Web Annotation collection written with bare IRIs', () => 
         const [zone] = getTargets(project.annotations[0])
 
         expect(zone.source).toBe('https://example.org/image.jpg')
-        expect(zone.selector.value).toBe('xywh=pixel:10,20,30,40')
+        expect(zone.selector.value).toBe('xywh=10,20,30,40')
         expect(project.images.map(image => image.source)).toEqual(['https://example.org/image.jpg'])
     })
 

@@ -172,7 +172,7 @@ describe('toIIIFManifest', () => {
             selector: {
                 type: 'FragmentSelector',
                 conformsTo: 'http://www.w3.org/TR/media-frags/',
-                value: 'xywh=pixel:10,10,80,60'
+                value: 'xywh=10,10,80,60'
             }
         })
         expect(split.target.map(target => target.source)).toEqual([recto.id, verso.id])

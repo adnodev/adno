@@ -183,7 +183,7 @@ test.describe('Editing an annotation with several zones', () => {
         await page.waitForTimeout(800);
 
         const saved = await readProject(page, fixture.id);
-        expect(saved.annotations[0].target[1].selector.value).not.toEqual('xywh=pixel:340,200,160,120');
+        expect(saved.annotations[0].target[1].selector.value).not.toEqual('xywh=340,200,160,120');
     });
 
     test('clicking its polygon zone after closing the panel selects it', async ({ page }) => {
